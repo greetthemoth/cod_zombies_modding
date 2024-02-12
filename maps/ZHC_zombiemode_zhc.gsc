@@ -75,7 +75,7 @@ testing_ground(){
 
 	//if(level.ZHC_TESTING_LEVEL > 0)
 	//thread drop_powerups_on_players(); 	//testo
-	thread haunt_all_players();
+	//thread haunt_all_players();
 }
 
 //called from maps\_zombiemode.gsc line 5122.

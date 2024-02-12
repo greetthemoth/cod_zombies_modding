@@ -315,13 +315,13 @@ haunt_player(haunt_level){
 		self thread haunt_player_think();
 	}
 	self.haunt_level += haunt_level;
-	IPrintLnBold( "2 haunting player..." );
+	//IPrintLnBold( "2 haunting player..." );
 	self notify("haunt_player");
 }
 
 haunt_player_think(){
 	self endon ("stop_haunting_player");
-	IPrintLnBold( "1 haunting player..." );
+	IPrintLnBold( "haunting player..." + self.haunt_level );
 	
 	//wait for player to cross room.
 	//then close nearest door.
@@ -329,14 +329,14 @@ haunt_player_think(){
 	while(1){
 
 		self waittill("haunt_player");
-		IPrintLnBold( "3 haunting player..." );
+		//IPrintLnBold( "3 haunting player..." );
 		id = undefined;
 		while(!IsDefined( id )){
 			id = Get_Zone_Room_ID(Get_Players_Current_Zone_Patient(self));		//contains waits
 			//if(!IsDefined( id ))
 			//	wait(1);
 		}
-		IPrintLnBold( "4 haunting player... id defined" );
+		//IPrintLnBold( "4 haunting player... id defined" );
 		while(self.haunt_level > 0){
 			wait(0.25);
 			id2 = id;
@@ -345,10 +345,10 @@ haunt_player_think(){
 				id2 = Get_Zone_Room_ID(Get_Players_Current_Zone_Patient(self));		//contains waits
 				if(!isDefined(id2))
 					continue;
-				IPrintLnBold( "4 haunting player... id2 defined" );
-				
+				//IPrintLnBold( "4 haunting player... id2 defined" );
+
 				new_room = (id != id2);
-				IPrintLn( "hauntcheck: zone id:" + id + "   new id:" + id2 );
+				//IPrintLn( "hauntcheck: zone id:" + id + "   new id:" + id2 );
 				if(new_room){
 					zombie_doors =  GetEntArray( "zombie_door", "targetname" );
 					nearest_door = undefined;
@@ -364,7 +364,7 @@ haunt_player_think(){
 							nearest_door = zombie_doors[i];
 						}
 					}
-					IPrintLnBold( "nearest door is defined"+ isDefined(nearest_door));
+					//IPrintLnBold( "nearest door is defined"+ isDefined(nearest_door));
 					nearest_door notify ("close_door");
 				}
 			}
@@ -1662,7 +1662,7 @@ Get_Players_Current_Zone_Bruteforce(player){
 	}
 }
 Get_Players_Current_Zone_Patient(player){
-	level waittill( "updated_zone_info" );
+	level waittill( "zone_info_updated" );
 	return player.current_zone;
 }
 zone_is_occupied_rn(zone_name){			//use this right after waiting for "zone_info_updated"

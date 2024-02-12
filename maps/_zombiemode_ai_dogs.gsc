@@ -470,6 +470,9 @@ dog_round_tracker()
 	level.next_dog_round = 1; //testo
 	// PI_CHANGE_END
 	
+	flag_wait( "begin_spawning" );	//added for mod . wait for round functions to be set.
+	wait_network_frame( );			//^
+
 	old_spawn_func = level.round_spawn_func;
 	old_wait_func  = level.round_wait_func;
 
@@ -505,7 +508,8 @@ dog_round_tracker()
 			level.round_wait_func  = old_wait_func;
             level.music_round_override = false;
 			level.dog_round_count += 1;
-		}	
+		}
+			
 		level waittill ( "between_round_over" );	//moved for mod FROM^
 	}		
 }
