@@ -176,3 +176,5 @@ material,terrain_scorch_fruit
 material,terrain_scorch_paintedmetal
 material,terrain_scorch_player
 material,terrain_scorch_tallgrass
+material,loadscreen_frontend
+rawfile,maps/_zombiemode_utility.gsc

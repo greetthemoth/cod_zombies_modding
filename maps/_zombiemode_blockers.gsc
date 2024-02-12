@@ -315,34 +315,40 @@ haunt_player(haunt_level){
 		self thread haunt_player_think();
 	}
 	self.haunt_level += haunt_level;
+	IPrintLnBold( "2 haunting player..." );
 	self notify("haunt_player");
 }
 
 haunt_player_think(){
 	self endon ("stop_haunting_player");
-	//IPrintLnBold( "haunting player..." );
+	IPrintLnBold( "1 haunting player..." );
 	
 	//wait for player to cross room.
 	//then close nearest door.
 	
 	while(1){
+
 		self waittill("haunt_player");
+		IPrintLnBold( "3 haunting player..." );
 		id = undefined;
 		while(!IsDefined( id )){
 			id = Get_Zone_Room_ID(Get_Players_Current_Zone_Patient(self));		//contains waits
 			//if(!IsDefined( id ))
 			//	wait(1);
 		}
+		IPrintLnBold( "4 haunting player... id defined" );
 		while(self.haunt_level > 0){
-			wait(2.25);
+			wait(0.25);
 			id2 = id;
 			while(1){
 				//wait (0.75);
 				id2 = Get_Zone_Room_ID(Get_Players_Current_Zone_Patient(self));		//contains waits
 				if(!isDefined(id2))
 					continue;
+				IPrintLnBold( "4 haunting player... id2 defined" );
+				
 				new_room = (id != id2);
-				//IPrintLn( "zone id:" + id + "   new id:" + id2 );
+				IPrintLn( "hauntcheck: zone id:" + id + "   new id:" + id2 );
 				if(new_room){
 					zombie_doors =  GetEntArray( "zombie_door", "targetname" );
 					nearest_door = undefined;
@@ -358,6 +364,7 @@ haunt_player_think(){
 							nearest_door = zombie_doors[i];
 						}
 					}
+					IPrintLnBold( "nearest door is defined"+ isDefined(nearest_door));
 					nearest_door notify ("close_door");
 				}
 			}
@@ -1045,8 +1052,9 @@ door_buy_expired(){
 		wait(5);
 	}
 
+	CANT_CLOSE_DOOR_IN_DOG_ROUNDS = true;
 
-	if(flag("dog_round")){
+	if(CANT_CLOSE_DOOR_IN_DOG_ROUNDS && flag("dog_round")){
 		level waittill( "end_of_round" );	//we dont want doors to close durring dog rounds because dogs can get stuck through walls.
 	}
 
@@ -1286,7 +1294,10 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//	n = eight;
 	//rrs[rrs.size] = n;
 
-	//r = 5;	//testo if we want cooldown to happen quickly
+	//r = 5;	//testo if we want cooldown to happen as soon as player crosses doors.
+
+	if(flag("dog_round"))	//testo see if dog round fail safe is working correctly
+		r = 5;	
 
 	rrs[rrs.size] = 1; 						//the zone the door opens to is always on the list.	regardless of reverse	
 

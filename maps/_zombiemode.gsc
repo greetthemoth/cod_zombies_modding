@@ -4271,6 +4271,7 @@ round_spawn_failsafe()
 							level.next_dog_spawned_forced_to_run = [];
 						level.next_dog_spawned_health[level.next_dog_spawned_health.size] = self.health;
 						level.next_dog_spawned_forced_to_run[level.next_dog_spawned_forced_to_run.size] = true;
+						self.a.nodeath = undefined; //prevents an explosion after death;
 					}
 				}
 			}
@@ -4278,8 +4279,16 @@ round_spawn_failsafe()
 			//add this to the stats even tho he really didn't 'die' 
 			level.zombies_timeout_playspace++;
 			
+			death_effect = "poltergeist";
+			if(self.isdog)
+				death_effect = "lightning_dog_spawn";
+
+			playfx(level._effect[death_effect], self.origin);	
+			self ForceTeleport(self.origin + (0,0,999999)); //so we dont ever see the body and just see the teleport effect.
+
 			// DEBUG HACK
 			self dodamage( self.health + 100, (0,0,0) );
+
 			break;
 		}
 		prevorigin = self.origin;

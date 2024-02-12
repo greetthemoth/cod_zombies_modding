@@ -161,8 +161,9 @@ dog_round_spawning()
 
 
 
-	count = 0; 
-	while( count < max )
+	//count = 0; 
+	//while( count < max )
+	while( level.zombie_total > 0 )
 	{
 		num_player_valid = get_number_of_valid_players();
 		
@@ -188,7 +189,7 @@ dog_round_spawning()
 				ai.favoriteenemy = favorite_enemy;
 				spawn_loc thread dog_spawn_fx( ai, spawn_loc );
 				level.zombie_total--;
-				count++;
+				//count++;
 				enemy_count++;			//ZHC ADDED FOR MOD
 			}
 		}
@@ -203,13 +204,13 @@ dog_round_spawning()
 				ai.favoriteenemy = favorite_enemy;
 				spawn_point thread dog_spawn_fx( ai );
 				level.zombie_total--;
-				count++;
+				//count ++;
 				enemy_count++;			//ZHC ADDED FOR MOD
 
 			}
 		}
 		
-		waiting_for_next_dog_spawn( count, max, enemy_count, num_player_valid ); 			//ZHC CHANGED FOR MOD
+		waiting_for_next_dog_spawn( max - level.zombie_total, max , enemy_count, num_player_valid ); 			//ZHC CHANGED FOR MOD
 	}
 
 
@@ -466,6 +467,7 @@ dog_round_tracker()
 	// PI_CHANGE_BEGIN - JMA - making dog rounds random between round 5 thru 7
 	// NOTE:  RandomIntRange returns a random integer r, where min <= r < max
 	level.next_dog_round = randomintrange( 5, 8 );	
+	level.next_dog_round = 1; //testo
 	// PI_CHANGE_END
 	
 	old_spawn_func = level.round_spawn_func;
@@ -473,7 +475,7 @@ dog_round_tracker()
 
 	while ( 1 )
 	{
-		level waittill ( "between_round_over" );
+		//level waittill ( "between_round_over" );	//moved for mod TOv
 
 		/#
 			if( GetDvarInt( #"force_dogs" ) > 0 )
@@ -485,6 +487,7 @@ dog_round_tracker()
 		if ( level.round_number == level.next_dog_round )
 		{
 			level.music_round_override = true;
+
 			old_spawn_func = level.round_spawn_func;
 			old_wait_func  = level.round_wait_func;
 			dog_round_start();
@@ -502,8 +505,9 @@ dog_round_tracker()
 			level.round_wait_func  = old_wait_func;
             level.music_round_override = false;
 			level.dog_round_count += 1;
-		}			
-	}	
+		}	
+		level waittill ( "between_round_over" );	//moved for mod FROM^
+	}		
 }
 
 
@@ -660,7 +664,7 @@ dog_init()
 		level.next_dog_spawned_health = undefined;
 	}
 
-	self.round_spawn_failsafe_interval = 7.5;
+	self.round_spawn_failsafe_interval = 3.5;
 	self.round_spawn_failsafe_distanceSqr = 1000;
 	self.round_spawn_failsafe_respawn = true;
 	self thread maps\_zombiemode::round_spawn_failsafe();
