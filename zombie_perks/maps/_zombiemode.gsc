@@ -4217,8 +4217,10 @@ round_spawn_failsafe()
 		{
 			return;
 		}
-
-		wait( 30 );
+		if(!isDefined(self.round_spawn_failsafe_interval))	//condition and var ADDED FOR MOD
+			wait( 30 );
+		else
+			wait (self.round_spawn_failsafe_interval)
 
 		//if i've torn a board down in the last 8 seconds, just 
 		//wait 30 again.
@@ -4239,17 +4241,38 @@ round_spawn_failsafe()
 			break;
 		}
 
+		failsafe_distance = 576;
+		if(isDefined(self.round_spawn_failsafe_distanceSqr))		//ADDED FOR MOD
+			failsafe_distance = self.round_spawn_failsafe_distanceSqr;
+
 		//hasnt moved 24 inches in 30 seconds?	
-		if ( DistanceSquared( self.origin, prevorigin ) < 576 ) 
+		if ( DistanceSquared( self.origin, prevorigin ) < failsafe_distance ) //CHANGED FOR MOD
 		{
 			
 			//add this zombie back into the spawner queue to be re-spawned
-			if(is_true(level.put_timed_out_zombies_back_in_queue ) && !flag("dog_round"))
+
+			respawn = false;	//added for mod
+			if(isDefined(self.round_spawn_failsafe_respawn))
+				respawn = self.round_spawn_failsafe_respawn;
+			else
+				respawn = is_true(level.put_timed_out_zombies_back_in_queue) && !flag("dog_round");
+
+
+			if(respawn) //changed for mod
 			{
 				//only if they have crawled thru a window and then timed out
 				if(!self.ignoreall && !is_true(self.nuked) && !is_true(self.marked_for_death))
 				{
 					level.zombie_total++;	
+					if(self.isdog){		//added for mod
+						if(!IsDefined( level.next_dog_spawned_health ))
+							level.next_dog_spawned_health = [];
+						if(!IsDefined( level.next_dog_spawned_forced_to_run ))
+							level.next_dog_spawned_forced_to_run = [];
+						if(level.next_dog_spawned_forced_to_run)
+						level.next_dog_spawned_health[level.next_dog_spawned_health.size] = self.health;
+						level.next_dog_spawned_forced_to_run[level.next_dog_spawned_forced_to_run.size] = true;
+					}
 				}
 			}
 			
@@ -4260,7 +4283,6 @@ round_spawn_failsafe()
 			self dodamage( self.health + 100, (0,0,0) );
 			break;
 		}
-
 		prevorigin = self.origin;
 	}
 	//////////////////////////////////////////////////////////////

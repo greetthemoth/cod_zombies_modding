@@ -74,7 +74,7 @@ enable_dog_rounds()
 
 dog_spawner_init()
 {
-	dogs = getEntArray( "zombie_dog_spawner", "script_noteworthy" ); 
+	dogs = getEntArray( "zombie_dog_spawner", "script_noteworthy" );
 	later_dogs = getentarray("later_round_dog_spawners", "script_noteworthy" );
 	dogs = array_combine( dogs, later_dogs );
 	
@@ -627,10 +627,42 @@ dog_init()
 	
 	self.zombie_move_speed = "sprint";
 
-	self thread dog_run_think();
-	self thread dog_stalk_audio();
+	force_run = false; //if we want the dog to run immediatly. //added for mod
+	if(IsDefined( level.next_dog_spawned_forced_to_run )){
+		force_run = level.next_dog_spawned_forced_to_run[0];
+		array_remove_index(level.next_dog_spawned_forced_to_run, 0);
+	}
 
+	self thread dog_run_think(force_run); //function controls the fx of eyes and trail. zhc parameter bool designates if its forced to turn immediatly
+	if(force_run)
+		self thread dog_stalk_audio(); //function controls tbe audio when stalking.
+	else
+		self thread dog_force_to_run(); //waits 0.5 seconds and then turns off. //method created for mod. added for mod
+
+	if(IsDefined(level.next_dog_spawned_forced_to_run))
+		level.next_dog_spawned_forced_to_run = undefined;
+
+	if(IsDefined( level.next_dog_spawned_health )){
+		self.health = level.next_dog_spawned_health[0];
+		array_remove_index(level.next_dog_spawned_health, 0);
+	}
+
+	if( 
+		//if any of the "next dog" arrays are empty, undefines them both.
+		//these arrays are meant to be used in tandem. they are paired. when assigning one, always assign the other.
+		(IsDefined( level.next_dog_spawned_forced_to_run ) && level.next_dog_spawned_forced_to_run.size == 0) ||
+		(IsDefined( level.next_dog_spawned_health ) && level.next_dog_spawned_health.size == 0)
+	  )
+	{
+		level.next_dog_spawned_forced_to_run = undefined;
+		level.next_dog_spawned_health = undefined;
+	}
+
+	self.round_spawn_failsafe_interval = 7.5;
+	self.round_spawn_failsafe_distanceSqr = 1000;
+	self.round_spawn_failsafe_respawn = true;
 	self thread maps\_zombiemode::round_spawn_failsafe();
+
 	self hide();
 	self thread magic_bullet_shield();
 	self dog_fx_eye_glow();
@@ -948,20 +980,22 @@ special_dog_spawn( spawners, num_to_spawn )
 	return true;
 }
 
-dog_run_think()
+dog_run_think(force_run)
 {
-	self endon( "death" );
 
-	// these should go back in when the stalking stuff is put back in, the visible check will do for now
-	//self waittill_any( "dog_running", "dog_combat" );
-	//self playsound( "zdog_close" );
-	self waittill( "visible" );
-	
-	// decrease health
-	if ( self.health > level.dog_health )
-	{
-		self.maxhealth = level.dog_health;
-		self.health = level.dog_health;
+	self endon( "death" );
+	if(!is_true(force_run)){ // condition ADDED FOR MOD
+		// these should go back in when the stalking stuff is put back in, the visible check will do for now
+		//self waittill_any( "dog_running", "dog_combat" );
+		//self playsound( "zdog_close" );
+		self waittill( "visible" );
+		
+		// decrease health
+		if ( self.health > level.dog_health )
+		{
+			self.maxhealth = level.dog_health;
+			self.health = level.dog_health;
+		}
 	}
 	
 	// start glowing eyes
@@ -986,6 +1020,10 @@ dog_stalk_audio()
 		self waittill( "stalk_vox_done" );
 		wait randomfloatrange(1,4);		
 	}
+}
+dog_force_to_run(){
+	wait( 0.5 );
+	self notify("dog_combat");
 }
 
 dog_thundergun_disintegrate( player )

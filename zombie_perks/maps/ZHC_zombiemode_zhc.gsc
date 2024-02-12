@@ -1499,3 +1499,49 @@ dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end){ //if rore
 	//IPrintLnBold( "zhc_dog_round_goal_reached" );
 	self notify ("zhc_dog_round_goal_reached");
 }
+
+normalize_cost(cost){ //added for mod , this function is designed for weapon costs. might move later.
+
+	contestant_vals = [];
+	if(cost <= 400)
+	contestant_vals[contestant_vals.size] = 50;
+	if(cost <= 800)
+	contestant_vals[contestant_vals.size] = 100;s
+	if(cost % 1000 < 299 && cost <= 2500)
+	contestant_vals[contestant_vals.size] = 200;
+	if(cost <= 2000)
+	contestant_vals[contestant_vals.size] = 250;
+	if(cost <= 2000)
+	contestant_vals[contestant_vals.size] = 400;
+	if(cost <= 5000)
+	contestant_vals[contestant_vals.size] = 500;
+	if(cost <= 12000)
+	contestant_vals[contestant_vals.size] = 1000;
+	if(cost <= 15000)
+	contestant_vals[contestant_vals.size] = 2500;
+	if(cost <= 50000)
+	contestant_vals[contestant_vals.size] = 4000;
+	if(cost <= 80000)
+	contestant_vals[contestant_vals.size] = 5000;
+	contestant_vals[contestant_vals.size] = 10000;
+
+	val = contestant_vals[0];
+	closest_val = val;
+	closest_val_dist = min(cost%val,val-cost%val);
+	for( i = 0; i < contestant_vals.size; i++ ){
+		contestant_val = contestant_vals[i];
+		contestant_val_dist = min(cost%contestant_val,val-cost%contestant_val);
+		if(contestant_val_dist < closest_val_dist){
+			closest_val = contestant_val;
+			closest_val_dist = contestant_val_dist;
+		}
+	}
+	val = closest_val;
+
+	if(cost % val != 0){
+		cost = cost + val;
+		cost -= cost % val;
+	}
+	cost = int(cost);
+	return cost;
+}

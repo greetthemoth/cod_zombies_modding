@@ -65,10 +65,19 @@ add_zombie_weapon( weapon_name, upgrade_name, hint, cost, weaponVO, weaponVOresp
 	struct.vox_response = weaponVOresp;
 	struct.is_in_box = level.zombie_include_weapons[weapon_name];
 
+
 	if( !IsDefined( ammo_cost ) )
 	{
-		ammo_cost = round_up_to_ten( int( cost * 0.5 ) );
+		//ammo_cost = round_up_to_ten( int( cost * 0.5 ) );  changed for mod
+		ammo_cost = round_up_to_ten( int(  
+			(min(Cost,1500)/2) + 				//Max = 750 ammo cost (1500 cost)
+			(min(max(cost-1500,0),3000)/5) +	//Max = 1350 ammo cost (4500 cost)
+			(min(max(cost-4500,0),6000)/15) 	//Max = 1750 ammo cost (10500 cost)
+		));
+		ammo_cost = maps\ZHC_zombiemode_zhc::normalize_cost(ammo_cost);
 	}
+
+
 
 	struct.ammo_cost = ammo_cost;
 
@@ -4905,7 +4914,9 @@ weapon_spawn_think(is_chest, can_init_buy, can_upgrade, can_buy_ammo, weapon)
 		// Allow people to get ammo off the wall for upgraded weapons
 		player_has_weapon = player has_weapon_or_upgrade( weapon ); 
 
-		if( !player_has_weapon && !is_grenade)
+		if( !player_has_weapon
+		// && !is_grenade
+		)
 		{
 			// else make the weapon show and give it
 			if(can_init_buy && player.score >= cost )
@@ -5116,14 +5127,24 @@ weapon_spawn_think(is_chest, can_init_buy, can_upgrade, can_buy_ammo, weapon)
 
 				player check_collector_achievement( weapon );
 
-				if( player has_upgrade( weapon ) )
-				{
-					ammo_given = player ammo_give( level.zombie_weapons[ weapon ].upgrade_name );
+
+				//ammo_given = .... check how gernade varifies ammo given. proabbaly a clip check.
+				if(is_grenade){
+					max_nades = WeaponClipSize( weapon );
+					cur_nades = player GetWeaponAmmoClip( weapon );
+					ammo_given = cur_nades < max_nades;
+					player SetWeaponAmmoClip( weapon, max_nades );
+				}else{
+					if( player has_upgrade( weapon ) )
+					{
+						ammo_given = player ammo_give( level.zombie_weapons[ weapon ].upgrade_name );
+					}
+					else
+					{
+						ammo_given = player ammo_give( weapon ); 
+					}
 				}
-				else
-				{
-					ammo_given = player ammo_give( weapon ); 
-				}
+
 				
 				if( ammo_given )
 				{

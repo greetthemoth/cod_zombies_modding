@@ -341,9 +341,9 @@ haunt_player_think(){
 				id2 = Get_Zone_Room_ID(Get_Players_Current_Zone_Patient(self));		//contains waits
 				if(!isDefined(id2))
 					continue;
-				new_zone = (id != id2);
+				new_room = (id != id2);
 				//IPrintLn( "zone id:" + id + "   new id:" + id2 );
-				if(new_zone){
+				if(new_room){
 					zombie_doors =  GetEntArray( "zombie_door", "targetname" );
 					nearest_door = undefined;
 					nearest_dist = undefined;
@@ -786,6 +786,9 @@ normalize_door_cost(){ //added for mod
 	self.zombie_cost = int(self.zombie_cost);
 }
 
+
+
+
 //
 //	Wait to be opened!
 //	self is a door trigger
@@ -1074,7 +1077,9 @@ check_roomIDs_to_occupy(){
 				while(1){											//now we check the zone we've added
 
 					if(level.ZHC_max_doors_that_can_expire_this_round <= level.ZHC_doors_expired_this_round){
-						level waittill("between_round_over");
+						level waittill("between_round_over"); 
+						//can potentially add a notif to the waitill for "updated_max_doors_that_can_expire_this_round"
+						//or can delete the waittill so it checks every frame.
 						wait_network_frame();
 					}
 					//given how roomIDs_to_occupy is organized if this si undefined then that means the list was changed.
@@ -1281,7 +1286,7 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//	n = eight;
 	//rrs[rrs.size] = n;
 
-	r = 5;	//testo if we want cooldown to happen quickly
+	//r = 5;	//testo if we want cooldown to happen quickly
 
 	rrs[rrs.size] = 1; 						//the zone the door opens to is always on the list.	regardless of reverse	
 
@@ -1298,7 +1303,8 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//if(level.power_on)
 	//	reverse = !reverse; //this makes the moving zone go towards the player instead of away.
 
-	level.ZHC_max_doors_that_can_expire_this_round = int(max(n, (eight+1) - n ));	//the max "distance" between the rooms.
+	level.ZHC_max_doors_that_can_expire_this_round = 1;
+	//level.ZHC_max_doors_that_can_expire_this_round = int(max(n, (eight+1) - n ));	//the max "distance" between the rooms.
 
 	s = "";
 
