@@ -1506,7 +1506,7 @@ normalize_cost(cost){ //added for mod , this function is designed for weapon cos
 	if(cost <= 400)
 	contestant_vals[contestant_vals.size] = 50;
 	if(cost <= 800)
-	contestant_vals[contestant_vals.size] = 100;s
+	contestant_vals[contestant_vals.size] = 100;
 	if(cost % 1000 < 299 && cost <= 2500)
 	contestant_vals[contestant_vals.size] = 200;
 	if(cost <= 2000)
@@ -1530,7 +1530,7 @@ normalize_cost(cost){ //added for mod , this function is designed for weapon cos
 	closest_val_dist = min(cost%val,val-cost%val);
 	for( i = 0; i < contestant_vals.size; i++ ){
 		contestant_val = contestant_vals[i];
-		contestant_val_dist = min(cost%contestant_val,val-cost%contestant_val);
+		contestant_val_dist = min(cost%contestant_val,contestant_val-cost%contestant_val);
 		if(contestant_val_dist < closest_val_dist){
 			closest_val = contestant_val;
 			closest_val_dist = contestant_val_dist;

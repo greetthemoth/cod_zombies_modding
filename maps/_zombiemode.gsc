@@ -4220,7 +4220,7 @@ round_spawn_failsafe()
 		if(!isDefined(self.round_spawn_failsafe_interval))	//condition and var ADDED FOR MOD
 			wait( 30 );
 		else
-			wait (self.round_spawn_failsafe_interval)
+			wait (self.round_spawn_failsafe_interval);
 
 		//if i've torn a board down in the last 8 seconds, just 
 		//wait 30 again.
@@ -4269,7 +4269,6 @@ round_spawn_failsafe()
 							level.next_dog_spawned_health = [];
 						if(!IsDefined( level.next_dog_spawned_forced_to_run ))
 							level.next_dog_spawned_forced_to_run = [];
-						if(level.next_dog_spawned_forced_to_run)
 						level.next_dog_spawned_health[level.next_dog_spawned_health.size] = self.health;
 						level.next_dog_spawned_forced_to_run[level.next_dog_spawned_forced_to_run.size] = true;
 					}

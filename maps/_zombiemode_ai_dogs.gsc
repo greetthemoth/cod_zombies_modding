@@ -633,6 +633,8 @@ dog_init()
 		array_remove_index(level.next_dog_spawned_forced_to_run, 0);
 	}
 
+
+
 	self thread dog_run_think(force_run); //function controls the fx of eyes and trail. zhc parameter bool designates if its forced to turn immediatly
 	if(force_run)
 		self thread dog_stalk_audio(); //function controls tbe audio when stalking.
@@ -665,7 +667,8 @@ dog_init()
 
 	self hide();
 	self thread magic_bullet_shield();
-	self dog_fx_eye_glow();
+
+	self dog_fx_eye_glow();	//moved for mod
 	self dog_fx_trail();
 
 	self thread dog_death();
@@ -996,7 +999,8 @@ dog_run_think(force_run)
 			self.maxhealth = level.dog_health;
 			self.health = level.dog_health;
 		}
-	}
+	}else
+		wait_network_frame(); //so self.fx_dog_eye & trail is assigned
 	
 	// start glowing eyes
 	assert( IsDefined( self.fx_dog_eye ) );
