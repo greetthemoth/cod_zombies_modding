@@ -31,13 +31,10 @@ init()
 	level.QUICKREVIVE_INCREASED_REGEN = false;
 	level.QUICKREVIVE_SOLO_COST_SOLO_ON = true;
 
-	level.PERK_LEVELS = true;
-		level.PERK_LEVEL_LIMIT = 1;
-		if(level.ZHC_TESTING_LEVEL >= 3)
-			level.PERK_LEVEL_LIMIT = 10;
-		level.ZHC_PERK_LEVELS_BUYABLE = true;
-		level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER = true;
-		level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER_SYSTEMATIZED = false; //testo  	Makes it so all player must have cur perk level in order to buy next perk level.
+	level.DOUBLETAP_INCREASE_CLIP_SIZE = true;
+	level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE = false;
+
+	ZHC_zombiemode_zhc/maps::set_perk_levels_info();
 
 	level.MUST_POWER_PERKS = true;
 	if(level.ZHC_TESTING_LEVEL > 1)
@@ -275,10 +272,16 @@ CanAddPerkLevel(perk){
 		//IPrintLn( "out of slots" );
 		return false;
 	}
+
 	//no_perk_level = perk == "specialty_marathon" || perk == "specialty_fastreload" ;
 	//if(no_perk_level)
 	//	return false;
 	cur = self GetPerkLevel(perk);
+
+	if(level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && cur >= 1){
+		if(!isDefined(self.ZHC_excess_perk_level_num) || self.ZHC_excess_perk_level_num >= level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER)
+			return false;
+	}
 
 
 	curlimit = level.PERK_LEVEL_LIMIT;
@@ -294,12 +297,20 @@ CanAddPerkLevel(perk){
 		hardlimit = 3;
 	}
 	else if(perk == "specialty_rof"){
-		hardlimit = 10;
+		if(level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE)
+			hardlimit = 10;
+		else
+			hardlimit = 1;
 	}
 	else if(perk == "specialty_flakjacket"){
-		hardlimit = 5;
-		curlimit /= 3;
+		if(level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE){
+			hardlimit = 5;
+			curlimit /= 3;
+		}
+		else
+			hardlimit = 1;
 	}
+
 	limit = min(hardlimit, max(1,curlimit) );
 	if(cur >= limit){
 		//IPrintLn( "max level" );
@@ -369,6 +380,12 @@ AddPerkLevel( specialty )
 	}
 	self.num_perks++;
 	self.perk_level_array[specialty]++;
+
+	if(level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && self.perk_level_array[specialty] > 1){
+		if(!isDefined(self.ZHC_excess_perk_level_num))
+			self.ZHC_excess_perk_level_num = 0;
+		self.ZHC_excess_perk_level_num ++;
+	}
 }
 
 RemovePerkLevel( specialty )
@@ -381,6 +398,8 @@ RemovePerkLevel( specialty )
 
 	self.num_perks--;
 	self.perk_level_array[specialty]--;
+	if(level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && self.perk_level_array[specialty] >= 1)
+		self.ZHC_excess_perk_level_num--;
 }
 
 RemoveALLPerkLevel( specialty )
@@ -390,8 +409,11 @@ RemoveALLPerkLevel( specialty )
 
 	if(!isdefined(self.perk_level_array[specialty]) || self.perk_level_array[specialty] == 0)
 		return;
-	self.num_perks -= GetPerkLevel(specialty);
+	total_levels_lost = GetPerkLevel(specialty);
+	self.num_perks -= total_levels_lost
 	self.perk_level_array[specialty] = 0;
+	if(level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && self.perk_level_array[specialty] >= 1)
+		self.ZHC_excess_perk_level_num -= total_levels_lost;
 }
 
 CreateCustomPerk( specialty )
@@ -1486,6 +1508,7 @@ give_perk( perk, bought )
 	if(level.PERK_LEVELS)
 		lvl = GetPerkLevel(perk);
 
+
 	if(!level.PERK_LEVELS|| lvl == 0){
 		if(IsCustomPerk(perk))
 			self SetCustomPerk( perk );
@@ -1494,15 +1517,15 @@ give_perk( perk, bought )
 	}
 
 
-
 	if(level.PERK_LEVELS)
  		self AddPerkLevel(perk);
  	else
  		self.num_perks++;
 
  	new_lvl = 1;
- 	if(level.PERK_LEVELS)
+ 	if(level.PERK_LEVELS){
  		new_lvl = self GetPerkLevel(perk);
+ 	}
 
 	if ( is_true( bought ) )
 	{
@@ -1516,6 +1539,12 @@ give_perk( perk, bought )
 		self notify( "perk_bought", perk );
 	}else{
 		self notify( "perk_gained", perk );
+	}
+
+	if(level.MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
+		for(i = 0; i < self.ZHC_weapon_names.size; i++){
+			self maps\ZHC_zombiemode_zhc::update_max_ammo(self.ZHC_weapon_names[i], i);
+		}
 	}
 
 	if(perk == "specialty_armorvest" 
@@ -1845,6 +1874,17 @@ solo_quick_revive_set_hintstring(){     //unused
 	}
 }
 
+is_perma_perk(perk){
+	if(!IsDefined( level.perma_perks )){
+		level.perma_perks = [];
+		level.perma_perks["specialty_knifeescape"] = true;
+		level.perma_perks["specialty_killbulletload"] = true;
+	}
+	if(isdefined(self.perma_perks) && isdefined(self.perma_perks[perk]))
+		return true;
+	if(isdefined(level.perma_perks) && isdefined(level.perma_perks[perk]))
+		return true;
+}
 
 perk_think( perk, recall_checked)
 {
@@ -1883,6 +1923,7 @@ perk_think( perk, recall_checked)
 	if( flag( "solo_game" ) && perk == "specialty_quickrevive")
 	{
 		do_retain = false;
+		wait_network_frame( ); //wait for other perks to run first
 	}
 	//else{
 		//wait_network_frame();
@@ -1890,7 +1931,7 @@ perk_think( perk, recall_checked)
 	//}
  	s = "RETAINED "+result+ ":  "+perk+":  ((retain = "+ is_true(self._retain_perks_once)+"))   lvl:"+lvl;
 
-	if(result != perk_str && do_retain && (is_true(self._retain_perks) || is_true(self._retain_perks_once)) )
+	if(result != perk_str && do_retain && (is_true(self._retain_perks) || is_true(self._retain_perks_once) || is_perma_perk(perk)) )
 	{
 		//IPrintLn( s );
 		self thread perk_think(perk);
@@ -1936,7 +1977,9 @@ perk_think( perk, recall_checked)
 				}
 				if(new_lvl < 2)
 					self.QUICKREVIVE_INCREASED_REGEN = false;
-				if (new_lvl < 3){
+				if (new_lvl < 3 && 
+					result == perk_str //condition added because removal already happens through watch_for_respawn() and it may interfere with perks being processed simultaniously
+					){
 					self._retain_perks_once = false;
 					self notify("end_retain_perks_once");
 				}
@@ -1963,6 +2006,13 @@ perk_think( perk, recall_checked)
 		case "specialty_deadshot_upgrade":		
 			if(remove_perk)
 				self ClearClientFlag(level._ZOMBIE_PLAYER_FLAG_DEADSHOT_PERK);
+			break;
+		case "specialty_rof":
+			if(level.MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
+				for(i = 0; i < self.ZHC_weapon_names.size; i++){
+					self maps\ZHC_zombiemode_zhc::update_max_ammo(self.ZHC_weapon_names[i], i);
+				}
+			}
 			break;
 	}
 
@@ -2653,7 +2703,6 @@ chamberfill_func(player,mod,weap,isKill)
 bucha_func(player, mod, amount ,weap,hit_location,isKill)
 {
 	if((player HasThePerk("specialty_knifeescape")) && ( mod == "MOD_MELEE" || mod == "MOD_BAYONET")) {
-
 		maxHp = self.maxhealth;
 		hp = self.health;
 		additionalamount = 0;

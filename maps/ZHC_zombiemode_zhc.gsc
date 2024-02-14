@@ -78,6 +78,52 @@ testing_ground(){
 	//thread haunt_all_players();
 }
 
+set_perk_levels_info(){
+	level.PERK_LEVELS = true;
+	if(level.PERK_LEVELS){
+		level.PERK_LEVEL_LIMIT = 99;
+		level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER = 0; //limit number of perks the player can have above level 1.
+		level.ZHC_PERK_LEVELS_BUYABLE = true;
+		level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER = true;
+		level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER_SYSTEMATIZED = false; //testo  	Makes it so all player must have cur perk level in order to buy next perk level.
+	
+		if(level.PERK_LEVEL_LIMIT < 10 && level.ZHC_TESTING_LEVEL >= 3)
+			level.PERK_LEVEL_LIMIT = 10;
+	}
+}
+
+dog_round_counter(){
+
+	if(!isDefined(level.PERK_LEVELS))
+		set_perk_levels_info();
+
+	GAIN_PERK_SLOTS_AFTER_DOG_ROUND = true;
+	if(level.PERK_LEVELS){
+		INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND = level.PERK_LEVEL_LIMIT < 99;
+		INCREASE_EXCESS_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND = level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER >= 0;
+	}
+
+	//TURN_ON_PERK_AFTER_DOG_ROUND = true;
+
+	while(1){
+		while(1){
+			level waittill( "end_of_round" );
+			if(level.ZHC_TESTING_LEVEL >= 4 || flag("dog_round"))
+				break;
+		}
+		//dog round happened
+		
+		level notify ("zhc_dog_round_over");
+		if(GAIN_PERK_SLOTS_AFTER_DOG_ROUND)
+			gain_perk_slot_all_players();
+		if(level.PERK_LEVELS && INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND && PERK_LEVEL_LIMIT < 99)
+			level.PERK_LEVEL_LIMIT++;
+		if(level.PERK_LEVELS && INCREASE_EXCESS_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND && ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER < 99)
+			level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER++;
+
+	}
+}
+
 //called from maps\_zombiemode.gsc line 5122.
 kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	//damage is nagative based on damage.
 	//IPrintLn( damage + " damage to inflictor with " + self.health + " hp."); 
@@ -192,15 +238,10 @@ zombie_damage( mod, hit_location, hit_origin, player, amount, weapon ){
 		)
 		return 0;
 
-	//if(
+	if(level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE){
 		additional_amount+= self maps\_zombiemode_perks::double_tap_2_func(mod, hit_location, player, new_amount);
-		//)
-		//return false;
-	//if(
 		additional_amount += self maps\_zombiemode_perks::phd_flopper_2_func(mod, hit_location, player, new_amount);
-		//)
-		//return false;
-	//iprintln("ad_"+additional_amount);
+	}
 	
 	return additional_amount + amount;
 
@@ -232,18 +273,30 @@ GetDamageOverride(mod, hit_location, player, amount, weapon){ //damage to add
 
 	weapon_name = weapon_name_check(weapon);
 	mult = GetBalancingMult(weapon_name,mod);
-	id = player.ZHC_weapons[weapon_name];
+	//because melee currently doenst have upgrades. melee attacks derive damage upgrades from ballistic knives. 
+	if((mod == "MOD_MELEE"  || mod == "MOD_BAYONET") && weapon_name != "knife_ballistic_upgraded_zm")	//exclude melee attacks preformed with upgraded ballistic knife that may potentially have more damage.
+		mult *= get_weapon_upgrade_damage_mult("knife_ballistic_zm");
 
-	if(!isDefined(id))
-		return  (mult-1)*amount;;
+	//because gerandes currently doenst have upgrades. gernades derive damage upgrades from explosive weapons. 
+	else(mod == "MOD_GRENADE_SPLASH" && weapon_name == "frag_grenade_zm")
+		mult *= get_weapon_upgrade_damage_mult("china_lake_zm") + 
+				get_weapon_upgrade_damage_mult("m72_law_zm") +
+				get_weapon_upgrade_damage_mult("crossbow_explosive_zm");
 
-	//if(hit_location == "head"){
-	//	mult = level.ZHC_weapon_damage_mult_headshot[id];
-	//}else{
-	mult *= player.ZHC_weapon_damage_mult[id];
-	//}
-
+	else {
+		//if(hit_location == "head"){
+		//	mult *= level.ZHC_weapon_damage_mult_headshot[id];
+		//else
+			mult *= get_weapon_upgrade_damage_mult(weapon_name);
+	}
 	return (mult-1)*amount;
+}
+
+get_weapon_upgrade_damage_mult(weapon_name){
+	id = player.ZHC_weapons[weapon_name];
+	if(!isDefined(id))
+		return 1;
+	return player.ZHC_weapon_damage_mult[id];
 }
 
 GetBalancingMult(weapon_name,mod){
@@ -257,7 +310,7 @@ GetBalancingMult(weapon_name,mod){
 		case"spas_zm":
 			return 2.3;
 		default:
-			if(weapon_name!="knife_zm" && mod == "MOD_MELEE") //ll buyable melee weapons nerfed
+			if(weapon_name!="knife_zm" && (mod == "MOD_MELEE"  || mod == "MOD_BAYONET") //all buyable melee weapons nerfed
 				return 0.4;
 			return 1;
 	}
@@ -420,7 +473,7 @@ update_max_ammo(weapon_name, id){
 	{
 
 		clipSize = clip;
-		if(!maps\_zombiemode_weapons::weapon_is_dual_wield(self.ZHC_weapon_names[id])) //because dual wield weapons are buggy when adjusting the clip of the second weapon.
+		if(!maps\_zombiemode_weapons::weapon_is_dual_wield(self.ZHC_weapon_names[id]) || !(level.DOUBLETAP_INCREASE_CLIP_SIZE && self HasPerk( "specialty_rof" ))) //because dual wield weapons are buggy when adjusting the clip of the second weapon.
 		{
 
 			clipPercent = (2+weapon_level_clip_ammo)/6;
@@ -734,6 +787,8 @@ upgrade_stock_ammo(weapon_name){
 }
 
 upgrade_clip_size(weapon_name){
+	if(level.DOUBLETAP_INCREASE_CLIP_SIZE)
+		return;
 	if(!level.MAX_AMMO_SYSTEM)
 		return;
 	og_weapon_name = weapon_name;
@@ -775,31 +830,6 @@ manage_player_ammo(){
 			self check_weapon_ammo(player_weapons[i],weapon_name);
 		}
 		wait .05;
-	}
-}
-
-dog_round_counter(){
-
-	GAIN_PERK_SLOTS_AFTER_DOG_ROUND = true;
-	INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND = true;
-
-	//TURN_ON_PERK_AFTER_DOG_ROUND = true;
-
-	while(1){
-		while(1){
-			level waittill( "end_of_round" );
-			if(level.ZHC_TESTING_LEVEL >= 4 || flag("dog_round"))
-				break;
-		}
-		//dog round happened
-		
-		level notify ("zhc_dog_round_over");
-		if(GAIN_PERK_SLOTS_AFTER_DOG_ROUND)
-			gain_perk_slot_all_players();
-		if(INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND)
-			level.PERK_LEVEL_LIMIT++;
-
-
 	}
 }
 

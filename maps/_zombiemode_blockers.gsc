@@ -1323,7 +1323,7 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	for(z = 0; z < level.zones.size; z++){
 		//n = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), level.power_on);
 		n = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), false);
-		if(!IsDefined( n ))
+		if(!IsDefined( n ) || n >= 100)
 			continue;
 		/*nn = n;			//nn turns
 		if(reverse){
@@ -1403,16 +1403,93 @@ get_door_id(){
 	return self.door_id;
 }
 init_door_ids(){
-	zombie_doors = GetEntArray( "zombie_door", "targetname" );
-		//level.ZHC_zombie_doors = zombie_doors;
+	zombie_doors = GetEntArray( "zombie_door", "targetname" );	//level.ZHC_zombie_doors = zombie_doors;
 	for( i = 0; i < zombie_doors.size; i++ )
 	{
 		zombie_doors[i].door_id = i;
 	}
 }
 
+player_is_in_closed_off_room(){ //use after "zone_info_updated"
+	room_id = Get_Zone_Room_ID(self.current_zone);
+	return room_is_closed_in(room_id);
+}
+close_off_player_room(){ //use after "zone_info_updated"
+	room_id = Get_Zone_Room_ID(self.current_zone);
+	return close_in_room(room_id);
+}
+room_is_closed_off(room_id){
+	doors = Get_Doors_Accesible_in_room(room_id);
+	for( i = 0; i < doors.size; i++ ){
+		if(doors[i]._door_open)
+			return false;
+	}
+	return true;
+}
+close_off_room(room_id){
+	doors = Get_Doors_Accesible_in_room(room_id);
+	for( i = 0; i < doors.size; i++ ){
+		if(doors[i]._door_open)
+			doors[i] notify ("close_door");
+	}
+}
+
 
 //Kino Der Toten theater specific fuctions
+Get_Doors_Accesible_in_room(room_id){
+	doors = [];
+	switch(room_id) 
+	{
+		case 0: //foyer
+			doors[doors.size] = 2;
+			doors[doors.size] = 11;
+			doors[doors.size] = 6;
+			if(flag("curtains_done"))
+				doors[doors.size] = 6;
+	    case 1: // vip_zone
+	        doors[doors.size] = 2;
+	        doors[doors.size] = 3;
+	        doors[doors.size] = 4;
+	        break;
+	    case 2: // dining_zone
+	        doors[doors.size] = 3;
+	        doors[doors.size] = 4;
+	        doors[doors.size] = 7;
+	        break;
+	    case 3: // dressing_zone
+	        doors[doors.size] = 7;
+	        doors[doors.size] = 5;
+	        break;
+	    case 4: // stage_zone
+	        doors[doors.size] = 5;
+	        doors[doors.size] = 1;
+	        doors[doors.size] = 0;
+	        break;
+	    case 5: // west_balcony_zone
+	        doors[doors.size] = 1;
+	        doors[doors.size] = 0;
+	        doors[doors.size] = 8;
+	        break;
+	    case 6: // alleyway_zone
+	        doors[doors.size] = 8;
+	        doors[doors.size] = 10;
+	        break;
+	    case 7: // crematorium_zone
+	        doors[doors.size] = 10;
+	        doors[doors.size] = 11;
+	        break;
+	    case 100:
+	    	 doors[doors.size] = 6;
+	    	 if(flag("curtains_done")){
+	    	 	doors[doors.size] = 2;
+				doors[doors.size] = 11;
+				doors[doors.size] = 6;
+	        }
+	    default:
+	        break;
+	    return doors;
+	}
+}
 Get_Other_Zone(opened_from, door){
 
 	a = undefined;
@@ -1442,7 +1519,10 @@ Get_Other_Zone(opened_from, door){
 		b = "crematorium_zone";
 	} else if(i == 11){
 		a = "crematorium_zone";
-		b = "foyer2_zone";
+		b = "foyer_zone";
+	}else if(i == 6)
+		a = "theater_zone";
+		b = "foyer_zone"
 	}
 
 	if(opened_from == a)
@@ -1467,7 +1547,7 @@ Get_Zone_Room_ID(zone_name){
 	else if(zone_name == "stage_zone" )
 			return 4;
 	else if(zone_name == "theater_zone")
-			return undefined;
+			return 100;
 	else if(zone_name == "west_balcony_zone")
 			return 5;
 	else if(zone_name == "alleyway_zone")
