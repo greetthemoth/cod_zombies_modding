@@ -13,6 +13,9 @@ get_testing_level(){
 
 init(){
 
+	level.DOG_LIGHTNING_TURN_ON_PERK = true;
+	level.DOG_ROUND_LAST_DOG_TURN_ON_PERK = false;
+
 	//level.ZHC_TESTING_LEVEL = 0; //use the function above
 	level.MAX_AMMO_SYSTEM = true;
 	level.MAX_AMMO_SYSTEM_EQUIPMENT = false;
@@ -68,6 +71,7 @@ testing_ground(){
 
 
 
+
 	/*while(1){
 		wait(1);
 		maps\_zombiemode_blockers::Get_Players_Current_Zone_Bruteforce( players[0] );
@@ -94,13 +98,22 @@ set_perk_levels_info(){
 
 dog_round_counter(){
 
-	if(!isDefined(level.PERK_LEVELS))
-		set_perk_levels_info();
+//	wait_network_frame( ); //wait for vars to be set
+//	if(!isDefined(level.PERK_LEVELS)){
+//		set_perk_levels_info();
+//	}
 
 	GAIN_PERK_SLOTS_AFTER_DOG_ROUND = true;
+
+	GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS = -1;
+	dog_rounds_till_cost_forgiveness = -1;
+	//if(!level.QUICKREVIVE_LIMIT_LIVES && level.QUICKREVIVE_SOLO_COST_SOLO_ON && get_players().size == 1){
+		GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS = 1;
+		dog_rounds_till_cost_forgiveness = 1;
+	//}
 	if(level.PERK_LEVELS){
-		INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND = level.PERK_LEVEL_LIMIT < 99;
-		INCREASE_EXCESS_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND = level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER >= 0;
+		level.INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND = level.PERK_LEVEL_LIMIT < 99;
+		level.INCREASE_EXCESS_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND = level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER >= 0;
 	}
 
 	//TURN_ON_PERK_AFTER_DOG_ROUND = true;
@@ -116,9 +129,45 @@ dog_round_counter(){
 		level notify ("zhc_dog_round_over");
 		if(GAIN_PERK_SLOTS_AFTER_DOG_ROUND)
 			gain_perk_slot_all_players();
-		if(level.PERK_LEVELS && INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND && PERK_LEVEL_LIMIT < 99)
+
+		/*if(IsDefined( level.ZHC_quickrevive_cost_forgiveness ))
+			IPrintLnBold( "QR forgiveness "+level.ZHC_quickrevive_cost_forgiveness );
+		else
+			IPrintLnBold( "QR forgiveness not defined");*/
+
+		if(	!level.QUICKREVIVE_LIMIT_LIVES &&
+			GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS > 0){
+			dog_rounds_till_cost_forgiveness--;
+			if(dog_rounds_till_cost_forgiveness <= 0){
+				if(!IsDefined( level.ZHC_quickrevive_cost_forgiveness ))
+					level.ZHC_quickrevive_cost_forgiveness = 0;
+
+				starting_forgiveness = level.ZHC_quickrevive_cost_forgiveness;
+
+				level.ZHC_quickrevive_cost_forgiveness = min(level.solo_lives_given, level.ZHC_quickrevive_cost_forgiveness+1);	//reduces the price increase of quickrevive by one level.
+				new_price_level = max(0,level.solo_lives_given - level.ZHC_quickrevive_cost_forgiveness); //0 = 500, 1 = 1500, ect
+				if(new_price_level < get_players()[0] maps\_zombiemode_perks::GetPerkLevel("specialty_quickrevive") &&
+				 level.ZHC_quickrevive_cost_forgiveness > starting_forgiveness )	//probably not needed but just to be sure
+					level.ZHC_quickrevive_cost_forgiveness-=1;
+
+				//IPrintLnBold( "QR forgiveness "+level.ZHC_quickrevive_cost_forgiveness );
+
+				//GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS++; //forgivness become rarer as rounds progress.	//moved
+				//dog_rounds_till_cost_forgiveness = GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS;
+
+				if(starting_forgiveness != level.ZHC_quickrevive_cost_forgiveness){							//ig player benefit from forgivenes
+					level.zombie_perks["specialty_quickrevive"] notify ("update_perk_hintstrings");
+					GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS++; //forgivness become rarer as rounds progress. //only happens after the player benefits from forgivenes
+					dog_rounds_till_cost_forgiveness = GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS;
+					IPrintLnBold( "Down Forgiveness. Quickrevive has been made cheaper." );
+				}else{
+					dog_rounds_till_cost_forgiveness = 1;	//if the player didnt benefit from forgiveness, forgive the next round
+				}
+			}
+		}
+		if(level.PERK_LEVELS && level.INCREASE_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND && level.PERK_LEVEL_LIMIT < 99)
 			level.PERK_LEVEL_LIMIT++;
-		if(level.PERK_LEVELS && INCREASE_EXCESS_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND && ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER < 99)
+		if(level.PERK_LEVELS && level.INCREASE_EXCESS_PERK_LEVEL_LIMIT_AFTER_DOG_ROUND && level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER < 99)
 			level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER++;
 
 	}
@@ -238,7 +287,7 @@ zombie_damage( mod, hit_location, hit_origin, player, amount, weapon ){
 		)
 		return 0;
 
-	if(level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE){
+	if(level.DOUBLETAP_PHDFLOPPER_INCREASE_DAMAGE){
 		additional_amount+= self maps\_zombiemode_perks::double_tap_2_func(mod, hit_location, player, new_amount);
 		additional_amount += self maps\_zombiemode_perks::phd_flopper_2_func(mod, hit_location, player, new_amount);
 	}
@@ -275,28 +324,28 @@ GetDamageOverride(mod, hit_location, player, amount, weapon){ //damage to add
 	mult = GetBalancingMult(weapon_name,mod);
 	//because melee currently doenst have upgrades. melee attacks derive damage upgrades from ballistic knives. 
 	if((mod == "MOD_MELEE"  || mod == "MOD_BAYONET") && weapon_name != "knife_ballistic_upgraded_zm")	//exclude melee attacks preformed with upgraded ballistic knife that may potentially have more damage.
-		mult *= get_weapon_upgrade_damage_mult("knife_ballistic_zm");
+		mult *= player get_weapon_upgrade_damage_mult("knife_ballistic_zm");
 
 	//because gerandes currently doenst have upgrades. gernades derive damage upgrades from explosive weapons. 
-	else(mod == "MOD_GRENADE_SPLASH" && weapon_name == "frag_grenade_zm")
-		mult *= get_weapon_upgrade_damage_mult("china_lake_zm") + 
-				get_weapon_upgrade_damage_mult("m72_law_zm") +
-				get_weapon_upgrade_damage_mult("crossbow_explosive_zm");
+	else if(mod == "MOD_GRENADE_SPLASH" && weapon_name == "frag_grenade_zm")
+		mult *= player get_weapon_upgrade_damage_mult("china_lake_zm") + 
+				player get_weapon_upgrade_damage_mult("m72_law_zm") +
+				player get_weapon_upgrade_damage_mult("crossbow_explosive_zm");
 
 	else {
 		//if(hit_location == "head"){
 		//	mult *= level.ZHC_weapon_damage_mult_headshot[id];
 		//else
-			mult *= get_weapon_upgrade_damage_mult(weapon_name);
+			mult *= player get_weapon_upgrade_damage_mult(weapon_name);
 	}
 	return (mult-1)*amount;
 }
 
 get_weapon_upgrade_damage_mult(weapon_name){
-	id = player.ZHC_weapons[weapon_name];
+	id = self.ZHC_weapons[weapon_name];
 	if(!isDefined(id))
 		return 1;
-	return player.ZHC_weapon_damage_mult[id];
+	return self.ZHC_weapon_damage_mult[id];
 }
 
 GetBalancingMult(weapon_name,mod){
@@ -310,7 +359,7 @@ GetBalancingMult(weapon_name,mod){
 		case"spas_zm":
 			return 2.3;
 		default:
-			if(weapon_name!="knife_zm" && (mod == "MOD_MELEE"  || mod == "MOD_BAYONET") //all buyable melee weapons nerfed
+			if(weapon_name!="knife_zm" && (mod == "MOD_MELEE"  || mod == "MOD_BAYONET")) //all buyable melee weapons nerfed
 				return 0.4;
 			return 1;
 	}
@@ -331,10 +380,7 @@ set_up_weapon_system(){
 
 haunt_all_players(){
 	flag_wait( "all_players_connected" );
-	players = get_players();
-	for ( i = 0; i < players.size; i++ ){
-		players[i] maps\_zombiemode_blockers::haunt_player(20);
-	}
+	maps\_zombiemode_blockers::haunt_all_players(20);
 }
 drop_powerups_on_players(){
 	flag_wait( "all_players_connected" );
@@ -473,7 +519,7 @@ update_max_ammo(weapon_name, id){
 	{
 
 		clipSize = clip;
-		if(!maps\_zombiemode_weapons::weapon_is_dual_wield(self.ZHC_weapon_names[id]) || !(level.DOUBLETAP_INCREASE_CLIP_SIZE && self HasPerk( "specialty_rof" ))) //because dual wield weapons are buggy when adjusting the clip of the second weapon.
+		if(!maps\_zombiemode_weapons::weapon_is_dual_wield(self.ZHC_weapon_names[id]) && !(level.DOUBLETAP_INCREASE_CLIP_SIZE && self maps\_zombiemode_perks::HasThePerk( "specialty_rof" ))) //because dual wield weapons are buggy when adjusting the clip of the second weapon.
 		{
 
 			clipPercent = (2+weapon_level_clip_ammo)/6;

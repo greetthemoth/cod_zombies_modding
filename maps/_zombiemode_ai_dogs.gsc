@@ -155,6 +155,8 @@ dog_round_spawning()
  	}
  #/		
 
+ 	//max = 1; //testo
+
 	level.zombie_total = max;
 	level.zombie_total_start = level.zombie_total;
 	dog_health_increase();
@@ -163,16 +165,24 @@ dog_round_spawning()
 
 	//count = 0; 
 	//while( count < max )
-	while( level.zombie_total > 0 )
+	while( 1 )
 	{
-		num_player_valid = get_number_of_valid_players();
-		
-		enemy_count = get_enemy_count();
-		while(enemy_count  >= (num_player_valid * (2 + maps\ZHC_zombiemode_zhc::ZHC_get_dog_max_add())) )		//ZHC CHANGED FOR MOD
-		{
-			wait( 2 );
-			num_player_valid = get_number_of_valid_players();
+		enemy_count = 0;
+		dog_limit = 0;
+		num_player_valid = 0;
+
+		while(1){
+
 			enemy_count = get_enemy_count();
+			if( level.zombie_total <= 0 && enemy_count == 0)
+				return;
+
+			num_player_valid = get_number_of_valid_players();
+			dog_limit = num_player_valid * (2 + maps\ZHC_zombiemode_zhc::ZHC_get_dog_max_add());
+
+			if (enemy_count  < dog_limit && level.zombie_total > 0)		//ZHC CHANGED FOR MOD
+				break;
+			wait( 0.1 );
 		}
 		
 		//update the player array.
@@ -209,15 +219,9 @@ dog_round_spawning()
 
 			}
 		}
-		
-		waiting_for_next_dog_spawn( max - level.zombie_total, max , enemy_count, num_player_valid ); 			//ZHC CHANGED FOR MOD
+		if(level.zombie_total > 0)
+			waiting_for_next_dog_spawn( max - level.zombie_total, max , enemy_count, num_player_valid ); 			//ZHC CHANGED FOR MOD
 	}
-
-
-
-
-	
-
 }
 waiting_for_next_dog_spawn( count, max, enemy_count, num_player_valid)					//ZHC CHANGED FOR MOD
 {
@@ -284,7 +288,7 @@ dog_round_aftermath()
 }
 
 dog_round_reward(){
-	if(!level maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(level.last_dog_origin, 200, 12))
+	if(!is_true(level.DOG_ROUND_LAST_DOG_TURN_ON_PERK) || !level maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(level.last_dog_origin, 200, 12))
 		level thread maps\_zombiemode_powerups::specific_powerup_drop( "full_ammo", level.last_dog_origin );		
 		//level thread maps\_zombiemode_powerups::specific_powerup_drop( "free_perk", power_up_origin );
 }
@@ -467,7 +471,7 @@ dog_round_tracker()
 	// PI_CHANGE_BEGIN - JMA - making dog rounds random between round 5 thru 7
 	// NOTE:  RandomIntRange returns a random integer r, where min <= r < max
 	level.next_dog_round = randomintrange( 5, 8 );	
-	level.next_dog_round = 1; //testo
+	//level.next_dog_round = 1; //testo
 	// PI_CHANGE_END
 	
 	flag_wait( "begin_spawning" );	//added for mod . wait for round functions to be set.
@@ -479,14 +483,13 @@ dog_round_tracker()
 	while ( 1 )
 	{
 		//level waittill ( "between_round_over" );	//moved for mod TOv
-
 		/#
 			if( GetDvarInt( #"force_dogs" ) > 0 )
 			{
 				level.next_dog_round = level.round_number; 
 			}
 		#/
-
+		//level.next_dog_round = level.round_number;  //testo
 		if ( level.round_number == level.next_dog_round )
 		{
 			level.music_round_override = true;
@@ -641,7 +644,8 @@ dog_init()
 		array_remove_index(level.next_dog_spawned_forced_to_run, 0);
 	}
 
-
+	if(is_true(level.DOG_LIGHTNING_TURN_ON_PERK))
+		level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 200, 5); //added for mod
 
 	self thread dog_run_think(force_run); //function controls the fx of eyes and trail. zhc parameter bool designates if its forced to turn immediatly
 	if(force_run)
@@ -745,6 +749,7 @@ dog_death()
 
 		level.last_dog_origin = self.origin;
 		level notify( "last_dog_down" );
+		IPrintLn( "last dog down" );
 
 	}
 	level notify("dog_killed");				//added for mod
@@ -1033,9 +1038,10 @@ dog_stalk_audio()
 		wait randomfloatrange(1,4);		
 	}
 }
-dog_force_to_run(){
-	wait( 0.5 );
-	self notify("dog_combat");
+dog_force_to_run(){	//NEITHER WORKS;
+	//wait( 1.5 );
+	//self notify( "dog_combat"  );
+	//self notify( "dog_running" );
 }
 
 dog_thundergun_disintegrate( player )

@@ -32,9 +32,9 @@ init()
 	level.QUICKREVIVE_SOLO_COST_SOLO_ON = true;
 
 	level.DOUBLETAP_INCREASE_CLIP_SIZE = true;
-	level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE = false;
+	level.DOUBLETAP_PHDFLOPPER_INCREASE_DAMAGE = false;
 
-	ZHC_zombiemode_zhc/maps::set_perk_levels_info();
+	maps\ZHC_zombiemode_zhc::set_perk_levels_info();
 
 	level.MUST_POWER_PERKS = true;
 	if(level.ZHC_TESTING_LEVEL > 1)
@@ -266,10 +266,14 @@ HasThePerk( perk )
 	}
 	return p;
 }
-
+define_or(s,or){
+	if(IsDefined( s ))
+		return s;
+	return or;
+}
 CanAddPerkLevel(perk){
 	if(self.num_perks >= level.perk_limit+self.perk_slots){
-		//IPrintLn( "out of slots" );
+		//IPrintLn( "out of slots" + self.num_perks +">="+ level.perk_limit + self.perk_slots);
 		return false;
 	}
 
@@ -279,8 +283,11 @@ CanAddPerkLevel(perk){
 	cur = self GetPerkLevel(perk);
 
 	if(level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && cur >= 1){
-		if(!isDefined(self.ZHC_excess_perk_level_num) || self.ZHC_excess_perk_level_num >= level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER)
+		if(	(!isDefined(self.ZHC_excess_perk_level_num) && level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER == 0) || 
+			(isDefined(self.ZHC_excess_perk_level_num) && self.ZHC_excess_perk_level_num >= level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER)){
+			//iprintln("cant add perk cuzz excess limit " +  define_or(self.ZHC_excess_perk_level_num,0) + " >= "+ level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER );
 			return false;
+		}
 	}
 
 
@@ -297,13 +304,13 @@ CanAddPerkLevel(perk){
 		hardlimit = 3;
 	}
 	else if(perk == "specialty_rof"){
-		if(level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE)
+		if(level.DOUBLETAP_PHDFLOPPER_INCREASE_DAMAGE)
 			hardlimit = 10;
 		else
 			hardlimit = 1;
 	}
 	else if(perk == "specialty_flakjacket"){
-		if(level.DOUBLETAP_PHDFLOPPER_INCREASE_CLIP_SIZE){
+		if(level.DOUBLETAP_PHDFLOPPER_INCREASE_DAMAGE){
 			hardlimit = 5;
 			curlimit /= 3;
 		}
@@ -313,7 +320,7 @@ CanAddPerkLevel(perk){
 
 	limit = min(hardlimit, max(1,curlimit) );
 	if(cur >= limit){
-		//IPrintLn( "max level" );
+		//IPrintLn( "cant buy cuzz max level limit" +cur+">="+limit +"  min("+curLimit+","+hardlimit+")");
 		return false;
 	}
 	return true;
@@ -321,40 +328,45 @@ CanAddPerkLevel(perk){
 
 GetPerkCost(perk, perk_level){
 	players = get_players();
-	if(!(perk == "specialty_quickrevive" && level.QUICKREVIVE_SOLO_COST_SOLO_ON && players.size == 1 && !level.QUICKREVIVE_LIMIT_LIVES))
+	if(perk == "specialty_quickrevive" && level.QUICKREVIVE_SOLO_COST_SOLO_ON && players.size == 1)
+		return GetSoloQuickReviveCost();
+	else
 		return level.zombie_perks[perk].cost * perk_level;
-	else{
-		cost = 500;
+}
+GetSoloQuickReviveCost(){
+	cost = 500;
+	if(!level.QUICKREVIVE_LIMIT_LIVES)
+	{
+		i = 0;
+		//("solo_lives_given: "+level.solo_lives_given);
+		cost_forgiveness = 0;
+		if(IsDefined( level.ZHC_quickrevive_cost_forgiveness ))
+			cost_forgiveness = level.ZHC_quickrevive_cost_forgiveness;
+		while(i < max(0,level.solo_lives_given - cost_forgiveness)){
+			cost *= 3;
+			i++;
+		}		
+		//cost: 500, 1500, 4500, 13500...
 
-		if(!level.QUICKREVIVE_LIMIT_LIVES)
-		{
-			i = 0;
-			//("solo_lives_given: "+level.solo_lives_given);
-			while(i < level.solo_lives_given){
-				cost *= 3;
-				i++;
-			} 		
-			//cost: 500, 1500, 4500, 13500...
 
-
-			/*cost1 = 500;
-			cost2 = 1500;
-			i = 0;
-			IPrintLnBold( (level.solo_lives_given) );
-			while(i < level.solo_lives_given){
-				if(i % 2 == 1){
-					cost = cost2;
-					cost2 *= 10;
-				}else{
-					cost1 *= 10;
-					cost = cost1;
-				}
-				i++;
-			}*/
-			//cost: 500, 1500, 5000, 15000...
-		}
-		return int(cost); //anouther thread sets the cost
-	}
+		/*cost1 = 500;
+		cost2 = 1500;
+		i = 0;
+		IPrintLnBold( (level.solo_lives_given) );
+		while(i < level.solo_lives_given){
+			if(i % 2 == 1){
+				cost = cost2;
+				cost2 *= 10;
+			}else{
+				cost1 *= 10;
+				cost = cost1;
+			}
+			i++;
+		}*/
+		//cost: 500, 1500, 5000, 15000...
+	}else if(level.solo_lives_given > 0)
+		cost = 1500;
+	return int(cost); //anouther thread sets the cost
 }
 
 GetPerkLevel( specialty )
@@ -410,7 +422,7 @@ RemoveALLPerkLevel( specialty )
 	if(!isdefined(self.perk_level_array[specialty]) || self.perk_level_array[specialty] == 0)
 		return;
 	total_levels_lost = GetPerkLevel(specialty);
-	self.num_perks -= total_levels_lost
+	self.num_perks -= total_levels_lost;
 	self.perk_level_array[specialty] = 0;
 	if(level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && self.perk_level_array[specialty] >= 1)
 		self.ZHC_excess_perk_level_num -= total_levels_lost;
@@ -1175,13 +1187,17 @@ divetonuke_explode( attacker, origin )
 perk_fx( fx , specialty)
 {
 
+	if(isDefined(self.fx))	//wont keep repeating the same thread if this is run multiple times.
+		return;
+	if(level.power_on)
+		wait(3);   //changed_for_mod
 
 	while(1){
 		self.fx = Spawn( "script_model", self.origin );
 		self.fx.angles = self.angles;
 		self.fx SetModel( "tag_origin" );
 		self.fx LinkTo(self);
-		wait(3);
+		wait_network_frame( );
 		playfxontag( level._effect[ fx ], self.fx, "tag_origin" );
 
 		level waittill( specialty + "_power_off" );
@@ -1393,10 +1409,13 @@ vending_trigger_think()
 			}
 		}
 
-		pl = player GetPerkLevel(perk);
+		pl = 0;
 
-		if(!VendingPerkLvlBuyPass(perk, pl))
-			continue;
+		if(level.PERK_LEVELS){
+			pl = player GetPerkLevel(perk);
+			if(!VendingPerkLvlBuyPass(perk, pl))
+				continue;
+		}
 
 		cost = GetPerkCost(perk, pl+1);
 
@@ -1681,22 +1700,10 @@ GetLowestPerkLevel(perk){
 
 GetVendingCost(perk){
 	players = get_players();
-	if(perk == "specialty_quickrevive" && level.QUICKREVIVE_SOLO_COST_SOLO_ON && players.size == 1 && !level.QUICKREVIVE_LIMIT_LIVES){ //becuae qr doesnt require perk lvl to get price
+	if(perk == "specialty_quickrevive" && level.QUICKREVIVE_SOLO_COST_SOLO_ON && players.size == 1){ //becuae qr doesnt require perk lvl to get price
 																																		//works the same regardless of perk level system in solo games
-		cost = 500;
-		if(!level.QUICKREVIVE_LIMIT_LIVES)
-		{
-			i = 0;
-			//("solo_lives_given: "+level.solo_lives_given);
-			while(i < level.solo_lives_given){
-				cost *= 3;
-				i++;
-			}
-			players[0] thread update_perk_hintstrings_thread_for_player_perk(perk, "perk_bought");
-
-		}else if(level.solo_lives_given > 0){
-			cost = 1500;
-		}else{
+		cost = GetSoloQuickReviveCost();
+		if(!level.QUICKREVIVE_LIMIT_LIVES || level.solo_lives_given <= 0){
 			players[0] thread update_perk_hintstrings_thread_for_player_perk(perk, "perk_bought");
 		}
 		
@@ -1744,7 +1751,7 @@ GetVendingCost(perk){
 		update_perk_hintstrings_thread_for_all_players(players, perk);
 		return GetPerkCost(perk, lvl);
 	}else{
-		return level.zombie_perks[perk].cost;
+		return GetPerkCost(perk, 0);;
 	}
 }
 
@@ -1777,18 +1784,17 @@ update_perk_hintstring_wait(time, perk){
 
 VendingPerkLvlBuyPass(perk, cur_level){
 	players = get_players();
-	
 	if(perk == "specialty_quickrevive" && players.size == 1 && level.QUICKREVIVE_SOLO_COST_SOLO_ON)
 		return true;
 
-	if(is_true(level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER) && level.zombie_perks[perk].perk_level == -1)	//undefined means perk is off,
-		return true;
+	//if(level.PERK_LEVELS && is_true(level.ZHC_PERK_LEVELS_BUYABLE) && is_true(level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER) && level.zombie_perks[perk].perk_level == -1)	//undefined means perk is off,
+	//	return true;
 
 	if(level.PERK_LEVELS && is_true(level.ZHC_PERK_LEVELS_BUYABLE) && is_true(level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER) && players.size >= 1){//temp testo
 		if(cur_level == level.zombie_perks[perk].perk_level - 1)
 			return true;
 		else{
-			IPrintLn( "wrong vending perk level " );
+			//IPrintLn( "wrong vending perk level " );
 			return false;
 		}
 	}
@@ -1817,7 +1823,8 @@ vending_set_hintstring( perk )
 					level waittill (perk+"_power_off");
 				wait_network_frame( );
 			}else{
-				level.zombie_perks[perk].perk_level = -1;
+				if(level.PERK_LEVELS && is_true(level.ZHC_PERK_LEVELS_BUYABLE) && is_true(level.ZHC_VENDING_PERK_LEVEL_MULTIPLAYER))
+					level.zombie_perks[perk].perk_level = -1;
 				self SetHintString( &"ZOMBIE_NEED_POWER" );
 				
 				level waittill(perk+"_power_on");
@@ -1884,6 +1891,7 @@ is_perma_perk(perk){
 		return true;
 	if(isdefined(level.perma_perks) && isdefined(level.perma_perks[perk]))
 		return true;
+	return false;
 }
 
 perk_think( perk, recall_checked)

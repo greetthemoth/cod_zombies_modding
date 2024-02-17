@@ -176,3 +176,5 @@ material,terrain_scorch_fruit
 material,terrain_scorch_paintedmetal
 material,terrain_scorch_player
 material,terrain_scorch_tallgrass
+rawfile,shock/electrocution.shock
+rawfile,shock/zombie_death.shock

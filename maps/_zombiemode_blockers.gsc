@@ -91,7 +91,7 @@ init_blockers()
 door_init()
 {
 	self.type = undefined; 
-
+	self.door_origin = self.origin;
 	self._door_open = false;
 
 	// Figure out what kind of door we are
@@ -312,23 +312,38 @@ haunt_player(haunt_level){
 		haunt_level = 1;
 	if(!IsDefined( self.haunt_level )){
 		self.haunt_level = 0;
-		self thread haunt_player_think();
+		self thread haunt_player_think(self);
 	}
 	self.haunt_level += haunt_level;
 	//IPrintLnBold( "2 haunting player..." );
 	self notify("haunt_player");
 }
+haunt_all_players(haunt_level){
+	if(!IsDefined( haunt_level ))
+		haunt_level = 1;
+	if(!IsDefined( level.haunt_level )){
+		level.haunt_level = 0;
+		players = get_players( );
+		for(i = 0; i < players.size; i++){
+			players[i] thread haunt_player_think(level);
+		}
+	}
+	level.haunt_level += haunt_level;
+	//IPrintLnBold( "2 haunting player..." );
+	level notify("haunt_player");
+}
 
-haunt_player_think(){
-	self endon ("stop_haunting_player");
-	IPrintLnBold( "haunting player..." + self.haunt_level );
-	
+haunt_player_think(ent){
+	ent endon ("stop_haunting_player");
+	IPrintLnBold( "haunting player..." + ent.haunt_level );
+	if(!isDefined(ent))
+		ent = level;
 	//wait for player to cross room.
 	//then close nearest door.
 	
 	while(1){
 
-		self waittill("haunt_player");
+		ent waittill("haunt_player");
 		//IPrintLnBold( "3 haunting player..." );
 		id = undefined;
 		while(!IsDefined( id )){
@@ -337,7 +352,7 @@ haunt_player_think(){
 			//	wait(1);
 		}
 		//IPrintLnBold( "4 haunting player... id defined" );
-		while(self.haunt_level > 0){
+		while(ent.haunt_level > 0){
 			wait(0.25);
 			id2 = id;
 			while(1){
@@ -349,26 +364,79 @@ haunt_player_think(){
 
 				new_room = (id != id2);
 				//IPrintLn( "hauntcheck: zone id:" + id + "   new id:" + id2 );
-				if(new_room){
-					zombie_doors =  GetEntArray( "zombie_door", "targetname" );
-					nearest_door = undefined;
-					nearest_dist = undefined;
-					for(i = 0; i < zombie_doors.size; i++){
-						if(isDefined(zombie_doors[i].script_noteworthy) && zombie_doors[i].script_noteworthy == "electric_door")
-							continue;
-						if(IsDefined( zombie_doors[i].is_submissive ) && zombie_doors[i].is_submissive)
-							continue;
-						dist = Distance2DSquared( zombie_doors[i].origin, self.origin );
-						if(!isDefined(nearest_dist) || dist < nearest_dist){
-							nearest_dist = dist;
-							nearest_door = zombie_doors[i];
-						}
+				if(!new_room)
+					continue;
+
+				door_to_close = undefined;
+				
+				zombie_doors =  GetEntArray( "zombie_door", "targetname" );
+				zombie_door_ids = Get_Doors_Accesible_in_room(id2);
+				/*s = "";
+				for(i = 0; i < zombie_door_ids.size; i++){
+					s += zombie_doors[zombie_door_ids[i]] get_door_id();
+					if(i+1 < zombie_door_ids.size)
+						s+=" ";
+				}*/
+				nearest_door = undefined;
+				nearest_dist = undefined;
+				//d = "";
+				for(i = 0; i < zombie_door_ids.size; i++){
+					//if(isDefined(zombie_doors[i].script_noteworthy) && zombie_doors[i].script_noteworthy == "electric_door")
+					//	continue;
+					door = zombie_doors[zombie_door_ids[i]];
+					dist = Distance(  door.door_origin, self.origin );
+
+					/*d += int(dist);
+					if(i+1 < zombie_door_ids.size)
+						d +=" ";*/
+
+					if(!isDefined(nearest_dist) || dist < nearest_dist){
+						nearest_dist = dist;
+						nearest_door = door;
+						if(is_true( door.is_submissive ))
+							nearest_door = door get_sister_door();
 					}
-					//IPrintLnBold( "nearest door is defined"+ isDefined(nearest_door));
-					nearest_door notify ("close_door");
 				}
+
+				/*testo vvv
+				nearest_door_real = undefined;
+				nearest_dist = undefined;
+				for(i = 0; i < zombie_doors.size; i++){
+					//if(isDefined(zombie_doors[i].script_noteworthy) && zombie_doors[i].script_noteworthy == "electric_door")
+					//	continue;
+					door = zombie_doors[i];
+					dist = Distance(  door.door_origin, self.origin );
+					if(!isDefined(nearest_dist) || dist < nearest_dist){
+						nearest_dist = dist;
+						nearest_door_real = door;
+						if(is_true( door.is_submissive ))
+							nearest_door_real = door get_sister_door();
+					}
+				}
+				*///testo ^^^
+
+				if(!IsDefined( nearest_door )){
+					IPrintLnBold( "entered" + Get_Room_Name(id2)+  " nearest door is UNDEFINED");
+					continue;
+				}
+				//else
+				//	IPrintLnBold( "entered" + Get_Room_Name(id2)+ "("+ s +")(" +d+") nearest is "+ nearest_door get_door_id() +"("+nearest_door_real get_door_id()+")");
+
+				door_to_close = nearest_door;
+				if(!isDefined(door_to_close._door_open)){
+					IPrintLnBold( door_to_close get_door_id() +" self._door_open is UNDEFINED");
+					continue;
+				}
+				if(door_to_close get_door_is_closed_or_closing())
+					continue;
+				//IPrintLnBold( "haunt waiting to close" + door_to_close get_door_id() );
+				door_to_close notify ("close_door");
+				ent.haunt_level--;
+				door_to_close waittill( "door_closed" );
+				//IPrintLnBold( "haunt closed" + door_to_close get_door_id() );
+				break;
 			}
-			self.haunt_level--;
+			
 			id = id2;
 		}
 	}
@@ -377,6 +445,12 @@ haunt_player_think(){
 }
 
 
+get_door_is_open_or_opening(){
+	return self._door_open || is_true(self.transitioning_t_open_f_close);
+}
+get_door_is_closed_or_closing(){
+	return !self._door_open || is_false(self.transitioning_t_open_f_close);
+}
 
 //
 //	Open a delay door once the time has expired
@@ -865,7 +939,8 @@ door_is_waiting_to_buy_phase(){
 	if ( IsDefined( self.script_noteworthy ) )
 	{
 		if ( self.script_noteworthy == "electric_door" || self.script_noteworthy == "electric_buyable_door" )
-		{
+		{	
+			IPrintLnBold( "electric door id is" + get_door_id() );
 			self sethintstring(&"ZOMBIE_NEED_POWER");
 			//			self set_door_unusable();
 			if( isDefined( level.door_dialog_function ) )
@@ -961,6 +1036,7 @@ door_is_open_stage(){
 	//self._in_cooldown = false;
 	//self._door_open = true;
 	
+	//IPrintLnBold( "door"+ self get_door_id()+"opened" ); // debug door ids
 
 	if(!is_true(self.is_submissive)){
 
@@ -1052,7 +1128,7 @@ door_buy_expired(){
 		wait(5);
 	}
 
-	CANT_CLOSE_DOOR_IN_DOG_ROUNDS = true;
+	CANT_CLOSE_DOOR_IN_DOG_ROUNDS = false;
 
 	if(CANT_CLOSE_DOOR_IN_DOG_ROUNDS && flag("dog_round")){
 		level waittill( "end_of_round" );	//we dont want doors to close durring dog rounds because dogs can get stuck through walls.
@@ -1078,7 +1154,7 @@ check_roomIDs_to_occupy(){
 			}else{
 				zones_with_id = roomIDToZones(self.roomIDs_to_occupy[i]);
 				if(zones_with_id.size == 0){
-					IPrintLnBold( "ROOM ID IN LIST DOESNT APPLY TO ANY ZONE" );
+					IPrintLnBold( "ROOM ID "+ self.roomIDs_to_occupy[i]+" DOESNT APPLY TO ANY ZONE" );
 					continue;
 				}
 				//"finding zone " + self.roomIDs_to_occupy[i]
@@ -1136,7 +1212,7 @@ roomIDToZones(roomID){
 	zones_with_id = [];
 	for(z = 0; z < level.zones.size; z++){
 		//zone = level.zones[zkeys[z]];
-		room_id = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), level.power_on);
+		room_id = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), false);
 		if(IsDefined( room_id )){
 			if(room_id == roomID){					//there are multple zone names per "room" that we care about
 				zones_with_id[zones_with_id.size] = zkeys[z];		//this adds the zone names for the zone we want to the list
@@ -1210,8 +1286,8 @@ roomId_expire_system_setup_func(player){
 		}
 	}
 
-	zone_name = player.current_zone;
-	//zone_name = Get_Players_Current_Zone_Bruteforce(player);
+	//zone_name = player.current_zone;
+	zone_name = Get_Players_Current_Zone_Bruteforce(player);
 	
 
 	if(!IsDefined( zone_name )){
@@ -1300,30 +1376,34 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 		r = 5;	
 
 	rrs[rrs.size] = 1; 						//the zone the door opens to is always on the list.	regardless of reverse	
+	rrs[rrs.size] = eight;		//because self.roomIDs_to_occupy[eight] is used for barr weapon system.
 
 	n = ((r % eight) + int(eight/2) - 1)%eight;		//this is the moving zone moves one room adjactent every round. 
 	//if(n > eight)
 	//	n = n % eight;
-	if(n == 0){
+	if(n == 0)
 		n = eight;
-	}else{
-		rrs[rrs.size] = eight;		//because self.roomIDs_to_occupy[eight] is used for barr weapon system.
-	}
+	
 	rrs[rrs.size] = n;
+
+
+
 	
 	//if(level.power_on)
 	//	reverse = !reverse; //this makes the moving zone go towards the player instead of away.
 
 	level.ZHC_max_doors_that_can_expire_this_round = 1;
+	if(flag("dog_round"))
+		level.ZHC_max_doors_that_can_expire_this_round = eight;
 	//level.ZHC_max_doors_that_can_expire_this_round = int(max(n, (eight+1) - n ));	//the max "distance" between the rooms.
 
-	s = "";
 
+	s = "";
 	zkeys = GetArrayKeys( level.zones );
 	for(z = 0; z < level.zones.size; z++){
 		//n = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), level.power_on);
-		n = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), false);
-		if(!IsDefined( n ) || n >= 100)
+		roomId_to_measure = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), false);
+		if(!IsDefined( roomId_to_measure ) || roomId_to_measure >= 100)
 			continue;
 		/*nn = n;			//nn turns
 		if(reverse){
@@ -1344,27 +1424,31 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 		}*/
 
 
-		 nn = n;
-
+		roomDistance = roomId_to_measure;
 	    if (reverse) {
-	        nn = (nn - 1 + eight - roomid) % eight;
-	        nn = (nn + eight - 1) % eight;
-	        nn = nn*-1;
-	        nn = (nn + eight - 1) % eight;
+	    	roomDistance+=1;
+	        roomDistance = (roomDistance - 1 + eight - roomid) % eight;
+	        roomDistance = (roomDistance + eight - 1) % eight;
+	        roomDistance = roomDistance*-1;
+	        roomDistance = (roomDistance + eight - 1) % eight;
 	    } else {
-	        nn = (nn - roomid + eight) % eight;
+	        roomDistance = (roomDistance - roomid + eight) % eight;
 	    }
 
-	    if (nn == 0) {
-	        nn = eight;
+	    if (roomDistance == 0) {
+	        roomDistance = eight;
 	    }
 
 
 		//s += n +"-"+nn+" | ";
 		for(f = 0; f < rrs.size; f++){
-			if(rrs[f] == nn){
-				self.roomIDs_to_occupy[nn] = n;
-				//s = n + " added";
+			if(rrs[f] == roomDistance && !IsDefined( self.roomIDs_to_occupy[roomDistance] )){
+				self.roomIDs_to_occupy[roomDistance] = roomId_to_measure;
+				s += Get_Room_Name(roomId_to_measure) + "-" + roomDistance +" ";
+				//s += n +"-"+nn+"  ";
+
+				//{     //debug
+				//s += n + "added";
 				
 				//if(reverse)
 				//	s += "reverse";
@@ -1372,6 +1456,7 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 				//	s += "normal";
 				
 				//IPrintLnBold( s + " for round "+ r );
+				//}
 				break;
 			}
 		}
@@ -1382,7 +1467,7 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//	if(isDefined(self.roomIDs_to_occupy[i]))
 	//	s+=" "+self.roomIDs_to_occupy[i];
 	//}
-	//IPrintLnBold( s + " for round "+ r );
+	IPrintLnBold("r:" + reverse+" "+  s  );// + " for round "+ r );
 }
 
 print_door_id(door){
@@ -1412,11 +1497,11 @@ init_door_ids(){
 
 player_is_in_closed_off_room(){ //use after "zone_info_updated"
 	room_id = Get_Zone_Room_ID(self.current_zone);
-	return room_is_closed_in(room_id);
+	return room_is_closed_off(room_id);
 }
 close_off_player_room(){ //use after "zone_info_updated"
 	room_id = Get_Zone_Room_ID(self.current_zone);
-	return close_in_room(room_id);
+	return close_off_room(room_id);
 }
 room_is_closed_off(room_id){
 	doors = Get_Doors_Accesible_in_room(room_id);
@@ -1444,8 +1529,8 @@ Get_Doors_Accesible_in_room(room_id){
 			doors[doors.size] = 2;
 			doors[doors.size] = 11;
 			doors[doors.size] = 6;
-			if(flag("curtains_done"))
-				doors[doors.size] = 6;
+			doors[doors.size] = 9;
+			break;
 	    case 1: // vip_zone
 	        doors[doors.size] = 2;
 	        doors[doors.size] = 3;
@@ -1464,6 +1549,10 @@ Get_Doors_Accesible_in_room(room_id){
 	        doors[doors.size] = 5;
 	        doors[doors.size] = 1;
 	        doors[doors.size] = 0;
+	        if(flag("curtains_done")){
+	           	doors[doors.size] = 6;
+	    		doors[doors.size] = 9;
+	    	}
 	        break;
 	    case 5: // west_balcony_zone
 	        doors[doors.size] = 1;
@@ -1479,16 +1568,16 @@ Get_Doors_Accesible_in_room(room_id){
 	        doors[doors.size] = 11;
 	        break;
 	    case 100:
-	    	 doors[doors.size] = 6;
-	    	 if(flag("curtains_done")){
-	    	 	doors[doors.size] = 2;
-				doors[doors.size] = 11;
-				doors[doors.size] = 6;
+	    	doors[doors.size] = 6;
+	    	doors[doors.size] = 9;
+	    	if(flag("curtains_done")){
+	    	 	doors[doors.size] = 0;
+				doors[doors.size] = 1;
+				doors[doors.size] = 5;
 	        }
-	    default:
 	        break;
-	    return doors;
 	}
+	return doors;
 }
 Get_Other_Zone(opened_from, door){
 
@@ -1519,10 +1608,10 @@ Get_Other_Zone(opened_from, door){
 		b = "crematorium_zone";
 	} else if(i == 11){
 		a = "crematorium_zone";
-		b = "foyer_zone";
-	}else if(i == 6)
+		b = "foyer2_zone";
+	}else if(i == 6 || i == 9){
 		a = "theater_zone";
-		b = "foyer_zone"
+		b = "foyer2_zone";
 	}
 
 	if(opened_from == a)
@@ -1544,7 +1633,7 @@ Get_Zone_Room_ID(zone_name){
 			return 2;
 	else if(zone_name == "dressing_zone")
 			return 3;
-	else if(zone_name == "stage_zone" )
+	else if(zone_name == "stage_zone" || (flag("curtains_done") && zone_name == "theater_zone" ))
 			return 4;
 	else if(zone_name == "theater_zone")
 			return 100;
@@ -1554,7 +1643,35 @@ Get_Zone_Room_ID(zone_name){
 			return 6;
 	else if(zone_name == "crematorium_zone")
 			return 7;
+	IPrintLnBold( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" );
 	return 100;
+}
+Get_Room_Name(room_id){
+	switch(room_id){
+		case 0:
+			return "foyer room";
+		case 1:
+			return "vip room";
+		case 2:
+		return "dining room";
+		case 3:
+		return "dressing room";
+		case 4:
+		if(flag("curtains_done"))
+			return "stage & theater room";
+		return "stage room";
+		case 5:
+		return "west balcony room";
+		case 6:
+		return "alleyway room";
+		case 7:
+		return "crematorium room";
+		case 100:
+		return "theater room";
+		default:
+		IPrintLnBold( "ROOM ID "+ room_id + "NOT DESIGNATED TO ROOM" );
+		return 100;
+	}
 }
 Get_Zone_Room_ID_Special(zone_name, door_id, power_on){
 	if(!power_on)
@@ -1637,6 +1754,7 @@ player_is_in_dead_zone(player, door_id){	//run after "zone_info_updated"
 		}
 		return false;
 	}*/
+	//IPrintLn( player.origin[0], player.origin[1], player.origin[2] );
 	if(!isDefined(player.current_zone))
 		return false;
 	o = (!IsDefined( door_id ) || door_id == 4 || door_id == 3 ) && player.current_zone == "dining_zone";
@@ -1645,6 +1763,10 @@ player_is_in_dead_zone(player, door_id){	//run after "zone_info_updated"
 	o = (!IsDefined( door_id ) || door_id == 1 || door_id == 0 ) && player.current_zone == "stage_zone";
 	if(o)
 		return player IsTouching( level.zones["stage_zone"].volumes[0] );
+	o = (!IsDefined( door_id ) || door_id == 6 || door_id == 9 ) && player.current_zone == "theater_zone";
+	if(o)
+		//return player IsTouching( level.zones["theater_zone"].volumes[1] ); doesnt really work the way i want it to.
+		return player IsTouching( level.zones["theater_zone"].volumes[1] && player.origin[1] < -185 );
 
 	return false;
 }
@@ -1664,6 +1786,21 @@ can_close_door(){	//run after "zone_info_updated"
 			return false;
 		else 
 			return !a_player_is_close_to_door_id(1, 280) && !a_player_is_close_to_door_id(0, 280);
+	}else if(door_id == 6 || door_id == 9){
+		o = zone_is_occupied_rn("theater_zone");
+		//if(o && a_player_is_close_to_door_id(1,360))
+		if(o){
+			players = get_players();
+			for(i = 0; i < players.size; i++){
+				player = players[i];
+				IPrintLn(int( player.origin[0]) +","+ int(player.origin[1]) +","+ int(player.origin[2]) );
+				if(player.current_zone == "theater_zone" && player.origin[1] < -185)
+				//if(o && player_is_touching(level.zones["theater_zone"].volumes[1]))
+					return false;
+			}
+		}
+		//else 
+			return !a_player_is_close_to_door_id(6, 230) && !a_player_is_close_to_door_id(9, 230);
 	}else{
 		return !self a_player_is_close_to_door(100);
 	}
@@ -1703,6 +1840,12 @@ get_sister_door(){									//applies to doors that have 2 sets of doors.
 			case 0:
 				self.sister_door = zombie_doors[1];
 				break;
+			case 6:
+				self.sister_door = zombie_doors[9];
+				break;
+			case 9:
+				self.sister_door = zombie_doors[6];
+				break;
 			default:
 				self.sister_door = self;
 				break;
@@ -1727,19 +1870,8 @@ notify_sister_door(msg, make_submissive){
 	}
 }
 Get_Players_Current_Zone_Bruteforce(player){
-	zkeys = GetArrayKeys( level.zones );
-	for(j = 0; j < level.zones.size; j++)
-	{
-		for (i = 0; i < level.zones[zkeys[j]].volumes.size; i++)
-		{
-			if (player IsTouching(level.zones[zkeys[j]].volumes[i]) )
-			{
-				zone_name = zkeys[j];
-				IPrintLn( zone_name + " volume_index: "+ i );
-				return zone_name;
-			}
-		}
-	}
+	maps\_zombiemode_zone_manager::update_player_zones(player);
+	return player.current_zone;
 }
 Get_Players_Current_Zone_Patient(player){
 	level waittill( "zone_info_updated" );
@@ -1747,8 +1879,9 @@ Get_Players_Current_Zone_Patient(player){
 }
 zone_is_occupied_rn(zone_name){			//use this right after waiting for "zone_info_updated"
 	return level.zones[zone_name].is_occupied;
-	/*players = get_players();
+	//players = get_players();
 	//zkeys = GetArrayKeys( level.zones );
+	/*
 	for( p = 0; p < players.size; p++ )
 	{
 		//iprintln("player "+i +"/"+players.size+ " is valid:" + (is_player_valid( players[i])) );
@@ -1758,6 +1891,7 @@ zone_is_occupied_rn(zone_name){			//use this right after waiting for "zone_info_
 			{
 				if (players[p] IsTouching(level.zones[zone_name].volumes[i]) )
 				{
+					IPrintLn(zone_name+ "volume "+i);	//testo
 					return true;
 				}
 			}
@@ -1825,6 +1959,9 @@ door_is_in_cooldown_phase(){
 		switch( self.script_noteworthy )
 		{
 			case "electric_door":
+				self.dont_reset_cooldown_once = undefined;
+				level waittill( "electricity_off" );
+				wait_network_frame( );
 				break;
 			
 			default:

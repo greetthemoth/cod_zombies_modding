@@ -3294,9 +3294,8 @@ round_spawning()
 		while(1)
 		{
 			enemyCount = get_enemy_count();
-			if(level.zombie_total <= 0 && enemyCount <= 0){
+			if(level.zombie_total <= 0 && enemyCount <= 0)
 				return;
-			}
 			cur_enemy_limit = maps\ZHC_zombiemode_zhc::ZHC_get_cur_enemy_limit(enemyCount);
 			//IPrintLn( "left-"+level.zombie_total + "| cur-"+enemyCount + " | lim-"+ cur_enemy_limit);
 			if(enemyCount < cur_enemy_limit && level.zombie_total > 0)
@@ -4280,8 +4279,11 @@ round_spawn_failsafe()
 			level.zombies_timeout_playspace++;
 			
 			death_effect = "poltergeist";
-			if(self.isdog)
+			if(self.isdog){
 				death_effect = "lightning_dog_spawn";
+				if(is_true(level.DOG_LIGHTNING_TURN_ON_PERK))
+					level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 200, 5); //added for mod
+			}
 
 			playfx(level._effect[death_effect], self.origin);	
 			self ForceTeleport(self.origin + (0,0,999999)); //so we dont ever see the body and just see the teleport effect.

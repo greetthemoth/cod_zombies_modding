@@ -365,13 +365,14 @@ electric_switch()
 			trig sethintstring(&"ZOMBIE_ELECTRIC_SWITCH");
 			
 			level thread wait_for_power(first_time);
-			first_time = false;
+			
 
-			if(level.ZHC_TESTING_LEVEL >=6)
+			if(level.ZHC_TESTING_LEVEL >= 6 && first_time)
 				wait 5;	//testo
 			else
 				trig waittill("trigger",user);	
 
+			first_time = false;
 			//iPrintLN("POWER ON");
 			//trig delete();	
 			level.power_on = true;

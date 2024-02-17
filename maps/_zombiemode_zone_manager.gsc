@@ -107,9 +107,15 @@ player_in_zone( zone_name )
 	return false;
 }
 
-update_player_zones(){
+update_player_zones(player){
 	// Okay check to see if a player is in one of the zone volumes
-	players = get_players();
+	players = undefined;
+	if(!isDefined(player))
+		players = get_players();
+	else{
+		players = [];
+		players[0] = player;
+	}
 	players_ignored = 0;
 	players_ignore = [];
 	for (j = 0; j < players.size; j++)
