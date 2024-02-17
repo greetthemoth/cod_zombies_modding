@@ -249,8 +249,8 @@ ZHC_get_ordered_weapon_keys(){
 	k[k.size] = "g11_lps_zm";
 
 	k[k.size] = "zombie_cymbal_monkey"; //3
-	//k[k.size] = "frag_grenade_zm";
-	//k[k.size] = "sticky_grenade_zm";
+	k[k.size] = "frag_grenade_zm";
+	k[k.size] = "sticky_grenade_zm";
 	k[k.size] = "claymore_zm";
 
 	k[k.size] = "china_lake_zm";
@@ -277,13 +277,20 @@ ZHC_get_ordered_weapon_keys(){
 	k[k.size] = "rpk_zm";
 	k[k.size] = "hk21_zm";
 	k[k.size] = "galil_zm";
-	//k[k.size] = "zombie_cymbal_monkey"; moved
+	k[k.size] = "zombie_cymbal_monkey"; moved
 	k[k.size] = "ray_gun_zm";
 	k[k.size] = "thundergun_zm";
-	//k[k.size] = "tesla_gun_zm";
-	//k[k.size] = "freezegun_zm";
-	//k[k.size] = "zombie_black_hole_bomb";
-	//k[k.size] = "zombie_nesting_dolls";
+	//
+	k[k.size] = "tesla_gun_zm";	// included
+	k[k.size] = "freezegun_zm";
+	k[k.size] = "zombie_black_hole_bomb";
+	k[k.size] = "zombie_nesting_dolls";
+
+	for(i =0 i < k.size; i++){
+		if(!is_weapon_included(k[i]){
+
+		}
+	}
 
 	return k;
 }
@@ -349,9 +356,9 @@ init_weapons()
 
 	// Special                                          	
  	add_zombie_weapon( "zombie_cymbal_monkey",		undefined,								&"ZOMBIE_WEAPON_SATCHEL_2000", 			2000,	"monkey",			"",		undefined );
- 	add_zombie_weapon( "ray_gun_zm", 				"ray_gun_upgraded_zm",					&"ZOMBIE_WEAPON_RAYGUN", 				10000,	"raygun",			"",		undefined );
- 	add_zombie_weapon( "tesla_gun_zm",				"tesla_gun_upgraded_zm",				&"ZOMBIE_WEAPON_TESLA", 				10000,		"tesla",			"",		undefined );
- 	add_zombie_weapon( "thundergun_zm",				"thundergun_upgraded_zm",				&"ZOMBIE_WEAPON_THUNDERGUN", 			20000,		"thunder",			"",		undefined );
+ 	add_zombie_weapon( "ray_gun_zm", 				"ray_gun_upgraded_zm",					&"ZOMBIE_WEAPON_RAYGUN", 				20000,	"raygun",			"",		undefined );
+ 	add_zombie_weapon( "tesla_gun_zm",				"tesla_gun_upgraded_zm",				&"ZOMBIE_WEAPON_TESLA", 				50000,		"tesla",			"",		undefined );
+ 	add_zombie_weapon( "thundergun_zm",				"thundergun_upgraded_zm",				&"ZOMBIE_WEAPON_THUNDERGUN", 			50000,		"thunder",			"",		undefined );
  	add_zombie_weapon( "crossbow_explosive_zm",		"crossbow_explosive_upgraded_zm",		&"ZOMBIE_WEAPON_CROSSBOW_EXPOLOSIVE",	1000,		"crossbow",			"",		undefined );
  	add_zombie_weapon( "knife_ballistic_zm",		"knife_ballistic_upgraded_zm",			&"ZOMBIE_WEAPON_KNIFE_BALLISTIC",		300,		"bowie",	"",		undefined );
  	add_zombie_weapon( "knife_ballistic_bowie_zm",	"knife_ballistic_bowie_upgraded_zm",	&"ZOMBIE_WEAPON_KNIFE_BALLISTIC",		300,		"bowie",	"",		undefined );
@@ -1354,10 +1361,10 @@ ZHC_assign_weapons_to_boxes(){
 		level.ZHC_chest_owned_weapons = [];
 		level.ZHC_chest_owned_weapon_index = -1; //becomes 0 at iterator
 		for(i = 0; i < keys.size ; i++){
-			if(!get_is_in_box(keys[i])
-			 //|| !get_is_wall_buy(keys[i])
-			 )
-			continue;
+			//sif(		!get_is_in_box(keys[i])
+			//	|| 	!get_is_wall_buy(keys[i])
+			// )
+			//continue;
 
 			level.ZHC_chest_owned_weapons[level.ZHC_chest_owned_weapons.size] = keys[i];		//adds weapon to 
 			if(RandomInt( 3 ) == 0)
@@ -1449,6 +1456,7 @@ ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box(weapon_name){
 
 	switch( weapon_name ){
 		case "thundergun_zm":
+		case "tesla_gun_zm":
 		case "freezegun_zm":
 		case "zombie_black_hole_bomb":
 		case "zombie_nesting_dolls":

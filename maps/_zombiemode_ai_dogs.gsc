@@ -306,6 +306,10 @@ dog_spawn_fx( ai, ent )
 	if ( isdefined( ent ) )
 	{
 		Playfx( level._effect["lightning_dog_spawn"], ent.origin );
+
+		if(is_true(level.DOG_LIGHTNING_TURN_ON_PERK))
+			level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(ent.origin, 200, 5); //added for mod
+
 		playsoundatposition( "zmb_hellhound_prespawn", ent.origin );
 		wait( 1.5 );
 		playsoundatposition( "zmb_hellhound_bolt", ent.origin );
@@ -644,14 +648,11 @@ dog_init()
 		array_remove_index(level.next_dog_spawned_forced_to_run, 0);
 	}
 
-	if(is_true(level.DOG_LIGHTNING_TURN_ON_PERK))
-		level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 200, 5); //added for mod
-
 	self thread dog_run_think(force_run); //function controls the fx of eyes and trail. zhc parameter bool designates if its forced to turn immediatly
 	if(force_run)
 		self thread dog_stalk_audio(); //function controls tbe audio when stalking.
 	else
-		self thread dog_force_to_run(); //waits 0.5 seconds and then turns off. //method created for mod. added for mod
+		self thread dog_force_to_run(); //waits 0.5 seconds and then turns off. //method created for mod. added for mod //currently doesnt work
 
 	if(IsDefined(level.next_dog_spawned_forced_to_run))
 		level.next_dog_spawned_forced_to_run = undefined;

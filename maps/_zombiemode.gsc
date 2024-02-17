@@ -4281,6 +4281,7 @@ round_spawn_failsafe()
 			death_effect = "poltergeist";
 			if(self.isdog){
 				death_effect = "lightning_dog_spawn";
+				thread dog_despawn_sound_effect(self.origin);
 				if(is_true(level.DOG_LIGHTNING_TURN_ON_PERK))
 					level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 200, 5); //added for mod
 			}
@@ -4298,6 +4299,10 @@ round_spawn_failsafe()
 	//////////////////////////////////////////////////////////////
 	//END OF FAILSAFE "hack shit"
 	//////////////////////////////////////////////////////////////
+}
+dog_despawn_sound_effect(origin){
+	wait( 1.5 );
+	playsoundatposition( "zmb_hellhound_bolt", origin );
 }
 
 // Waits for the time and the ai to die

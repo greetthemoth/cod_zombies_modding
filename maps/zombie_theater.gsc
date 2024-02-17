@@ -161,6 +161,7 @@ theater_playanim( animname )
 //*****************************************************************************
 include_weapons()
 {
+	include_weapon( "sticky_grenade_zm", false, true);
 	include_weapon( "frag_grenade_zm", false, true );
 	include_weapon( "claymore_zm", false, true );
 
@@ -261,6 +262,11 @@ include_weapons()
 	maps\_zombiemode_weapons::add_limited_weapon( "thundergun_zm", 1 );
 	maps\_zombiemode_weapons::add_limited_weapon( "crossbow_explosive_zm", 1 );
 	maps\_zombiemode_weapons::add_limited_weapon( "knife_ballistic_zm", 1 );
+
+	include_weapon("tesla_gun_zm", true);
+	include_weapon("freezegun_zm",  true);
+	include_weapon("zombie_black_hole_bomb",  true);
+	include_weapon("zombie_nesting_dolls",  true);
 
 	precacheItem( "explosive_bolt_zm" );
 	precacheItem( "explosive_bolt_upgraded_zm" );
