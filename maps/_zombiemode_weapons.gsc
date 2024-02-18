@@ -277,7 +277,7 @@ ZHC_get_ordered_weapon_keys(){
 	k[k.size] = "rpk_zm";
 	k[k.size] = "hk21_zm";
 	k[k.size] = "galil_zm";
-	k[k.size] = "zombie_cymbal_monkey"; moved
+	k[k.size] = "zombie_cymbal_monkey"; //moved
 	k[k.size] = "ray_gun_zm";
 	k[k.size] = "thundergun_zm";
 	//
@@ -286,11 +286,6 @@ ZHC_get_ordered_weapon_keys(){
 	k[k.size] = "zombie_black_hole_bomb";
 	k[k.size] = "zombie_nesting_dolls";
 
-	for(i =0 i < k.size; i++){
-		if(!is_weapon_included(k[i]){
-
-		}
-	}
 
 	return k;
 }

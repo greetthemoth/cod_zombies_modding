@@ -3,7 +3,7 @@
 #include maps\_zombiemode_utility;
 
 get_testing_level(){
-	return 1;
+	return 0;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
