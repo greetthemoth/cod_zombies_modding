@@ -433,20 +433,23 @@ init_weapon_upgrade()
 
 	for( i = 0; i < weapon_spawns.size; i++ )
 	{
-		hint_string = get_weapon_hint( weapon_spawns[i].zombie_weapon_upgrade ); 
-		cost = get_weapon_cost( weapon_spawns[i].zombie_weapon_upgrade );
-
-		weapon_spawns[i] SetHintString( hint_string, cost ); 
-		weapon_spawns[i] setCursorHint( "HINT_NOICON" ); 
-		weapon_spawns[i] UseTriggerRequireLookAt();
- 
- 		//weapon_spawns[i] thread weapon_spawn_think(); //moved for mod
-		model = getent( weapon_spawns[i].target, "targetname" ); 
-		model useweaponhidetags( weapon_spawns[i].zombie_weapon_upgrade );
-		model hide();
-
+		weapon_spawns[i] wall_weapon_setup();
 		weapon_spawns[i] thread weapon_spawn_think(); 
 	}
+}
+
+wall_weapon_setup(){
+	hint_string = get_weapon_hint( self.zombie_weapon_upgrade ); 
+	cost = get_weapon_cost( self.zombie_weapon_upgrade );
+
+	self SetHintString( hint_string, cost ); 
+	self setCursorHint( "HINT_NOICON" ); 
+	self UseTriggerRequireLookAt();
+
+		//weapon_spawns[i] thread weapon_spawn_think(); //moved for mod
+	model = getent( self.target, "targetname" ); 
+	model useweaponhidetags( self.zombie_weapon_upgrade );
+	model hide();
 }
 
 
@@ -689,15 +692,30 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self notify ("door_barr_started");
 	self maps\_zombiemode_blockers::get_sister_door() notify ("door_barr_started");
 
-	play_sound_at_pos( "weapon_show", self.origin, self );
+	door_barr_wall_weapon_setup(weapon_string, weapon_model, same_side);
 
+	play_sound_at_pos( "weapon_show", self.origin, self );
+	self.weapon_trigger thread weapon_model_hide();
+	self.weapon_trigger thread show_weapon_model();
+
+	//playfx(level._effect["poltergeist"], barr_weapon_trigger_origin);	//playes electricity effect when barr weapon spawns.
+
+
+	self thread weapon_stop_on_door_open();
+	self thread weapon_thread_manage_triggers(roomId_visible_from);
+	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
+	can_buy_ammo = is_equipment;
+	can_upgrade = !is_equipment;
+	self.weapon_trigger thread weapon_spawn_think(false, true, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
+}
+
+door_barr_weapon_setup(weapon_string, weapon_model, same_side){
 	if(same_side)
-		self.player_yaw = AngleClamp180(self.player_yaw + 180);
+	self.player_yaw = AngleClamp180(self.player_yaw + 180);
 
 	barr_weapon_origin = self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 8 );
 	barr_weapon_trigger_origin = self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 8 );
 	//barr_weapon_locked_side_trigger_origin = self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 50 );
-
 
 	//self should be door trigger
 
@@ -721,8 +739,7 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 		self.weapon_trigger.weapon_model_dw LinkTo( self.weapon_trigger.weapon_model );
 		self.weapon_trigger.weapon_model_dw.yaw = self.player_yaw;
 	}
-	//if(isPerk && weapon_string == "specialty_knifeescape")
-	//s	model_string = "knife_zm";
+
 	if(!IsDefined( weapon_model ))
 		self.weapon_trigger set_box_weapon_model_to(weapon_string);
 	else{
@@ -730,27 +747,10 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 		self.weapon_model setmodel( weapon_model ); 
 	}
 
-	self.weapon_trigger thread weapon_model_hide();
-	self.weapon_trigger thread show_weapon_model();
-
-	
-
-	//playfx(level._effect["poltergeist"], barr_weapon_trigger_origin);	//playes electricity effect when barr weapon spawns.
-
 	self.weapon_trigger SetHintString( get_weapon_hint( weapon_string ), get_weapon_cost( weapon_string ) ); 
-
 	self.weapon_trigger setCursorHint( "HINT_NOICON" );
 	self.weapon_trigger UseTriggerRequireLookAt();
-
-	self thread weapon_stop_on_door_open();
-	self thread weapon_thread_manage_triggers(roomId_visible_from);
-	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
-	can_buy_ammo = is_equipment;
-	can_upgrade = !is_equipment;
-	self.weapon_trigger thread weapon_spawn_think(false, true, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
 }
-
-
 
 weapon_thread_manage_triggers(roomId_visible_from){
 
@@ -1821,7 +1821,9 @@ ZHC_treasure_chest_options_init(){
 
 
 	level.ZHC_BOX_EQUIPMENT_REALISTIC = true;
-	level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = false;
+	level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = true;
+		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE = true;
+		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE_RUN_BOTH_COOLDOWNS = false;
 
 	level.ZHC_BOX_AUTO_OPEN = true;
 		level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK = true;
@@ -2142,12 +2144,22 @@ treasure_chest_think(){
 
 ZHC_box_wait_to_become_reopenable(){
 	self thread firesale_make_box_reopenable();
-	self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, min(72, get_or(level.zombie_total_start, 6)/3)+5  , 1, undefined, true);
+	run_small_cooldown = true;
+	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE && is_true(self.zhc_cooldown_waiting)){
+		self waittill("zhc_end_of_cooldown");	//if expire thread is still running (which is intentional) we will use that instead.
+		self.zhc_cooldown_waiting = undefined;
+		run_small_cooldown = level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE_RUN_BOTH_COOLDOWNS;
+	}
+	if(run_small_cooldown)
+		self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, min(72, get_or(level.zombie_total_start, 6)/3)+10  , 1, undefined, true);
 	iPrintLnBold("zhc_end_of_cooldown_box_reopenable");
 }
 firesale_make_box_reopenable(){
 	self endon( "zhc_end_of_cooldown" );
-	self waittill ("powerup fire sale"); //firesale ends expiration
+	if(!self box_currently_affect_by_firesale())
+		self waittill ("powerup fire sale"); //firesale ends expiration
+	else
+		wait_network_frame( );//wait for cooldown to start before ending it.
 	self notify ("zhc_end_of_cooldown");
 }
 middle_box_logic(costs_money,user_cost,user){
@@ -2612,8 +2624,14 @@ chest_weapon_expire_wait(strength){
 									 	20,
 									 	(  (min(get_or(level.zombie_total_start, 6), 64 )/2) * (strength-1) )
 								    )
-							); 
-			self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, kills, undefined, undefined, false);
+							);
+			if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE)//here we thread it so we can reuse it later
+				self.zhc_cooldown_waiting = true;
+				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, kills, undefined, undefined, false);
+				self waittill( "zhc_end_of_cooldown" );
+				self.zhc_cooldown_waiting = undefined;
+			else
+				self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, kills, undefined, undefined, false);
 			//self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, 1, undefined); //waits for 16 kills and for next round
 		}else
 			return;
@@ -3635,6 +3653,20 @@ ZHC_ORDERED_BOX_ZHC_ALL_CHESTS_get_next_weapon_any_box(chest, init_open){
 
 }
 
+box_weapon_model_spawn_setup(){
+		// spawn the model
+		self delete_weapon_model();			//add later
+		//self.weapon_model_dw = undefined;
+		self.weapon_model = spawn( "script_model", self.origin); 
+		self.weapon_model.angles = self.angles +( 0, 90, 0 );
+		self.weapon_model_dw = spawn( "script_model", self.origin - (3 ,3 ,3)); 
+		self.weapon_model_dw.angles = self.angles +( 0, 90, 0 );
+}
+box_weapon_model_rise_start(floatHeight){
+	self.weapon_model moveto( self.weapon_model.origin +( 0, 0, floatHeight ), 3, 2, 0.9 ); 
+	self.weapon_model_dw moveto( self.weapon_model_dw.origin +( 0, 0, floatHeight ), 3, 2, 0.9 ); 
+}
+
 treasure_chest_weapon_init_spawn( chest, player, respin)
 {
 
@@ -3646,18 +3678,11 @@ treasure_chest_weapon_init_spawn( chest, player, respin)
 	//self thread clean_up_hacked_box();
 	assert(IsDefined(player));
 
-		// spawn the model
-		self delete_weapon_model();			//add later
-		//self.weapon_model_dw = undefined;
-		self.weapon_model = spawn( "script_model", self.origin); 
-		self.weapon_model.angles = self.angles +( 0, 90, 0 );
-		self.weapon_model_dw = spawn( "script_model", self.origin - (3 ,3 ,3)); 
-		self.weapon_model_dw.angles = self.angles +( 0, 90, 0 );
+		self box_weapon_model_spawn_setup();
 
 		floatHeight = 30;
 
-		self.weapon_model moveto( self.weapon_model.origin +( 0, 0, floatHeight ), 3, 2, 0.9 ); 
-		self.weapon_model_dw moveto( self.weapon_model_dw.origin +( 0, 0, floatHeight ), 3, 2, 0.9 ); 
+		self box_weapon_model_rise_start();
 		
 		self.weapon_string = undefined;
 		
@@ -3674,7 +3699,7 @@ treasure_chest_weapon_init_spawn( chest, player, respin)
 
 
 treasure_chest_weapon_spawn( chest, player, respin, init_open){
-	floatHeight = 30;
+	//floatHeight = 30;
 	rand = undefined; 
 
 	chest.chest_box setclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_BOX_RANDOM);
@@ -4894,7 +4919,7 @@ wall_weapon_wait_to_return(strength){	//this function hs=should only run for wal
 
 	self notify("weapon_stop");
 	self disable_trigger();
-
+	self.weapon_disabled = true;
 	if(strength > 0){
 		//IPrintLnBold("firing_wall_gun_goals");
 		self.weapon_model maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, 1, undefined, true);
@@ -4907,9 +4932,13 @@ wall_weapon_wait_to_return(strength){	//this function hs=should only run for wal
 		wait_network_frame();
 		self.first_time_triggered = false;
 	}
-
+	self.weapon_disabled = false;
 	self enable_trigger();
 	self thread weapon_spawn_think();
+}
+
+wall_weapon_is_active(){
+	return !is_true(self.weapon_disabled)
 }
 
 wall_upgrade_wait_to_return(is_chest, strength){
