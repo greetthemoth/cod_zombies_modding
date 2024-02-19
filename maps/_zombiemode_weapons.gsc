@@ -2173,7 +2173,7 @@ ZHC_box_wait_to_become_reopenable(){
 firesale_make_box_reopenable(){
 	self endon( "zhc_end_of_cooldown" );
 	if(!self box_currently_affect_by_firesale())
-		self waittill ("powerup fire sale"); //firesale ends expiration
+		level waittill ("powerup fire sale"); //firesale ends expiration
 	else
 		wait_network_frame( );//wait for cooldown to start before ending it.
 	self notify ("zhc_end_of_cooldown");
