@@ -2128,7 +2128,7 @@ treasure_chest_think(){
 
 	//if(self.chest_origin ZHC_teddy_is_here())
 	//	wait(5);
-	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE){
+	if(is_true(self.was_temp) && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE){
 		self ZHC_box_wait_to_become_reopenable();
 	}
 
