@@ -1,5 +1,5 @@
 Build 7.0.152 CL(966072) CODPCAB-V64 CEG Thu Sep 01 16:06:17 2011
-logfile opened on Mon Feb 19 12:16:18 2024
+logfile opened on Mon Feb 19 13:37:34 2024
 
 Current language: english
 Current search path:
@@ -205,13 +205,6 @@ Unknown command "updategamerprofile"
 Exec From Disk failed to open autoexec_dev.cfg
 Error: couldn't exec autoexec_dev.cfg
 64-bit OS detected
-      dvar set sys_configureGHz 0.0899629
-      dvar set sys_configSum 0
-========= autoconfigure
-configure.csv: using CPU configuration 0 GHz 640 MB
-execing configure.cfg from disk
-configure.csv: using GPU configuration "GeForce"
-      dvar set sys_configSum 266827972
       dvar set version Call of Duty Singleplayer - Ship COD_T5_S SP build 7.0.152 CL(966072) CODPCAB-V64 CEG Thu Sep 01 16:06:17 2011 win-x86
 Game_Mod - Production - Thu Apr 26 19:58:10 2018
 CPU vendor is "GenuineIntel"
@@ -253,14 +246,14 @@ Adding fastfile 'en_patch' to queue
 Adding fastfile 'patch' to queue
 Adding fastfile 'frontend_patch' to queue
 Adding fastfile 'mod' to queue
-Using 1 GPU(s).
-Initializing render targets...
 Loading fastfile 'en_patch'
 used 0.02 MB memory in DB alloc
-Requested frame buffer to be 24-bit color with 8-bit alpha
-DirectX returned a frame buffer that is 24-bit color with 8-bit alpha
+Using 1 GPU(s).
+Initializing render targets...
 Loading fastfile 'patch'
 used 3.96 MB memory in DB alloc
+Requested frame buffer to be 24-bit color with 8-bit alpha
+DirectX returned a frame buffer that is 24-bit color with 8-bit alpha
 INTZ format supported
 Initializing static model cache...
 Initializing dynamic buffers...
@@ -293,12 +286,12 @@ Error: Could not load material "create_lut2d".
 Error: Could not load material "apply_lut2d".
 Error: Could not load material "$ps3_reload_zcull_donotremove".
 Error: Could not load material "water_dynamic_spray".
-      dvar set sd_xa2_num_devices 1
---- Initializing Voice ---
 Loading fastfile 'frontend_patch'
 used 2.31 MB memory in DB alloc
 Loading fastfile 'mod'
 used 0.00 MB memory in DB alloc
+      dvar set sd_xa2_num_devices 1
+--- Initializing Voice ---
       dvar set tu_onlyhostqos 0
 Hostname: LAPTOP-F97P0NQ8
 Binding to 192.168.1.165:3074
@@ -331,237 +324,17 @@ execing buttons_default.cfg from fastfile
 execing otherkeysdefaults.cfg from fastfile
 execing thumbstick_default.cfg from fastfile
 Unknown command "updatevehiclebindings"
-end $init 10140 ms
+end $init 4651 ms
 --- Common Initialization Complete ---
 =============================== DVAR DUMP ========================================
-      cg_chatHeight "5"
-      cg_chatTime "12000"
-      cg_crosshairDynamic "0"
-      cg_drawBreathHint "1"
-      cg_drawCrosshairNames "1"
-      cg_drawFPS "Off"
-      cg_drawFPSLabels "1"
-      cg_drawFPSScale "0"
-      cg_drawFriendlyNames "1"
-      cg_drawMantleHint "1"
-      cg_drawSnapshotTime "1"
-      cg_drawTurretCrosshair "1"
-      cg_flareVisionSetFadeDuration "2000"
-      cg_fov_default "65"
-      cg_fov_default_thirdperson "40"
-      cg_gameBoldMessageWidth "390"
-      cg_gameMessageWidth "455"
-      cg_headIconMinScreenRadius "0.02"
-      cg_hintFadeTime "100"
-      cg_hudDamageIconHeight "64"
-      cg_hudDamageIconInScope "0"
-      cg_hudDamageIconOffset "128"
-      cg_hudDamageIconTime "2000"
-      cg_hudDamageIconWidth "128"
-      cg_hudGrenadeIconEnabledFlash "0"
-      cg_hudGrenadeIconHeight "25"
-      cg_hudGrenadeIconInScope "1"
-      cg_hudGrenadeIconMaxHeight "104"
-      cg_hudGrenadeIconOffset "50"
-      cg_hudGrenadeIconWidth "25"
-      cg_hudGrenadePointerHeight "12"
-      cg_hudGrenadePointerPivot "12 27"
-      cg_hudGrenadePointerWidth "25"
-      cg_hudMapBorderWidth "2"
-      cg_hudMapFriendlyHeight "15"
-      cg_hudMapFriendlyWidth "15"
-      cg_hudMapPlayerHeight "20"
-      cg_hudMapPlayerWidth "20"
-      cg_hudStanceHintPrints "0"
-      cg_overheadIconSize "0.9"
-      cg_overheadNamesFont "2"
-      cg_overheadNamesSize "0.8"
-      cg_overheadRankSize "0.7"
-      cg_teamChatsOnly "0"
-      cg_voiceIconSize "0"
-      cg_weaponCycleDelay "0"
-      cg_youInKillCamSize "6"
-      cl_allowDownload "0"
-      cl_freelook "1"
-      cl_maxpackets "30"
-      cl_maxPing "800"
-      cl_mouseAccel "0"
-      cl_packetdup "1"
-      cl_paused "0"
-      cl_pitchspeed "140"
-      cl_voice "1"
-      cl_yawspeed "140"
-      com_maxfps "85"
-      con_minicon "0"
-      con_miniconlines "5"
-      con_minicontime "4"
-      con_outputBarColor "1 1 0.95 0.6"
-      con_outputSliderColor "0.15 0.15 0.1 0.6"
-      con_outputWindowColor "0.35 0.35 0.3 0.75"
-      fx_marks "1"
-      fx_marks_ents "1"
-      fx_marks_smodels "1"
-      g_allowvote "1"
-      g_banIPs ""
-      g_deadChat "0"
-      g_dropForwardSpeed "10"
-      g_dropHorzSpeedRand "100"
-      g_dropUpSpeedBase "10"
-      g_dropUpSpeedRand "5"
-      g_log "games_mp.log"
-      g_logSync "0"
-      g_oldVoting "1"
-      g_playerCollisionEjectSpeed "25"
-      g_useGear "0"
-      g_useholdspawndelay "1"
-      g_voiceChatTalkingDuration "500"
-      g_voteAbstainWeight "0.5"
-      gpad_buttonsConfig "buttons_default"
-      gpad_enabled "1"
-      gpad_sticksConfig "thumbstick_default"
-      in_mouse "1"
-      input_invertPitch "0"
-      input_viewSensitivity "2"
-      log_append "0"
-      logfile "1"
-      m_filter "0"
-      m_forward "0.25"
-      m_pitch "0.022"
-      m_side "0.25"
-      m_yaw "0.022"
-      monkeytoy "1"
-      net_noudp "0"
-      net_socksEnabled "0"
-      net_socksPassword ""
-      net_socksPort "1080"
-      net_socksServer ""
-      net_socksUsername ""
-      r_aaAlpha "dither (fast)"
-      r_aaSamples "4"
-      r_allow_intz "1"
-      r_allow_null_rt "1"
-      r_aspectRatio "auto"
-      r_autopriority "0"
-      r_backBufferSize "960"
-      r_backBufferSizeY "544"
-      r_blur_allowed "1"
-      r_clipCodec "MJPEG"
-      r_clipFPS "24"
-      r_clipSize "360"
-      r_customMode ""
-      r_depthPrepass "0"
-      r_displayRefresh "60 Hz"
-      r_distortion "1"
-      r_dof_enable "1"
-      r_fastSkin "0"
-      r_filmLut "-1"
-      r_flame_allowed "1"
-      r_flameFX_distortionScaleFactor "0 1 1 0.511918"
-      r_flameFX_enable "0"
-      r_flameFX_fadeDuration "0.5"
-      r_flameFX_FPS "15"
-      r_flameFX_magnitude "0.0215147"
-      r_fovScaleThresholdRigid "2.4"
-      r_fovScaleThresholdSkinned "2.4"
-      r_fullscreen "1"
-      r_gamma "1"
-      r_gfxopt_dynamic_foliage "1"
-      r_gfxopt_water_simulation "1"
-      r_glow_allowed "1"
-      r_ignorehwgamma "0"
-      r_inGameVideo "1"
-      r_lodBiasRigid "0"
-      r_lodBiasSkinned "0"
-      r_lodScaleRigid "1"
-      r_lodScaleSkinned "1"
-      r_mode "1024x768"
-      r_monitor "0"
-      r_motionblur_directionFactor "0.001"
-      r_motionblur_enable "0"
-      r_motionblur_frameBased_enable "0"
-      r_motionblur_maxblur "30"
-      r_motionblur_numberOfSamples "1"
-      r_motionblur_positionFactor "0.01"
-      r_multiGpu "1"
-      r_multithreaded_device "0"
-      r_picmip "1"
-      r_picmip_bump "1"
-      r_picmip_manual "0"
-      r_picmip_spec "1"
-      r_picmip_water "1"
-      r_polygonOffsetBias "-1"
-      r_polygonOffsetScale "-1"
-      r_portalBevels "0.7"
-      r_rendererPreference "Default"
-      r_reviveFX_debug "0"
-      r_reviveFX_fadeDuration "5"
-      r_shaderWarming "0"
-      r_specular "1"
-      r_texFilterAnisoMax "16"
-      r_texFilterAnisoMin "1"
-      r_texFilterMipMode "Unchanged"
-      r_use_driver_convergence "0"
-      r_vsync "1"
-      r_waterSheetingFX_allowed "1"
-      r_waterSheetingFX_distortionScaleFactor "0.021961 1 0 0"
-      r_waterSheetingFX_enable "0"
-      r_waterSheetingFX_fadeDuration "2"
-      r_waterSheetingFX_magnitude "0.0655388"
-      r_waterSheetingFX_radius "4.44051"
-      ragdoll_enable "1"
-      ragdoll_max_simulating "16"
-      rate "25000"
-      sd_xa2_device_guid "{119d4635-f88e-4d4f-ae88-d9f4a17e23ba}"
-      sensitivity "5"
-      sm_enable "1"
-      sm_maxLights "4"
-      snaps "20"
-      snd_enableEq "0"
-      snd_khz "44"
-      snd_losOcclusion "1"
-      snd_menu_center_channel "1"
-      snd_menu_cinematic "1"
-      snd_menu_left_channel "1"
-      snd_menu_left_surround "1"
-      snd_menu_lfe "1"
-      snd_menu_listen_level "0"
-      snd_menu_master "0"
-      snd_menu_music "1"
-      snd_menu_right_channel "1"
-      snd_menu_right_surround "1"
-      snd_menu_sfx "1"
-      snd_menu_speaker_setup "0"
-      snd_menu_voice "1"
-      snd_speakerConfiguration "7.1"
-      sv_allowDownload "1"
-      sv_floodProtect "1"
-      sv_hostname "BlackOpsZombie"
-      sv_maxPing "0"
-      sv_maxRate "7000"
-      sv_minPing "0"
-      sv_reconnectlimit "3"
-      sv_vac "0"
-      sv_voice "1"
-      sys_configSum "266827972"
-      sys_configureGHz "0.0899629"
-      sys_gpu "NVIDIA GeForce MX250"
-      sys_sysMB "1024"
-      team_indicator "0"
-      voice_deadChat "0"
-      voice_global "0"
-      voice_localEcho "0"
-      winvoice_mic_mute "1"
-      winvoice_mic_reclevel "65535"
-      winvoice_mic_scaler "1"
-      winvoice_save_voice "0"
 
-220 total dvars
-2329 dvar indexes
+0 total dvars
+2327 dvar indexes
 =============================== END DVAR DUMP =====================================
       dvar set zombieStopSplitScreen 1
       dvar set zombiemode 1
       dvar set sv_cheats 1
-Timestamp: SV_SpawnServer 1708362988
+Timestamp: SV_SpawnServer 1708367858
 g_gametype cmp is not a valid gametype, defaulting to cmp
 Redundant asset: 'localize','MENU_TESTINGBANDWIDTH'
 Redundant asset: 'localize','MENU_DOWNLOADING_GAME_SETTINGS_CAPS'
@@ -790,13 +563,13 @@ Redundant asset: 'stringtable','maps/mapstable.csv'
 Redundant asset: 'rawfile','coopmaps.arena'
 Redundant asset: 'rawfile','mod'
       dvar set com_maxclients 1
-[00010331] 0: CA_DISCONNECTED
+[00004863] 0: CA_DISCONNECTED
       dvar set mapname zombie_theater
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 3922781842, challengeNum 2700646918 to server
+CHALLENGERESPONSE: Sending nonce 3392385384, challengeNum 1629768363 to server
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 3922781842, challengeNum 2700646918 to server
-Huffman Took 0 Milliseconds
+CHALLENGERESPONSE: Sending nonce 3392385384, challengeNum 1629768363 to server
+Huffman Took 2 Milliseconds
 ------ Server Initialization ------
 Server: zombie_theater
       dvar set sv_running 1
@@ -822,7 +595,7 @@ FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'LongerGas
 FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'usermaps'
 Customized arena file not found: mod.arena
       dvar set ui_netGametypeName zom
-Save Message First Frame Shown: 10425
+Save Message First Frame Shown: 4953
 BinkOpen failed on C:\Steam\steamapps\common\Call of Duty Black Ops\mods/cod_zombies_modding\video\zombie_theater_load.bik because: Error opening file.
 Adding fastfile 'common_zombie_patch' to queue
 Adding fastfile 'en_common_zombie' to queue
@@ -836,9 +609,38 @@ Loading fastfile 'en_common_zombie'
 used 0.11 MB memory in DB alloc
 Loading fastfile 'common_zombie'
 used 77.02 MB memory in DB alloc
+      dvar set cl_paused 1
+ - R_Cinematic_BeginLostDevice()...
+DB_BeginRecoverLostDevice()...
 WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\common_zombie_patch_override_patch.ff'
 WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\en_common_zombie_patch_override.ff'
 WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\common_zombie_patch_override.ff'
+R_ResetModelLighting()...
+R_ReleaseAllModels()...
+R_ReleaseLostImages()...
+R_ReleaseWorld()...
+Com_TouchMemory: 0 msec. Using sum: 0
+Recovering lost device...
+R_ResetDevice()...
+Using 4x anti-aliasing
+Resetting 1024 x 768 fullscreen.
+Initializing render targets...
+Requested frame buffer to be 24-bit color with 8-bit alpha
+DirectX returned a frame buffer that is 24-bit color with 8-bit alpha
+INTZ format supported
+Initializing static model cache...
+Initializing dynamic buffers...
+Initializing particle cloud buffer...
+Creating Direct3D queries...
+R_ReloadWorld()...
+R_ReloadLostImages()...
+R_OptimizeAllModels()...
+DB_EndRecoverLostDevice()...
+R_Cinematic_EndLostDevice()...
+R_AbortRenderCommands()...
+R_PushRemoteScreenUpdate()...
+Finished recovering lost device.
+      dvar set cl_paused 0
 Redundant asset: 'rawfile','animtrees/generic_human.atr'
 Redundant asset: 'rawfile','clientscripts/_audio.csc'
 Redundant asset: 'rawfile','clientscripts/_callbacks.csc'
@@ -1189,7 +991,7 @@ Loading fastfile 'en_zombie_theater'
 used 1.61 MB memory in DB alloc
 Loading fastfile 'zombie_theater'
 used 103.04 MB memory in DB alloc
-Waited 3222 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
+Waited 3250 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
       dvar set player_damageMultiplier 1
       dvar set player_damageMultiplier 0.363636
 ----------------------
@@ -1348,7 +1150,6 @@ maps/_callbacksetup
 ++++++++++++++++maps/_zombiemode_blockers
 +++++++++++++++++maps/zhc_zombiemode_zhc
 ++++++++++++++++++maps/_zombiemode_powerups
-WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\zombie_theater_patch_override.ff'
 ++++++++++++++++maps/_zombiemode_user
 ++++++++++++++++maps/_zombiemode_weap_cymbal_monkey
 ++++++++++++++++maps/_zombiemode_weap_freezegun
@@ -1357,6 +1158,7 @@ WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\z
 ++++++++++++++++maps/_zombiemode_weap_crossbow
 ++++++++++++++++maps/_zombiemode_bowie
 ++++++++++++++++maps/_zombiemode_traps
+WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\zombie_theater_patch_override.ff'
 ++++++++++++++++maps/_zombiemode_weapon_box
 ++++++++++++++++maps/_zombiemode_ai_dogs
 +++++++++++++++++animscripts/zombie_dog_init
@@ -2701,19 +2503,37 @@ Not connected to a server.
 Not connected to a server.
 Unknown command "readStats"
       dvar set sv_paused 1
+      dvar set cl_paused 0
+PC ONLY: No menu has focus and 5, what should I do?Unknown command "fade"
+Not connected to a server.
+Unknown command "fade"
 Connecting to Demonware...
       dvar set dw_popup popup_connecting_dw
+SV_DirectConnect()
+CHALLENGE RESPONSE: Read userID 0, clientChallenge 1629768363, nonce 3392385384
+Failed to parse userId!
+Connecting player #0 has a zero GUID
+Going from CS_FREE to CS_CONNECTED for  (num 0 guid 0)
 Hostname: LAPTOP-F97P0NQ8
 Binding to 192.168.1.165:3074
+Received packet 0 of 1 of stats data
 DW_DNS_RESOLVING
       dvar set dw_popup popup_dw_dns_lookup
 Initialized Messaging for controller 0.
-.DW_REQUESTED_STEAM_TICKET
+Unknown Soldier 0 : dropped gamestate, resending
+.SV_SendClientGameState() for Unknown Soldier 0
+Going from CS_CONNECTED to CS_CLIENTLOADING for Unknown Soldier 0
+--
+DynEnt_WriteGameState wrote 2 bytes
+--
+Sending 31278 bytes in gamestate to client: 0
+      dvar set com_voip_resume_time 34688
+DW_REQUESTED_STEAM_TICKET
 STEAM: Wrote cached auth ticket
 STEAM: Retrieved auth ticket from Steam, sending to DemonWare
 DW_AUTHORIZING
       dvar set dw_popup popup_dw_authorize_account
-DW_AUTHORIZED (220 msecs)
+DW_AUTHORIZED (219 msecs)
 Got license type 0
 DW_LOBBY_CONNECTING
       dvar set dw_popup popup_dw_downloading_account_data
@@ -2735,38 +2555,23 @@ GamerProfile_LogInProfile took 0ms
 Cmd_AddCommand: incrementcounter already defined
 Cmd_AddCommand: dumpLiveCounters already defined
 Error: Global counter string table 'mp/globalcounters.csv' has an invalid value: a0.
+CHALLENGERESPONSE: Sending bdOnlineUserID 76561199067054074 to server
+CHALLENGERESPONSE: Sending nonce 3392385384, challengeNum 1629768363 to server
 Error '101' trying to measure upload bandwidth
-Read 80 bytes of file CompressedMetPlayer3.info. (161ms)
-Read 3493 bytes of file online_tu14_sp_english.wad. (161ms)
+Read 41 bytes of file spstatsCompressed. (168ms)
+Stats blob received from Demonware for controller 0.
+Read 80 bytes of file CompressedMetPlayer3.info. (171ms)
+Read 3493 bytes of file online_tu14_sp_english.wad. (171ms)
 WAD: Big-endian WAD on Small-endian machine
 Got Online WAD. 3 entries, generated: Mon Oct 10 20:50:22 2011
       dvar set motd Zombies! Play back to back with friends in co-op to survive endless waves of the undead. Good luck.
 Warning: Invalid category ID found, returning first category.
-Read 41 bytes of file spstatsCompressed. (169ms)
-Stats blob received from Demonware for controller 0.
-      dvar set cl_paused 0
-PC ONLY: No menu has focus and 5, what should I do?Unknown command "fade"
-Not connected to a server.
-SV_DirectConnect()
-CHALLENGE RESPONSE: Read userID 0, clientChallenge 2700646918, nonce 3922781842
-Failed to parse userId!
-Connecting player #0 has a zero GUID
-Going from CS_FREE to CS_CONNECTED for  (num 0 guid 0)
-Received packet 0 of 1 of stats data
-Unknown Soldier 0 : dropped gamestate, resending
-SV_SendClientGameState() for Unknown Soldier 0
-Going from CS_CONNECTED to CS_CLIENTLOADING for Unknown Soldier 0
---
-DynEnt_WriteGameState wrote 2 bytes
---
-Sending 31269 bytes in gamestate to client: 0
-      dvar set com_voip_resume_time 28414
 Setting state to CA_LOADING in CL_DownloadsComplete
       dvar set cl_paused 1
-[00028640] 0: CA_LOADING
+[00034885] 0: CA_LOADING
 Setting state to CA_LOADING in CL_InitCGame
       dvar set cl_paused 0
-Fade in 29640 1750
+Fade in 35885 1750
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
@@ -3394,13 +3199,12 @@ Error: Could not load material "terrain_scorch_fruit".
 Error: Could not load material "terrain_scorch_paintedmetal".
 Error: Could not load material "terrain_scorch_player".
 Error: Could not load material "terrain_scorch_tallgrass".
-[00030850] 0: CA_PRIMED
-CL_InitCGame:  2.21 seconds
-Com_TouchMemory: 0 msec. Using sum: 102327970
-[CLIENT COMMAND]: 0 fade
-Going from CS_CLIENTLOADING to CS_ACTIVE for Unknown Soldier 0
-[00030918] 0: CA_ACTIVE
-Fade in 31418 1250
+[00036848] 0: CA_PRIMED
+CL_InitCGame:  1.96 seconds
+Com_TouchMemory: 0 msec. Using sum: -493263208
+Going from CS_CLIENTLOADING to CS_ACTIVE for mothphilo
+[00036920] 0: CA_ACTIVE
+Fade in 37421 1250
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
@@ -3418,17 +3222,17 @@ execing thumbstick_default.cfg from fastfile
       dvar set r_exposureValue 0.175999
       dvar set player_damageMultiplier 0.322581
       dvar set player_deathInvulnerableTime 1700
+      dvar set r_exposureValue 0.228899
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
 execing buttons_default.cfg from fastfile
 execing otherkeysdefaults.cfg from fastfile
 execing thumbstick_default.cfg from fastfile
-      dvar set r_exposureValue 0.228899
       dvar set r_exposureValue 0.279154
       dvar set r_exposureValue 0.326897
       dvar set r_exposureValue 0.372252
-Player 0 transporter sick for 2000 (ms) at time: 1694
+Player 0 transporter sick for 2000 (ms) at time: 1801
       dvar set r_exposureValue 0.415339
       dvar set r_exposureValue 0.456272
       dvar set r_exposureValue 0.495159
@@ -3519,20 +3323,17 @@ Player 0 transporter sick for 2000 (ms) at time: 1694
       dvar set r_exposureValue 1.22456
       dvar set r_exposureValue 1.22503
       dvar set r_exposureValue 1.22548
-      dvar set r_exposureValue 1.2259
-      dvar set r_exposureValue 1.22631
-      dvar set r_exposureValue 1.22669
       dvar set ammoCounterHide 0
       dvar set miniscoreboardhide 0
       dvar set ui_right_ammo_width 13
       dvar set ui_ammo_stock_width 27
+      dvar set r_exposureValue 1.2259
+      dvar set r_exposureValue 1.22631
+      dvar set r_exposureValue 1.22669
       dvar set r_exposureValue 1.22706
       dvar set r_exposureValue 1.22741
       dvar set r_exposureValue 1.22774
       dvar set r_exposureValue 1.22805
-      dvar set ai_meleeRange 120
-      dvar set ai_meleeWidth 0
-      dvar set ai_meleeHeight 0
       dvar set r_exposureValue 1.22835
       dvar set r_exposureValue 1.22863
       dvar set r_exposureValue 1.2289
@@ -3544,11 +3345,11 @@ Player 0 transporter sick for 2000 (ms) at time: 1694
       dvar set r_exposureValue 1.23025
       dvar set r_exposureValue 1.23044
       dvar set r_exposureValue 1.23061
+Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.23078
       dvar set r_exposureValue 1.23094
       dvar set r_exposureValue 1.2311
       dvar set r_exposureValue 1.23124
-Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.23138
       dvar set r_exposureValue 1.23151
       dvar set r_exposureValue 1.23164
@@ -3693,1078 +3494,231 @@ Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.234
       dvar set r_exposureValue 1.234
       dvar set r_exposureValue 1.234
-      dvar set aa_enemy_damage_taken 160
-      dvar set aa_enemy_damage_taken 240
-      dvar set aa_player_damage_dealt 160
-      dvar set aa_enemy_damage_taken 320
+AI (entity 656, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 656, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 667, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 95
+      dvar set aa_player_damage_dealt 95
+      dvar set aa_ads_damage_dealt 95
+      dvar set aa_enemy_damage_taken 165
+      dvar set ui_right_ammo_width 26
+      dvar set ui_right_ammo_width 13
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_short_sight) for weapon (commando_zm)
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+      dvar set aa_enemy_damage_taken 1665
       dvar set aa_enemy_deaths 2
       dvar set aa_player_kills 2
-      dvar set aa_enemy_damage_taken 425
-      dvar set aa_player_damage_dealt 265
-      dvar set aa_enemy_damage_taken 530
-      dvar set aa_player_damage_dealt 370
-      dvar set aa_ads_damage_dealt 210
-      dvar set aa_enemy_damage_taken 635
-      dvar set aa_player_damage_dealt 475
-      dvar set aa_ads_damage_dealt 315
-      dvar set aa_enemy_damage_taken 740
+      dvar set aa_enemy_damage_taken 3021
       dvar set aa_enemy_deaths 3
       dvar set aa_player_kills 3
-      dvar set aa_enemy_damage_taken 820
+      dvar set aa_enemy_damage_taken 4521
       dvar set aa_enemy_deaths 4
       dvar set aa_player_kills 4
-      dvar set aa_enemy_damage_taken 900
-      dvar set aa_player_damage_dealt 555
-      dvar set aa_ads_damage_dealt 395
-      dvar set aa_enemy_damage_taken 980
-      dvar set aa_player_damage_dealt 635
-      dvar set aa_ads_damage_dealt 475
-      dvar set aa_enemy_damage_taken 1085
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+      dvar set aa_enemy_damage_taken 4673
       dvar set aa_enemy_deaths 5
       dvar set aa_player_kills 5
-      dvar set aa_enemy_damage_taken 1190
-      dvar set aa_player_damage_dealt 740
-      dvar set aa_enemy_damage_taken 1295
-      dvar set aa_player_damage_dealt 845
-      dvar set aa_enemy_damage_taken 1400
-      dvar set aa_player_damage_dealt 950
-      dvar set aa_enemy_damage_taken 1505
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+      dvar set aa_enemy_damage_taken 6173
       dvar set aa_enemy_deaths 6
       dvar set aa_player_kills 6
-      dvar set ui_ammo_stock_width 17
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
       dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
       dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
       dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
       dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ai_meleeRange 100
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_short_sight) for weapon (commando_zm)
+      dvar set ui_right_ammo_width 13
       dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 1820
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_scope_colt) for weapon (python_zm)
+      dvar set aa_enemy_damage_taken 7673
       dvar set aa_enemy_deaths 7
       dvar set aa_player_kills 7
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 2102
+      dvar set aa_enemy_damage_taken 8673
       dvar set aa_enemy_deaths 8
       dvar set aa_player_kills 8
-R_MarkFragments: Too many triangles to mark, max 255 radius 53.08 at -240.00 -1059.00 88.23
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 2417
+      dvar set aa_enemy_damage_taken 9673
       dvar set aa_enemy_deaths 9
       dvar set aa_player_kills 9
-      dvar set aa_enemy_damage_taken 2522
-      dvar set aa_player_damage_dealt 1055
-      dvar set aa_ads_damage_dealt 580
-      dvar set aa_enemy_damage_taken 2653
+      dvar set aa_enemy_damage_taken 10673
       dvar set aa_enemy_deaths 10
       dvar set aa_player_kills 10
-      dvar set ui_ammo_stock_width 17
-      dvar set aa_enemy_damage_taken 2968
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set aa_enemy_damage_taken 12173
       dvar set aa_enemy_deaths 11
       dvar set aa_player_kills 11
-      dvar set aa_enemy_damage_taken 3073
-      dvar set aa_player_damage_dealt 1160
-      dvar set aa_ads_damage_dealt 685
-      dvar set aa_enemy_damage_taken 3388
+      dvar set aa_enemy_damage_taken 13173
       dvar set aa_enemy_deaths 12
       dvar set aa_player_kills 12
-      dvar set aa_enemy_damage_taken 3838
+      dvar set aa_enemy_damage_taken 14173
       dvar set aa_enemy_deaths 13
       dvar set aa_player_kills 13
-      dvar set aa_enemy_damage_taken 3969
-      dvar set aa_player_damage_dealt 1291
-      dvar set aa_ads_damage_dealt 816
-      dvar set aa_enemy_damage_taken 4100
-      dvar set aa_player_damage_dealt 1422
-      dvar set aa_ads_damage_dealt 947
-      dvar set aa_enemy_damage_taken 4415
+      dvar set aa_enemy_damage_taken 15673
       dvar set aa_enemy_deaths 14
       dvar set aa_player_kills 14
-AI (entity 618, origin 810.0 628.0 -63.9) couldn't find path to goal.
-AI (entity 581, origin -819.0 607.5 -63.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 4615
-      dvar set aa_player_damage_dealt 1622
-      dvar set aa_enemy_damage_taken 4816
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+Error: CG_SetWeaponHidePartBits: No such bone tag (tag_short_sight) for weapon (commando_zm)
+      dvar set aa_enemy_damage_taken 15823
+      dvar set aa_player_damage_dealt 245
+      dvar set aa_enemy_damage_taken 15973
       dvar set aa_enemy_deaths 15
       dvar set aa_player_kills 15
-AI (entity 442, origin -819.0 607.5 -63.9) couldn't find path to goal.
-AI (entity 593, origin 810.0 628.0 -63.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 6816
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set aa_enemy_damage_taken 16573
       dvar set aa_enemy_deaths 16
       dvar set aa_player_kills 16
-      dvar set aa_enemy_damage_taken 7216
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 37
+AI (entity 683, origin 810.0 628.0 -63.9) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 16723
+      dvar set aa_player_damage_dealt 395
+      dvar set aa_ads_damage_dealt 245
+      dvar set aa_enemy_damage_taken 16873
       dvar set aa_enemy_deaths 17
       dvar set aa_player_kills 17
-      dvar set aa_enemy_damage_taken 7417
-      dvar set aa_player_damage_dealt 1823
-      dvar set aa_enemy_damage_taken 7618
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_ammo_stock_width 37
+      dvar set aa_enemy_damage_taken 17023
+      dvar set aa_player_damage_dealt 545
+      dvar set aa_ads_damage_dealt 395
+      dvar set aa_enemy_damage_taken 17173
       dvar set aa_enemy_deaths 18
       dvar set aa_player_kills 18
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 36
-Could not load xanim "".
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights1) for weapon (cz75lh_zm)
       dvar set ui_ammo_stock_width 27
       dvar set ui_ammo_stock_width 37
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_short_sight) for weapon (commando_zm)
-      dvar set aa_enemy_damage_taken 8218
+      dvar set aa_enemy_damage_taken 17323
+      dvar set aa_player_damage_dealt 695
+      dvar set aa_ads_damage_dealt 545
+      dvar set aa_enemy_damage_taken 17923
       dvar set aa_enemy_deaths 19
       dvar set aa_player_kills 19
-      dvar set aa_enemy_damage_taken 8818
+      dvar set ui_ammo_stock_width 27
+      dvar set aa_enemy_damage_taken 18523
       dvar set aa_enemy_deaths 20
       dvar set aa_player_kills 20
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 37
-      dvar set aa_enemy_damage_taken 8968
-      dvar set aa_player_damage_dealt 1973
-      dvar set aa_enemy_damage_taken 9568
+      dvar set aa_enemy_damage_taken 18673
+      dvar set aa_player_damage_dealt 845
+      dvar set aa_ads_damage_dealt 695
+      dvar set aa_enemy_damage_taken 18815
+      dvar set aa_player_damage_dealt 987
+      dvar set aa_ads_damage_dealt 837
+      dvar set aa_enemy_damage_taken 18965
       dvar set aa_enemy_deaths 21
       dvar set aa_player_kills 21
-      dvar set aa_enemy_damage_taken 9685
-      dvar set aa_player_damage_dealt 2090
-      dvar set aa_enemy_damage_taken 9811
-      dvar set aa_player_damage_dealt 2216
-      dvar set aa_enemy_damage_taken 10411
+      dvar set aa_enemy_damage_taken 19565
       dvar set aa_enemy_deaths 22
       dvar set aa_player_kills 22
-      dvar set aa_enemy_damage_taken 11011
+      dvar set aa_enemy_damage_taken 19715
+      dvar set aa_player_damage_dealt 1137
+      dvar set aa_enemy_damage_taken 19863
+      dvar set aa_player_damage_dealt 1285
+      dvar set aa_enemy_damage_taken 20013
       dvar set aa_enemy_deaths 23
       dvar set aa_player_kills 23
-      dvar set aa_enemy_damage_taken 11161
-      dvar set aa_player_damage_dealt 2366
-      dvar set aa_enemy_damage_taken 11311
+      dvar set aa_enemy_damage_taken 20163
+      dvar set aa_player_damage_dealt 1435
+      dvar set aa_enemy_damage_taken 20313
       dvar set aa_enemy_deaths 24
       dvar set aa_player_kills 24
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 11450
-      dvar set aa_player_damage_dealt 2505
-      dvar set aa_enemy_damage_taken 11600
-      dvar set aa_player_damage_dealt 2655
-      dvar set aa_enemy_damage_taken 12200
+      dvar set aa_enemy_damage_taken 20913
       dvar set aa_enemy_deaths 25
       dvar set aa_player_kills 25
-      dvar set aa_enemy_damage_taken 12350
-      dvar set aa_enemy_deaths 26
-      dvar set aa_player_kills 26
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 12500
-      dvar set aa_player_damage_dealt 2805
-      dvar set aa_enemy_damage_taken 12650
-      dvar set aa_player_damage_dealt 2955
-      dvar set aa_enemy_damage_taken 12795
-      dvar set aa_enemy_deaths 27
-      dvar set aa_player_kills 27
-      dvar set aa_enemy_damage_taken 12945
-      dvar set aa_enemy_deaths 28
-      dvar set aa_player_kills 28
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_short_sight) for weapon (commando_zm)
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 13095
-      dvar set aa_player_damage_dealt 3105
-      dvar set aa_ads_damage_dealt 1097
-      dvar set aa_enemy_damage_taken 13245
-      dvar set aa_player_damage_dealt 3255
-      dvar set aa_ads_damage_dealt 1247
-      dvar set aa_enemy_damage_taken 13395
-      dvar set aa_enemy_deaths 29
-      dvar set aa_player_kills 29
-AI (entity 457, origin 810.0 628.0 -63.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 13545
-      dvar set aa_player_damage_dealt 3405
-      dvar set aa_ads_damage_dealt 1397
-      dvar set aa_enemy_damage_taken 13695
-      dvar set aa_player_damage_dealt 3555
-      dvar set aa_ads_damage_dealt 1547
-      dvar set aa_enemy_damage_taken 13845
-      dvar set aa_enemy_deaths 30
-      dvar set aa_player_kills 30
-      dvar set aa_enemy_damage_taken 13995
-      dvar set aa_player_damage_dealt 3705
-      dvar set aa_ads_damage_dealt 1697
-      dvar set aa_enemy_damage_taken 14145
-      dvar set aa_player_damage_dealt 3855
-      dvar set aa_ads_damage_dealt 1847
-      dvar set aa_enemy_damage_taken 14295
-      dvar set aa_enemy_deaths 31
-      dvar set aa_player_kills 31
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 14895
-      dvar set aa_enemy_deaths 32
-      dvar set aa_player_kills 32
-AI (entity 543, origin 810.0 628.0 -63.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 15045
-      dvar set aa_player_damage_dealt 4005
-      dvar set aa_ads_damage_dealt 1997
-      dvar set aa_enemy_damage_taken 15645
-      dvar set aa_enemy_deaths 33
-      dvar set aa_player_kills 33
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 15793
-      dvar set aa_player_damage_dealt 4153
-      dvar set aa_enemy_damage_taken 16393
-      dvar set aa_enemy_deaths 34
-      dvar set aa_player_kills 34
-      dvar set aa_enemy_damage_taken 16523
-      dvar set aa_player_damage_dealt 4283
-      dvar set aa_enemy_damage_taken 16654
-      dvar set aa_player_damage_dealt 4414
-      dvar set aa_enemy_damage_taken 16793
-      dvar set aa_enemy_deaths 35
-      dvar set aa_player_kills 35
-      dvar set aa_enemy_damage_taken 16929
-      dvar set aa_player_damage_dealt 4550
-      dvar set aa_enemy_damage_taken 17079
-      dvar set aa_enemy_deaths 36
-      dvar set aa_player_kills 36
-      dvar set aa_enemy_damage_taken 17210
-      dvar set aa_player_damage_dealt 4681
-      dvar set aa_enemy_damage_taken 17746
-      dvar set aa_enemy_deaths 37
-      dvar set aa_player_kills 37
-      dvar set aa_enemy_damage_taken 17876
-      dvar set aa_player_damage_dealt 4811
-      dvar set aa_enemy_damage_taken 18026
-      dvar set aa_player_damage_dealt 4961
-      dvar set ui_ammo_stock_width 17
-      dvar set aa_enemy_damage_taken 18176
-      dvar set aa_player_damage_dealt 5111
-      dvar set aa_enemy_damage_taken 18776
-      dvar set aa_enemy_deaths 38
-      dvar set aa_player_kills 38
-      dvar set aa_enemy_damage_taken 18926
-      dvar set aa_enemy_deaths 39
-      dvar set aa_player_kills 39
-      dvar set aa_enemy_damage_taken 19076
-      dvar set aa_player_damage_dealt 5261
-      dvar set aa_enemy_damage_taken 19226
-      dvar set aa_enemy_deaths 40
-      dvar set aa_player_kills 40
-      dvar set ui_right_ammo_width 13
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 19751
-      dvar set aa_enemy_deaths 41
-      dvar set aa_player_kills 41
-      dvar set aa_enemy_damage_taken 20276
-      dvar set aa_enemy_deaths 42
-      dvar set aa_player_kills 42
-      dvar set aa_enemy_damage_taken 20801
-      dvar set aa_enemy_deaths 43
-      dvar set aa_player_kills 43
-      dvar set ui_ammo_stock_width 36
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights1) for weapon (cz75lh_zm)
-      dvar set aa_enemy_damage_taken 20951
-      dvar set aa_player_damage_dealt 5411
-      dvar set aa_enemy_damage_taken 21101
-      dvar set aa_player_damage_dealt 5561
-      dvar set aa_enemy_damage_taken 21251
-      dvar set aa_enemy_deaths 44
-      dvar set aa_player_kills 44
-      dvar set aa_enemy_damage_taken 21776
-      dvar set aa_enemy_deaths 45
-      dvar set aa_player_kills 45
-      dvar set aa_enemy_damage_taken 21926
-      dvar set aa_player_damage_dealt 5711
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 22451
-      dvar set aa_enemy_deaths 46
-      dvar set aa_player_kills 46
-      dvar set aa_enemy_damage_taken 22601
-      dvar set aa_player_damage_dealt 5861
-      dvar set aa_enemy_damage_taken 23126
-      dvar set aa_enemy_deaths 47
-      dvar set aa_player_kills 47
-      dvar set aa_enemy_damage_taken 23276
-      dvar set aa_player_damage_dealt 6011
-      dvar set aa_enemy_damage_taken 23426
-      dvar set aa_player_damage_dealt 6161
-      dvar set aa_enemy_damage_taken 23576
-      dvar set aa_enemy_deaths 48
-      dvar set aa_player_kills 48
-      dvar set aa_enemy_damage_taken 23717
-      dvar set aa_player_damage_dealt 6302
-      dvar set aa_ads_damage_dealt 2138
-      dvar set aa_enemy_damage_taken 23877
-      dvar set aa_player_damage_dealt 6462
-      dvar set aa_ads_damage_dealt 2298
-      dvar set aa_enemy_damage_taken 24022
-      dvar set aa_enemy_deaths 49
-      dvar set aa_player_kills 49
-      dvar set aa_enemy_damage_taken 24182
-      dvar set aa_enemy_deaths 50
-      dvar set aa_player_kills 50
-      dvar set aa_enemy_damage_taken 24272
-      dvar set aa_player_damage_dealt 6552
-      dvar set aa_enemy_damage_taken 24632
-      dvar set aa_enemy_deaths 51
-      dvar set aa_player_kills 51
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 36
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_short_sight) for weapon (commando_zm)
-      dvar set ui_ammo_stock_width 27
-AI (entity 446, origin 810.0 628.0 -63.9) couldn't find path to goal.
-      dvar set ui_ammo_stock_width 36
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights1) for weapon (cz75lh_zm)
-      dvar set aa_enemy_damage_taken 24782
-      dvar set aa_player_damage_dealt 6702
-      dvar set aa_enemy_damage_taken 25307
-      dvar set aa_enemy_deaths 52
-      dvar set aa_player_kills 52
-      dvar set ui_ammo_stock_width 37
-AI (entity 618, origin 810.0 628.0 -63.9) couldn't find path to goal.
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights1) for weapon (cz75lh_zm)
-      dvar set ui_ammo_stock_width 36
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_short_sight) for weapon (commando_zm)
-      dvar set aa_enemy_damage_taken 25907
-      dvar set aa_enemy_deaths 53
-      dvar set aa_player_kills 53
-      dvar set ui_ammo_stock_width 37
-      dvar set aa_enemy_damage_taken 26057
-      dvar set aa_player_damage_dealt 6852
-      dvar set aa_enemy_damage_taken 26207
-      dvar set aa_enemy_deaths 54
-      dvar set aa_player_kills 54
-      dvar set aa_enemy_damage_taken 26357
-      dvar set aa_player_damage_dealt 7002
-AI (entity 575, origin 810.0 628.0 -63.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 26507
-      dvar set aa_enemy_deaths 55
-      dvar set aa_player_kills 55
-      dvar set aa_enemy_damage_taken 27107
-      dvar set aa_enemy_deaths 56
-      dvar set aa_player_kills 56
-      dvar set ui_ammo_stock_width 36
-      dvar set aa_enemy_damage_taken 27257
-      dvar set aa_player_damage_dealt 7152
-      dvar set aa_ads_damage_dealt 2448
-      dvar set aa_enemy_damage_taken 27407
-      dvar set aa_enemy_deaths 57
-      dvar set aa_player_kills 57
-      dvar set aa_enemy_damage_taken 27557
-      dvar set aa_player_damage_dealt 7302
-      dvar set aa_ads_damage_dealt 2598
-      dvar set aa_enemy_damage_taken 27707
-      dvar set aa_player_damage_dealt 7452
-      dvar set aa_ads_damage_dealt 2748
-      dvar set aa_enemy_damage_taken 27857
-      dvar set aa_enemy_deaths 58
-      dvar set aa_player_kills 58
-AI (entity 581, origin -819.0 607.5 -63.9) couldn't find path to goal.
-      dvar set ui_ammo_stock_width 37
-      dvar set aa_enemy_damage_taken 28457
-      dvar set aa_enemy_deaths 59
-      dvar set aa_player_kills 59
-      dvar set aa_enemy_damage_taken 29057
-      dvar set aa_enemy_deaths 60
-      dvar set aa_player_kills 60
-      dvar set aa_enemy_damage_taken 29207
-      dvar set aa_player_damage_dealt 7602
-      dvar set aa_ads_damage_dealt 2898
-      dvar set aa_enemy_damage_taken 29357
-      dvar set aa_player_damage_dealt 7752
-      dvar set aa_ads_damage_dealt 3048
-      dvar set aa_enemy_damage_taken 29507
-      dvar set aa_player_damage_dealt 7902
-      dvar set aa_ads_damage_dealt 3198
-      dvar set aa_enemy_damage_taken 29635
-      dvar set aa_player_damage_dealt 8030
-      dvar set aa_ads_damage_dealt 3326
-      dvar set aa_enemy_damage_taken 29785
-      dvar set aa_player_damage_dealt 8180
-      dvar set aa_ads_damage_dealt 3476
-      dvar set aa_enemy_damage_taken 29935
-      dvar set aa_player_damage_dealt 8330
-      dvar set aa_ads_damage_dealt 3626
-      dvar set aa_enemy_damage_taken 30071
-      dvar set aa_player_damage_dealt 8466
-      dvar set aa_ads_damage_dealt 3762
-      dvar set aa_enemy_damage_taken 30221
-      dvar set aa_player_damage_dealt 8616
-      dvar set aa_ads_damage_dealt 3912
-      dvar set aa_enemy_damage_taken 30356
-      dvar set aa_player_damage_dealt 8751
-      dvar set aa_ads_damage_dealt 4047
-      dvar set aa_enemy_damage_taken 30506
-      dvar set aa_player_damage_dealt 8901
-      dvar set aa_ads_damage_dealt 4197
-      dvar set aa_enemy_damage_taken 30632
-      dvar set aa_player_damage_dealt 9027
-      dvar set aa_ads_damage_dealt 4323
-      dvar set aa_enemy_damage_taken 30760
-      dvar set aa_enemy_deaths 61
-      dvar set aa_player_kills 61
-      dvar set aa_enemy_damage_taken 30910
-      dvar set aa_enemy_deaths 62
-      dvar set aa_player_kills 62
-      dvar set aa_enemy_damage_taken 31022
-      dvar set aa_enemy_deaths 63
-      dvar set aa_player_kills 63
-      dvar set aa_enemy_damage_taken 31172
-      dvar set aa_enemy_deaths 64
-      dvar set aa_player_kills 64
-      dvar set aa_enemy_damage_taken 31322
-      dvar set aa_player_damage_dealt 9177
-      dvar set aa_ads_damage_dealt 4473
-      dvar set aa_enemy_damage_taken 31464
-      dvar set aa_enemy_deaths 65
-      dvar set aa_player_kills 65
-      dvar set aa_enemy_damage_taken 31835
-      dvar set aa_enemy_deaths 66
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 37
-      dvar set aa_enemy_damage_taken 32435
-      dvar set aa_enemy_deaths 67
-      dvar set aa_player_kills 66
-      dvar set aa_enemy_damage_taken 32585
-      dvar set aa_enemy_deaths 68
-      dvar set aa_player_kills 67
-AI (entity 671, origin -819.0 607.5 -63.9) couldn't find path to goal.
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 37
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (cz75dw_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor1) for weapon (cz75lh_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights1) for weapon (cz75lh_zm)
-Dropping redundant reliable command: A 500 0.000000 0 1
-      dvar set ui_ammo_stock_width 27
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set aa_enemy_damage_taken 32685
-      dvar set aa_player_damage_dealt 9277
-      dvar set aa_enemy_damage_taken 32779
-      dvar set aa_player_damage_dealt 9371
-      dvar set aa_enemy_damage_taken 32879
-      dvar set aa_player_damage_dealt 9471
-      dvar set aa_enemy_damage_taken 32979
-      dvar set aa_player_damage_dealt 9571
-      dvar set aa_enemy_damage_taken 33075
-      dvar set aa_enemy_deaths 69
-      dvar set aa_player_kills 68
-      dvar set aa_enemy_damage_taken 33175
-      dvar set aa_player_damage_dealt 9671
-      dvar set aa_enemy_damage_taken 33275
-      dvar set aa_player_damage_dealt 9771
-      dvar set aa_enemy_damage_taken 33375
-      dvar set aa_player_damage_dealt 9871
-      dvar set aa_enemy_damage_taken 33475
-      dvar set aa_player_damage_dealt 9971
-      dvar set aa_enemy_damage_taken 33575
-      dvar set aa_enemy_deaths 70
-      dvar set aa_player_kills 69
-      dvar set aa_enemy_damage_taken 33662
-      dvar set aa_player_damage_dealt 10058
-      dvar set aa_enemy_damage_taken 34062
-      dvar set aa_enemy_deaths 71
-      dvar set aa_player_kills 70
-      dvar set aa_enemy_damage_taken 34162
-      dvar set aa_enemy_deaths 72
-      dvar set aa_player_kills 71
-      dvar set aa_enemy_damage_taken 34533
-      dvar set aa_enemy_deaths 73
-      dvar set aa_enemy_damage_taken 34904
-      dvar set aa_enemy_deaths 74
-      dvar set player0downs 1
-WARNING: unknown dvar 'r_reviveFX_contrastEdge' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_brightnessEdge' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_desaturationEdge' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_darkTintEdge' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_lightTintEdge' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_blurRadiusEdge' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_motionblurWeight' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_contrastCenter' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_brightnessCenter' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_desaturationCenter' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_darkTintCenter' in file 'vision/zombie_last_stand.vision'
-WARNING: unknown dvar 'r_reviveFX_lightTintCenter' in file 'vision/zombie_last_stand.vision'
-      dvar set ui_right_ammo_width 13
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (m1911_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (m1911_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (m1911_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (m1911lh_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (m1911lh_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (m1911lh_upgraded_zm)
-      dvar set aa_enemy_damage_taken 34998
-      dvar set aa_player_damage_dealt 10152
-      dvar set aa_enemy_damage_taken 35230
-      dvar set aa_player_damage_dealt 10384
-      dvar set aa_enemy_damage_taken 36198
-      dvar set aa_enemy_deaths 75
-      dvar set aa_player_kills 72
-R_MarkFragments: Too many triangles to mark, max 255 radius 100.00 at -65.23 -14.07 -3.87
-R_MarkFragments: Too many triangles to mark, max 255 radius 100.00 at -66.27 32.84 -5.85
-R_MarkFragments: Too many triangles to mark, max 255 radius 100.00 at -14.32 228.52 -22.78
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 27
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set aa_enemy_damage_taken 36298
-      dvar set aa_player_damage_dealt 10484
-      dvar set aa_enemy_damage_taken 36398
-      dvar set aa_enemy_deaths 76
-      dvar set aa_player_kills 73
-      dvar set player0downs 2
-      dvar set aa_enemy_damage_taken 36769
-      dvar set aa_enemy_deaths 77
-      dvar set ammoCounterHide 1
-      dvar set miniscoreboardhide 1
-      dvar set cl_paused 1
-SaveExists(""): returning false, !savename[0]
-PC ONLY: No menu has focus and == CA_ACTIVE, so forcing UIMENU_NONE      dvar set cl_paused 0
-      dvar set cl_paused 1
-      dvar set all_players_are_connected 0
-g_gametype cmp is not a valid gametype, defaulting to cmp
-ShutdownGame:
-------------------------------------------------------------
-----------------------
-Game: G_SetupWeaponDef
-----------------------
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-misc_modle doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
-stream_info doesn't have a spawn function
------------------------------------
-      dvar set r_lightTweakSunLight 22
-Error: Could not load rawfile "shock/electrocution.shock".
-Error: couldn't open 'shock/electrocution.shock'.
-      dvar set bg_shock_screenBlurBlendTime 0.4
-      dvar set bg_shock_screenBlurBlendFadeTime 1
-      dvar set bg_shock_viewKickRadius 0.05
-      dvar set bg_shock_viewKickFadeTime 3
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
-      dvar set bg_shock_lookControl_fadeTime 2
-      dvar set bg_shock_movement 1
-      dvar set bg_shock_sound 0
-      dvar set bg_shock_soundLoopFadeTime 2
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType underwater
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl_maxpitchspeed 45
-      dvar set bg_shock_lookControl_maxyawspeed 45
-      dvar set bg_shock_movement 0.4
-      dvar set autodifficulty_frac 0
-      dvar set autodifficulty_frac 75
-Error: Could not load rawfile "shock/zombie_death.shock".
-Error: couldn't open 'shock/zombie_death.shock'.
-      dvar set bg_shock_sound 1
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_movement 1
-      dvar set bg_shock_sound 0
-      dvar set bg_shock_soundLoopFadeTime 2
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType underwater
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl_maxpitchspeed 45
-      dvar set bg_shock_lookControl_maxyawspeed 45
-      dvar set bg_shock_movement 0.4
-Script tried to precache the player head icon 'headicon_american' more than once
-      dvar set bg_shock_sound 1
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_movement 1
-      dvar set bg_shock_screenType none
-      dvar set bg_shock_screenBlurBlendTime 1
-      dvar set bg_shock_soundLoop 
-      dvar set bg_shock_soundLoopSilent 
-      dvar set bg_shock_soundEnd 
-      dvar set bg_shock_soundEndAbort 
-      dvar set bg_shock_soundFadeInTime 0.5
-      dvar set bg_shock_soundFadeOutTime 1.5
-      dvar set bg_shock_soundLoopFadeTime 0.25
-      dvar set bg_shock_soundLoopEndDelay 0.25
-      dvar set bg_shock_soundRoomType ber1
-      dvar set bg_shock_soundDryLevel 0
-      dvar set bg_shock_soundWetLevel 0
-      dvar set bg_shock_soundModEndDelay 0
-      dvar set bg_shock_lookControl 0
-      dvar set bg_shock_lookControl_maxpitchspeed 0
-      dvar set bg_shock_lookControl_maxyawspeed 0
-      dvar set bg_shock_lookControl_mousesensitivityscale 0
-      dvar set bg_shock_lookControl_fadeTime 0.001
-      dvar set bg_shock_screenType blurred
-      dvar set bg_shock_screenBlurBlendTime 0.4
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundFadeInTime 0.25
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundDryLevel 1
-      dvar set bg_shock_soundWetLevel 0.5
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
-      dvar set bg_shock_lookControl_fadeTime 2
-      dvar set bg_shock_sound 0
-      dvar set bg_shock_soundLoopFadeTime 2
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType underwater
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl_maxpitchspeed 45
-      dvar set bg_shock_lookControl_maxyawspeed 45
-      dvar set bg_shock_movement 0.4
-      dvar set bg_shock_sound 1
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_movement 1
-      dvar set bg_shock_screenType flashed
-      dvar set bg_shock_screenFlashWhiteFadeTime 3.5
-      dvar set bg_shock_screenFlashShotFadeTime 1
-      dvar set bg_shock_soundLoop chr_flashbang_tinnitus_loop
-      dvar set bg_shock_soundLoopSilent 
-      dvar set bg_shock_soundEnd 
-      dvar set bg_shock_soundEndAbort 
-      dvar set bg_shock_soundFadeOutTime 1
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType shock_flashbang
-      dvar set bg_shock_soundDryLevel 0.5
-      dvar set bg_shock_soundWetLevel 1
-      dvar set bg_shock_soundModEndDelay 0.1
-      dvar set bg_shock_soundSnapshot flashbang
-      dvar set bg_shock_lookControl 0
-      dvar set bg_shock_animation 1
-      dvar set bg_shock_screenType blurred
-      dvar set bg_shock_screenFlashWhiteFadeTime 0
-      dvar set bg_shock_screenFlashShotFadeTime 0
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundDryLevel 1
-      dvar set bg_shock_soundWetLevel 0.5
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_soundSnapshot default
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_animation 0
-      dvar set bg_shock_screenBlurBlendTime 0.001
-      dvar set bg_shock_screenBlurBlendFadeTime 0.001
-      dvar set bg_shock_viewKickPeriod 1.5
-      dvar set bg_shock_viewKickRadius 0.5
-      dvar set bg_shock_viewKickFadeTime 0.5
-      dvar set bg_shock_sound 0
-      dvar set bg_shock_soundLoopFadeTime 2
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType generic
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl 0
-      dvar set bg_shock_lookControl_maxpitchspeed 45
-      dvar set bg_shock_lookControl_maxyawspeed 45
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.2
-      dvar set bg_shock_lookControl_fadeTime 1
-      dvar set bg_shock_movement 0.4
-      dvar set bg_shock_screenBlurBlendTime 0.4
-      dvar set bg_shock_screenBlurBlendFadeTime 1
-      dvar set bg_shock_viewKickPeriod 0.75
-      dvar set bg_shock_viewKickRadius 0.05
-      dvar set bg_shock_viewKickFadeTime 3
-      dvar set bg_shock_sound 1
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
-      dvar set bg_shock_lookControl_fadeTime 2
-      dvar set bg_shock_movement 1
-      dvar set bg_shock_screenType none
-      dvar set bg_shock_screenBlurBlendTime 0.001
-      dvar set bg_shock_screenBlurBlendFadeTime 0.001
-      dvar set bg_shock_viewKickPeriod 0
-'0' is not a valid value for dvar 'bg_shock_viewKickPeriod'
-  Domain is any number from 0.001 to 1000
-      dvar set bg_shock_viewKickRadius 0
-      dvar set bg_shock_viewKickFadeTime 0.001
-      dvar set bg_shock_sound 0
-      dvar set bg_shock_soundFadeOutTime 0.25
-      dvar set bg_shock_soundLoopFadeTime 2
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType generic
-      dvar set bg_shock_soundWetLevel 1
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl 0
-      dvar set bg_shock_lookControl_maxpitchspeed 0
-      dvar set bg_shock_lookControl_maxyawspeed 0
-      dvar set bg_shock_lookControl_mousesensitivityscale 0
-      dvar set bg_shock_lookControl_fadeTime 0.001
-      dvar set bg_shock_screenType blurred
-      dvar set bg_shock_screenBlurBlendTime 0.4
-      dvar set bg_shock_screenBlurBlendFadeTime 1
-      dvar set bg_shock_viewKickRadius 0.05
-      dvar set bg_shock_viewKickFadeTime 3
-      dvar set bg_shock_sound 1
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundWetLevel 0.5
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
-      dvar set bg_shock_lookControl_fadeTime 2
-      dvar set bg_shock_viewKickFadeTime 0.5
-      dvar set bg_shock_soundLoop 
-      dvar set bg_shock_soundLoopSilent 
-      dvar set bg_shock_soundEnd 
-      dvar set bg_shock_soundEndAbort 
-      dvar set bg_shock_soundFadeInTime 0.5
-      dvar set bg_shock_soundFadeOutTime 0.25
-      dvar set bg_shock_soundLoopFadeTime 0.1
-      dvar set bg_shock_soundLoopEndDelay 0.1
-      dvar set bg_shock_soundRoomType shock_death
-      dvar set bg_shock_soundDryLevel 0.5
-      dvar set bg_shock_soundWetLevel 1
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl_maxpitchspeed 45
-      dvar set bg_shock_lookControl_maxyawspeed 45
-      dvar set bg_shock_movement 0.4
-      dvar set bg_shock_viewKickFadeTime 3
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundFadeInTime 0.25
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundDryLevel 1
-      dvar set bg_shock_soundWetLevel 0.5
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_movement 1
-      dvar set bg_shock_screenBlurBlendTime 1
-      dvar set bg_shock_screenBlurBlendFadeTime 0.5
-      dvar set bg_shock_soundLoop chr_tinitus_loop
-      dvar set bg_shock_soundLoopSilent 
-      dvar set bg_shock_soundEnd 
-      dvar set bg_shock_soundEndAbort 
-      dvar set bg_shock_soundFadeInTime 0.1
-      dvar set bg_shock_soundFadeOutTime 2
-      dvar set bg_shock_soundLoopFadeTime 0.1
-      dvar set bg_shock_soundLoopEndDelay 2
-      dvar set bg_shock_soundRoomType hangar
-      dvar set bg_shock_soundDryLevel 0.5
-      dvar set bg_shock_soundWetLevel 1
-      dvar set bg_shock_soundModEndDelay 0
-      dvar set bg_shock_soundSnapshot explosion_shock
-      dvar set bg_shock_lookControl 0
-      dvar set bg_shock_lookControl_maxpitchspeed 35
-      dvar set bg_shock_lookControl_maxyawspeed 35
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.1
-      dvar set bg_shock_lookControl_fadeTime 0.001
-      dvar set bg_shock_screenBlurBlendTime 0.4
-      dvar set bg_shock_screenBlurBlendFadeTime 1
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundFadeInTime 0.25
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundDryLevel 1
-      dvar set bg_shock_soundWetLevel 0.5
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_soundSnapshot default
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
-      dvar set bg_shock_lookControl_fadeTime 2
-      dvar set bg_shock_screenType none
-      dvar set bg_shock_screenBlurBlendTime 1
-      dvar set bg_shock_soundLoop 
-      dvar set bg_shock_soundLoopSilent 
-      dvar set bg_shock_soundEnd 
-      dvar set bg_shock_soundEndAbort 
-      dvar set bg_shock_soundFadeInTime 0.5
-      dvar set bg_shock_soundFadeOutTime 1.5
-      dvar set bg_shock_soundLoopFadeTime 0.25
-      dvar set bg_shock_soundLoopEndDelay 2.5
-      dvar set bg_shock_soundRoomType PLATE
-      dvar set bg_shock_soundWetLevel 1
-      dvar set bg_shock_soundModEndDelay 0
-      dvar set bg_shock_lookControl_maxpitchspeed 35
-      dvar set bg_shock_lookControl_maxyawspeed 35
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.1
-      dvar set bg_shock_lookControl_fadeTime 0.001
-      dvar set bg_shock_screenType blurred
-      dvar set bg_shock_screenBlurBlendTime 0.4
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundFadeInTime 0.25
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundWetLevel 0.5
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
-      dvar set bg_shock_lookControl_fadeTime 2
-      dvar set bg_shock_screenType none
-      dvar set bg_shock_screenBlurBlendTime 0.001
-      dvar set bg_shock_screenBlurBlendFadeTime 0.001
-      dvar set bg_shock_viewKickRadius 0
-      dvar set bg_shock_viewKickFadeTime 0.001
-      dvar set bg_shock_soundLoop null
-      dvar set bg_shock_soundLoopSilent null
-      dvar set bg_shock_soundEnd null
-      dvar set bg_shock_soundEndAbort null
-      dvar set bg_shock_soundFadeInTime 0
-'0' is not a valid value for dvar 'bg_shock_soundFadeInTime'
-  Domain is any number from 0.001 to 1000
-      dvar set bg_shock_soundFadeOutTime 0
-      dvar set bg_shock_soundLoopFadeTime 1
-      dvar set bg_shock_soundLoopEndDelay -0.5
-      dvar set bg_shock_soundRoomType generic
-      dvar set bg_shock_soundModEndDelay -0.25
-      dvar set bg_shock_lookControl 0
-      dvar set bg_shock_lookControl_maxpitchspeed 0
-      dvar set bg_shock_lookControl_maxyawspeed 0
-      dvar set bg_shock_lookControl_mousesensitivityscale 0
-      dvar set bg_shock_lookControl_fadeTime 0.001
-      dvar set bg_shock_screenType blurred
-      dvar set bg_shock_screenBlurBlendTime 0.4
-      dvar set bg_shock_screenBlurBlendFadeTime 1
-      dvar set bg_shock_viewKickRadius 0.05
-      dvar set bg_shock_viewKickFadeTime 3
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
-      dvar set bg_shock_lookControl_fadeTime 2
-      dvar set bg_shock_screenType flashed
-      dvar set bg_shock_screenFlashWhiteFadeTime 3.5
-      dvar set bg_shock_screenFlashShotFadeTime 1
-      dvar set bg_shock_soundLoop chr_flashbang_tinnitus_loop
-      dvar set bg_shock_soundLoopSilent 
-      dvar set bg_shock_soundEnd 
-      dvar set bg_shock_soundEndAbort 
-      dvar set bg_shock_soundFadeOutTime 1
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType shock_flashbang
-      dvar set bg_shock_soundDryLevel 0.5
-      dvar set bg_shock_soundWetLevel 1
-      dvar set bg_shock_soundModEndDelay 0.1
-      dvar set bg_shock_soundSnapshot flashbang
-      dvar set bg_shock_lookControl 0
-      dvar set bg_shock_animation 1
-Script tried to precache the menu 'briefing' more than once
-Script tried to precache the menu 'loadout_splitscreen' more than once
-      dvar set bg_shock_screenType blurred
-      dvar set bg_shock_screenFlashWhiteFadeTime 0
-      dvar set bg_shock_screenFlashShotFadeTime 0
-      dvar set bg_shock_soundLoop shellshock_loop
-      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
-      dvar set bg_shock_soundEnd shellshock_end
-      dvar set bg_shock_soundEndAbort shellshock_end_abort
-      dvar set bg_shock_soundFadeOutTime 2.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundDryLevel 1
-      dvar set bg_shock_soundWetLevel 0.5
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_soundSnapshot default
-      dvar set bg_shock_lookControl 1
-      dvar set bg_shock_animation 0
-      dvar set bg_shock_sound 0
-      dvar set bg_shock_soundLoopFadeTime 2
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType underwater
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl_maxpitchspeed 45
-      dvar set bg_shock_lookControl_maxyawspeed 45
-      dvar set bg_shock_movement 0.4
-Error: Could not load rawfile "shock/electrocution.shock".
-Error: couldn't open 'shock/electrocution.shock'.
-      dvar set bg_shock_sound 1
-      dvar set bg_shock_soundLoopFadeTime 1.5
-      dvar set bg_shock_soundLoopEndDelay -3
-      dvar set bg_shock_soundRoomType default
-      dvar set bg_shock_soundModEndDelay 2
-      dvar set bg_shock_lookControl_maxpitchspeed 90
-      dvar set bg_shock_lookControl_maxyawspeed 90
-      dvar set bg_shock_movement 1
-      dvar set bg_shock_sound 0
-      dvar set bg_shock_soundLoopFadeTime 2
-      dvar set bg_shock_soundLoopEndDelay -1.5
-      dvar set bg_shock_soundRoomType underwater
-      dvar set bg_shock_soundModEndDelay -0.75
-      dvar set bg_shock_lookControl_maxpitchspeed 45
-      dvar set bg_shock_lookControl_maxyawspeed 45
-      dvar set bg_shock_movement 0.4
-Error: Invalid counter string id: global_solo_games
-Going from CS_CLIENTLOADING to CS_ACTIVE for Unknown Soldier 0
-      dvar set cl_paused 0
-      dvar set all_players_are_connected 1
-      dvar set player0downs 0
-Player 0 no longer burning at time: 0
-Player 0 no longer electrified at time: 0
-Player 0 no longer transporter sick at time: 0
-[00511387] 0: CA_ACTIVE
-Fade in 511887 1250
-Player 0 no longer burning at time: 0
-Player 0 no longer electrified at time: 0
-Player 0 no longer transporter sick at time: 0
-Player 0 no longer burning at time: 0
-Player 0 no longer electrified at time: 0
-Player 0 no longer transporter sick at time: 0
-ex
+      
