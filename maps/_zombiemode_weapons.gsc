@@ -22,6 +22,8 @@ init()
 
 default_check_firesale_loc_valid_func()
 {
+	if(level.ZHC_ALL_CHESTS && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && level.chests[level.chest_index] == self)
+		return false;
 	return true;
 }
 
@@ -498,10 +500,9 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		}
 		self.barr_door_middle = closest.origin;
 	}
-	barr_weapon_yaw = undefined;
+	//barr_weapon_yaw = undefined;
 	if(!isDefined(
-	//self.
-	barr_weapon_yaw)){		//if the map has doors which sister doors share a diffrent rotation to each other, this should be changed to run wether defined or not.
+	self.barr_weapon_yaw)){		//if the map has doors which sister doors share a diffrent rotation to each other, this should be changed to run wether defined or not.
 		closest_door = undefined;
 		closest_dist = undefined;
 		for( i = 0; i < self.doors.size; i++ )
@@ -530,8 +531,7 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		}
 		yaw = VectorToAngles( self.barr_door_middle - closest_door.origin )[1];
 		yaw = AngleClamp180(int((yaw+45)/90)*90);
-		//self.
-		barr_weapon_yaw = yaw;
+		self.barr_weapon_yaw = yaw;
 	}
 
 	/*if(print_some_info){
@@ -550,8 +550,7 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 
 	
 
-	self.player_yaw = get_player_yaw_from_relative_position(player.origin, //self.
-		barr_weapon_yaw, self.barr_door_middle);
+	self.player_yaw = get_player_yaw_from_relative_position(player.origin, self.barr_weapon_yaw, self.barr_door_middle);
 
 	/*self.weapon_model = spawn( "script_model",self.barr_weapon_origin);
 	self set_box_weapon_model_to(player GetCurrentWeapon());
@@ -573,7 +572,7 @@ get_player_yaw_from_relative_position(player_origin, surface_yaw, surface_middle
 	player_yaw  = AngleClamp180(int((player_yaw+45)/90)*90);
 	player_yaw2 = player_yaw;
 	for(i = 0 ; i < 3; i ++){
-		if(player_yaw2 == yaw || player_yaw2 == AngleClamp180(surface_yaw + 180) || angle_dif(player_yaw2 ,player_yaw0 ) > 90){
+		if(player_yaw2 == surface_yaw || player_yaw2 == AngleClamp180(surface_yaw + 180) || angle_dif(player_yaw2 ,player_yaw0 ) > 90){
 			player_yaw2-=90;
 			player_yaw2  = AngleClamp180(player_yaw2);
 		}else{
@@ -629,9 +628,9 @@ door_barr_weapon(){
 	can_upgrade = true;
 	CAN_ONLY_UPGRADE_IF_ROOM_LOCKED = true;
 	if(CAN_ONLY_UPGRADE_IF_ROOM_LOCKED){
-		doorIds = Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
-		doorIds = array_remove( doorIds,self get_door_id() );
-		can_upgrade = !maps\_zombiemode_blockers::one_door_is_opened(door_ids);
+		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
+		doorIds = array_remove( doorIds,self maps\_zombiemode_blockers::get_door_id() );
+		can_upgrade = !maps\_zombiemode_blockers::one_door_is_opened(doorIds);
 	}
 
 	weapon = undefined;
@@ -678,7 +677,7 @@ door_barr_weapon(){
 		if(sister != self){
 			sister = maps\_zombiemode_blockers::get_sister_door();
 			sister door_barr_set_info_on_buy_door(player);
-			sister door_barr_weapon_spawn(weapon, weapon_model, false, self.roomIDs_to_occupy[1]);
+			sister door_barr_weapon_spawn(weapon, weapon_model, false, self.roomIDs_to_occupy[1], can_upgrade);
 			return;
 		}
 	}
@@ -698,7 +697,7 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self notify ("door_barr_started");
 	self maps\_zombiemode_blockers::get_sister_door() notify ("door_barr_started");
 
-	self.weapon_trigger = door_barr_weapon_setup(weapon_string, weapon_model, same_side, self.barr_door_middle, self.player_yaw//, self.barr_weapon_yaw 
+	self.weapon_trigger = door_barr_weapon_setup(weapon_string, weapon_model, same_side, self.barr_door_middle, self.player_yaw, self.barr_weapon_yaw 
 		);
 
 	play_sound_at_pos( "weapon_show", self.origin);
@@ -717,7 +716,7 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self.weapon_trigger thread weapon_spawn_think(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
 }
 
-door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw//, barr_weapon_yaw
+door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw, barr_weapon_yaw
 	){
 	if(same_side)
 	player_yaw = AngleClamp180(player_yaw + 180);
@@ -739,15 +738,13 @@ door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_
 
 	weapon_trigger = Spawn( "trigger_radius_use", barr_weapon_trigger_origin, 0, 55, 12 );
 	weapon_trigger.weapon_model = spawn( "script_model", barr_weapon_origin); 
-	//weapon_trigger.weapon_model.angles = ( 0, barr_weapon_yaw, 0 );
-	//weapon_trigger.weapon_model.yaw = player_yaw;
-	weapon_trigger.weapon_model.angles = ( 0, player_yaw, 0 );
+	weapon_trigger.weapon_model.angles = ( 0, barr_weapon_yaw, 0 );
+	weapon_trigger.weapon_model.yaw = player_yaw;
 
 	if(weapon_is_dual_wield(weapon_string)){
 		weapon_trigger.weapon_model_dw = spawn( "script_model", barr_weapon_origin - (0 ,0 ,10)); 
-		//weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(barr_weapon_yaw + 180), 0 );
-		//weapon_trigger.weapon_model_dw.yaw = player_yaw;
-		weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(player_yaw + 180), 0 );
+		weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(barr_weapon_yaw + 180), 0 );
+		weapon_trigger.weapon_model_dw.yaw = player_yaw;
 		weapon_trigger.weapon_model_dw LinkTo( weapon_trigger.weapon_model );
 		
 	}
@@ -762,7 +759,7 @@ door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_
 	weapon_trigger SetHintString( get_weapon_hint( weapon_string ), get_weapon_cost( weapon_string ) ); 
 	weapon_trigger setCursorHint( "HINT_NOICON" );
 	weapon_trigger UseTriggerRequireLookAt();
-	return self.weapon_trigger;
+	return weapon_trigger;
 }
 
 weapon_thread_manage_triggers(roomId_visible_from){
@@ -1837,6 +1834,7 @@ ZHC_treasure_chest_options_init(){
 	level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = true;
 		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE = true;
 		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE_RUN_BOTH_COOLDOWNS = false;
+		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_DOG_KILL_ENDS_WAIT = true;
 
 	level.ZHC_BOX_AUTO_OPEN = true;
 		level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK = true;
@@ -2130,8 +2128,9 @@ treasure_chest_think(){
 
 	//if(self.chest_origin ZHC_teddy_is_here())
 	//	wait(5);
-	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE)
+	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE){
 		self ZHC_box_wait_to_become_reopenable();
+	}
 
 	if(
 //		!is_true(self.chest_origin.chest_moving) &&
@@ -2157,11 +2156,15 @@ treasure_chest_think(){
 
 ZHC_box_wait_to_become_reopenable(){
 	self thread firesale_make_box_reopenable();
+	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_DOG_KILL_ENDS_WAIT)
+		self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, undefined, undefined, undefined, 1);
 	run_small_cooldown = true;
 	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE && is_true(self.zhc_cooldown_waiting)){
 		self waittill("zhc_end_of_cooldown");	//if expire thread is still running (which is intentional) we will use that instead.
 		self.zhc_cooldown_waiting = undefined;
 		run_small_cooldown = level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE_RUN_BOTH_COOLDOWNS;
+		if(run_small_cooldown)
+			self thread firesale_make_box_reopenable(); //rerun after cooldown is over.
 	}
 	if(run_small_cooldown)
 		self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, min(72, get_or(level.zombie_total_start, 1)/6.5)+8  , 1, undefined, true);
@@ -3778,7 +3781,7 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 				rand = self ZHC_ORDERED_BOX_get_next_weapon();
 
 				//firesale temp chests cant be used to get legendary weapons.
-				if((!level.ZHC_TESTING_LEVEL > 6) && isDefined(rand) && is_true(chest.was_temp) && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box (rand))
+				if( isDefined(rand) && is_true(chest.was_temp) && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box (rand))
 				{
 					rand = "teddy";
 					serious_teddy = false;

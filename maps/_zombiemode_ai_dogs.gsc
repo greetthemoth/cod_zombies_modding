@@ -475,7 +475,7 @@ dog_round_tracker()
 	// PI_CHANGE_BEGIN - JMA - making dog rounds random between round 5 thru 7
 	// NOTE:  RandomIntRange returns a random integer r, where min <= r < max
 	level.next_dog_round = randomintrange( 5, 8 );	
-	//level.next_dog_round = 1; //testo
+	level.next_dog_round = 1; //testo
 	// PI_CHANGE_END
 	
 	flag_wait( "begin_spawning" );	//added for mod . wait for round functions to be set.
@@ -753,7 +753,11 @@ dog_death()
 		IPrintLn( "last dog down" );
 
 	}
+	if(!IsDefined( level.total_dogs_killed ))
+		level.total_dogs_killed = 0;
+	level.total_dogs_killed++;
 	level notify("dog_killed");				//added for mod
+
 	// score
 	if( IsPlayer( self.attacker ) )
 	{

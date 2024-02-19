@@ -707,6 +707,9 @@ time_for_quad_wave(zone_name)
 
 	//percent chance.
 	chance = 100;
+	while(!isDefined(level.max_zombie_func)){	//wait until the function is assigned
+		level waittill("start_of_round");
+	}
 	max_zombies = [[ level.max_zombie_func ]]( max );
 	current_round = level.round_number;
 	

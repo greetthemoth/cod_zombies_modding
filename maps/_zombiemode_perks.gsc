@@ -1698,6 +1698,8 @@ GetLowestPerkLevel(perk){
 
 GetVendingCost(perk){
 	players = get_players();
+	if(players.size == 0)
+		return 0;
 	if(perk == "specialty_quickrevive" && level.QUICKREVIVE_SOLO_COST_SOLO_ON && players.size == 1){ //becuae qr doesnt require perk lvl to get price
 																																		//works the same regardless of perk level system in solo games
 		cost = GetSoloQuickReviveCost();
@@ -1803,6 +1805,7 @@ VendingPerkLvlBuyPass(perk, cur_level){
 vending_set_hintstring( perk )
 {
 	self UseTriggerRequireLookAt();
+	flag_wait( "all_players_connected" );
 	players = get_players();
 	//if(perk == "specialty_quickrevive" && players.size == 1 && level.QUICKREVIVE_SOLO_COST_SOLO_ON)
 	//	thread solo_quick_revive_set_hintstring();

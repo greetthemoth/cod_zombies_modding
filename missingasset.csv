@@ -1,4 +1,5 @@
 rawfile,autoexec_dev.cfg
+rawfile,configure.cfg
 image,$pixelcostcolorcode
 material,$floatz_donotremove
 material,$processed_floatz_donotremove
@@ -34,11 +35,6 @@ weapon,sp/zombie_black_hole_bomb
 weapon,sp/zombie_nesting_dolls
 rawfile,shock/zombie_death.shock
 xmodel,fx
-xmodel,zombie_vending_jugg_off
-xmodel,zombie_vending_sleight_off
-xmodel,zombie_vending_doubletap_off
-xmodel,zombie_vending_revive_off
-xmodel,zombie_vending_three_gun_off
 rawfile,shock/electrocution.shock
 stringtable,credits_pc.csv
 material,net_disconnect
@@ -201,12 +197,8 @@ material,terrain_scorch_fruit
 material,terrain_scorch_paintedmetal
 material,terrain_scorch_player
 material,terrain_scorch_tallgrass
-rawfile,shock/electrocution.shock
-rawfile,shock/zombie_death.shock
-rawfile,shock/electrocution.shock
-rawfile,shock/electrocution.shock
-rawfile,shock/zombie_death.shock
-rawfile,shock/electrocution.shock
+xanim,run_death_facedown
+xanim,void_loop
 rawfile,shock/electrocution.shock
 rawfile,shock/zombie_death.shock
 rawfile,shock/electrocution.shock

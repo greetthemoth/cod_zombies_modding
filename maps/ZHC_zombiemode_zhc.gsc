@@ -3,7 +3,7 @@
 #include maps\_zombiemode_utility;
 
 get_testing_level(){
-	return 0;
+	return 8;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
@@ -1376,12 +1376,14 @@ Instakill_upgrade(){
 //GENERAL WAITS
 
 //self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(2, 0, 16, 1, 0); //waits for 16 kills and for next round
-ZHC_basic_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end){
+ZHC_basic_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end, additional_dog_kills_wanted ){
 	if(level.ZHC_TESTING_LEVEL > 9){
 		if(isDefined(wait_time))
 			wait_time = min(5, wait_time);
 		if(isDefined(additional_kills_wanted))
 			additional_kills_wanted = min(1, additional_kills_wanted);
+		if(isDefined(additional_dog_kills_wanted))
+			additional_dog_kills_wanted = min(1, additional_dog_kills_wanted);
 		if(
 			   (isDefined(additional_rounds_to_wait) && additional_rounds_to_wait > 0)
 			|| (isDefined(dog_rounds_to_wait) && dog_rounds_to_wait > 0)
@@ -1391,8 +1393,10 @@ ZHC_basic_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted
 			dog_rounds_to_wait = undefined;
 		}
 	}
-	IPrintLnBold("gr:"+ dstr(goals_required) +" wt:" + dstr(wait_time)+" addkill:" +dstr(additional_kills_wanted)+" addrnd:"+dstr(additional_rounds_to_wait)+" dogrnd:"+dstr(dog_rounds_to_wait));
-	self thread ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end);
+	if(!isDefined(goals_required))
+		goals_required = 1;
+	IPrintLnBold("gr:"+ dstr(goals_required) +" wt:" + dstr(wait_time)+" addkill:" +dstr(additional_kills_wanted)+" addrnd:"+dstr(additional_rounds_to_wait)+" dogrnd:"+dstr(dog_rounds_to_wait) + " adddkills" + dstr(additional_dog_kills_wanted));
+	self thread ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end, additional_dog_kills_wanted);
 	self waittill( "zhc_end_of_cooldown" );
 }
 
@@ -1404,30 +1408,33 @@ dstr(string){
 }
 
 //self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown(2, 0, 0, 0, 1); //waits for next dog ground
-ZHC_basic_goal_cooldown(goals_required_min_1, wait_time, kill_goal, round_goal, dog_rounds_to_wait, round_goals_on_round_end){
+ZHC_basic_goal_cooldown(goals_required_min_1, wait_time, kill_goal, round_goal, dog_rounds_to_wait, round_goals_on_round_end, dog_kill_goal){
 	if(level.ZHC_TESTING_LEVEL > 9){
 		if(isDefined(wait_time))
 			wait_time = min(5, wait_time);
 		if(isDefined(kill_goal))
 			kill_goal = min(level.total_zombies_killed + 1, kill_goal);
+		if(isDefined(dog_kill_goal)){
+			if(!isDefined(level.total_dogs_killed))
+				level.total_dogs_killed = 0;
+			dog_kill_goal = min(level.total_dogs_killed + 1, dog_kill_goal);
+		}
 		if(
 			   (isDefined(round_goal) && round_goal > level.round_number)
 			|| (isDefined(dog_rounds_to_wait) && dog_rounds_to_wait > 0)
-		  ){
+		 ){
 			kill_goal = level.total_zombies_killed + 1;
 			round_goal = 0;
 			dog_rounds_to_wait = 0;
 		}
 	}
-	if(!isDefined(goals_required_min_1))
-		goals_required_min_1 = 1;
 	//IPrintLnBold("gr"+ goals_required_min_1 +" wt" + wait_time+" addkill" +kill_goal+" addrnd"+round_goal+" dogrnd"+dog_rounds_to_wait );
-	self thread ZHC_fire_threads_goal_cooldown(max(1,goals_required_min_1), wait_time, kill_goal, round_goal, dog_rounds_to_wait, round_goals_on_round_end);
+	self thread ZHC_fire_threads_goal_cooldown(max(1,goals_required_min_1), wait_time, kill_goal, round_goal, dog_rounds_to_wait, round_goals_on_round_end, dog_kill_goal);
 	self waittill( "zhc_end_of_cooldown" );
 }
 
 //thread maps\ZHC_zombiemode_zhc::ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait);
-ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end){
+ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end, additional_dog_kills_wanted){
 
 //additional kills wanted
 	zhc_cooldown_kill_goal = undefined;
@@ -1435,16 +1442,24 @@ ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills
 		zhc_cooldown_kill_goal = level.total_zombies_killed + additional_kills_wanted;
 		//IPrintLn("zhc_cooldown_kill_goal: "+ zhc_cooldown_kill_goal );
 	}
+//additional dog kills wanted
+	zhc_cooldown_dog_kill_goal = undefined;
+	if(isDefined(additional_dog_kills_wanted)){
+		if(!isDefined(level.total_dogs_killed))
+			level.total_dogs_killed = 0;
+		zhc_cooldown_dog_kill_goal = level.total_dogs_killed + additional_dog_kills_wanted;
+		//IPrintLn("zhc_cooldown_kill_goal: "+ zhc_cooldown_kill_goal );
+	}
 //addtional_rounds_to_wait
 	zhc_cooldown_round_goal = undefined;
 	if(isDefined(additional_rounds_to_wait))
 		zhc_cooldown_round_goal = level.round_number + additional_rounds_to_wait;
 
-	self ZHC_fire_threads_goal_cooldown(goals_required, wait_time, zhc_cooldown_kill_goal, zhc_cooldown_round_goal, dog_rounds_to_wait, round_goals_on_round_end);
+	self ZHC_fire_threads_goal_cooldown(goals_required, wait_time, zhc_cooldown_kill_goal, zhc_cooldown_round_goal, dog_rounds_to_wait, round_goals_on_round_end,zhc_cooldown_dog_kill_goal);
 }
 
 //maps\ZHC_zombiemode_zhc::ZHC_fire_threads_goal_cooldown(goals_required, wait_goal, kill_goal, round_goal, dog_round_goal);
-ZHC_fire_threads_goal_cooldown(goals_required, wait_goal, kill_goal, round_goal, dog_rounds_to_wait, round_goals_on_round_end){
+ZHC_fire_threads_goal_cooldown(goals_required, wait_goal, kill_goal, round_goal, dog_rounds_to_wait, round_goals_on_round_end, dog_kill_goal){
 	/*WAIT_GOAL_SYSTEM = IsDefined( wait_goal ) && wait_goal > 0;
 	KILL_GOAL_SYSTEM = isDefined(kill_goal) && kill_goal > level.total_zombies_killed;
 	ROUND_WAIT_SYSTEM = isDefined(round_goal) && round_goal > level.round_number;
@@ -1472,6 +1487,10 @@ ZHC_fire_threads_goal_cooldown(goals_required, wait_goal, kill_goal, round_goal,
 		goal_strings[goal_strings.size] = "zhc_dog_round_goal_reached";
 	}
 
+	if(IsDefined( dog_kill_goal ) ){
+		goal_strings[goal_strings.size] = "zhc_dog_kill_goal_reached";
+	}
+
 	if(isDefined(goals_required )){
 		//IPrintLnBold( "goals found: " +  (goal_strings.size) + ". goals_required:" + goals_required);
 		goals_required = min(goal_strings.size, goals_required);
@@ -1496,6 +1515,10 @@ ZHC_fire_threads_goal_cooldown(goals_required, wait_goal, kill_goal, round_goal,
 		self thread dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end);
 	}
 
+	if(IsDefined( dog_kill_goal ) ){
+		self thread dog_kill_goal_cooldown(dog_kill_goal);
+	}
+
 }
 ZHC_wait_for_goals(goals_required, goal_strings){
 	self endon( "zhc_end_of_cooldown" );
@@ -1503,7 +1526,7 @@ ZHC_wait_for_goals(goals_required, goal_strings){
 		
 		self zhc_waittill_any(goal_strings);//common_scripts\utility.gsc: );
 	}
-	//IPrintLnBold( "cooldown over. " + goals_required + " goals reached");
+	IPrintLnBold( "cooldown over. " + goals_required + " goals reached");
 	self notify ("zhc_end_of_cooldown");
 }
 
@@ -1580,6 +1603,19 @@ dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end){ //if rore
 	//IPrintLnBold( "zhc_dog_round_goal_reached" );
 	self notify ("zhc_dog_round_goal_reached");
 }
+
+dog_kill_goal_cooldown(total_kill_goal){
+	self endon("zhc_end_of_cooldown");
+	if(!isDefined(level.total_dogs_killed))
+		level.total_dogs_killed = 0;
+	while(total_kill_goal > level.total_dogs_killed){
+		IPrintLnBold( total_kill_goal +"  "+level.total_dogs_killed );
+		level waittill("dog_killed");
+	}
+	IPrintLnBold( "zhc_dog_kill_goal_reached" );
+	self notify( "zhc_dog_kill_goal_reached" );
+}
+
 
 normalize_cost(cost){ //added for mod , this function is designed for weapon costs. might move later.
 

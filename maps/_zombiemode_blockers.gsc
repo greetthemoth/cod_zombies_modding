@@ -1990,11 +1990,13 @@ door_cooldown(){
 
 	ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN = true;
 	if(ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN){
-		doorIds = Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
+		roomId = self.roomIDs_to_occupy[1];
+		doorIds = Get_Doors_Accesible_in_room(roomId); //doors in room accessed
 		doorIds = array_remove( doorIds,self get_door_id() );
 		wait_for_one_door_to_be_open(doorIds);
+		IPrintLnBold( Get_Room_Name(roomId) +" one door opened now weapon barr cooldown can start" );
 	}
-
+	
 
 	if(is_true(self.dont_reset_cooldown_once)){
 		return;
@@ -2045,16 +2047,18 @@ door_cooldown(){
 }*/
 
 wait_for_one_door_to_be_open(doorIds){
+	zombie_doors =  GetEntArray( "zombie_door", "targetname" );
 	while(1){
-		a_door_is_open = one_door_is_opened(doorIds);
-		if(a_door_is_open)
+		if(one_door_is_opened(doorIds, zombie_doors))
 			return;
 		wait(0.5);
 	}
 }
-one_door_is_opened(doorIds){
+one_door_is_opened(doorIds, all_doors){
+	if(!IsDefined( all_doors ))
+		all_doors =  GetEntArray( "zombie_door", "targetname" );
 	for(i = 0; i < doorIds.size; i++){
-		door = level.zombie_doors[doors[i]];
+		door = all_doors[doorIds[i]];
 		if(door get_door_is_open_or_opening() && !is_true(door.dont_reset_cooldown_once)){
 			return true;
 		}

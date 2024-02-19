@@ -4271,6 +4271,11 @@ round_spawn_failsafe()
 						level.next_dog_spawned_health[level.next_dog_spawned_health.size] = self.health;
 						level.next_dog_spawned_forced_to_run[level.next_dog_spawned_forced_to_run.size] = true;
 						self.a.nodeath = undefined; //prevents an explosion after death;
+						if(!IsDefined( level.total_dogs_killed ))
+							level.total_dogs_killed = 0;
+						level.total_dogs_killed --;
+					}else{
+						level.total_zombies_killed--;
 					}
 				}
 			}

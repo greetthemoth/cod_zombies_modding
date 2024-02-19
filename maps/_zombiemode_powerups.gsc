@@ -919,8 +919,8 @@ cleanup_random_weapon_list()
 powerup_setup( powerup_override )
 {
 
-	//if(level.ZHC_TESTING_LEVEL > 7)
-	//	powerup_override = "fire_sale";//testo
+	if(level.ZHC_TESTING_LEVEL > 7)
+		powerup_override = "fire_sale";//testo
 	powerup = undefined;
 	
 	if ( !IsDefined( powerup_override ) )
