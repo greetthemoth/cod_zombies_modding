@@ -197,8 +197,3 @@ material,terrain_scorch_fruit
 material,terrain_scorch_paintedmetal
 material,terrain_scorch_player
 material,terrain_scorch_tallgrass
-xanim,run_death_facedown
-xanim,void_loop
-rawfile,shock/electrocution.shock
-rawfile,shock/zombie_death.shock
-rawfile,shock/electrocution.shock
