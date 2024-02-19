@@ -67,7 +67,12 @@ testing_ground(){
 		for ( i = 0; i < players.size; i++ ){
 			players[i] maps\_zombiemode_score::add_to_player_score(150000 - 500);
 		}
+	}else{
+		for ( i = 0; i < players.size; i++ ){
+			players[i] maps\_zombiemode_score::add_to_player_score(1500 - 500);
+		}
 	}
+	
 
 
 

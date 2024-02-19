@@ -692,7 +692,7 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self notify ("door_barr_started");
 	self maps\_zombiemode_blockers::get_sister_door() notify ("door_barr_started");
 
-	door_barr_wall_weapon_setup(weapon_string, weapon_model, same_side);
+	door_barr_weapon_setup(weapon_string, weapon_model, same_side);
 
 	play_sound_at_pos( "weapon_show", self.origin, self );
 	self.weapon_trigger thread weapon_model_hide();
@@ -2151,7 +2151,7 @@ ZHC_box_wait_to_become_reopenable(){
 		run_small_cooldown = level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE_RUN_BOTH_COOLDOWNS;
 	}
 	if(run_small_cooldown)
-		self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, min(72, get_or(level.zombie_total_start, 6)/3)+10  , 1, undefined, true);
+		self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, min(72, get_or(level.zombie_total_start, 1)/6.5)+8  , 1, undefined, true);
 	iPrintLnBold("zhc_end_of_cooldown_box_reopenable");
 }
 firesale_make_box_reopenable(){
@@ -2625,12 +2625,12 @@ chest_weapon_expire_wait(strength){
 									 	(  (min(get_or(level.zombie_total_start, 6), 64 )/2) * (strength-1) )
 								    )
 							);
-			if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE)//here we thread it so we can reuse it later
+			if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE){//here we thread it so we can reuse it later
 				self.zhc_cooldown_waiting = true;
 				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, kills, undefined, undefined, false);
 				self waittill( "zhc_end_of_cooldown" );
 				self.zhc_cooldown_waiting = undefined;
-			else
+			}else
 				self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, kills, undefined, undefined, false);
 			//self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, 1, undefined); //waits for 16 kills and for next round
 		}else
@@ -3682,7 +3682,7 @@ treasure_chest_weapon_init_spawn( chest, player, respin)
 
 		floatHeight = 30;
 
-		self box_weapon_model_rise_start();
+		self box_weapon_model_rise_start(floatHeight);
 		
 		self.weapon_string = undefined;
 		
@@ -4938,7 +4938,7 @@ wall_weapon_wait_to_return(strength){	//this function hs=should only run for wal
 }
 
 wall_weapon_is_active(){
-	return !is_true(self.weapon_disabled)
+	return !is_true(self.weapon_disabled);
 }
 
 wall_upgrade_wait_to_return(is_chest, strength){
