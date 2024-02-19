@@ -2003,7 +2003,7 @@ perk_think( perk, recall_checked)
 		case "specialty_additionalprimaryweapon":
 			if ( result == perk_str )
 			{
-				self maps\_zombiemode::take_additionalprimaryweapon(new_lvl);
+				self.weapon_taken_by_losing_specialty_additionalprimaryweapon = self maps\_zombiemode::take_additionalprimaryweapon(new_lvl);
 			}
 			break;
  
