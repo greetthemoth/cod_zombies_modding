@@ -22,7 +22,9 @@ init()
 
 default_check_firesale_loc_valid_func()
 {
-	if(level.ZHC_ALL_CHESTS && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && level.chests[level.chest_index] == self)
+	if(level.ZHC_ALL_CHESTS && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && level.chests[level.chest_index] == self
+		&& (isDefined(self.times_chest_opened) && self.times_chest_opened >= 1)	//this makes it so the player can get the fake teddy once from the firesale. After that firesale wont work on the chest. ever. 
+		)
 		return false;
 	return true;
 }
@@ -251,9 +253,9 @@ ZHC_get_ordered_weapon_keys(){
 	k[k.size] = "g11_lps_zm";
 
 	k[k.size] = "zombie_cymbal_monkey"; //3
-	k[k.size] = "frag_grenade_zm";
-	k[k.size] = "sticky_grenade_zm";
-	k[k.size] = "claymore_zm";
+	//k[k.size] = "frag_grenade_zm";
+	//k[k.size] = "sticky_grenade_zm";
+	//k[k.size] = "claymore_zm";
 
 	k[k.size] = "china_lake_zm";
 	k[k.size] = "dragunov_zm";
@@ -281,12 +283,13 @@ ZHC_get_ordered_weapon_keys(){
 	k[k.size] = "galil_zm";
 	k[k.size] = "zombie_cymbal_monkey"; //moved
 	k[k.size] = "ray_gun_zm";
+	//
 	k[k.size] = "thundergun_zm";
 	//
-	k[k.size] = "tesla_gun_zm";	// included
-	k[k.size] = "freezegun_zm";
-	k[k.size] = "zombie_black_hole_bomb";
-	k[k.size] = "zombie_nesting_dolls";
+	//k[k.size] = "tesla_gun_zm";	// included
+	//k[k.size] = "freezegun_zm";
+	//k[k.size] = "zombie_black_hole_bomb";
+	//k[k.size] = "zombie_nesting_dolls";
 
 
 	return k;
@@ -630,7 +633,7 @@ door_barr_weapon(){
 	if(CAN_ONLY_UPGRADE_IF_ROOM_LOCKED){
 		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
 		doorIds = array_remove( doorIds,self maps\_zombiemode_blockers::get_door_id() );
-		can_upgrade = !maps\_zombiemode_blockers::one_door_is_opened(doorIds);
+		can_upgrade = !maps\_zombiemode_blockers::one_door_is_unbarred(doorIds);
 	}
 
 	weapon = undefined;
@@ -1796,7 +1799,6 @@ get_chest_zone_name(){
 }
 
 a_player_is_close_to_origin(dist){
-	playertooclosetodoor = undefined;
 	players = get_players();
 	//("there are"+players.size+ "players");
 	for( i = 0; i < players.size; i++ )
@@ -1805,13 +1807,16 @@ a_player_is_close_to_origin(dist){
 		if( is_player_valid( players[i]) ) 
 		{
 			//( "sqrdistace from door: "+ Distance2DSquared(self.origin , players[i].origin ));
-			if(Distance2DSquared(self.origin , players[i].origin) < dist*dist){
-				playertooclosetodoor = players[i];
-				break;
+			if(abs(self.origin[2] - players[i].origin[2]) > dist/2 ){
+				//IPrintLnBold( "height pass "+ false + "  "+int(abs(self.origin[2] - players[i].origin[2])) +" > "+dist);
+				continue;
 			}
+			pdist = Distance2DSquared(self.origin, players[i].origin);
+			//IprintlnBold(pdist +" < "+dist*dist);
+			if(pdist < dist*dist)
+				return players[i];
 		}
 	}
-	return playertooclosetodoor;
 }
 
 ZHC_wall_buy_options_init(){
@@ -2051,7 +2056,7 @@ treasure_chest_think(){
 			//if(!self.ZHC_ALL_CHESTS_chest_active && !self box_currently_affect_by_firesale())
 			
 			if(!isDefined(self.zone_name)){	//finding zone
-				user = self a_player_is_close_to_origin(120);
+				user = self.chest_origin a_player_is_close_to_origin(120);
 				if(!isDefined(user)){
 					wait 0.5;
 				}
@@ -2065,7 +2070,7 @@ treasure_chest_think(){
 			}else if( level.zones[self.zone_name].is_occupied){
 				if(level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK)
 					break;
-				user = self a_player_is_close_to_origin(120);
+				user = self.chest_origin a_player_is_close_to_origin(120);
 				if(isDefined(user))
 					break;
 				else{
@@ -2082,8 +2087,9 @@ treasure_chest_think(){
 	if(!level.ZHC_BOX_AUTO_OPEN)
 		flag_set("chest_has_been_used");
 
-	
-	self._box_opened_by_fire_sale = false;
+	if(!IsDefined( self._box_opened_by_fire_sale ))
+		self._box_opened_by_fire_sale = false;
+
 	if ( self box_currently_affect_by_firesale() && !IsDefined(self.auto_open))
 	{
 		self._box_opened_by_fire_sale = true;
@@ -2128,10 +2134,10 @@ treasure_chest_think(){
 
 	//if(self.chest_origin ZHC_teddy_is_here())
 	//	wait(5);s
+
 	if(!is_true(self.was_temp) && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE){
 		self ZHC_box_wait_to_become_reopenable();
 	}
-
 	if(
 //		!is_true(self.chest_origin.chest_moving) &&
 		!level.ZHC_BOX_AUTO_OPEN &&
@@ -2143,13 +2149,17 @@ treasure_chest_think(){
 		)*/
 	)
 	{
-		IPrintLnBold( "enabled before repeat" );
+		//IPrintLnBold( "enabled before repeat" );
 		self enable_trigger();
 		self setvisibletoall();
 	}
 
 	wait_network_frame();
 	wait_network_frame();
+
+	if(!IsDefined( self.times_chest_opened ))
+		self.times_chest_opened = 0;
+	self.times_chest_opened ++;
 
 	self thread treasure_chest_think();
 }
@@ -2167,8 +2177,8 @@ ZHC_box_wait_to_become_reopenable(){
 			self thread firesale_make_box_reopenable(); //rerun after cooldown is over.
 	}
 	if(run_small_cooldown)
-		self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, min(72, get_or(level.zombie_total_start, 1)/6.5)+8  , 1, undefined, true);
-	iPrintLnBold("zhc_end_of_cooldown_box_reopenable");
+		self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, int(min(72, get_or(level.zombie_total_start, 1)/6.5)+8)  , 1, undefined, true);
+	//iPrintLnBold("zhc_end_of_cooldown_box_reopenable");
 }
 firesale_make_box_reopenable(){
 	self endon( "zhc_end_of_cooldown" );
@@ -2328,7 +2338,14 @@ could_get_teddy_firesale_check(chest){
 }
 
 box_currently_affect_by_firesale(){
-	return is_true( level.zombie_vars["zombie_powerup_fire_sale_on"] ) && self [[level._zombiemode_check_firesale_loc_valid_func]]() && !is_true(self.premature_firesale_end);
+	return 	(
+				//is_true(self._box_opened_by_fire_sale) ||//nope yea nope
+				(
+					is_true( level.zombie_vars["zombie_powerup_fire_sale_on"] ) && 
+					self [[level._zombiemode_check_firesale_loc_valid_func]]()
+				)
+		   	) && 
+			!is_true(self.premature_firesale_end);
 }
 ZHC_FIRESALE_CAN_CREATE_TEMP_CHESTS(){
 	return level.ZHC_FIRESALE_CAN_CREATE_TEMP_CHESTS;
@@ -3768,9 +3785,9 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 		}
 	}
 	chest.chest_box clearclientflag(level._ZOMBIE_SCRIPTMOVER_FLAG_BOX_RANDOM);
-
+	//s = "";
 	if(level.ZHC_ORDERED_BOX) {				//ZHC
-
+		//s += firesale + " " + is_true(chest.was_temp)  +" " + (level.chests[level.chest_index] == chest) ;
 		if(firesale){
 			if(level.ZHC_ORDERED_BOX_FIRESALE_OGISH)
 				rand = self ZHC_ORDERED_BOX_ZHC_ALL_CHESTS_get_next_weapon_any_box(chest);
@@ -3781,10 +3798,16 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 				rand = self ZHC_ORDERED_BOX_get_next_weapon();
 
 				//firesale temp chests cant be used to get legendary weapons.
-				if( isDefined(rand) && is_true(chest.was_temp) && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box (rand))
+				//s += IsDefined( rand )+" "+ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box (rand);
+				if(level.ZHC_ALL_CHESTS && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM && level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && 
+					isDefined(rand) && is_true(chest.was_temp) && level.chests[level.chest_index] == chest && ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box (rand)
+					)
 				{
+					//s += "got teddy";
 					rand = "teddy";
 					serious_teddy = false;
+				}else{
+					//s += "got "+rand;
 				}
 			}
 
@@ -3797,6 +3820,7 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 	}else{
 		rand = treasure_chest_ChooseWeightedRandomWeapon( player );		//might change to something else
 	}
+	//IPrintLn( s );
 
 	
 	if(!isDefined(rand)){

@@ -291,7 +291,7 @@ open_door_temporarily(time){
 	if(self.door_stage == "cooldown")
 		self.dont_reset_cooldown_once = true;		//nessesary for when door cooldown is over or when is in door cooldown.
 												//if false cooldown will reset when the door reopens.
-	if(self.door_stage == "buy")
+	if(self.door_stage == "buying")
 		self.skip_cooldown_once = true;
 
 	//self notify("zhc_end_of_cooldown"); if you want to open the door and intentianlly reset the cooldown
@@ -2060,6 +2060,17 @@ one_door_is_opened(doorIds, all_doors){
 	for(i = 0; i < doorIds.size; i++){
 		door = all_doors[doorIds[i]];
 		if(door get_door_is_open_or_opening() && !is_true(door.dont_reset_cooldown_once)){
+			return true;
+		}
+	}
+	return false;
+}
+one_door_is_unbarred(doorIds, all_doors){
+	if(!IsDefined( all_doors ))
+		all_doors =  GetEntArray( "zombie_door", "targetname" );
+	for(i = 0; i < doorIds.size; i++){
+		door = all_doors[doorIds[i]];
+		if(door get_door_is_open_or_opening() && !is_true(door.dont_reset_cooldown_once) || door.door_stage == "buying"){
 			return true;
 		}
 	}

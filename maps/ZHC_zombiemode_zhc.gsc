@@ -3,7 +3,7 @@
 #include maps\_zombiemode_utility;
 
 get_testing_level(){
-	return 8;
+	return 0;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
@@ -1395,7 +1395,7 @@ ZHC_basic_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted
 	}
 	if(!isDefined(goals_required))
 		goals_required = 1;
-	IPrintLnBold("gr:"+ dstr(goals_required) +" wt:" + dstr(wait_time)+" addkill:" +dstr(additional_kills_wanted)+" addrnd:"+dstr(additional_rounds_to_wait)+" dogrnd:"+dstr(dog_rounds_to_wait) + " adddkills" + dstr(additional_dog_kills_wanted));
+	//IPrintLnBold("gr:"+ dstr(goals_required) +" wt:" + dstr(wait_time)+" addkill:" +dstr(additional_kills_wanted)+" addrnd:"+dstr(additional_rounds_to_wait)+" dogrnd:"+dstr(dog_rounds_to_wait) + " adddkills" + dstr(additional_dog_kills_wanted));
 	self thread ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end, additional_dog_kills_wanted);
 	self waittill( "zhc_end_of_cooldown" );
 }
@@ -1526,7 +1526,7 @@ ZHC_wait_for_goals(goals_required, goal_strings){
 		
 		self zhc_waittill_any(goal_strings);//common_scripts\utility.gsc: );
 	}
-	IPrintLnBold( "cooldown over. " + goals_required + " goals reached");
+	//IPrintLnBold( "cooldown over. " + goals_required + " goals reached");
 	self notify ("zhc_end_of_cooldown");
 }
 
@@ -1579,8 +1579,8 @@ round_wait_cooldown(round_goal, round_goals_on_round_end){
 			level waittill("between_round_over");
 
 	}
-	if(round_goals_on_round_end)
-		IPrintLnBold( "round "+ round_goal + " zch_round_goal_reached" );
+	//if(round_goals_on_round_end)
+	//	IPrintLnBold( "round "+ round_goal + " zch_round_goal_reached" );
 	self notify ("zch_round_goal_reached");
 }
 
@@ -1609,10 +1609,10 @@ dog_kill_goal_cooldown(total_kill_goal){
 	if(!isDefined(level.total_dogs_killed))
 		level.total_dogs_killed = 0;
 	while(total_kill_goal > level.total_dogs_killed){
-		IPrintLnBold( total_kill_goal +"  "+level.total_dogs_killed );
+		//IPrintLnBold( total_kill_goal +"  "+level.total_dogs_killed );
 		level waittill("dog_killed");
 	}
-	IPrintLnBold( "zhc_dog_kill_goal_reached" );
+	//IPrintLnBold( "zhc_dog_kill_goal_reached" );
 	self notify( "zhc_dog_kill_goal_reached" );
 }
 

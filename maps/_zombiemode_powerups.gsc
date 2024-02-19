@@ -2100,6 +2100,7 @@ toggle_fire_sale_on()
 					level.chests[i].was_temp = true;
 					level.chests[i] thread maps\_zombiemode_weapons::show_chest();
 					level.chests[i] thread maps\_zombiemode_weapons::hide_rubble();
+					level.chests[i].premature_firesale_end = undefined;
 					wait_network_frame();
 				}
 			}
