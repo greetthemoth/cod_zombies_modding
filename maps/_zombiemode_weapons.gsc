@@ -373,7 +373,6 @@ init_weapons()
 //remove this function and whenever it's call for production. this is only for testing purpose.
 add_limited_tesla_gun()
 {
-
 	weapon_spawns = GetEntArray( "weapon_upgrade", "targetname" ); 
 
 	for( i = 0; i < weapon_spawns.size; i++ )
@@ -388,7 +387,6 @@ add_limited_tesla_gun()
 		}
 		
 	}
-
 }
 
 
@@ -467,14 +465,11 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		return;
 	}
 
-	door_middle = undefined;
-	player_yaw = undefined;
-	yaw = undefined;
+	//door_middle = undefined;
+	//player_yaw = undefined;
+	//yaw = undefined;
 
 	all_trigs = getentarray( self.target, "target" ); 
-	
-	
-	
 	if(!IsDefined( self.barr_door_middle )){
 		closest = undefined;
 		/*for( i = 0; i < all_trigs.size; i++ )
@@ -487,7 +482,7 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		}*/
 		//if(!IsDefined( closest )){
 			closest_dist = undefined;
-			for( i = 0; i < all_trigs.size; i++ )
+			for( i = 0; i < all_trigs.size; i++ )	//FINds origin or closes trigger
 			{
 				dist = DistanceSquared( player.origin, all_trigs[i].origin );
 				if(!IsDefined( closest ) || closest_dist > dist){
@@ -503,8 +498,10 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		}
 		self.barr_door_middle = closest.origin;
 	}
-
-	if(!isDefined(self.barr_weapon_yaw)){		//if the map has doors which sister doors share a diffrent rotation to each other, this should be changed to run wether defined or not.
+	barr_weapon_yaw = undefined;
+	if(!isDefined(
+	//self.
+	barr_weapon_yaw)){		//if the map has doors which sister doors share a diffrent rotation to each other, this should be changed to run wether defined or not.
 		closest_door = undefined;
 		closest_dist = undefined;
 		for( i = 0; i < self.doors.size; i++ )
@@ -533,7 +530,8 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		}
 		yaw = VectorToAngles( self.barr_door_middle - closest_door.origin )[1];
 		yaw = AngleClamp180(int((yaw+45)/90)*90);
-		self.barr_weapon_yaw = yaw;
+		//self.
+		barr_weapon_yaw = yaw;
 	}
 
 	/*if(print_some_info){
@@ -552,7 +550,8 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 
 	
 
-	self.player_yaw = get_player_yaw(player);
+	self.player_yaw = get_player_yaw_from_relative_position(player.origin, //self.
+		barr_weapon_yaw, self.barr_door_middle);
 
 	/*self.weapon_model = spawn( "script_model",self.barr_weapon_origin);
 	self set_box_weapon_model_to(player GetCurrentWeapon());
@@ -568,15 +567,13 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 
 }
 
-get_player_yaw(player){
-	yaw = self.barr_weapon_yaw;
-	door_middle = self.barr_door_middle;
-	player_yaw = VectorToAngles( door_middle - player.origin )[1];
+get_player_yaw_from_relative_position(player_origin, surface_yaw, surface_middle){
+	player_yaw = VectorToAngles( surface_middle - player_origin )[1];
 	player_yaw0 = player_yaw;
 	player_yaw  = AngleClamp180(int((player_yaw+45)/90)*90);
 	player_yaw2 = player_yaw;
 	for(i = 0 ; i < 3; i ++){
-		if(player_yaw2 == yaw || player_yaw2 == AngleClamp180(yaw + 180) || angle_dif(player_yaw2 ,player_yaw0 ) > 90){
+		if(player_yaw2 == yaw || player_yaw2 == AngleClamp180(surface_yaw + 180) || angle_dif(player_yaw2 ,player_yaw0 ) > 90){
 			player_yaw2-=90;
 			player_yaw2  = AngleClamp180(player_yaw2);
 		}else{
@@ -629,6 +626,14 @@ door_barr_weapon(){
 		return;
 	}
 
+	can_upgrade = true;
+	CAN_ONLY_UPGRADE_IF_ROOM_LOCKED = true;
+	if(CAN_ONLY_UPGRADE_IF_ROOM_LOCKED){
+		doorIds = Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
+		doorIds = array_remove( doorIds,self get_door_id() );
+		can_upgrade = !maps\_zombiemode_blockers::one_door_is_opened(door_ids);
+	}
+
 	weapon = undefined;
 	weapon_model = undefined;
 	player_cur_weapon = player GetCurrentWeapon();
@@ -659,6 +664,7 @@ door_barr_weapon(){
 		weapon = default_weaps[RandomInt( default_weaps.size )];
 	}else if(wep_class == "bowie" || wep_class == "sickle"){
 		//weapon = "specialty_knifeescape";
+		//none of these models are defined, find the correct models.
 		if(player HasWeapon( "bowie_knife_zm" ))
 			weapon_model = GetWeaponModel("bowie_knife_zm");
 		else if(player HasWeapon( "sickle_knife_zm" ))
@@ -684,17 +690,18 @@ door_barr_weapon(){
 	
 	//self.cur_barr_weapon = weapon;   //set that weapon to self.cur_barr_weapon
 
-	self door_barr_weapon_spawn(weapon, weapon_model, same_side, room_to_wait_to_be_occupied);		//spawn weapon
+	self door_barr_weapon_spawn(weapon, weapon_model, same_side, room_to_wait_to_be_occupied, can_upgrade);		//spawn weapon
 }
 
 
-door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_from){
+door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_from, can_upgrade){
 	self notify ("door_barr_started");
 	self maps\_zombiemode_blockers::get_sister_door() notify ("door_barr_started");
 
-	door_barr_weapon_setup(weapon_string, weapon_model, same_side);
+	self.weapon_trigger = door_barr_weapon_setup(weapon_string, weapon_model, same_side, self.barr_door_middle, self.player_yaw//, self.barr_weapon_yaw 
+		);
 
-	play_sound_at_pos( "weapon_show", self.origin, self );
+	play_sound_at_pos( "weapon_show", self.origin);
 	self.weapon_trigger thread weapon_model_hide();
 	self.weapon_trigger thread show_weapon_model();
 
@@ -704,17 +711,19 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self thread weapon_stop_on_door_open();
 	self thread weapon_thread_manage_triggers(roomId_visible_from);
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
-	can_buy_ammo = is_equipment;
-	can_upgrade = !is_equipment;
-	self.weapon_trigger thread weapon_spawn_think(false, true, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
+	can_init_buy = true;	//always true for now.
+	can_buy_ammo = is_equipment || true; //lets make it always true for now
+	can_upgrade = !is_equipment && can_upgrade;
+	self.weapon_trigger thread weapon_spawn_think(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
 }
 
-door_barr_weapon_setup(weapon_string, weapon_model, same_side){
+door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw//, barr_weapon_yaw
+	){
 	if(same_side)
-	self.player_yaw = AngleClamp180(self.player_yaw + 180);
+	player_yaw = AngleClamp180(player_yaw + 180);
 
-	barr_weapon_origin = self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 8 );
-	barr_weapon_trigger_origin = self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 8 );
+	barr_weapon_origin = door_barr_middle_origin - ( AnglesToForward( ( 0, player_yaw, 0 ) ) * 8 );
+	barr_weapon_trigger_origin = door_barr_middle_origin - ( AnglesToForward( ( 0, player_yaw, 0 ) ) * 8 );
 	//barr_weapon_locked_side_trigger_origin = self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 50 );
 
 	//self should be door trigger
@@ -728,28 +737,32 @@ door_barr_weapon_setup(weapon_string, weapon_model, same_side){
 	
 	//isPerk = IsSubStr( weapon_string ,"specialty_" );
 
-	self.weapon_trigger = Spawn( "trigger_radius_use", barr_weapon_trigger_origin, 0, 55, 12 );
-	self.weapon_trigger.weapon_model = spawn( "script_model", barr_weapon_origin); 
-	self.weapon_trigger.weapon_model.angles = ( 0, self.barr_weapon_yaw, 0 );
-	self.weapon_trigger.weapon_model.yaw = self.player_yaw;
+	weapon_trigger = Spawn( "trigger_radius_use", barr_weapon_trigger_origin, 0, 55, 12 );
+	weapon_trigger.weapon_model = spawn( "script_model", barr_weapon_origin); 
+	//weapon_trigger.weapon_model.angles = ( 0, barr_weapon_yaw, 0 );
+	//weapon_trigger.weapon_model.yaw = player_yaw;
+	weapon_trigger.weapon_model.angles = ( 0, player_yaw, 0 );
 
 	if(weapon_is_dual_wield(weapon_string)){
-		self.weapon_trigger.weapon_model_dw = spawn( "script_model", barr_weapon_origin - (0 ,0 ,10)); 
-		self.weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(self.barr_weapon_yaw + 180), 0 );
-		self.weapon_trigger.weapon_model_dw LinkTo( self.weapon_trigger.weapon_model );
-		self.weapon_trigger.weapon_model_dw.yaw = self.player_yaw;
+		weapon_trigger.weapon_model_dw = spawn( "script_model", barr_weapon_origin - (0 ,0 ,10)); 
+		//weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(barr_weapon_yaw + 180), 0 );
+		//weapon_trigger.weapon_model_dw.yaw = player_yaw;
+		weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(player_yaw + 180), 0 );
+		weapon_trigger.weapon_model_dw LinkTo( weapon_trigger.weapon_model );
+		
 	}
 
 	if(!IsDefined( weapon_model ))
-		self.weapon_trigger set_box_weapon_model_to(weapon_string);
+		weapon_trigger set_box_weapon_model_to(weapon_string);
 	else{
-		self.weapon_model show();
-		self.weapon_model setmodel( weapon_model ); 
+		weapon_trigger.weapon_model show();
+		weapon_trigger.weapon_model setmodel( weapon_model ); 
 	}
 
-	self.weapon_trigger SetHintString( get_weapon_hint( weapon_string ), get_weapon_cost( weapon_string ) ); 
-	self.weapon_trigger setCursorHint( "HINT_NOICON" );
-	self.weapon_trigger UseTriggerRequireLookAt();
+	weapon_trigger SetHintString( get_weapon_hint( weapon_string ), get_weapon_cost( weapon_string ) ); 
+	weapon_trigger setCursorHint( "HINT_NOICON" );
+	weapon_trigger UseTriggerRequireLookAt();
+	return self.weapon_trigger;
 }
 
 weapon_thread_manage_triggers(roomId_visible_from){

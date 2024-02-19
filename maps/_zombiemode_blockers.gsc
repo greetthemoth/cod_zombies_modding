@@ -1960,7 +1960,7 @@ door_is_in_cooldown_phase(){
 		{
 			case "electric_door":
 				self.dont_reset_cooldown_once = undefined;
-				level waittill( "electricity_off" );
+				level waittill( "electricity_off" );	//you have to turn the power off and on to open.
 				wait_network_frame( );
 				break;
 			
@@ -1968,7 +1968,6 @@ door_is_in_cooldown_phase(){
 				self thread door_cooldown();
 				self.dont_reset_cooldown_once = undefined;
 				self waittill("end_door_cooldown");
-				
 				break;
 		}
 		//IPrintLnBold( "this ran" );
@@ -1988,6 +1987,14 @@ door_cooldown(){
 	self thread maps\_zombiemode_weapons::door_barr_weapon();
 
 	self waittill_any_ents( level, "zhc_dog_round_over",self,"door_barr_started");//common_scripts\utility.gsc:
+
+	ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN = true;
+	if(ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN){
+		doorIds = Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
+		doorIds = array_remove( doorIds,self get_door_id() );
+		wait_for_one_door_to_be_open(doorIds);
+	}
+
 
 	if(is_true(self.dont_reset_cooldown_once)){
 		return;
@@ -2012,7 +2019,7 @@ door_cooldown(){
 	//	}
 	//}
 
-	ZHC_ROUND_GOAL_STACKING = true;
+	ZHC_ROUND_GOAL_STACKING = false;
 	if(ZHC_ROUND_GOAL_STACKING){
 		if(!isDefined(level.zhc_last_door_cooldown_round_goal_set))
 			level.zhc_last_door_cooldown_round_goal_set = 0;
@@ -2037,6 +2044,23 @@ door_cooldown(){
 	self notify("zhc_end_of_cooldown");
 }*/
 
+wait_for_one_door_to_be_open(doorIds){
+	while(1){
+		a_door_is_open = one_door_is_opened(doorIds);
+		if(a_door_is_open)
+			return;
+		wait(0.5);
+	}
+}
+one_door_is_opened(doorIds){
+	for(i = 0; i < doorIds.size; i++){
+		door = level.zombie_doors[doors[i]];
+		if(door get_door_is_open_or_opening() && !is_true(door.dont_reset_cooldown_once)){
+			return true;
+		}
+	}
+	return false;
+}
 
 door_opened()
 {

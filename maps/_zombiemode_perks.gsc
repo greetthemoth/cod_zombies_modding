@@ -24,8 +24,6 @@ see line 81 for how to add aditional perks
 #using_animtree( "generic_human" ); 
 init()
 {
-
-
 	level.QUICKREVIVE_ADDED_LIVES = true;					//ADDED CHANGED FOR MOD
 	level.QUICKREVIVE_LIMIT_LIVES = false;
 	level.QUICKREVIVE_INCREASED_REGEN = false;
