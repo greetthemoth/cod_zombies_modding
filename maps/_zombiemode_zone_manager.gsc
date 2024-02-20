@@ -905,7 +905,6 @@ manage_zones( initial_zone )
 					enable_zone(initial_zone);
 				level.zones[ initial_zone ].is_active = true;
 				level.zones[ initial_zone ].is_occupied = true;
-				
 			}
 		}
 		

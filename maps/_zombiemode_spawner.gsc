@@ -208,6 +208,7 @@ zombie_spawn_init( animname_set )
 	self thread zombie_gib_on_damage(); 
 	self thread zombie_damage_failsafe();
 	self thread ZHC_zombie_catchup_to_player(); //ADDED FOR MOD
+	self thread ZHC_zombie_speed_spike_after_damage();	//ADDED FOR MOD
 
 	if(IsDefined(level._zombie_custom_spawn_logic))
 	{
@@ -316,39 +317,58 @@ ZHC_zombie_catchup_to_player(){
 			continue;
 		}
 		shortestDist = undefined;
+		closest_player_zone = undefined;
 		for ( i = 0; i < players.size; i++ )
 		{ 
 
 			playerDistSq = Distance2DSquared( players[i].origin, self.origin );
-			if(!isDefined(shortestDist) || playerDistSq < shortestDist)
+			if(!isDefined(shortestDist) || playerDistSq < shortestDist){
 				shortestDist = playerDistSq;
+				closest_player_zone = players[i].current_zone;
+			}
 		}
 
 		if(!IsDefined( shortestDist )){
 			//IPrintLn( "targets found" + players.size );
 			continue;
 		}
+		levels = [];
+		levels[0] = "walk";
+		levels[1] =  "run";
+		levels[2] = "sprint";
 
-		level0 = "walk";
-		level1 =  "run";
-		level2 = "sprint";
-		if(shortestDist > 800000 || (isDefined(self.zone_name ) && isDefined(level.zones[self.zone_name]) && shortestDist > 400000 ) )
-		{
-			if(self.zombie_move_speed_original == level1){
-				if(self.zombie_move_speed != level2)
-					self set_zombie_run_cycle(level2);
-				//IPrintLn( level2 +" "+int(shortestDist));
-			}else if(self.zombie_move_speed_original == level0){
-				if(self.zombie_move_speed != level1)
-					self set_zombie_run_cycle(level1);
-				//IPrintLn( level1 +" "+int(shortestDist));
+		zombie_same_room_as_player = false;
+		if (
+			isDefined(self.zone_name ) && IsDefined( closest_player_zone ) &&  
+			maps\_zombiemode_blockers::Get_Zone_Room_ID(self.zone_name) ==
+			maps\_zombiemode_blockers::Get_Zone_Room_ID(closest_player_zone)
+		   )
+			zombie_same_room_as_player = true;
+
+		//if(shortestDist > 800000 ||  (zombie_same_room_as_player && shortestDist > 400000 ) ){
+			if(self.zombie_move_speed_original == levels[0]){
+				if(self.zombie_move_speed != levels[2] && (shortestDist > 1600000 ||  (!zombie_same_room_as_player && shortestDist >= 800000 )))
+					self set_zombie_run_cycle(levels[2]);
+				else if(self.zombie_move_speed != levels[1] && (shortestDist > 800000 ||  (!zombie_same_room_as_player && shortestDist >= 500000 )))
+					self set_zombie_run_cycle(levels[1]);
+				else if(self.zombie_move_speed != self.zombie_move_speed_original)
+					self set_zombie_run_cycle(self.zombie_move_speed_original);
+				//IPrintLn( levels[1] +" "+int(shortestDist));
 			}
-		}
-		else {
-			if(self.zombie_move_speed != self.zombie_move_speed_original)
-				self set_zombie_run_cycle(self.zombie_move_speed_original);
+			else
+		//}else if (shortestDist > 800000 ||  (zombie_same_room_as_player && shortestDist > 400000 ) ){
+			if(self.zombie_move_speed_original == levels[1]){
+				if(self.zombie_move_speed != levels[2] && (shortestDist > 800000 ||  (!zombie_same_room_as_player && shortestDist >= 500000 )))
+					self set_zombie_run_cycle(levels[2]);
+				else if(self.zombie_move_speed != self.zombie_move_speed_original)
+					self set_zombie_run_cycle(self.zombie_move_speed_original);
+				//IPrintLn( levels[2] +" "+int(shortestDist));
+			}
+		//}else {
+			//if(self.zombie_move_speed != self.zombie_move_speed_original)
+			//	self set_zombie_run_cycle(self.zombie_move_speed_original);
 			//IPrintLn( "og "+self.zombie_move_speed_original +" "+int(shortestDist));
-		}
+		//}
 	}
 }
 /*
@@ -2942,7 +2962,31 @@ headshot_blood_fx()
 	}
 }
 
-
+ZHC_zombie_speed_spike_after_damage(){
+	self endon( "death" ); 
+	if(self.zombie_move_speed_original = "sprint")
+		return;
+	while(1){
+		self waittill( "damage", amount, attacker, direction_vec, point, type );
+		if(!IsDefined( level.ZHC_zombie_move_speed_spike ) || level.ZHC_zombie_move_speed_spike + 35 < 70)	//cant work anyways
+			continue;
+		if(self.zombie_move_speed_original == "sprint")	//if set by anouher zombie or by other means
+			return;
+		if(!is_player_valid( attacker ))
+			continue;
+		if(amount < self.max_health/10 && self.health > self.max_health * (75/100)); //skip if damage < 10% && health > 75%
+			continue;
+		rand = randomintrange( level.ZHC_zombie_move_speed_spike, level.ZHC_zombie_move_speed_spike + 35 );
+		new_speed_suggestion = undefined;
+		if( rand > 70 )
+		{	
+			self set_zombie_run_cycle("sprint"); 
+			self.zombie_move_speed_original = self.zombie_move_speed;
+			return;
+		}
+		wait(0.3);//wait a bit before checking afain so fast weapons dont over spam the function
+	}
+}
 // gib limbs if enough firepower occurs
 zombie_gib_on_damage()
 {

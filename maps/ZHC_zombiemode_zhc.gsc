@@ -425,9 +425,7 @@ init_weapon_vars()
 	//self.ZHC_weapon_damage_add = [];
 	//self.ZHC_weapon_damage_percent = [];
 
-
 	//level manager
-
 }
 
 weapon_name_check(weapon_name){
@@ -924,13 +922,10 @@ turn_on_nearest_perk(origin, max_distance, wait_time){
 }
 
 
-zombie_door_cost_mult(){
-	return 10/3;
-}
 
 /////////////////////////////ROUND STUFF //////////////////////
 ZHC_get_dog_max_add(){
-	if(level.ZHC_ROUND_FLOW == 1){
+	if(ZHC_ROUND_FLOW_check()){
 		//level.dog_round_count in this context always includes the current round.
 		/*IPrintLnBold( "dog max add: "
 			+  ((level.dog_round_count-1)*0.5) + " + "
@@ -956,7 +951,7 @@ ZHC_get_dog_max_add(){
 	return 0;
 }
 ZHC_get_dog_wait_mult(enemy_count, num_player_valid){
-	if(level.ZHC_ROUND_FLOW == 1){
+	if(ZHC_ROUND_FLOW_check()){
 		enemy_count /= max(1,num_player_valid);
 		difficulty_mult = (((100 - min(level.round_number,100) )/100)*0.7) + 0.3;
 		return min(12,enemy_count *enemy_count)*difficulty_mult;
@@ -964,7 +959,7 @@ ZHC_get_dog_wait_mult(enemy_count, num_player_valid){
 	return 1;
 }
 ZHC_spawn_dog_override(enemy_count){				//note: dogs are only able to spawn in other zones that are not occupied. 
-	if(level.ZHC_ROUND_FLOW == 1 ){
+	if(ZHC_ROUND_FLOW_check() ){
 		if(level.ZHC_dogs_to_spawn_this_round > level.ZHC_dogs_spawned_this_round){
 
 			left_to_spawn = level.ZHC_dogs_to_spawn_this_round - level.ZHC_dogs_spawned_this_round;
@@ -1020,7 +1015,7 @@ ZHC_get_cur_enemy_limit(enemyCount){ // MOD FUNC
 }
 
 get_spawning_speed_mult(enemyCount, cur_enemy_limit){		//more time is easier
-	if(level.ZHC_ROUND_FLOW == 1){
+	if(ZHC_ROUND_FLOW_check()){
 		if(!IsDefined( level.ZHC_round_spawning_speed_mult ))
 			return 1;
 		return level.ZHC_round_spawning_speed_mult
@@ -1030,7 +1025,7 @@ get_spawning_speed_mult(enemyCount, cur_enemy_limit){		//more time is easier
 	return 1;
 }
 get_zombie_limit_mult(){
-	if(level.ZHC_ROUND_FLOW == 1){
+	if(ZHC_ROUND_FLOW_check()){
 		if(!IsDefined( level.ZHC_round_zombie_limit_mult ))
 			return 1;
 		return level.ZHC_round_zombie_limit_mult;
@@ -1038,7 +1033,7 @@ get_zombie_limit_mult(){
 	return 1;
 }
 get_score_to_drop_powerup_mult(){
-	if(level.ZHC_ROUND_FLOW==1){
+	if(ZHC_ROUND_FLOW_check()){
 		if(!IsDefined( level.ZHC_score_to_drop_powerup_mult) )
 			return 1;
 		return level.ZHC_score_to_drop_powerup_mult;
@@ -1047,31 +1042,37 @@ get_score_to_drop_powerup_mult(){
 }
 
 additional_round_logic(){
-	if(level.ZHC_ROUND_FLOW == 1){
+	if(ZHC_ROUND_FLOW_check()){
 		update_round_flow_difficulty(1);
 	}
-
 }
 
-update_round_flow_difficulty(round_completion_percent){
+ZHC_ROUND_FLOW_check(){
+	return level.ZHC_ROUND_FLOW==1;
+}
+
+update_round_flow_difficulty(round_completion_percent, flow_difficulty){
+	if(!ZHC_ROUND_FLOW_check())
+		continue;
+
+	DEBUG_FLOW = true;
 
 	fr = level.round_number - (level.dog_round_count-1); //flow round number - excludes dog rounds 
 
 	FLOW_ROUND_LENGTH = 4;
-	flow_difficulty = ((fr-1) % FLOW_ROUND_LENGTH);						 //fluctuates from 0 -> FLOW_ROUND_LENGTH-1 based on stage in FLOW_ROUND_LENGTH
-	flow_difficulty_percent = flow_difficulty/(FLOW_ROUND_LENGTH-1);		 //fluctuates from 0 -> 1 based on stage in FLOW_ROUND_LENGTH
-	inverse_flow_difficulty_percent = ((FLOW_ROUND_LENGTH-flow_difficulty)/FLOW_ROUND_LENGTH); //fructuates from 1 -> 0 based on stage in FLOW_ROUND_LENGTH.
+	if(!isDefined(flow_difficulty))
+		flow_difficulty = ((fr-1) % FLOW_ROUND_LENGTH );				//fluctuates from 0 -> FLOW_ROUND_LENGTH-1 based on stage in FLOW_ROUND_LENGTH
+	flow_difficulty_percent = flow_difficulty/(FLOW_ROUND_LENGTH-1);	//fluctuates from 0 -> 1 based on stage in FLOW_ROUND_LENGTH
+	inverse_flow_difficulty_percent = ((FLOW_ROUND_LENGTH-flow_difficulty)/FLOW_ROUND_LENGTH); 
+																		//fructuates from 1 -> 0 based on stage in FLOW_ROUND_LENGTH.
 	flows_completed = int((fr-1) / FLOW_ROUND_LENGTH);
 
-
-	IPrintLnBold( "flow_difficulty: " + flow_difficulty );
-			//    (   (((1                 -1) - 10) , 0)) /10; == 0
-			//    (   (((10                -1) - 10) , 0)) /10; == 0.9
+	if(DEBUG_FLOW)
+		IPrintLnBold( "flow_difficulty: " + flow_difficulty );
+			//		(   (((1                 -1) - 10) , 0)) /10; == 0
+			//		(   (((10                -1) - 10) , 0)) /10; == 0.9
 	dampener = abs(min(((level.round_number-1) - 10) , 0)) /10; //fluctuates from 1 - 0 from (r1 to r11)
-
-
-	damp25 =  abs(min(((level.round_number-1) - 25) , 0)) /25; //fluctuates from 1 - 0 from (r1 to r25)
-
+	damp25 =  abs(min(((level.round_number-1) - 25) , 0)) /25; 	//fluctuates from 1 - 0 from (r1 to r25)
 	mult_go_to_health_instead = 0.3 * damp25 * flow_difficulty_percent; //
 
 	//IPrintLnBold( "flow_diffic:" + flow_difficulty + " damp10:"+ int(dampener*100)/100 + " damp25:" + int(damp25*100)/100 + " mgtH:" + int(mult_go_to_health_instead*100)/100 );
@@ -1095,14 +1096,17 @@ update_round_flow_difficulty(round_completion_percent){
 	//level.zombie_total = level.round_number; //testo
 	//level.zombie_total = 1;//testo
 
-	////IPrintLn( "ZHC_round_zombie_total: "+level.zombie_total);
+	if(DEBUG_FLOW)
+		IPrintLn( "ZHC_round_zombie_total: "+level.zombie_total);
 	level.ZHC_score_to_drop_powerup_mult = ZHC_round_zombie_total_mult;
 
 
 	//zombie limit
 	diminished_dampner = ((dampener * 0.5)+(1 - 0.5));
 	level.ZHC_round_zombie_limit_mult = (flow_difficulty * 0.5 * diminished_dampner)+1;
-	////IPrintLn( "ZHC_round_zombie_limit_mult: "+level.ZHC_round_zombie_limit_mult);
+
+	if(DEBUG_FLOW)
+		IPrintLn( "ZHC_round_zombie_limit_mult: "+level.ZHC_round_zombie_limit_mult);
 
 	
 	FLOW2_ROUND_LENGTH = FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH;
@@ -1113,47 +1117,52 @@ update_round_flow_difficulty(round_completion_percent){
 	animSpeed = 
 		1 +
 		//min((fr-1)*0.25,1) +
-		(flow_difficulty)+
+		(flow_difficulty) +
 		(flows_completed*0.05) + 
 		(flow2_difficulty)  						//from 0 - 2 based on FLOW2_ROUND_LENGTH difficulty.
 		;
 
-	IPrintLn( "1 +" );
-	IPrintLn( "min((fr-1)*0.25,1) =" + min((fr-1)*0.25,1) +"+" );
-	IPrintLn( "(flow_difficulty*0.4) = "+ (flow_difficulty*0.4)+ "+" );
-	IPrintLn( "(flows_completed*0.08) = "+(flows_completed*0.08)+"+" );
-	IPrintLn( "(flow2_difficulty * 0.55) = " + (flow2_difficulty * 0.55) +"+" );
-	IPrintLn( "flows2_completed*(FLOW_ROUND_LENGTH*0.75) = "+flows2_completed*(FLOW_ROUND_LENGTH*0.75)+"+" );
-	IPrintLn("animSpeed = " + animSpeed );
+	DEBUG_SPEED_FUNC = false;
+	if(DEBUG_FLOW && DEBUG_SPEED_FUNC){
+		IPrintLn( "1 +" );
+		//IPrintLn( "min((fr-1)*0.25,1) =" + min((fr-1)*0.25,1) +"+" );
+		IPrintLn( "(flow_difficulty) =         "+ (flow_difficulty)+ "+" );
+		IPrintLn( "(flows_completed*0.05) =    "+(flows_completed*0.05)+"+" );
+		IPrintLn( "(flow2_difficulty * 0.55) = " + (flow2_difficulty * 0.55) +"+" );
+		//IPrintLn( "flows2_completed*(FLOW_ROUND_LENGTH*0.75) = "+flows2_completed*(FLOW_ROUND_LENGTH*0.75)+"+" );
+	}
+	if(DEBUG_FLOW)
+		IPrintLn("animSpeed = " + animSpeed );
 
 	//animSpeed *= (1-mult_go_to_health_instead);
 	//IPrintLn( "pre_zombie_health: "+level.zombie_health);
 
 	// undo the health gain on the zombies.
 
-	if(level.round_number > 1 && flow_difficulty == 0){					//permanatly adds more health every new FLOW_ROUND_LENGTH
-		level.zombie_health = int(level.zombie_health * ((FLOW_ROUND_LENGTH*0.1) + 1));
+	//if(level.round_number > 1 && flow_difficulty == 0){					//permanatly adds more health every new FLOW_ROUND_LENGTH
+	//	level.zombie_health = int(level.zombie_health * ((FLOW_ROUND_LENGTH*0.1) + 1));
 		//level.zombie_health += FLOW_ROUND_LENGTH * 40;
 		//animSpeed  =  max(animSpeed - (FLOW_ROUND_LENGTH-1.5), flows_completed * 1.75) ;
-	}
+	//}
 
 	//make weaker FLOW_ROUND_LENGTH rounds have proportinally stronger zombies. expirimental
+
+
 	if(isDefined(level.zhc_zombie_health_mult))
 		level.zombie_health = int((1/level.zhc_zombie_health_mult)*level.zombie_health); // undo previous mult;
 	level.zhc_zombie_health_mult = 1;
+	level.zhc_zombie_health_mult *=  pow(((FLOW_ROUND_LENGTH * 0.1) + 1), flows_completed);
 	//level.zhc_zombie_health_mult *= min(fr-1,9) * 0.1;
 	level.zhc_zombie_health_mult *= (  inverse_flow_difficulty_percent  *3* min((flows_completed*0.333),3) )  +1; 
 	level.zhc_zombie_health_mult *= 1 + mult_go_to_health_instead;
 	level.zombie_health = int(level.zhc_zombie_health_mult * level.zombie_health);
-
-	////IPrintLn( "post_zombie_health: "+level.zombie_health);
+	if(DEBUG_FLOW)
+		IPrintLn( "post_zombie_health: "+level.zombie_health);
 
 	//zombie movement speed
 	
 	level.zombie_move_speed = int(animSpeed * level.zombie_vars["zombie_move_speed_multiplier"]); //0-40 = walk, 41-70 = run, 71+ = sprint
 	
-
-
 	level.ZHC_zombie_move_speed_spike_chance = int( 10 + (flow2_difficulty * FLOW_ROUND_LENGTH) + min(flows_completed*1.5,15) );
 	level.ZHC_zombie_move_speed_spike = 10 +
 		int(level.zombie_move_speed * (
@@ -1167,8 +1176,8 @@ update_round_flow_difficulty(round_completion_percent){
 
 
 
-
-	IPrintLnBold( "zombie_move_speed: "+level.zombie_move_speed +"   spike "+ level.ZHC_zombie_move_speed_spike +"    chance "+level.ZHC_zombie_move_speed_spike_chance+"%");
+	if(DEBUG_FLOW)
+		IPrintLnBold( "zombie_move_speed: "+level.zombie_move_speed +"   spike "+ level.ZHC_zombie_move_speed_spike +"    chance "+level.ZHC_zombie_move_speed_spike_chance+"%");
 	
 
 
@@ -1189,8 +1198,8 @@ update_round_flow_difficulty(round_completion_percent){
 	level.mixed_rounds_enabled =  int(level.ZHC_dogs_to_spawn_this_round > 0) && level.dog_round_count-1 > 0;	//can only spawns dogs after dog round. 
 
 	level.ZHC_dogs_spawned_this_round = 0;
-
-	////IPrintLnBold("dog_round_count: "+level.dog_round_count + "  ZHC_dogs_to_spawn_this_round: "+ level.ZHC_dogs_to_spawn_this_round + "  mixed_rounds_enabled: " +level.mixed_rounds_enabled );
+	if(DEBUG_FLOW)
+		IPrintLnBold("dog_round_count: "+level.dog_round_count + "  ZHC_dogs_to_spawn_this_round: "+ level.ZHC_dogs_to_spawn_this_round + "  mixed_rounds_enabled: " +level.mixed_rounds_enabled );
 	
 	/*IPrintLnBold( 
 		"dogs_to_be_spawned = " + (fr/(FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH)) + " + " + (inverse_flow_difficulty_percent * inverse_flow_difficulty_percent) + " * " + (level.zombie_total/36 + (level.dog_round_count-1)*1.5)
@@ -1208,7 +1217,8 @@ pathfinding_kill(){ //called by _zombiemode_spawner slef is the zombie entity
 							    //we add this condition to avoid complication with the 
 							   	//zombie_spawning while loop [while(level.zombie_total > 0)]
 							   	//adds some knowledge-cap, altho its a bit unclear and may unknowingly promote counter productive strategies.
-		level.zombie_total++;
+	level.zombie_total++;
+	level.total_zombies_killed --;
 	//IPrintLnBold( "pf kill" +" zt:"+ level.zombie_total);
 	self DoDamage( self.health + 10, self.origin );
 }
@@ -1224,6 +1234,14 @@ ZHC_quad_prespawn(){
 		self thread [[level.ZHC_quad_prespawn_original]]();
 	self.death_gas_time = 60;
 }
+
+pow(n, power){
+	for(i = 0; i < power; i++){
+		n*=n;
+	}
+	return n;
+}
+
 MEGA_nuke(){
 		//ends round
 		//turn off power
@@ -1231,7 +1249,6 @@ MEGA_nuke(){
 	//make zombies have more hp for 5 rounds.
 	//make zombies rounds have less zombies.
 	//all effects reduce after each round.
-
 }
 
 MEGA_carpenter(){
@@ -1373,7 +1390,7 @@ Instakill_upgrade(){
 
 
 
-//GENERAL WAITS
+//ZHC COOLDOWN WAITS stuff vvv
 
 //self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(2, 0, 16, 1, 0); //waits for 16 kills and for next round
 ZHC_basic_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end, additional_dog_kills_wanted ){
@@ -1616,7 +1633,11 @@ dog_kill_goal_cooldown(total_kill_goal){
 	self notify( "zhc_dog_kill_goal_reached" );
 }
 
+//^^^ ZHC_COOLDOWN Stuff
 
+zombie_door_cost_mult(){
+	return 10/3;
+}
 normalize_cost(cost){ //added for mod , this function is designed for weapon costs. might move later.
 
 	contestant_vals = [];

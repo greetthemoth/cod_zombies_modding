@@ -633,6 +633,7 @@ door_barr_weapon(){
 	if(CAN_ONLY_UPGRADE_IF_ROOM_LOCKED){
 		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
 		doorIds = array_remove( doorIds,self maps\_zombiemode_blockers::get_door_id() );
+		doorIds = array_remove(doorIds, 6);doorIds = array_remove(doorIds, 9);	//remove electrical doors
 		can_upgrade = !maps\_zombiemode_blockers::one_door_is_unbarred(doorIds);
 	}
 
@@ -684,9 +685,6 @@ door_barr_weapon(){
 			return;
 		}
 	}
-
-	//get the othe occuping players current weapon
-		//or maybe the oroignal player who bought the door (simpler)
 
 	
 	

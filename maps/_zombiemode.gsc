@@ -1672,7 +1672,9 @@ onPlayerSpawned()
 
 		self SetClientDvars( "cg_thirdPerson", "0",
 			"cg_fov", "65",
-			"cg_thirdPersonAngle", "0" );
+			"cg_thirdPersonAngle", "0" 
+			"ui_show_mule_wep_indicator", "0" //added for mod jbleezy
+			);
 
 		self SetDepthOfField( 0, 0, 512, 4000, 4, 0 );
 
@@ -1692,6 +1694,9 @@ onPlayerSpawned()
 		{
 			self thread [[level.player_too_many_weapons_monitor_func]]();
 		}
+
+		// added for mod jbleezy
+		self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
 
 		if( isdefined( self.initialized ) )
 		{
@@ -2163,18 +2168,18 @@ remove_deadshot_bottle()
 
 take_additionalprimaryweapon(additional_weapons)
 {
+
 	if(!isDefined(additional_weapons))
 		additional_weapons = 0;
 
-	weapon_to_take = undefined;
+	
 
-	if ( is_true( self._retain_perks ) )
+	if ( is_true( self._retain_perks ) ) //
 	{
-		return weapon_to_take;
+		return undefined;
 	}
 
-	primary_weapons_that_can_be_taken = [];
-
+	/*primary_weapons_that_can_be_taken = [];
 	primaryWeapons = self GetWeaponsListPrimaries();
 	for ( i = 0; i < primaryWeapons.size; i++ )
 	{
@@ -2182,36 +2187,60 @@ take_additionalprimaryweapon(additional_weapons)
 		{
 			primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size] = primaryWeapons[i];
 		}
+	}*/
+
+	//check to see if any weapon slots are empty
+	count = 0;
+	for(i=0;i<self.weapon_slots.size;i++)
+	{
+		if(self.weapon_slots[i] != "none")
+		{
+			count++;
+		}
 	}
+
 	if(level.PERK_LEVELS){
 		weapons_taken = [];
 		weaponsAmountToTake = primaryWeapons.size - (level.zhc_starting_weapon_slots + additional_weapons);
-		retUndefined = undefined;
 		for(i = 0; i<weaponsAmountToTake; i++){
-			weapon_to_take = primary_weapons_that_can_be_taken[(primary_weapons_that_can_be_taken.size - 1 )- i];
-			if ( weapon_to_take == self GetCurrentWeapon() )
+			weapon_to_take = [];
+			//weapon_to_take[0] = primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size - (1 + i)];
+			weapon_to_take[0] = self.weapon_slots[self.weapon_slots.size - (1 + i)];
+			weapon_to_take[1] = self GetWeaponAmmoClip(weapon_to_take[0]);
+			weapon_to_take[2] = self GetWeaponAmmoStock(weapon_to_take[0]);
+			if ( weapon_to_take[0] == self GetCurrentWeapon() )
 			{
-				retUndefined = weapon_to_take;
-				self SwitchToWeapon( primary_weapons_that_can_be_taken[0] );
+				//self SwitchToWeapon( primary_weapons_that_can_be_taken[0] );
+				self SwitchToWeapon( self.weapon_slots[0] );
 			}
-			self TakeWeapon( weapon_to_take );
-			weapons_taken[weapons_taken.size] = weapon_to_take;
+			self TakeWeapon( weapon_to_take[0] );
+			weapons_taken[weapons_taken.size] = weapon_to_take[0];
 		}
-		if(isDefined(retUndefined))
-			return retUndefined;
-		return weapons_taken[0];
+		return weapons_taken;
 	}else
-	if ( primary_weapons_that_can_be_taken.size > level.zhc_starting_weapon_slots )
+	//if ( primary_weapons_that_can_be_taken.size > level.zhc_starting_weapon_slots )
+	if ( count > level.zhc_starting_weapon_slots )
 	{	
-		weapon_to_take = primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size - 1];
+
+		if( count < 3 )
+		{
+			return undefined;
+		}
+		weapon_to_take = [];
+		weapon_to_take[0] = self.weapon_slots[self.weapon_slots.size - 1];
+		weapon_to_take[1] = self GetWeaponAmmoClip(weapon_to_take[0]);
+		weapon_to_take[2] = self GetWeaponAmmoStock(weapon_to_take[0]);
+		self TakeWeapon( weapon_to_take[0] );
+
+		/*weapon_to_take = primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size - 1];
 		if ( weapon_to_take == self GetCurrentWeapon() )
 		{
 			self SwitchToWeapon( primary_weapons_that_can_be_taken[0] );
 		}
-		self TakeWeapon( weapon_to_take );
+		self TakeWeapon( weapon_to_take );*/
+		return weapon_to_take;
 	}
-
-	return weapon_to_take;
+	
 }
 
 player_laststand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration )
@@ -2221,7 +2250,10 @@ player_laststand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, s
 
  	if ( self HasPerk( "specialty_additionalprimaryweapon" ) )
  	{
- 		self.weapon_taken_by_losing_specialty_additionalprimaryweapon = self take_additionalprimaryweapon();
+ 		perk_lvl = 0;
+ 		if(level.PERK_LEVELS)
+ 			perk_lvl = maps\_zombiemode_perks::GetPerkLevel("specialty_additionalprimaryweapon");
+ 		self.weapon_taken_by_losing_specialty_additionalprimaryweapon = self take_additionalprimaryweapon(perk_lvl);
  	}
 
 	//AYERS: Working on Laststand Audio

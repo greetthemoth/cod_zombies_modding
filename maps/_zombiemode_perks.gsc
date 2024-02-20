@@ -1590,6 +1590,15 @@ give_perk( perk, bought )
 	{
 		self SetClientFlag(level._ZOMBIE_PLAYER_FLAG_DEADSHOT_PERK);
 	}
+	if(perk == "specialty_additionalprimaryweapon")
+	{
+		//self SetPerk("specialty_stockpile");
+		self SetClientDvar("ui_show_mule_wep_indicator", "1");
+		self thread give_back_additional_weapon(new_lvl);
+		self thread additional_weapon_indicator(perk, perk_str);
+		self thread unsave_additional_weapon_on_bleedout();
+		//self thread stowed_weapon_refill();
+	}
  
 	// quick revive in solo gives an extra life
 	if(level.QUICKREVIVE_ADDED_LIVES)
@@ -2004,6 +2013,12 @@ perk_think( perk, recall_checked)
 			if ( result == perk_str )
 			{
 				self.weapon_taken_by_losing_specialty_additionalprimaryweapon = self maps\_zombiemode::take_additionalprimaryweapon(new_lvl);
+			}
+			if(remove_perk){
+				self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
+				self SetClientDvar("ui_show_mule_wep_indicator", "0");
+			}else{
+
 			}
 			break;
  
@@ -2941,5 +2956,334 @@ candolier_ammo()
 				self SetWeaponAmmoStock(player_weapons[i], candolier_ammo);
 		}
 		wait .05;
+	}
+}
+
+give_back_additional_weapon(new_lvl)
+{
+	self endon("disconnect");
+
+	if(!IsDefined(self.weapon_taken_by_losing_additionalprimaryweapon) || !IsDefined(self.weapon_taken_by_losing_additionalprimaryweapon[0]) || (level.PERK_LEVELS && self.weapon_taken_by_losing_additionalprimaryweapon[0][0]))
+	{
+		return;
+	}
+	if(!level.PERK_LEVELS){	//turn into array
+		weap = self.weapon_taken_by_losing_additionalprimaryweapon;
+		self.weapon_taken_by_losing_additionalprimaryweapon = [];
+		self.weapon_taken_by_losing_additionalprimaryweapon[0] = weap;
+	}
+	weapon_givens = [];
+	for(w = 0; w < self.weapon_taken_by_losing_additionalprimaryweapon.size; w++){
+		// check if we can give back the lost weapon
+		can_give_wep = true;
+		if( IsDefined( level.limited_weapons )  )
+		{
+			keys2 = GetArrayKeys( level.limited_weapons );
+			players = get_players();
+			pap_triggers = GetEntArray("zombie_vending_upgrade", "targetname");
+			for( q = 0; q < keys2.size; q++ )
+			{
+				if(keys2[q] != self.weapon_taken_by_losing_additionalprimaryweapon[w][0])
+					continue;
+
+				count = 0;
+				for( i = 0; i < players.size; i++ )
+				{
+					if( players[i] maps\_zombiemode_weapons::has_weapon_or_upgrade( keys2[q] ) )
+					{
+						count++;
+					}
+				}
+
+				// Check the pack a punch machines to see if they are holding what we're looking for
+				for ( k=0; k<pap_triggers.size; k++ )
+				{
+					if ( IsDefined(pap_triggers[k].current_weapon) && pap_triggers[k].current_weapon == keys2[q] )
+					{
+						count++;
+					}
+				}
+
+				// Check the other boxes so we don't offer something currently being offered during a fire sale
+				for ( chestIndex = 0; chestIndex < level.chests.size; chestIndex++ )
+				{
+					if ( IsDefined( level.chests[chestIndex].chest_origin.weapon_string ) && level.chests[chestIndex].chest_origin.weapon_string == keys2[q] )
+					{
+						count++;
+					}
+				}
+
+				//check weapon powerup
+				if ( isdefined( level.random_weapon_powerups ) )
+				{
+					for ( powerupIndex = 0; powerupIndex < level.random_weapon_powerups.size; powerupIndex++ )
+					{
+						if ( IsDefined( level.random_weapon_powerups[powerupIndex] ) && level.random_weapon_powerups[powerupIndex].base_weapon == keys2[q] )
+						{
+							count++;
+						}
+					}
+				}
+
+				if( count >= level.limited_weapons[keys2[q]] )
+				{
+					can_give_wep = false;
+					break;
+				}
+			}
+		}
+
+		if(!can_give_wep)
+		{
+			//self.weapon_taken_by_losing_additionalprimaryweapon = [];
+			//return;
+			continue;
+		}
+
+		unupgrade_name = self.weapon_taken_by_losing_additionalprimaryweapon[0];
+		if(maps\_zombiemode_weapons::is_weapon_upgraded(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]))
+		{
+			// removes "_upgraded" from weapon name
+			unupgrade_name = GetSubStr(unupgrade_name, 0, unupgrade_name.size - 12) + GetSubStr(unupgrade_name, unupgrade_name.size - 3);
+		}
+
+		// cant give wep back if player has the wep or player has upgraded version and we're trying to give them unupgraded version
+		if(self HasWeapon(level.zombie_weapons[unupgrade_name].upgrade_name) || (self HasWeapon(unupgrade_name) && !maps\_zombiemode_weapons::is_weapon_upgraded(self.weapon_taken_by_losing_additionalprimaryweapon[w][0])))
+		{
+			// give the player the ammo from their mule kick weapon if they have less than their mule kick weapon had
+			if(self HasWeapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]))
+			{
+				if(self GetWeaponAmmoClip(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]) < self.weapon_taken_by_losing_additionalprimaryweapon[w][1])
+				{
+					self SetWeaponAmmoClip(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][1]);
+				}
+
+				if(self GetWeaponAmmoStock(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]) < self.weapon_taken_by_losing_additionalprimaryweapon[w][2])
+				{
+					self SetWeaponAmmoStock(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][2]);
+				}
+
+				dual_wield_name = WeaponDualWieldWeaponName( self.weapon_taken_by_losing_additionalprimaryweapon[w][0] );
+				if ( "none" != dual_wield_name )
+				{
+					if(self GetWeaponAmmoClip(dual_wield_name) < self.weapon_taken_by_losing_additionalprimaryweapon[w][3])
+					{
+						self SetWeaponAmmoClip(dual_wield_name, self.weapon_taken_by_losing_additionalprimaryweapon[w][3]);
+					}
+				}
+			}
+
+			//self.weapon_taken_by_losing_additionalprimaryweapon = [];
+			//return;
+			continue;
+		}
+
+		if(self HasWeapon(unupgrade_name))
+		{
+			self maps\ZHC_zombiemode_zhc::take_weapon(unupgrade_name);//zhc
+			self TakeWeapon(unupgrade_name);
+		}
+
+		index = maps\_zombiemode_weapons::get_upgraded_weapon_model_index(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);
+
+		weapons_given[weapons_given.size] = self.weapon_taken_by_losing_additionalprimaryweapon[w][0];
+		self GiveWeapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], index, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( self.weapon_taken_by_losing_additionalprimaryweapon[w][0] ));
+		player maps\ZHC_zombiemode_zhc::give_weapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);	//zhc
+		self SetWeaponAmmoClip(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][1]);
+		self SetWeaponAmmoStock(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][2]);
+		dual_wield_name = WeaponDualWieldWeaponName( self.weapon_taken_by_losing_additionalprimaryweapon[w][0] );
+		if ( "none" != dual_wield_name )
+		{
+			self SetWeaponAmmoClip( dual_wield_name, self.weapon_taken_by_losing_additionalprimaryweapon[w][3] );
+		}
+	}
+
+	wait_network_frame();
+
+	if(!is_true(self.has_powerup_weapon) && weapons_given.size > 0 )
+	{
+		self SwitchToWeapon(weapons_given[0]);
+	}
+
+	self.weapon_taken_by_losing_additionalprimaryweapon = [];
+}
+
+additional_weapon_indicator(perk, perk_str)
+{
+	self endon("disconnect");
+	self endon(perk_str);
+
+	self waittill("weapon_change_complete");
+
+	indicated = false;
+	self.weapon_slots = [];
+
+	while(1)
+	{
+		if(self maps\_laststand::player_is_in_laststand())
+		{
+			self SetClientDvar("ui_show_mule_wep_indicator", "0");
+			self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
+			self waittill("player_revived");
+			self SetClientDvar("ui_show_mule_wep_indicator", "1");
+		}
+
+		/*if(state == "hud_mule_wep_in")	//add to clientscripts/_zombiemode_ffotd.csc
+		{
+			menu_name = "mule_wep_indicator";
+			item_name = "mule_wep_indicator_image";
+			fade_type = "fadein";
+			fade_time = 250;
+		}
+		else if(state == "hud_mule_wep_out")
+		{
+			menu_name = "mule_wep_indicator";
+			item_name = "mule_wep_indicator_image";
+			fade_type = "fadeout";
+			fade_time = 250;
+		}*/
+
+		/*		//add to ui/hud_reimagined
+		#include "ui/menudef.h"
+		{
+			assetGlobalDef
+			{
+				fadeClamp						1
+				fadeCycle						1
+				fadeAmount						.1
+			}
+			menuDef
+			{
+				name				"mule_wep_indicator"
+				rect				0 0 0 0
+				fullscreen			0
+				visible				when(dvarBool("ui_show_mule_wep_indicator"))
+
+				itemDef
+				{
+					name			"mule_wep_indicator_image"
+					type			ITEM_TYPE_IMAGE
+					rect			-105 -85 24 24 HORIZONTAL_ALIGN_USER_RIGHT VERTICAL_ALIGN_USER_BOTTOM
+					forecolor		1 1 1 0
+					exp            	material("specialty_extraprimaryweapon_zombies")
+				    style      		WINDOW_STYLE_SHADER
+				    visible     	1
+					decoration
+
+					state
+					{
+						name			"fadein"
+						forecolor 		1 1 1 1
+					}
+
+					state
+					{
+						name 			"fadeout"
+						forecolor 		1 1 1 0
+					}
+				}
+			}
+		}
+		*/
+
+		primary_weapons_that_can_be_taken = [];
+		primaryWeapons = self GetWeaponsListPrimaries();
+		for ( i = 0; i < primaryWeapons.size; i++ )
+		{
+			if((primaryWeapons[i] == "tesla_gun_zm" || primaryWeapons[i] == "tesla_gun_upgraded_zm") && IsDefined(self.has_tesla) && self.has_tesla)
+			{
+				continue;
+			}
+
+			if ( maps\_zombiemode_weapons::is_weapon_included( primaryWeapons[i] ) || maps\_zombiemode_weapons::is_weapon_upgraded( primaryWeapons[i] ) )
+			{
+				primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size] = primaryWeapons[i];
+			}
+		}
+
+		if(!IsDefined(self.weapon_slots))
+		{
+			self.weapon_slots = primary_weapons_that_can_be_taken;
+		}
+
+		//remove any weps player no longer has
+		for(i=0;i<self.weapon_slots.size;i++)
+		{
+			if(!self HasWeapon(self.weapon_slots[i]))
+			{
+				self.weapon_slots[i] = "none";
+			}
+		}
+
+		//add any new weps
+		for(j=0;j<primary_weapons_that_can_be_taken.size;j++)
+		{
+			if(!is_in_array(self.weapon_slots, primary_weapons_that_can_be_taken[j]))
+			{
+				undefined_wep_slot = false;
+				for(i=0;i<self.weapon_slots.size;i++)
+				{
+					if(self.weapon_slots[i] == "none")
+					{
+						self.weapon_slots[i] = primary_weapons_that_can_be_taken[j];
+						undefined_wep_slot = true;
+						break;
+					}
+				}
+
+				if(!undefined_wep_slot)
+				{
+					self.weapon_slots[self.weapon_slots.size] = primary_weapons_that_can_be_taken[j];
+				}
+			}
+		}
+
+		//check to see if any weapon slots are empty
+		count = 0;
+
+		for(i=0;i<self.weapon_slots.size;i++)
+		{
+			if(self.weapon_slots[i] != "none")
+			{
+				count++;
+			}
+		}
+
+		//additional_wep = undefined;
+		//if ( count >= level.zhc_starting_weapon_slots )
+		//	additional_wep = self.weapon_slots[self.weapon_slots.size - 1];
+
+		current_wep = self GetCurrentWeapon();
+
+		cur_wep_index = undefined;
+		for(i = 0; i < self.weapon_slots.size; i++){
+			if(current_wep == self.weapon_slots[i] || current_wep == WeaponAltWeaponName(self.weapon_slots[i])){
+				cur_wep_index = i;
+				break;
+			}
+		}
+		cur_wep_index -= (self.weapon_slots.size - count);	//subract number of "none" from cur_wep_index
+
+		if(IsDefined( cur_wep_index ) && cur_wep_index >= level.zhc_starting_weapon_slots)
+		//if( IsDefined(additional_wep) && (current_wep == additional_wep || current_wep == WeaponAltWeaponName(additional_wep)))
+		{
+			self send_message_to_csc("hud_anim_handler", "hud_mule_wep_in");
+		}
+		else
+		{
+			self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
+		}
+
+		self waittill_any("weapon_change", "weapon_change_complete");
+	}
+	unsave_additional_weapon_on_bleedout()
+	{
+		self notify("additionalprimaryweapon bought");
+		self endon("additionalprimaryweapon bought");
+		while(1)
+		{
+			self waittill("bled_out");
+			self.weapon_taken_by_losing_additionalprimaryweapon = [];
+		}
 	}
 }
