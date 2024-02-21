@@ -531,7 +531,7 @@ watch_for_drop()
 
 	players = get_players();
 	score_to_drop = ( players.size * level.zombie_vars["zombie_score_start_"+players.size+"p"] ) + level.zombie_vars["zombie_powerup_drop_increment"];
-	score_to_drop *= maps\ZHC_zombiemode_zhc::get_score_to_drop_powerup_mult(); //changed for mod
+	score_to_drop *= maps\ZHC_zombiemode_roundflow::get_score_to_drop_powerup_mult(); //changed for mod
 
 	if(level.ZHC_TESTING_LEVEL > 6)
 		score_to_drop = 0;//testo
@@ -552,7 +552,7 @@ watch_for_drop()
 		{
 			level.zombie_vars["zombie_powerup_drop_increment"] *= 1.14;
 			score_to_drop = curr_total_score + level.zombie_vars["zombie_powerup_drop_increment"];
-			score_to_drop *= maps\ZHC_zombiemode_zhc::get_score_to_drop_powerup_mult();
+			score_to_drop *= maps\ZHC_zombiemode_roundflow::get_score_to_drop_powerup_mult();
 
 			if(level.ZHC_TESTING_LEVEL > 6)
 				score_to_drop = curr_total_score + 200;		//testo
@@ -1840,7 +1840,7 @@ full_ammo_powerup( drop_item )
 		{
 			// Fill the clip
 			//players[i] SetWeaponAmmoClip( primary_weapons[x], WeaponClipSize( primary_weapons[x] ) );
-			if(!players[i] maps\ZHC_zombiemode_zhc::max_ammo_override(primary_weapons[x]))								//condition added for mod
+			if(!players[i] maps\ZHC_zombiemode_weapons::max_ammo_override(primary_weapons[x]))								//condition added for mod
 				players[i] GiveMaxAmmo( primary_weapons[x] );
 		}
 	}

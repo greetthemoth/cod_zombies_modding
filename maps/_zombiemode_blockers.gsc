@@ -1286,7 +1286,6 @@ roomId_expire_system_setup_func(player){
 		}
 	}
 
-	//zone_name = player.current_zone;
 	zone_name = Get_Players_Current_Zone_Bruteforce(player);
 	
 
@@ -1626,27 +1625,48 @@ Get_Other_Zone(opened_from, door){
 }
 
 Get_Zone_Room_ID(zone_name){
-	if(zone_name == "foyer_zone" || zone_name == "foyer2_zone")
-			return 0;
-	else if(zone_name == "vip_zone")
-			return 1;
-	else if(zone_name == "dining_zone")
-			return 2;
-	else if(zone_name == "dressing_zone")
-			return 3;
-	else if(zone_name == "stage_zone" || (flag("curtains_done") && zone_name == "theater_zone" ))
-			return 4;
-	else if(zone_name == "theater_zone")
-			return 100;
-	else if(zone_name == "west_balcony_zone")
-			return 5;
-	else if(zone_name == "alleyway_zone")
-			return 6;
-	else if(zone_name == "crematorium_zone")
-			return 7;
-	IPrintLnBold( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" );
-	return 100;
+	if(!IsDefined( level.ZHC_zoneToRoomID )){
+		level.ZHC_zoneToRoomID = []
+		level thread wait_to_update_ZHC_zoneToRoomID();
+	}
+	if(!IsDefined( level.ZHC_zoneToRoomID[zone_name] )) {
+		level.ZHC_zoneToRoomID[zone_name] = get_zone_room_id_DONT_CALL(zone_name);
+	}
+	return level.ZHC_zoneToRoomID[zone_name];
 }
+wait_to_update_ZHC_zoneToRoomID(){
+	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
+	level.ZHC_zoneToRoomID["theater_zone"] = get_zone_room_id_DONT_CALL("theater_zone");
+}
+get_zone_room_id_DONT_CALL(zone_name){
+	switch( zone_name){
+		case "foyer_zone":
+		case "foyer2_zone":
+			return 0;
+		case "vip_zone":
+			return 1;
+		case "dining_zone":
+			return 2;
+		case "dressing_zone":
+			return 3;
+		case "stage_zone":
+			return 4
+		case "theater_zone":
+			if(flag("curtains_done")
+				return 4;
+			else
+				return 100;
+		case "west_balcony_zone":
+			return 5;
+		case "alleyway_zone":
+			return 6;
+		case "crematorium_zone":
+			return 7;
+		IPrintLnBold( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" );
+		return 100;
+	}
+}
+
 Get_Room_Name(room_id){
 	switch(room_id){
 		case 0:

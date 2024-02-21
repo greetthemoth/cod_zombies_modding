@@ -2226,7 +2226,7 @@ take_additionalprimaryweapon(additional_weapons)
 				//self SwitchToWeapon( primary_weapons_that_can_be_taken[0] );
 				self SwitchToWeapon( self.weapon_slots[0] );
 			}*/
-			self maps\ZHC_zombiemode_zhc::take_weapon(weapon_to_take[0]);
+			self maps\ZHC_zombiemode_weapons::take_weapon(weapon_to_take[0]);
 			self TakeWeapon( weapon_to_take[0] );
 			IPrintLn( "taking "+weapon_to_take[0]  );
 			weapons_taken[weapons_taken.size] = weapon_to_take;
@@ -2246,7 +2246,7 @@ take_additionalprimaryweapon(additional_weapons)
 		weapon_to_take[0] = self.weapon_slots[self.weapon_slots.size - 1];
 		weapon_to_take[1] = self GetWeaponAmmoClip(weapon_to_take[0]);
 		weapon_to_take[2] = self GetWeaponAmmoStock(weapon_to_take[0]);
-		self maps\ZHC_zombiemode_zhc::take_weapon(weapon_to_take[0]);
+		self maps\ZHC_zombiemode_weapons::take_weapon(weapon_to_take[0]);
 		self TakeWeapon( weapon_to_take[0] );
 
 		/*weapon_to_take = primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size - 1];
@@ -2258,14 +2258,6 @@ take_additionalprimaryweapon(additional_weapons)
 		return weapon_to_take;
 	}
 	
-}
-
-thread_take_weapons(weapons_taken){
-	for(i = 0; i < weapons_taken.size; i++){
-		self maps\ZHC_zombiemode_zhc::take_weapon(weapons_taken[i]);
-		self TakeWeapon( weapons_taken[i] );
-		wait_network_frame();
-	}
 }
 
 player_laststand( eInflictor, attacker, iDamage, sMeansOfDeath, sWeapon, vDir, sHitLoc, psOffsetTime, deathAnimDuration )
@@ -3321,7 +3313,7 @@ round_spawning()
 
 	
 
-	maps\ZHC_zombiemode_zhc::additional_round_logic(); //ADDED FOR MOD
+	maps\ZHC_zombiemode_roundflow::additional_round_logic(); //ADDED FOR MOD
 
 	if ( IsDefined( level.zombie_total_set_func ) )
 	{
@@ -3353,7 +3345,7 @@ round_spawning()
 			enemyCount = get_enemy_count();
 			if(level.zombie_total <= 0 && enemyCount <= 0)
 				return;
-			cur_enemy_limit = maps\ZHC_zombiemode_zhc::ZHC_get_cur_enemy_limit(enemyCount);
+			cur_enemy_limit = maps\ZHC_zombiemode_roundflow::ZHC_get_cur_enemy_limit(enemyCount);
 			//IPrintLn( "left-"+level.zombie_total + "| cur-"+enemyCount + " | lim-"+ cur_enemy_limit);
 			if(enemyCount < cur_enemy_limit && level.zombie_total > 0)
 				break;
@@ -3384,7 +3376,7 @@ round_spawning()
 		// MM Mix in dog spawns...
 		if ( IsDefined( level.mixed_rounds_enabled ) && level.mixed_rounds_enabled == 1 )
 		{
-			spawn_dog = maps\ZHC_zombiemode_zhc::ZHC_spawn_dog_override(enemyCount);				//Added for mod
+			spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount);				//Added for mod
 			if(!IsDefined( spawn_dog )){												//Added for mod
 				spawn_dog = false;
 				if ( level.round_number > 30 )
@@ -3472,7 +3464,7 @@ round_spawning()
 		//wait( level.zombie_vars["zombie_spawn_delay"]);
 		wait( level.zombie_vars["zombie_spawn_delay"] 
 			//* (cur_enemy_limit/max ) 
-			* maps\ZHC_zombiemode_zhc::get_spawning_speed_mult(enemyCount, cur_enemy_limit)
+			* maps\ZHC_zombiemode_roundflow::get_spawning_speed_mult(enemyCount, cur_enemy_limit)
 			); 																						//CHANGED FOR MOD
 		wait_network_frame();
 	}

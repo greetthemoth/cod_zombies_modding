@@ -277,10 +277,7 @@ zombie_spawn_init( animname_set )
 		level.pf_failed_zombie_kill = false;
 	}
 }*/
-
-
-
-pf_failed_zombie_kill_false(entry_points){
+/*pf_failed_zombie_kill_false(entry_points){
 	wait(2);
 	for(i=0;i<entry_points.size;i++)
 	{
@@ -290,8 +287,8 @@ pf_failed_zombie_kill_false(entry_points){
 		}
 	}
 	level.pf_failed_zombie_kill = false;
-}
-killNow(){ 
+}*/
+/*killNow(){ 
 	//waits for enemy to leave barrier first in order to detect the zone and disable it. 
 	//Once this is done, it will insta kill all other failed path zombies. 
 	//So we dont have to wait for them to leave their barrier.
@@ -305,7 +302,7 @@ killNow(){
 	}else{
 		return true;
 	}
-}
+}*/
 
 ZHC_zombie_catchup_to_player(){
 	self endon( "death" );
@@ -482,7 +479,6 @@ set_zombie_run_cycle( new_move_speed )
 
 set_run_speed()
 {
-
 	rand = 0;	//ADDED FOR MOD
 	if(IsDefined( level.ZHC_zombie_move_speed_spike_chance ) && IsDefined( level.ZHC_zombie_move_speed_spike )){
 		if(!IsDefined( level.ZHC_zombie_move_speed_spike_queue ))
@@ -2976,7 +2972,7 @@ ZHC_zombie_speed_spike_after_damage(){
 			continue;
 		if(amount < self.maxhealth/10 && self.health > self.maxhealth * (75/100)) //skip if damage < 10% && health > 75%
 			continue;
-		rand = randomintrange( level.ZHC_zombie_move_speed_spike, level.ZHC_zombie_move_speed_spike + 35 );
+		rand = randomintrange( level.ZHC_zombie_move_speed_spike - 15, level.ZHC_zombie_move_speed_spike + 20 );
 		new_speed_suggestion = undefined;
 		if( rand > 70 )
 		{	

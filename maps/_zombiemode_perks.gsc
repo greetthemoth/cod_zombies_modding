@@ -481,7 +481,7 @@ add_perk(vending_machine, specialty, light_fx, machine_change, cost, perk_name, 
 	if (!isdefined(level.zombie_perks))
 		level.zombie_perks = [];
 	if (!isdefined(level.perk_total))
-		level.perk_total =0;
+		level.perk_total = 0;
 	//make sure the map uses this perk
 	perk_exists = false;
 	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
@@ -824,7 +824,7 @@ if ( "none" == current_weapon )
 				{
 					index = maps\_zombiemode_weapons::get_upgraded_weapon_model_index(upgrade_weapon);
 					player GiveWeapon( upgrade_weapon, index, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( upgrade_weapon ) );
-					player maps\ZHC_zombiemode_zhc::give_weapon(upgrade_weapon);
+					player maps\ZHC_zombiemode_weapons::give_weapon(upgrade_weapon);
 					player GiveStartAmmo( upgrade_weapon );
 				}
  
@@ -893,7 +893,7 @@ upgrade_knuckle_crack_begin()
 	if ( gun != "none" && !is_placeable_mine( gun ) && !is_equipment( gun ) )
 	{
 		self notify( "zmb_lost_knife" );
-		self maps\ZHC_zombiemode_zhc::take_weapon(gun);
+		self maps\ZHC_zombiemode_weapons::take_weapon(gun);
 		self TakeWeapon( gun );
 	}
 	else
@@ -1342,7 +1342,7 @@ vending_trigger_think()
  		
 		if(level.MUST_POWER_PERKS && !is_quick_revive_on && !self is_powered_on() ){
 			if(level.ZHC_TESTING_LEVEL >= 1)
-				level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 500, 12);//testo
+				level thread maps\ZHC_zombiemode_weapons::turn_on_nearest_perk(self.origin, 500, 12);//testo
 			continue;
 		}
 
@@ -1563,7 +1563,7 @@ give_perk( perk, bought )
 
 	if(level.MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
 		for(i = 0; i < self.ZHC_weapon_names.size; i++){
-			self maps\ZHC_zombiemode_zhc::update_max_ammo(self.ZHC_weapon_names[i], i);
+			self maps\ZHC_zombiemode_weapons::update_max_ammo(self.ZHC_weapon_names[i], i);
 		}
 	}
 
@@ -2039,7 +2039,7 @@ perk_think( perk, recall_checked)
 		case "specialty_rof":
 			if(level.MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
 				for(i = 0; i < self.ZHC_weapon_names.size; i++){
-					self maps\ZHC_zombiemode_zhc::update_max_ammo(self.ZHC_weapon_names[i], i);
+					self maps\ZHC_zombiemode_weapons::update_max_ammo(self.ZHC_weapon_names[i], i);
 				}
 			}
 			break;
@@ -3086,14 +3086,14 @@ give_back_additional_weapon(number_of_weapons_to_return)
 
 		if(self HasWeapon(unupgrade_name))
 		{
-			self maps\ZHC_zombiemode_zhc::take_weapon(unupgrade_name);//zhc
+			self maps\ZHC_zombiemode_weapons::take_weapon(unupgrade_name);//zhc
 			self TakeWeapon(unupgrade_name);
 		}else
 			number_of_weapons_added++;
 		weapons_given[weapons_given.size] = self.weapon_taken_by_losing_additionalprimaryweapon[w][0];
 		index = maps\_zombiemode_weapons::get_upgraded_weapon_model_index(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);		
 		self GiveWeapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], index, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( self.weapon_taken_by_losing_additionalprimaryweapon[w][0] ));
-		self maps\ZHC_zombiemode_zhc::give_weapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);	//zhc
+		self maps\ZHC_zombiemode_weapons::give_weapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);	//zhc
 		self SetWeaponAmmoClip(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][1]);
 		self SetWeaponAmmoStock(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][2]);
 		dual_wield_name = WeaponDualWieldWeaponName( self.weapon_taken_by_losing_additionalprimaryweapon[w][0] );

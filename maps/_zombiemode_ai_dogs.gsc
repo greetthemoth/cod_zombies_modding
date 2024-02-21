@@ -178,7 +178,7 @@ dog_round_spawning()
 				return;
 
 			num_player_valid = get_number_of_valid_players();
-			dog_limit = num_player_valid * (2 + maps\ZHC_zombiemode_zhc::ZHC_get_dog_max_add());
+			dog_limit = num_player_valid * (2 + maps\ZHC_zombiemode_roundflow::ZHC_get_dog_max_add());
 
 			if (enemy_count  < dog_limit && level.zombie_total > 0)		//ZHC CHANGED FOR MOD
 				break;
@@ -250,7 +250,7 @@ waiting_for_next_dog_spawn( count, max, enemy_count, num_player_valid)					//ZHC
 	if(IsDefined( enemy_count)){
 		level endon ("end_dog_wait");
 		thread wait_override_on_dog_death(default_wait, enemy_count, num_player_valid);
-		wait( default_wait * maps\ZHC_zombiemode_zhc::ZHC_get_dog_wait_mult(enemy_count, num_player_valid)  );
+		wait( default_wait * maps\ZHC_zombiemode_roundflow::ZHC_get_dog_wait_mult(enemy_count, num_player_valid)  );
 		level notify ("end_dog_wait");
 	}
 	else
@@ -262,7 +262,7 @@ wait_override_on_dog_death(default_wait, enemy_count, num_player_valid){
 	level waittill( "dog_killed" );
 	enemy_count--;
 	thread wait_override_on_dog_death(default_wait, enemy_count, num_player_valid);
-	wait( default_wait * maps\ZHC_zombiemode_zhc::ZHC_get_dog_wait_mult(enemy_count, num_player_valid)  );
+	wait( default_wait * maps\ZHC_zombiemode_roundflow::ZHC_get_dog_wait_mult(enemy_count, num_player_valid)  );
 	level notify ("end_dog_wait");
 }
 

@@ -333,8 +333,8 @@ init_weapons()
 
 	//	Weapons - Assault Rifles
 	add_zombie_weapon( "aug_acog_zm",				"aug_acog_mk_upgraded_zm",				&"ZOMBIE_WEAPON_AUG",					1600,	"assault",			"",		undefined );
-	add_zombie_weapon( "galil_zm",					"galil_upgraded_zm",					&"ZOMBIE_WEAPON_GALIL",					3000,	"assault",			"",		undefined );
-	add_zombie_weapon( "commando_zm",				"commando_upgraded_zm",					&"ZOMBIE_WEAPON_COMMANDO",				2500,	"assault",			"",		undefined );
+	add_zombie_weapon( "galil_zm",					"galil_upgraded_zm",					&"ZOMBIE_WEAPON_GALIL",					6000,	"assault",			"",		undefined );
+	add_zombie_weapon( "commando_zm",				"commando_upgraded_zm",					&"ZOMBIE_WEAPON_COMMANDO",				4500,	"assault",			"",		undefined );
 	add_zombie_weapon( "fnfal_zm",					"fnfal_upgraded_zm",					&"ZOMBIE_WEAPON_FNFAL",					1500,	"burstrifle",			"",		undefined );
 
 	//	Weapons - Sniper Rifles
@@ -352,7 +352,7 @@ init_weapons()
 
 	// Rocket Launchers
 	add_zombie_weapon( "m72_law_zm", 				"m72_law_upgraded_zm",					&"ZOMBIE_WEAPON_M72_LAW",	 			7500,	"launcher",			"",		undefined ); 
-	add_zombie_weapon( "china_lake_zm", 			"china_lake_upgraded_zm",				&"ZOMBIE_WEAPON_CHINA_LAKE", 			2500,	"launcher",			"",		undefined ); 
+	add_zombie_weapon( "china_lake_zm", 			"china_lake_upgraded_zm",				&"ZOMBIE_WEAPON_CHINA_LAKE", 			750,	"launcher",			"",		undefined ); 
 
 	// Special                                          	
  	add_zombie_weapon( "zombie_cymbal_monkey",		undefined,								&"ZOMBIE_WEAPON_SATCHEL_2000", 			2000,	"monkey",			"",		undefined );
@@ -3110,7 +3110,6 @@ ZHC_ALL_CHESTS_box_return_wait(special_box){
 
 	if(!IsDefined( level.special_chest_wait_mode))
 		level.special_chest_wait_mode = 1;
-
 	if(!isDefined(level.max_special_chest_waiters))
 		level.max_special_chest_waiters = 1;
 	if(!isDefined(level.special_chest_waiters))
@@ -4270,7 +4269,7 @@ treasure_chest_glowfx(chest, waitToString)
 }
 ZHC_upgrade_weapon(weapon_string, effect_origin){
 	if(is_true(level.UPGRADE_WEAPON_SYSTEM)){
-		self maps\ZHC_zombiemode_zhc::upgrade_weapon(weapon_string);
+		self maps\ZHC_zombiemode_weapons::upgrade_weapon(weapon_string);
 		playfx(level._effect["poltergeist"], effect_origin);
 	}
 }
@@ -4359,9 +4358,9 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 			self play_weapon_vo(weapon_string);
 			
 		}
-		self maps\ZHC_zombiemode_zhc::give_weapon(weapon_string, true);
+		self maps\ZHC_zombiemode_weapons::give_weapon(weapon_string, true);
 		if(is_equipment && level.ZHC_BOX_EQUIPMENT_REALISTIC){
-			self maps\ZHC_zombiemode_zhc::set_weapon_ammo(weapon_string, 1);
+			self maps\ZHC_zombiemode_weapons::set_weapon_ammo(weapon_string, 1);
 		}
 		
 	}
@@ -4370,9 +4369,9 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 		if(level.ZHC_BOX_UPGRADE_WEAPON_ON_CLONE_PICK_UP)				//will upgrade regardless
 			self ZHC_upgrade_weapon(weapon_string, chest.origin);
 		if(is_equipment && level.ZHC_BOX_EQUIPMENT_REALISTIC){
-			self maps\ZHC_zombiemode_zhc::add_weapon_ammo(weapon_string,1); // this is just a way of making monkies in the box only refill one to make it feel more consistent.
+			self maps\ZHC_zombiemode_weapons::add_weapon_ammo(weapon_string,1); // this is just a way of making monkies in the box only refill one to make it feel more consistent.
 		}else{
-			self maps\ZHC_zombiemode_zhc::refill_weapon_ammo(weapon_string);
+			self maps\ZHC_zombiemode_weapons::refill_weapon_ammo(weapon_string);
 		}
 		
 	}
@@ -4405,7 +4404,7 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 					self notify( "zmb_lost_knife" );
 				}
 				
-				self maps\ZHC_zombiemode_zhc::take_weapon(current_weapon);
+				self maps\ZHC_zombiemode_weapons::take_weapon(current_weapon);
 				self TakeWeapon( current_weapon );
 
 				unacquire_weapon_toggle( current_weapon );
@@ -4892,7 +4891,7 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_co
 				a_player_has_weapon = true;
 			}
 			if(a_player_has_weapon){
-				zws = maps\ZHC_zombiemode_zhc::weapon_name_check(weapon_string);
+				zws = maps\ZHC_zombiemode_weapons::weapon_name_check(weapon_string);
 				zwzid = closest.ZHC_weapons[zws];
 				if(!IsDefined( zwzid )){
 					IPrintLnBold( "player " +zws+ " not supscribed" );
@@ -4900,7 +4899,7 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_co
 				}
 				closest_level = closest.ZHC_weapon_levels[zwzid];
 				self.ZHC_weapon_upgrade_lvl = closest_level + 1;
-				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_zhc::get_upgrade_weapon_cost(cost,closest_level);
+				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(cost,closest_level);
 				closests_can_afford_next_level = self.ZHC_weapon_upgrade_cost <= closest.score;
 				//if(!can_init_buy || (!can_buy_ammo && closest_has_weapon) || closests_can_afford_next_level)
 				//	cost = self.ZHC_weapon_upgrade_cost;
@@ -4915,14 +4914,14 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_co
 
 			a_player_has_weapon = player has_weapon_or_upgrade( weapon_string );
 			if(a_player_has_weapon){
-				zws = maps\ZHC_zombiemode_zhc::weapon_name_check(weapon_string);
+				zws = maps\ZHC_zombiemode_weapons::weapon_name_check(weapon_string);
 				if(!isDefined(player.ZHC_weapons[zws])){
 					IPrintLnBold( "player " +zws+ " not supscribed" );
 					return 0.3;
 				}
 				player_level = player.ZHC_weapon_levels[player.ZHC_weapons[zws]];
 				self.ZHC_weapon_upgrade_lvl = player_level + 1;
-				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_zhc::get_upgrade_weapon_cost(cost,player_level);
+				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(cost,player_level);
 				closests_can_afford_next_level = self.ZHC_weapon_upgrade_cost <= player.score;
 				closest_has_weapon = true;
 				//if(!can_init_buy || !can_buy_ammo || closests_can_afford_next_level)
@@ -5160,7 +5159,7 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 
 				if ( is_lethal_grenade( weapon ) )
 				{
-					player maps\ZHC_zombiemode_zhc::take_weapon(player get_player_lethal_grenade());
+					player maps\ZHC_zombiemode_weapons::take_weapon(player get_player_lethal_grenade());
 					player takeweapon( player get_player_lethal_grenade() );
 					player set_player_lethal_grenade( weapon );
 				}
@@ -5238,7 +5237,7 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 			  )
 			{//added for mod
 
-				zhcweapon = maps\ZHC_zombiemode_zhc::weapon_name_check(weapon);
+				zhcweapon = maps\ZHC_zombiemode_weapons::weapon_name_check(weapon);
 
 				if(IsDefined( player.ZHC_weapons[zhcweapon])){
 					zombweap = zhcweapon;
@@ -5248,7 +5247,7 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 
 					//TODO: check if has gotten upgrade from this weapon in this box
 					
-					//upgrade_cost = maps\ZHC_zombiemode_zhc::get_upgrade_weapon_cost(get_weapon_cost(zombweap),pow);
+					//upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(get_weapon_cost(zombweap),pow);
 
 					if(
 						int(player.ZHC_weapon_levels[player.ZHC_weapons[zhcweapon]]) == self.ZHC_weapon_upgrade_lvl - 1 && 
@@ -5273,7 +5272,7 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 
 						//IPrintLn( "zhcweapon: " +zhcweapon );
 						player ZHC_upgrade_weapon(zhcweapon, self.origin);
-						player maps\ZHC_zombiemode_zhc::refill_weapon_ammo(weapon);
+						player maps\ZHC_zombiemode_weapons::refill_weapon_ammo(weapon);
 
 						player maps\_zombiemode_score::minus_to_player_score( self.ZHC_weapon_upgrade_cost );
 
@@ -5384,7 +5383,7 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 				
 				if( ammo_given )
 				{
-					player maps\ZHC_zombiemode_zhc::upgrade_stock_ammo(weapon);
+					player maps\ZHC_zombiemode_weapons::upgrade_stock_ammo(weapon);
 					if(is_chest){
 
 						if(level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE)
@@ -5609,7 +5608,7 @@ weapon_give( weapon, is_upgrade )
 				{
 					self notify( "zmb_lost_knife" );
 				}
-				self maps\ZHC_zombiemode_zhc::take_weapon(current_weapon);
+				self maps\ZHC_zombiemode_weapons::take_weapon(current_weapon);
 				self TakeWeapon( current_weapon ); 
 				unacquire_weapon_toggle( current_weapon );
 				if ( current_weapon == "m1911_zm" )
@@ -5645,7 +5644,7 @@ weapon_give( weapon, is_upgrade )
 	{
 		self GiveWeapon( weapon, 0, self get_pack_a_punch_weapon_options( weapon ) );
 	}
-	self maps\ZHC_zombiemode_zhc::give_weapon(weapon);
+	self maps\ZHC_zombiemode_weapons::give_weapon(weapon);
 
 	acquire_weapon_toggle( weapon, self );
 	self GiveStartAmmo( weapon );
