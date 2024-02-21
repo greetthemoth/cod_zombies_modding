@@ -1053,9 +1053,9 @@ ZHC_ROUND_FLOW_check(){
 
 update_round_flow_difficulty(round_completion_percent, flow_difficulty){
 	if(!ZHC_ROUND_FLOW_check())
-		continue;
+		return;
 
-	DEBUG_FLOW = true;
+	DEBUG_FLOW = false;
 
 	fr = level.round_number - (level.dog_round_count-1); //flow round number - excludes dog rounds 
 

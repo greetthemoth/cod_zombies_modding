@@ -2964,7 +2964,7 @@ headshot_blood_fx()
 
 ZHC_zombie_speed_spike_after_damage(){
 	self endon( "death" ); 
-	if(self.zombie_move_speed_original = "sprint")
+	if(self.zombie_move_speed_original == "sprint")
 		return;
 	while(1){
 		self waittill( "damage", amount, attacker, direction_vec, point, type );
@@ -2974,7 +2974,7 @@ ZHC_zombie_speed_spike_after_damage(){
 			return;
 		if(!is_player_valid( attacker ))
 			continue;
-		if(amount < self.max_health/10 && self.health > self.max_health * (75/100)); //skip if damage < 10% && health > 75%
+		if(amount < self.maxhealth/10 && self.health > self.maxhealth * (75/100)) //skip if damage < 10% && health > 75%
 			continue;
 		rand = randomintrange( level.ZHC_zombie_move_speed_spike, level.ZHC_zombie_move_speed_spike + 35 );
 		new_speed_suggestion = undefined;

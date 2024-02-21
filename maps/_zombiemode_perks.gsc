@@ -270,7 +270,7 @@ define_or(s,or){
 	return or;
 }
 CanAddPerkLevel(perk){
-	if(self.num_perks >= level.perk_limit+self.perk_slots){
+	if(level.ZHC_TESTING_LEVEL < 9 && self.num_perks >= level.perk_limit+self.perk_slots){
 		//IPrintLn( "out of slots" + self.num_perks +">="+ level.perk_limit + self.perk_slots);
 		return false;
 	}
@@ -280,7 +280,7 @@ CanAddPerkLevel(perk){
 	//	return false;
 	cur = self GetPerkLevel(perk);
 
-	if(level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && cur >= 1){
+	if(level.ZHC_TESTING_LEVEL < 9 && level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER != -1 && cur >= 1){
 		if(	(!isDefined(self.ZHC_excess_perk_level_num) && level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER == 0) || 
 			(isDefined(self.ZHC_excess_perk_level_num) && self.ZHC_excess_perk_level_num >= level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER)){
 			//iprintln("cant add perk cuzz excess limit " +  define_or(self.ZHC_excess_perk_level_num,0) + " >= "+ level.ZHC_EXCESS_PERK_LEVEL_LIMIT_PER_PLAYER );
@@ -288,8 +288,10 @@ CanAddPerkLevel(perk){
 		}
 	}
 
-
 	curlimit = level.PERK_LEVEL_LIMIT;
+	if(level.ZHC_TESTING_LEVEL >= 9)
+		curlimit = 99;
+
 	hardlimit = 1;
 	if(perk == "specialty_quickrevive"){
 		hardlimit = 3;
@@ -820,7 +822,8 @@ if ( "none" == current_weapon )
 				}
 				else
 				{
-					player GiveWeapon( upgrade_weapon, 0, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( upgrade_weapon ) );
+					index = maps\_zombiemode_weapons::get_upgraded_weapon_model_index(upgrade_weapon);
+					player GiveWeapon( upgrade_weapon, index, player maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( upgrade_weapon ) );
 					player maps\ZHC_zombiemode_zhc::give_weapon(upgrade_weapon);
 					player GiveStartAmmo( upgrade_weapon );
 				}
@@ -1593,10 +1596,12 @@ give_perk( perk, bought )
 	if(perk == "specialty_additionalprimaryweapon")
 	{
 		//self SetPerk("specialty_stockpile");
-		self SetClientDvar("ui_show_mule_wep_indicator", "1");
-		self thread give_back_additional_weapon(new_lvl);
-		self thread additional_weapon_indicator(perk, perk_str);
-		self thread unsave_additional_weapon_on_bleedout();
+		//self SetClientDvar("ui_show_mule_wep_indicator", "1");
+		self thread give_back_additional_weapon(new_lvl - lvl);
+		if(lvl == 0){
+			self thread additional_weapon_indicator(perk, perk +"_stop");
+			self thread unsave_additional_weapon_on_bleedout();
+		}
 		//self thread stowed_weapon_refill();
 	}
  
@@ -2012,11 +2017,11 @@ perk_think( perk, recall_checked)
 		case "specialty_additionalprimaryweapon":
 			if ( result == perk_str )
 			{
-				self.weapon_taken_by_losing_specialty_additionalprimaryweapon = self maps\_zombiemode::take_additionalprimaryweapon(new_lvl);
+				self.weapon_taken_by_losing_additionalprimaryweapon = self maps\_zombiemode::take_additionalprimaryweapon(new_lvl);
 			}
 			if(remove_perk){
-				self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
-				self SetClientDvar("ui_show_mule_wep_indicator", "0");
+				//self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
+				//self SetClientDvar("ui_show_mule_wep_indicator", "0");
 			}else{
 
 			}
@@ -2959,11 +2964,11 @@ candolier_ammo()
 	}
 }
 
-give_back_additional_weapon(new_lvl)
+give_back_additional_weapon(number_of_weapons_to_return)
 {
 	self endon("disconnect");
 
-	if(!IsDefined(self.weapon_taken_by_losing_additionalprimaryweapon) || !IsDefined(self.weapon_taken_by_losing_additionalprimaryweapon[0]) || (level.PERK_LEVELS && self.weapon_taken_by_losing_additionalprimaryweapon[0][0]))
+	if(number_of_weapons_to_return == 0 || !IsDefined(self.weapon_taken_by_losing_additionalprimaryweapon) || !IsDefined(self.weapon_taken_by_losing_additionalprimaryweapon[0]) || (level.PERK_LEVELS && !isDefined(self.weapon_taken_by_losing_additionalprimaryweapon[0][0])))
 	{
 		return;
 	}
@@ -2972,8 +2977,9 @@ give_back_additional_weapon(new_lvl)
 		self.weapon_taken_by_losing_additionalprimaryweapon = [];
 		self.weapon_taken_by_losing_additionalprimaryweapon[0] = weap;
 	}
-	weapon_givens = [];
-	for(w = 0; w < self.weapon_taken_by_losing_additionalprimaryweapon.size; w++){
+	weapons_given = [];
+	number_of_weapons_added = 0;
+	for(w = self.weapon_taken_by_losing_additionalprimaryweapon.size-1; w >= 0 ; w--){	//backwards feels more logical. retrives earliest weapon bought
 		// check if we can give back the lost weapon
 		can_give_wep = true;
 		if( IsDefined( level.limited_weapons )  )
@@ -3040,7 +3046,7 @@ give_back_additional_weapon(new_lvl)
 			continue;
 		}
 
-		unupgrade_name = self.weapon_taken_by_losing_additionalprimaryweapon[0];
+		unupgrade_name = self.weapon_taken_by_losing_additionalprimaryweapon[w][0];
 		if(maps\_zombiemode_weapons::is_weapon_upgraded(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]))
 		{
 			// removes "_upgraded" from weapon name
@@ -3082,13 +3088,12 @@ give_back_additional_weapon(new_lvl)
 		{
 			self maps\ZHC_zombiemode_zhc::take_weapon(unupgrade_name);//zhc
 			self TakeWeapon(unupgrade_name);
-		}
-
-		index = maps\_zombiemode_weapons::get_upgraded_weapon_model_index(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);
-
+		}else
+			number_of_weapons_added++;
 		weapons_given[weapons_given.size] = self.weapon_taken_by_losing_additionalprimaryweapon[w][0];
+		index = maps\_zombiemode_weapons::get_upgraded_weapon_model_index(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);		
 		self GiveWeapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], index, self maps\_zombiemode_weapons::get_pack_a_punch_weapon_options( self.weapon_taken_by_losing_additionalprimaryweapon[w][0] ));
-		player maps\ZHC_zombiemode_zhc::give_weapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);	//zhc
+		self maps\ZHC_zombiemode_zhc::give_weapon(self.weapon_taken_by_losing_additionalprimaryweapon[w][0]);	//zhc
 		self SetWeaponAmmoClip(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][1]);
 		self SetWeaponAmmoStock(self.weapon_taken_by_losing_additionalprimaryweapon[w][0], self.weapon_taken_by_losing_additionalprimaryweapon[w][2]);
 		dual_wield_name = WeaponDualWieldWeaponName( self.weapon_taken_by_losing_additionalprimaryweapon[w][0] );
@@ -3096,6 +3101,10 @@ give_back_additional_weapon(new_lvl)
 		{
 			self SetWeaponAmmoClip( dual_wield_name, self.weapon_taken_by_losing_additionalprimaryweapon[w][3] );
 		}
+		if(number_of_weapons_added >= number_of_weapons_to_return)
+			break;
+		self.weapon_taken_by_losing_additionalprimaryweapon = array_remove_index(self.weapon_taken_by_losing_additionalprimaryweapon ,w );
+		w++;	//since we reduced the array
 	}
 
 	wait_network_frame();
@@ -3105,7 +3114,7 @@ give_back_additional_weapon(new_lvl)
 		self SwitchToWeapon(weapons_given[0]);
 	}
 
-	self.weapon_taken_by_losing_additionalprimaryweapon = [];
+	//self.weapon_taken_by_losing_additionalprimaryweapon = [];
 }
 
 additional_weapon_indicator(perk, perk_str)
@@ -3122,12 +3131,13 @@ additional_weapon_indicator(perk, perk_str)
 	{
 		if(self maps\_laststand::player_is_in_laststand())
 		{
-			self SetClientDvar("ui_show_mule_wep_indicator", "0");
-			self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
+			//self SetClientDvar("ui_show_mule_wep_indicator", "0");
+			//self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
 			self waittill("player_revived");
-			self SetClientDvar("ui_show_mule_wep_indicator", "1");
+			//self SetClientDvar("ui_show_mule_wep_indicator", "1");
 		}
 
+		//loadMenu { "ui/hud_reimagined.menu" } //add to ui/hud_zombies
 		/*if(state == "hud_mule_wep_in")	//add to clientscripts/_zombiemode_ffotd.csc
 		{
 			menu_name = "mule_wep_indicator";
@@ -3202,9 +3212,7 @@ additional_weapon_indicator(perk, perk_str)
 		}
 
 		if(!IsDefined(self.weapon_slots))
-		{
 			self.weapon_slots = primary_weapons_that_can_be_taken;
-		}
 
 		//remove any weps player no longer has
 		for(i=0;i<self.weapon_slots.size;i++)
@@ -3256,34 +3264,39 @@ additional_weapon_indicator(perk, perk_str)
 		current_wep = self GetCurrentWeapon();
 
 		cur_wep_index = undefined;
-		for(i = 0; i < self.weapon_slots.size; i++){
-			if(current_wep == self.weapon_slots[i] || current_wep == WeaponAltWeaponName(self.weapon_slots[i])){
+		for(i = 0; i < self.weapon_slots.size; i++)
+		{
+			if(self.weapon_slots[i] == "none")
+				continue;
+			if(current_wep == self.weapon_slots[i] || current_wep == WeaponAltWeaponName(self.weapon_slots[i]))
+			{
 				cur_wep_index = i;
 				break;
 			}
 		}
-		cur_wep_index -= (self.weapon_slots.size - count);	//subract number of "none" from cur_wep_index
-
-		if(IsDefined( cur_wep_index ) && cur_wep_index >= level.zhc_starting_weapon_slots)
-		//if( IsDefined(additional_wep) && (current_wep == additional_wep || current_wep == WeaponAltWeaponName(additional_wep)))
-		{
-			self send_message_to_csc("hud_anim_handler", "hud_mule_wep_in");
-		}
-		else
-		{
-			self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
+		if(IsDefined( cur_wep_index )){
+			cur_wep_index -= (self.weapon_slots.size - count);	//subract number of "none" from cur_wep_index
+			if(cur_wep_index >= level.zhc_starting_weapon_slots)
+			//if( IsDefined(additional_wep) && (current_wep == additional_wep || current_wep == WeaponAltWeaponName(additional_wep)))
+			{
+				//self send_message_to_csc("hud_anim_handler", "hud_mule_wep_in");
+			}
+			else
+			{
+				//self send_message_to_csc("hud_anim_handler", "hud_mule_wep_out");
+			}
 		}
 
 		self waittill_any("weapon_change", "weapon_change_complete");
 	}
-	unsave_additional_weapon_on_bleedout()
+}
+unsave_additional_weapon_on_bleedout()
+{
+	self notify("additionalprimaryweapon bought");
+	self endon("additionalprimaryweapon bought");
+	while(1)
 	{
-		self notify("additionalprimaryweapon bought");
-		self endon("additionalprimaryweapon bought");
-		while(1)
-		{
-			self waittill("bled_out");
-			self.weapon_taken_by_losing_additionalprimaryweapon = [];
-		}
+		self waittill("bled_out");
+		self.weapon_taken_by_losing_additionalprimaryweapon = [];
 	}
 }

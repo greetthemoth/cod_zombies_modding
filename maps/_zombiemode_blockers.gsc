@@ -1398,7 +1398,7 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//level.ZHC_max_doors_that_can_expire_this_round = int(max(n, (eight+1) - n ));	//the max "distance" between the rooms.
 
 
-	s = "";
+	////s = "";
 	zkeys = GetArrayKeys( level.zones );
 	for(z = 0; z < level.zones.size; z++){
 		//n = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), level.power_on);
@@ -1412,7 +1412,6 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 				nn -= eight;
 			nn *= -1;		//reoders form 0 - 7
 			nn = (nn + (eight-1));
-
 		}else{
 			nn -= roomid;	//based on id orders form 0 - 7
 			if(nn < 0)
@@ -1444,7 +1443,8 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 		for(f = 0; f < rrs.size; f++){
 			if(rrs[f] == roomDistance && !IsDefined( self.roomIDs_to_occupy[roomDistance] )){
 				self.roomIDs_to_occupy[roomDistance] = roomId_to_measure;
-				s += Get_Room_Name(roomId_to_measure) + "-" + roomDistance +" ";
+				////s += Get_Room_Name(roomId_to_measure) + "-" + roomDistance +" ";
+				
 				//s += n +"-"+nn+"  ";
 
 				//{     //debug
@@ -1467,7 +1467,8 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//	if(isDefined(self.roomIDs_to_occupy[i]))
 	//	s+=" "+self.roomIDs_to_occupy[i];
 	//}
-	IPrintLnBold("r:" + reverse+" "+  s  );// + " for round "+ r );
+
+	////IPrintLnBold("r:" + reverse+" "+  s  );// + " for round "+ r );
 }
 
 print_door_id(door){
