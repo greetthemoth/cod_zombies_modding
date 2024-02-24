@@ -288,7 +288,7 @@ dog_round_aftermath()
 }
 
 dog_round_reward(){
-	if(!is_true(level.DOG_ROUND_LAST_DOG_TURN_ON_PERK) || !level maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(level.last_dog_origin, 200, 12))
+	if(!is_true(level.DOG_ROUND_LAST_DOG_TURN_ON_PERK) || !level maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(level.last_dog_origin, 200, 12, 0.5))
 		level thread maps\_zombiemode_powerups::specific_powerup_drop( "full_ammo", level.last_dog_origin );		
 		//level thread maps\_zombiemode_powerups::specific_powerup_drop( "free_perk", power_up_origin );
 }
@@ -308,7 +308,7 @@ dog_spawn_fx( ai, ent )
 		Playfx( level._effect["lightning_dog_spawn"], ent.origin );
 
 		if(is_true(level.DOG_LIGHTNING_TURN_ON_PERK))
-			level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(ent.origin, 200, 5); //added for mod
+			level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(ent.origin, 200, 5, 1.5); //added for mod
 
 		playsoundatposition( "zmb_hellhound_prespawn", ent.origin );
 		wait( 1.5 );

@@ -1369,7 +1369,7 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//	n = eight;
 	//rrs[rrs.size] = n;
 
-	//r = 5;	//testo if we want cooldown to happen as soon as player crosses doors.
+	r = 5;	//testo if we want cooldown to happen as soon as player crosses doors.
 
 	if(flag("dog_round"))	//testo see if dog round fail safe is working correctly
 		r = 5;	
@@ -1521,7 +1521,101 @@ close_off_room(room_id){
 
 
 //Kino Der Toten theater specific fuctions
+
+Get_Other_Zone(opened_from, door){
+
+	a = undefined;
+	b = undefined;
+	i = door get_door_id();
+
+	if(i == 2){
+		a = "foyer2_zone";
+		b = "vip_zone";
+	} else if(i == 4 || i == 3){
+		a = "vip_zone";
+		b = "dining_zone";
+	} else if(i == 7){
+		a = "dining_zone";
+		b = "dressing_zone";
+	} else if(i == 5){
+		a = "dressing_zone";
+		b = "stage_zone";
+	} else if(i == 1 || i == 0){
+		a = "stage_zone";
+		b = "west_balcony_zone";
+	} else if(i == 8){
+		a = "west_balcony_zone";
+		b = "alleyway_zone";
+	} else if(i == 10){
+		a = "alleyway_zone";
+		b = "crematorium_zone";
+	} else if(i == 11){
+		a = "crematorium_zone";
+		b = "foyer2_zone";
+	}else if(i == 6 || i == 9){
+		a = "theater_zone";
+		b = "foyer2_zone";
+	}
+
+	if(opened_from == a)
+		return b;
+	else if(opened_from == b)
+		return a;
+	else{
+		IPrintLnBold( "OPENED FROM WEIRD ZONE. neither was" + opened_from );
+		return a;
+	}
+}
+
+Get_Zone_Room_ID(zone_name){
+	if(!IsDefined( level.ZHC_zoneToRoomID )){
+		level.ZHC_zoneToRoomID = [];
+	}
+	if(!IsDefined( level.ZHC_zoneToRoomID[zone_name] )) {
+		level.ZHC_zoneToRoomID[zone_name] = map_get_zone_room_id(zone_name);
+	}
+	return level.ZHC_zoneToRoomID[zone_name];
+}
+map_wait_to_update_rooms(){
+	flag_wait("all_players_connected");
+	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
+	level.ZHC_zoneToRoomID["theater_zone"] = map_get_zone_room_id("theater_zone");
+	level.ZHC_room_info = array_remove_index( level.ZHC_room_info , 100 );
+	level.ZHC_room_info[4]["name"] = "stage & theater room";
+}
+map_get_zone_room_id(zone_name){
+	switch( zone_name){
+		case "foyer_zone":
+		case "foyer2_zone":
+			return 0;
+		case "vip_zone":
+			return 1;
+		case "dining_zone":
+			return 2;
+		case "dressing_zone":
+			return 3;
+		case "stage_zone":
+			return 4;
+		case "theater_zone":
+			if(flag("curtains_done"))
+				return 4;
+			else
+				return 100;
+		case "west_balcony_zone":
+			return 5;
+		case "alleyway_zone":
+			return 6;
+		case "crematorium_zone":
+			return 7;
+		default:
+			IPrintLnBold( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" );
+			return 100;
+	}
+}
 Get_Doors_Accesible_in_room(room_id){
+	return level.ZHC_room_info[room_id]["doors"];
+}
+map_get_doors_accesible_in_room(room_id){
 	doors = [];
 	switch(room_id) 
 	{
@@ -1579,95 +1673,10 @@ Get_Doors_Accesible_in_room(room_id){
 	}
 	return doors;
 }
-Get_Other_Zone(opened_from, door){
-
-	a = undefined;
-	b = undefined;
-	i = door get_door_id();
-
-	if(i == 2){
-		a = "foyer2_zone";
-		b = "vip_zone";
-	} else if(i == 4 || i == 3){
-		a = "vip_zone";
-		b = "dining_zone";
-	} else if(i == 7){
-		a = "dining_zone";
-		b = "dressing_zone";
-	} else if(i == 5){
-		a = "dressing_zone";
-		b = "stage_zone";
-	} else if(i == 1 || i == 0){
-		a = "stage_zone";
-		b = "west_balcony_zone";
-	} else if(i == 8){
-		a = "west_balcony_zone";
-		b = "alleyway_zone";
-	} else if(i == 10){
-		a = "alleyway_zone";
-		b = "crematorium_zone";
-	} else if(i == 11){
-		a = "crematorium_zone";
-		b = "foyer2_zone";
-	}else if(i == 6 || i == 9){
-		a = "theater_zone";
-		b = "foyer2_zone";
-	}
-
-	if(opened_from == a)
-		return b;
-	else if(opened_from == b)
-		return a;
-	else{
-		IPrintLnBold( "OPENED FROM WEIRD ZONE. neither was" + opened_from );
-		return a;
-	}
-}
-
-Get_Zone_Room_ID(zone_name){
-	if(!IsDefined( level.ZHC_zoneToRoomID )){
-		level.ZHC_zoneToRoomID = []
-		level thread wait_to_update_ZHC_zoneToRoomID();
-	}
-	if(!IsDefined( level.ZHC_zoneToRoomID[zone_name] )) {
-		level.ZHC_zoneToRoomID[zone_name] = get_zone_room_id_DONT_CALL(zone_name);
-	}
-	return level.ZHC_zoneToRoomID[zone_name];
-}
-wait_to_update_ZHC_zoneToRoomID(){
-	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
-	level.ZHC_zoneToRoomID["theater_zone"] = get_zone_room_id_DONT_CALL("theater_zone");
-}
-get_zone_room_id_DONT_CALL(zone_name){
-	switch( zone_name){
-		case "foyer_zone":
-		case "foyer2_zone":
-			return 0;
-		case "vip_zone":
-			return 1;
-		case "dining_zone":
-			return 2;
-		case "dressing_zone":
-			return 3;
-		case "stage_zone":
-			return 4
-		case "theater_zone":
-			if(flag("curtains_done")
-				return 4;
-			else
-				return 100;
-		case "west_balcony_zone":
-			return 5;
-		case "alleyway_zone":
-			return 6;
-		case "crematorium_zone":
-			return 7;
-		IPrintLnBold( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" );
-		return 100;
-	}
-}
-
 Get_Room_Name(room_id){
+	return level.ZHC_room_info[room_id]["name"];
+}
+map_get_room_name(room_id){
 	switch(room_id){
 		case 0:
 			return "foyer room";

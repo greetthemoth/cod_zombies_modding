@@ -1,6 +1,7 @@
 #include maps\_utility; 
 #include common_scripts\utility; 
 #include maps\_zombiemode_utility;
+#include maps\ZHC_utility;
  
 //*******************************************************************************\\
 /*
@@ -264,11 +265,7 @@ HasThePerk( perk )
 	}
 	return p;
 }
-define_or(s,or){
-	if(IsDefined( s ))
-		return s;
-	return or;
-}
+
 CanAddPerkLevel(perk){
 	if(level.ZHC_TESTING_LEVEL < 9 && self.num_perks >= level.perk_limit+self.perk_slots){
 		//IPrintLn( "out of slots" + self.num_perks +">="+ level.perk_limit + self.perk_slots);
@@ -493,13 +490,18 @@ add_perk(vending_machine, specialty, light_fx, machine_change, cost, perk_name, 
 	}	
 	if (!perk_exists) return;
 	level.perk_total +=1;
-	if(isDefined(machine_change))
+	if(isDefined(machine_change)){
 		PrecacheModel(machine_change);
-	if(IsDefined( machine_change ) && level.MUST_POWER_PERKS){
-		og_machine = GetSubStr( machine_change, 0 , machine_change.size-2 ) + "off";
-		//og_machine = GetSubStr( machine_change, 0 , machine_change.size-3 );
-
-		PrecacheModel( og_machine );
+		if(level.MUST_POWER_PERKS){
+			og_machine = GetSubStr( machine_change, 0 , machine_change.size-2 ) + "off";
+			//og_machine = GetSubStr( machine_change, 0 , machine_change.size-3 );
+			/*model = getmodel( og_machine );
+			if(!IsDefined( model ))
+				IPrintLnBold( og_machine + " is not a model" );
+			else
+				IPrintLnBold( og_machine + " is a model" );*/
+			PrecacheModel( og_machine );
+		}
 	}
 	if(isDefined(bottle_weapon))
 		PrecacheItem(bottle_weapon);
@@ -1342,7 +1344,7 @@ vending_trigger_think()
  		
 		if(level.MUST_POWER_PERKS && !is_quick_revive_on && !self is_powered_on() ){
 			if(level.ZHC_TESTING_LEVEL >= 1)
-				level thread maps\ZHC_zombiemode_weapons::turn_on_nearest_perk(self.origin, 500, 12);//testo
+				level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 500, 12);//testo
 			continue;
 		}
 

@@ -1,10 +1,10 @@
 #include common_scripts\utility; 
 #include maps\_utility;
 #include maps\_zombiemode_utility;
-#include mps\ZHC_utility:
+#include maps\ZHC_utility;
 
 get_testing_level(){
-	return 0;
+	return 0.5;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
@@ -117,94 +117,10 @@ damage( inflictor, attacker, damage, flags, mod, weapon, vpoint, vdir, sHitLoc, 
 	//commented out in _zombiemode.gsc.
 }
 
-give1ShotKillBonusPoints(target, mod, damage, hit_location){
-	if( 
-		(////
-			//(damage >= target.health && target.health > target.maxhealth*0.75) 
-			target.health + damage == target.maxhealth 
-			||(!level.mutators["mutator_noPowerups"] && (level.zombie_vars["zombie_insta_kill"] || is_true( self.personal_instakill ))) //should insta kill count?
-		)//// 
-		&& 
-		(mod == "MOD_RIFLE_BULLET" || MOD == "MOD_PISTOL_BULLET")
-	  )
-	{
-		//self maps\_zombiemode_score::player_add_points( "1shot1kill", 20);
-		if(hit_location != "head" && hit_location != "helmet")					//doesnt stack with head shot bonus.
-			self maps\_zombiemode_score::player_add_points( "reviver", 20);
-		return true;
-	}
-	return false;
-}
-addToCollateralPointBonus(mod, weapon, special){
-	if(weapon == "none")
-		return;
-	if(!special && !WeaponIsSemiAuto( weapon ))
-		return;
-	if(isDefined(self.curCollateralKills) && weapon == self.curCollateralWeapon){
-		self.curCollateralKills ++;
-		//if(!isDefined(self.curCollateralMostPointsForKill) || self.curCollateralMostPointsForKill < pointsRewardedForKill)
-		//self.curCollateralMostPointsForKill = pointsRewardedForKill;
-		//self.curCollateralTotalPoints += pointsRewardedForKill - 10;
-	}
-	else if(!IsDefined( self.curCollateralWeapon ))
-	{
-		self resetCollateralValues(mod, weapon, special);
-		self thread giveCollateralKillBonus(true);
-		
-	}else{
-		self giveCollateralKillBonus();
-		self resetCollateralValues(mod, weapon, special);
-	}
-}
-
-resetCollateralValues(mod, weapon, special){
-	self.curCollateralMod = mod;
-	self.curCollateralWeapon = weapon;
-	self.curCollateralKills = 1;
-	self.curCollateralSpecial = (special || mod == "MOD_PISTOL_BULLET"  || mod == "MOD_RIFLE_BULLET" );
-	//self.curCollateralSpecial = (special || mod == "MOD_PISTOL_BULLET"  || (mod == "MOD_RIFLE_BULLET" && ( player_using_hi_score_weapon( self)));
-	//self.curCollateralTotalPoints = pointsRewardedForKill - 10;
-}
-giveCollateralKillBonus(waitFirst){
-	if(is_true(waitFirst))
-		wait_network_frame();
-	if(self.curCollateralKills > 1)
-	{
-		reward = 0;
-		//additional = 0;
-		//if(self.curCollateralSpecial)
-		//	additional = 20;
-		if(self.curCollateralSpecial)
-			reward = self.curCollateralKills*20;
-		else{
-			reward = 30;
-			for( i = 3; i <= self.curCollateralKills && i < 8; i++){
-				reward += i * 10;
-				//if(self.curCollateralSpecial){
-				//	reward += (30 - ((i-2)*10));
-				//}
-			}
-		}
-		//you wont get more than double the regular kill points.
-		//reward = min(self.curCollateralKills * self.curCollateralTotalPoints, reward);
-		//reward = max(reward, 0);
-		//reward = min(self.curCollateralKills * self.curCollateralMostPointsForKill, reward);
-		//reward = (self.curCollateralKills*self.curCollateralKills*10);
-		IPrintLnBold("curScore"+self.score+"  +  "+reward );
-		//self maps\_zombiemode_score::player_add_points( "collateral", reward);
-		self maps\_zombiemode_score::player_add_points( "reviver", reward);
-	}
-	self.curCollateralWeapon = undefined;
-	self.curCollateralMod = undefined;
-	self.curCollateralKills = undefined;
-	//self.curCollateralMostPointsForKill = 0;
-	//self.curCollateralTotalPoints = 0;
-
-}
 zombie_damage( mod, hit_location, hit_origin, player, amount, weapon ){
 	additional_amount = self maps\ZHC_zombiemode_weapons::GetDamageOverride(mod, hit_location, player, amount, weapon);   //zhc_ damage bonus
 	new_amount = additional_amount + amount;
-
+	//IPrintLn( "D:"+ amount+ "AD: " + additional_amount ); //+" hp:"+ self.health +"|"+self.maxhealth ); 		//health and maxhealth values always clamped to 100 for some reason?
 	if(
 		self maps\_zombiemode_perks::bucha_func(player,mod,new_amount,player GetCurrentWeapon(),hit_location,false)
 		)
@@ -229,59 +145,6 @@ zombie_damage( mod, hit_location, hit_origin, player, amount, weapon ){
 	return false;
 }
 
-
-
-haunt_all_players(){
-	flag_wait( "all_players_connected" );
-	maps\_zombiemode_blockers::haunt_all_players(20);
-}
-drop_powerups_on_players(){
-	flag_wait( "all_players_connected" );
-	//waittill("between_round_over"  );
-	wait( 0.5 );
-	//players = get_players();
-	//for ( i = 0; i < players.size; i++ ){
-		maps\_zombiemode_powerups::start_fire_sale();
-	//}
-}
-
-gain_perk_slot_all_players(){
-	//IPrintLn( "gained a perk slot" );
-	players = get_players();
-	for ( i = 0; i < players.size; i++ ){
-		players[i] maps\_zombiemode_perks::give_perk_slot();
-	}
-}
-
-turn_on_nearest_perk(origin, max_distance, wait_time){
-
-	if(level.power_on)	// might eventually add to check if perk if off instead. currently no variable exists to see if perk if off.
-		return false;
-
-	perk_trigger = GetClosest( origin, GetEntArray( "zombie_vending", "targetname" ) );
-	perk = perk_trigger.script_noteworthy;
-
-	if(isDefined(max_distance) && DistanceSquared(  perk_trigger.origin, origin ) > max_distance*max_distance)
-		return false;
-
-	level notify( perk + "_on");
-
-	if(!IsDefined( wait_time ))
-		return true;
-
-	level endon ("electricity_on");
-	level endon( perk+"_on" );
-
-	wait(wait_time);
-
-	level notify( perk + "_off");
-
-	level waittill( perk+"_power_off" );
-
-	playfx(level._effect["poltergeist"], perk_trigger.origin);
-
-	return true;
-}
 
 dog_round_counter(){
 
@@ -356,6 +219,62 @@ dog_round_counter(){
 }
 
 
+haunt_all_players(){
+	flag_wait( "all_players_connected" );
+	maps\_zombiemode_blockers::haunt_all_players(20);
+}
+drop_powerups_on_players(){
+	flag_wait( "all_players_connected" );
+	//waittill("between_round_over"  );
+	wait( 0.5 );
+	//players = get_players();
+	//for ( i = 0; i < players.size; i++ ){
+		maps\_zombiemode_powerups::start_fire_sale();
+	//}
+}
+
+gain_perk_slot_all_players(){
+	//IPrintLn( "gained a perk slot" );
+	players = get_players();
+	for ( i = 0; i < players.size; i++ ){
+		players[i] maps\_zombiemode_perks::give_perk_slot();
+	}
+}
+
+turn_on_nearest_perk(origin, max_distance, wait_time, wait_time_prev){
+
+	if(level.power_on)	// might eventually add to check if perk if off instead. currently no variable exists to see if perk if off.
+		return false;
+
+
+
+	perk_trigger = GetClosest( origin, GetEntArray( "zombie_vending", "targetname" ) );
+	perk = perk_trigger.script_noteworthy;
+
+	if(isDefined(max_distance) && DistanceSquared(  perk_trigger.origin, origin ) > max_distance*max_distance)
+		return false;
+
+	if(IsDefined( wait_time_prev ))
+		wait(wait_time_prev);
+
+	level notify( perk + "_on");
+
+	if(!IsDefined( wait_time ))
+		return true;
+
+	level endon ("electricity_on");
+	level endon( perk+"_on" );
+
+	wait(wait_time);
+
+	level notify( perk + "_off");
+
+	level waittill( perk+"_power_off" );
+
+	playfx(level._effect["poltergeist"], perk_trigger.origin);
+
+	return true;
+}
 
 pathfinding_kill(){ //called by _zombiemode_spawner slef is the zombie entity
 	//if(level.zombie_total > 0) 	//you can kill the last horde via doors but that wont work if zombies are still spawning.
@@ -367,8 +286,6 @@ pathfinding_kill(){ //called by _zombiemode_spawner slef is the zombie entity
 	//IPrintLnBold( "pf kill" +" zt:"+ level.zombie_total);
 	self DoDamage( self.health + 10, self.origin );
 }
-
-
 
 init_quad_zombie_stuff(){
 	level.ZHC_quad_prespawn_original = level.quad_prespawn;
@@ -814,4 +731,93 @@ normalize_cost(cost){ //added for mod , this function is designed for weapon cos
 	}
 	cost = int(cost);
 	return cost;
+}
+
+
+give1ShotKillBonusPoints(target, mod, damage, hit_location){
+	if( 
+		(////
+			//(damage >= target.health && target.health > target.maxhealth*0.75) 
+			target.health + damage == target.maxhealth 
+			||(!level.mutators["mutator_noPowerups"] && (level.zombie_vars["zombie_insta_kill"] || is_true( self.personal_instakill ))) //should insta kill count?
+		)//// 
+		&& 
+		(mod == "MOD_RIFLE_BULLET" || MOD == "MOD_PISTOL_BULLET")
+	  )
+	{
+		//self maps\_zombiemode_score::player_add_points( "1shot1kill", 20);
+		if(hit_location != "head" && hit_location != "helmet")					//doesnt stack with head shot bonus.
+			self maps\_zombiemode_score::player_add_points( "reviver", 20);
+		return true;
+	}
+	return false;
+}
+addToCollateralPointBonus(mod, weapon, special){
+	//IPrintLn( weapon +"  "+mod +"  "+special);
+	if(weapon == "none")
+		return;
+	explosive_damage = mod == "MOD_GRENADE_SPLASH" || mod == "MOD_PROJECTILE_SPLASH";
+	if(!special && !WeaponIsSemiAuto( weapon ) && !explosive_damage )
+		return;
+	if(isDefined(self.curCollateralKills) && (weapon == self.curCollateralWeapon && mod == self.curCollateralMod)){			//add to current collateral
+		self.curCollateralKills ++;
+		//if(!isDefined(self.curCollateralMostPointsForKill) || self.curCollateralMostPointsForKill < pointsRewardedForKill)
+		//self.curCollateralMostPointsForKill = pointsRewardedForKill;
+		//self.curCollateralTotalPoints += pointsRewardedForKill - 10;
+	}
+	else if(!IsDefined( self.curCollateralWeapon ))					//start new collateral
+	{
+		self resetCollateralValues(mod, weapon, special);
+		self thread giveCollateralKillBonus(true);
+		
+	}
+	else{															//end current collateral and start a new one. (only happens if 2 collaterals in the same frame happen.
+		self giveCollateralKillBonus();
+		self resetCollateralValues(mod, weapon, special);
+	}
+}
+
+resetCollateralValues(mod, weapon, special){
+	self.curCollateralMod = mod;
+	self.curCollateralWeapon = weapon;
+	self.curCollateralKills = 1;
+	self.curCollateralSpecial = (special || mod == "MOD_PISTOL_BULLET"  || mod == "MOD_RIFLE_BULLET" );
+	//self.curCollateralSpecial = (special || mod == "MOD_PISTOL_BULLET"  || (mod == "MOD_RIFLE_BULLET" && ( player_using_hi_score_weapon( self)));
+	//self.curCollateralTotalPoints = pointsRewardedForKill - 10;
+}
+giveCollateralKillBonus(waitFirst){
+	if(is_true(waitFirst))
+		wait_network_frame();
+	if(self.curCollateralKills > 1)
+	{
+		reward = 0;
+		//additional = 0;
+		//if(self.curCollateralSpecial)
+		//	additional = 20;
+		if(self.curCollateralSpecial)
+			reward = self.curCollateralKills*20;
+		else{
+			reward = 30;
+			for( i = 3; i <= self.curCollateralKills && i < 8; i++){
+				reward += i * 10;
+				//if(self.curCollateralSpecial){
+				//	reward += (30 - ((i-2)*10));
+				//}
+			}
+		}
+		//you wont get more than double the regular kill points.
+		//reward = min(self.curCollateralKills * self.curCollateralTotalPoints, reward);
+		//reward = max(reward, 0);
+		//reward = min(self.curCollateralKills * self.curCollateralMostPointsForKill, reward);
+		//reward = (self.curCollateralKills*self.curCollateralKills*10);
+		IPrintLnBold("curScore"+self.score+"  +  "+reward );
+		//self maps\_zombiemode_score::player_add_points( "collateral", reward);
+		self maps\_zombiemode_score::player_add_points( "reviver", reward);
+	}
+	self.curCollateralWeapon = undefined;
+	self.curCollateralMod = undefined;
+	self.curCollateralKills = undefined;
+	//self.curCollateralMostPointsForKill = 0;
+	//self.curCollateralTotalPoints = 0;
+
 }

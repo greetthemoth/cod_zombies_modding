@@ -1,6 +1,7 @@
 #include common_scripts\utility; 
 #include maps\_utility;
 #include maps\_zombiemode_utility;
+
 init(){
 	level.MAX_AMMO_SYSTEM = true;
 	level.MAX_AMMO_SYSTEM_EQUIPMENT = false;
@@ -26,7 +27,7 @@ GetDamageOverride(mod, hit_location, player, amount, weapon){ //damage to add
 	//IPrintLn( mod +"  "+weapon );
 	if(!isDefined(weapon))
 		return 0;
-	headshot = hit_location == "head"
+	headshot = hit_location == "head";
 	weapon_name = weapon_name_check(weapon);
 	mult = GetWeaponBalancingDamageMult(weapon_name,mod, headshot);
 	//because melee currently doenst have upgrades. melee attacks derive damage upgrades from ballistic knives. 
@@ -54,14 +55,14 @@ get_weapon_upgrade_damage_mult(weapon_name){
 	return self.ZHC_weapon_damage_mult[id];
 }
 //weapon balancing vvv
-GetWeaponBalancingDamageMult(weapon_name,mod){
+GetWeaponBalancingDamageMult(weapon_name,mod, headshot){
 	switch(weapon_name){
 		case"dragunov_zm":
 			return 1.7;
 		case"l96a1_zm":
 			return 3.5;
 		case"m72_law_zm":
-			return 3.5;
+			return 4;
 		case"china_lake_zm":
 			return 2;
 		case"spas_zm":
@@ -70,9 +71,11 @@ GetWeaponBalancingDamageMult(weapon_name,mod){
 			return 1.6;
 		case"rpk_zm":
 			return 1.4;
-		case"ithaca_zm":
+		case"rottweil72_zm":
+			return 3;
+		case"hs10_zm":
 			if(headshot)
-				return 0.9;
+				return 0.8;
 			else
 				return 1.75;	//great escape weapon
 		case"g11_lps_zm":
@@ -112,7 +115,7 @@ GetWeaponBalancingAmmoStockMult(weapon_name){
 		case"rpk_zm":
 			return 1.5;
 		case"commando_zm":
-			return 2;
+			return 1.45;
 		case"galil_zm":
 			return 1.5;
 		case"aug_acog_zm":
@@ -137,7 +140,7 @@ GetWeaponBalancingAmmoStockMult(weapon_name){
 		case"mp5k_zm":
 		case"ak74u_zm":
 		case"mp40_zm":
-			return 1.15:
+			return 1.15;
 		default:
 			return 1;
 	}
@@ -153,6 +156,8 @@ GetWeaponBalancingAmmoClipMult(weapon_name){
 		case"spectre_zm":
 		case"mp5k_zm":
 			return 1.15;
+		case"commando_zm":
+			return 1.25;
 		default:
 			return 1;
 	}

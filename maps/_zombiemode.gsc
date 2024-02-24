@@ -3427,7 +3427,7 @@ round_spawning()
 								maps\_zombiemode_ai_dogs::special_dog_spawn( undefined, spawn_dog );	//changed for mod
 								level.zombie_total -= spawn_dog;										//changed for mod
 								enemyCount += spawn_dog ;												//Added for mod
-								level.ZHC_dogs_spawned_this_round += spawn_dog;							//Added for mod
+								level.ZHC_dogs_spawned_this_mixed_round += spawn_dog;							//Added for mod
 								spawn_dog = 0;															//Added for mod
 								wait_network_frame();
 							}
@@ -3439,7 +3439,7 @@ round_spawning()
 								maps\_zombiemode_ai_dogs::special_dog_spawn( undefined, spawn_dog );	//changed for mod
 								level.zombie_total -= spawn_dog;										//changed for mod
 								enemyCount += spawn_dog;												//Added for mod
-								level.ZHC_dogs_spawned_this_round += spawn_dog;							//Added for mod
+								level.ZHC_dogs_spawned_this_mixed_round += spawn_dog;							//Added for mod
 								spawn_dog = 0;															//Added for mod
 								wait_network_frame();
 							}
@@ -4218,7 +4218,7 @@ ai_calculate_health( round_number )
 		}
 
 	}
-	IPrintLnBold( "ZOMBIE HEALTH " + level.zombie_health );
+	//IPrintLnBold( "ZOMBIE HEALTH " + level.zombie_health );
 }
 
 /#
@@ -4323,6 +4323,9 @@ round_spawn_failsafe()
 						if(!IsDefined( level.total_dogs_killed ))
 							level.total_dogs_killed = 0;
 						level.total_dogs_killed --;
+						if(!flag("dog_round")  && level.mixed_rounds_enabled)
+							level.ZHC_dogs_spawned_this_mixed_round --;
+
 					}else{
 						level.total_zombies_killed--;
 					}
@@ -4337,7 +4340,7 @@ round_spawn_failsafe()
 				death_effect = "lightning_dog_spawn";
 				thread dog_despawn_sound_effect(self.origin);
 				if(is_true(level.DOG_LIGHTNING_TURN_ON_PERK))
-					level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 200, 5); //added for mod
+					level thread maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(self.origin, 200, 5, 1.5); //added for mod
 			}
 
 			playfx(level._effect[death_effect], self.origin);	
@@ -5189,9 +5192,9 @@ actor_damage_override( inflictor, attacker, damage, flags, meansofdeath, weapon,
 		}
 	}
 
-	////////////////////////////////// CHANGED FOR MOD
+	////////////////////////////////		CHANGED FOR MOD
 	final_damage = self maps\ZHC_zombiemode_zhc::damage( inflictor, attacker, damage, flags, meansofdeath, weapon, vpoint, vdir, sHitLoc, modelIndex, psOffsetTime );
-	///////////////////////////////////
+	////////////////////////////////		CHANGED FOR MOD
 
 	return int( final_damage );
 }

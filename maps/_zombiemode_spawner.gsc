@@ -192,8 +192,24 @@ zombie_spawn_init( animname_set )
 	self.a.disablepain = true;
 	self disable_react(); // SUMEET - zombies dont use react feature.
 
-	self.maxhealth = level.zombie_health; 
-	self.health = level.zombie_health; 
+	if(!level.ZHC_ROOMFLOW){
+		self.maxhealth = level.zombie_health; 
+		self.health = level.zombie_health; 
+	}else{
+		self.ZHC_roomId =  maps\_zombiemode_blockers::Get_Zone_Room_ID(self.zone_name);
+		self.maxhealth = level.zombie_health; 
+		self.ZHC_zombie_move_speed_spike_chance = 1 ;
+		self.ZHC_zombie_move_speed_spike = 1;
+
+		if(isDefined(level.ZHC_room_info[self.ZHC_roomId]))
+			self.maxhealth = level.ZHC_room_info[self.ZHC_roomId]["zombie_health"];
+		else
+			IPrintLn( "level.ZHC_room_info["+self.ZHC_roomId+"] is not defined.");
+
+		self.health = self.maxhealth;
+		self.ZHC_zombie_move_speed_spike_chance = level.ZHC_room_info[self.ZHC_roomId]["zombie_move_speed_spike_chance"];
+		self.ZHC_zombie_move_speed_spike = level.ZHC_room_info[self.ZHC_roomId]["zombie_move_speed_spike"];
+	}
 
 	self.freezegun_damage = 0;
 
@@ -479,14 +495,24 @@ set_zombie_run_cycle( new_move_speed )
 
 set_run_speed()
 {
-	rand = 0;	//ADDED FOR MOD
-	if(IsDefined( level.ZHC_zombie_move_speed_spike_chance ) && IsDefined( level.ZHC_zombie_move_speed_spike )){
+	rand = -1;	//ADDED FOR MOD
+	if(!level.ZHC_ROOMFLOW){
+		zombie_move_speed = level.zombie_move_speed;
+		ZHC_zombie_move_speed_spike_chance = level.ZHC_zombie_move_speed_spike_chance;
+		ZHC_zombie_move_speed_spike = level.ZHC_zombie_move_speed_spike;
+	}else{
+		zombie_move_speed = level.ZHC_room_info[self.ZHC_roomId]["zombie_move_speed"];
+		ZHC_zombie_move_speed_spike_chance = self.ZHC_zombie_move_speed_spike_chance;
+		ZHC_zombie_move_speed_spike = self.ZHC_zombie_move_speed_spike;
+	} 
+
+	if(IsDefined( ZHC_zombie_move_speed_spike_chance ) && IsDefined( ZHC_zombie_move_speed_spike )){
 		if(!IsDefined( level.ZHC_zombie_move_speed_spike_queue ))
 			level.ZHC_zombie_move_speed_spike_queue = 0;
-		level.ZHC_zombie_move_speed_spike_queue += level.ZHC_zombie_move_speed_spike_chance;
+		level.ZHC_zombie_move_speed_spike_queue += ZHC_zombie_move_speed_spike_chance;
 		if(level.ZHC_zombie_move_speed_spike_queue >= 100){
 			level.ZHC_zombie_move_speed_spike_queue -= 100;
-			rand = randomintrange( level.ZHC_zombie_move_speed_spike, level.ZHC_zombie_move_speed_spike + 35 );
+			rand = max(0,randomintrange( ZHC_zombie_move_speed_spike, ZHC_zombie_move_speed_spike + 35 ));
 
 			//if(!IsDefined( rand ))
 			//	IPrintLnBold( "speed spike is undefined" );
@@ -496,8 +522,8 @@ set_run_speed()
 		}
 	}	//ADDED FOR MOD^^^
 
-	if(rand == 0 || !IsDefined( rand ))				//ADDED FOR MOD
-		rand = randomintrange( level.zombie_move_speed, level.zombie_move_speed + 15 );
+	if(rand == -1)				//ADDED FOR MOD
+		rand = randomintrange( zombie_move_speed, zombie_move_speed + 15 );
 
 //	self thread print_run_speed( rand );
 	if( rand <= 35 )
@@ -2964,7 +2990,16 @@ ZHC_zombie_speed_spike_after_damage(){
 		return;
 	while(1){
 		self waittill( "damage", amount, attacker, direction_vec, point, type );
-		if(!IsDefined( level.ZHC_zombie_move_speed_spike ) || level.ZHC_zombie_move_speed_spike + 35 < 70)	//cant work anyways
+
+		if(!level.ZHC_ROOMFLOW){
+			ZHC_zombie_move_speed_spike_chance = level.ZHC_zombie_move_speed_spike_chance;
+			ZHC_zombie_move_speed_spike = level.ZHC_zombie_move_speed_spike;
+		}else{
+			ZHC_zombie_move_speed_spike_chance = self.ZHC_zombie_move_speed_spike_chance;
+			ZHC_zombie_move_speed_spike = self.ZHC_zombie_move_speed_spike;
+		}
+
+		if(!IsDefined( ZHC_zombie_move_speed_spike ) || ZHC_zombie_move_speed_spike + 20 < 70)	//cant work anyways
 			continue;
 		if(self.zombie_move_speed_original == "sprint")	//if set by anouher zombie or by other means
 			return;
@@ -2972,7 +3007,7 @@ ZHC_zombie_speed_spike_after_damage(){
 			continue;
 		if(amount < self.maxhealth/10 && self.health > self.maxhealth * (75/100)) //skip if damage < 10% && health > 75%
 			continue;
-		rand = randomintrange( level.ZHC_zombie_move_speed_spike - 15, level.ZHC_zombie_move_speed_spike + 20 );
+		rand = randomintrange( ZHC_zombie_move_speed_spike - 15, ZHC_zombie_move_speed_spike + 20 );
 		new_speed_suggestion = undefined;
 		if( rand > 70 )
 		{	
@@ -2993,6 +3028,7 @@ zombie_gib_on_damage()
 		self waittill( "damage", amount, attacker, direction_vec, point, type ); 
 
 		//IPrintLn( "gid_d " +amount );
+		//IPrintLn( "hp" + self.health +"/" +self.maxhealth );
 
 		if( !IsDefined( self ) )
 		{

@@ -2,6 +2,7 @@
 #include common_scripts\utility;
 #include maps\_zombiemode_utility;
 #include maps\_zombiemode_audio;
+#include maps\ZHC_utility;
 
 init()
 {
@@ -37,10 +38,12 @@ add_zombie_weapon( weapon_name, upgrade_name, hint, cost, weaponVO, weaponVOresp
 	}
 	
 	// Check the table first
+	/*
 	table = "mp/zombiemode.csv";
 	table_cost = TableLookUp( table, 0, weapon_name, 1 );
 	table_ammo_cost = TableLookUp( table, 0, weapon_name, 2 );
 
+	
 	if( IsDefined( table_cost ) && table_cost != "" )
 	{
 		cost = round_up_to_ten( int( table_cost ) );
@@ -50,6 +53,7 @@ add_zombie_weapon( weapon_name, upgrade_name, hint, cost, weaponVO, weaponVOresp
 	{
 		ammo_cost = round_up_to_ten( int( table_ammo_cost ) );
 	}
+	*/
 
 	PrecacheString( hint );
 
@@ -74,11 +78,11 @@ add_zombie_weapon( weapon_name, upgrade_name, hint, cost, weaponVO, weaponVOresp
 	{
 		//ammo_cost = round_up_to_ten( int( cost * 0.5 ) );  changed for mod
 		ammo_cost = round_up_to_ten( int(  
-			(min(Cost,1500)/2) + 				//Max = 750 ammo cost (1500 cost)
+			(min(cost,1500)/2) + 				//Max = 750 ammo cost (1500 cost)
 			(min(max(cost-1500,0),3000)/5) +	//Max = 1350 ammo cost (4500 cost)
 			(min(max(cost-4500,0),6000)/15) 	//Max = 1750 ammo cost (10500 cost)
 		));
-		ammo_cost = maps\ZHC_zombiemode_zhc::normalize_cost(ammo_cost);
+		//ammo_cost = maps\ZHC_zombiemode_zhc::normalize_cost(ammo_cost);
 	}
 
 
@@ -303,7 +307,7 @@ init_weapons()
 	//Z2 Weapons disabled for now
 	// Pistols
 	add_zombie_weapon( "m1911_zm",					"m1911_upgraded_zm",					&"ZOMBIE_WEAPON_M1911",					100,		"pistol",			"",		undefined );
-	add_zombie_weapon( "python_zm",					"python_upgraded_zm",					&"ZOMBIE_WEAPON_PYTHON",				1200,		"pistol",			"",		undefined );
+	add_zombie_weapon( "python_zm",					"python_upgraded_zm",					&"ZOMBIE_WEAPON_PYTHON",				2200,		"pistol",			"",		undefined );
 	add_zombie_weapon( "cz75_zm",					"cz75_upgraded_zm",						&"ZOMBIE_WEAPON_CZ75",					600,		"pistol",			"",		undefined );
 
 	//	Weapons - SMGs
@@ -338,8 +342,8 @@ init_weapons()
 	add_zombie_weapon( "fnfal_zm",					"fnfal_upgraded_zm",					&"ZOMBIE_WEAPON_FNFAL",					1500,	"burstrifle",			"",		undefined );
 
 	//	Weapons - Sniper Rifles
-	add_zombie_weapon( "dragunov_zm",				"dragunov_upgraded_zm",					&"ZOMBIE_WEAPON_DRAGUNOV",				2000,		"sniper",			"",		undefined );
-	add_zombie_weapon( "l96a1_zm",					"l96a1_upgraded_zm",					&"ZOMBIE_WEAPON_L96A1",					2500,		"sniper",			"",		undefined );
+	add_zombie_weapon( "dragunov_zm",				"dragunov_upgraded_zm",					&"ZOMBIE_WEAPON_DRAGUNOV",				850,		"sniper",			"",		undefined );
+	add_zombie_weapon( "l96a1_zm",					"l96a1_upgraded_zm",					&"ZOMBIE_WEAPON_L96A1",					4500,		"sniper",			"",		undefined );
 
 	//	Weapons - Machineguns
 	add_zombie_weapon( "rpk_zm",					"rpk_upgraded_zm",						&"ZOMBIE_WEAPON_RPK",					6500,		"mg",				"",		undefined );
@@ -437,7 +441,7 @@ init_weapon_upgrade()
 	for( i = 0; i < weapon_spawns.size; i++ )
 	{
 		weapon_spawns[i] wall_weapon_setup();
-		weapon_spawns[i] thread weapon_spawn_think(); 
+		weapon_spawns[i] thread weapon_spawn_think(false, false); 
 	}
 }
 
@@ -714,7 +718,7 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	can_init_buy = true;	//always true for now.
 	can_buy_ammo = is_equipment || true; //lets make it always true for now
 	can_upgrade = !is_equipment && can_upgrade;
-	self.weapon_trigger thread weapon_spawn_think(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
+	self.weapon_trigger thread weapon_spawn_think(false, undefined, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
 }
 
 door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw, barr_weapon_yaw
@@ -2164,8 +2168,20 @@ treasure_chest_think(){
 
 ZHC_box_wait_to_become_reopenable(){
 	self thread firesale_make_box_reopenable();
-	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_DOG_KILL_ENDS_WAIT)
-		self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, undefined, undefined, undefined, 1);
+	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_DOG_KILL_ENDS_WAIT){
+		dognum =min(
+					min(
+						define_or(self.times_chest_opened,0),
+						define_or(level.zombie_total_start, 0) - define_or(level.zombie_total,0)
+					),
+					max( int(flag("dog_round")) * 99,
+						define_or(level.ZHC_dogs_spawned_this_mixed_round,0)
+					)
+				);
+
+		dogs_kills_to_open_box = min(max(1,dognum),3);
+		self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, undefined, undefined, undefined, dogs_kills_to_open_box);
+	}
 	run_small_cooldown = true;
 	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE && is_true(self.zhc_cooldown_waiting)){
 		self waittill("zhc_end_of_cooldown");	//if expire thread is still running (which is intentional) we will use that instead.
@@ -2310,7 +2326,7 @@ middle_box_logic(costs_money,user_cost,user){
 					//self UseTriggerRequireLookAt();				//its making it hard to interact with.
 					if(level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE)
 						self.chest_origin thread wait_to_grabbed_to_end(self);
-					self thread weapon_spawn_think(true, true, true, level.ZHC_BOX_UPGRADE_WEAPON_ON_CLONE_PICK_UP);
+					self thread weapon_spawn_think(true,undefined, true, true, level.ZHC_BOX_UPGRADE_WEAPON_ON_CLONE_PICK_UP);
 					
 				}
 			}
@@ -4787,7 +4803,7 @@ ZHC_set_weapon_hint( cost, ammo_cost, upgraded_ammo_cost, weapon_string, weapon_
 		util_connect_strings(weapon_buy_string_1, cost_string, weapon_buy_string_2) +
 		util_connect_strings(ammo_buy_string_1, cost_string, ammo_buy_string_2) +
 		util_connect_strings(upgraded_ammo_buy_string_1, cost_string, upgraded_ammo_buy_string_2);
-	IPrintLn (text);
+	//IPrintLn (text);
 	self SetHintString( text
 		); 
 }
@@ -5022,10 +5038,10 @@ swap_weapon_buyable(is_chest, can_init_buy, can_upgrade, can_buy_ammo, weapon){
 	wait(1);
 	wait_network_frame();
 	self ZHC_set_weapon_hint(get_weapon_cost(weapon), get_ammo_cost(weapon), 4500, weapon, undefined, false, true, true);
-	self thread weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon);
+	self thread weapon_spawn_think(is_chest, undefined, can_init_buy, can_buy_ammo, can_upgrade, weapon);
 }
 
-weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
+weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 {
 	if(!IsDefined( is_chest ))
 		is_chest = false;
@@ -5086,7 +5102,7 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 	else
 		self thread decide_hide_show_hint("weapon_stop");
 
-	
+	//IPrintLn(!can_upgrade +""+ !isDefined(player_has_weapon) +""+can_buy_ammo+""+ !is_grenade);
 	if(can_upgrade){	
 		endon_string = undefined;
 		if(is_chest)
@@ -5096,26 +5112,28 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 		self thread zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, weapon, "weapon_stop", endon_string );
 		
 	}
-	else if(
-		can_buy_ammo && !is_grenade && (
-			(							//only want to run when this function runs mid game, and not just in the beggining of the game.
-				is_chest ||	
-				(!is_chest && level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE && level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN )
-			)
-		)
-	)			//checks if any player has weapon if so update hintstring. 
-					//we could potentially turn this into a function and loop it for closest player
+	else if(!isDefined(player_has_weapon) && can_buy_ammo && !is_grenade)
+	//checks if any player has weapon if so update hintstring. 
+	//we could potentially turn this into a function and loop it for closest player
 	{	
 		players = get_players();
 		player_has_weapon = false;
 		for(i = 0; i < players.size; i++){
-			players[i] has_weapon_or_upgrade( weapon );
-			player_has_weapon = true;
-			break;
+			if(players[i] has_weapon_or_upgrade( weapon )){
+				player_has_weapon = true;
+				break;
+			}
 		}
-		if(player_has_weapon)
-			self weapon_set_first_time_hint( cost, ammo_cost );
+		//if(player_has_weapon)
+			//self weapon_set_first_time_hint( cost, ammo_cost );
+		//IPrintLn("player_has_weapon" + player_has_weapon);
 	}
+	//IPrintLn(!can_upgrade+"" + IsDefined( player_has_weapon ));
+	if(!can_upgrade && IsDefined( player_has_weapon )){
+		self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo && player_has_weapon, can_buy_ammo && player_has_weapon); //added for mod
+	}
+
+
 
 	for( ;; )
 	{
@@ -5158,11 +5176,14 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 				player.playername, player.score, level.team_pool[ player.team_num ].score, level.round_number, cost, weapon, self.origin );
 
 				if ( is_lethal_grenade( weapon ) )
-				{
+				{	
 					player maps\ZHC_zombiemode_weapons::take_weapon(player get_player_lethal_grenade());
 					player takeweapon( player get_player_lethal_grenade() );
 					player set_player_lethal_grenade( weapon );
 				}
+
+				if(is_chest && level.MAX_AMMO_SYSTEM && isDefined(player.ZHC_weapons[weapon]))	//if getting weapon from chest && player has gotten weapon before, increase max amm of weapon.
+					player maps\ZHC_zombiemode_weapons::upgrade_stock_ammo(weapon);
 
 				player weapon_give( weapon );
 				player check_collector_achievement( weapon );
@@ -5172,7 +5193,9 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 				{
 					if(can_buy_ammo && !is_grenade)
 					{
-						self weapon_set_first_time_hint( cost, ammo_cost );
+						if(!can_upgrade)
+						//self weapon_set_first_time_hint( cost, ammo_cost );
+							self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo, can_buy_ammo); //added for mod
 					}
 					if(!is_chest){
 						if(level.ZHC_LOGICAL_WEAPON_SHOW){
@@ -5258,7 +5281,9 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 						{
 							if(can_buy_ammo && !is_grenade)
 							{
-								self weapon_set_first_time_hint( cost, ammo_cost );
+								if(!can_upgrade)
+								//self weapon_set_first_time_hint( cost, ammo_cost );
+									self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo && player_has_weapon, can_buy_ammo && player_has_weapon); //added for mod
 							}
 							if(!is_chest){
 								if(level.ZHC_LOGICAL_WEAPON_SHOW){
@@ -5364,26 +5389,29 @@ weapon_spawn_think(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon)
 
 
 				//ammo_given = .... check how gernade varifies ammo given. proabbaly a clip check.
+
 				if(is_grenade){
-					max_nades = WeaponClipSize( weapon );
-					cur_nades = player GetWeaponAmmoClip( weapon );
+					max_nades = WeaponMaxAmmo( weapon );
+					cur_nades = player getammocount( weapon );
 					ammo_given = cur_nades < max_nades;
-					player SetWeaponAmmoClip( weapon, max_nades );
+					player GiveStartAmmo( weapon );
 				}else{
 					if( player has_upgrade( weapon ) )
 					{
-						ammo_given = player ammo_give( level.zombie_weapons[ weapon ].upgrade_name );
+						ammo_given = player ammo_give( level.zombie_weapons[ weapon ].upgrade_name, !is_chest);	//dont do zhc check if its a chest that way we can upgrade ammo.
 					}
 					else
 					{
-						ammo_given = player ammo_give( weapon ); 
+						ammo_given = player ammo_give( weapon, !is_chest ); //dont do zhc check if its a chest that way we can upgrade ammo.
 					}
 				}
 
 				
 				if( ammo_given )
 				{
-					player maps\ZHC_zombiemode_weapons::upgrade_stock_ammo(weapon);
+					if(is_chest)
+						player maps\ZHC_zombiemode_weapons::upgrade_stock_ammo(weapon);
+
 					if(is_chest){
 
 						if(level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE)
@@ -5726,7 +5754,7 @@ get_player_index(player)
 	return player.entity_num;
 }
 
-ammo_give( weapon )
+ammo_give( weapon , zhc_max_check_override)
 {
 	// We assume before calling this function we already checked to see if the player has this weapon...
 
@@ -5741,6 +5769,9 @@ ammo_give( weapon )
 			// get the max allowed ammo on the current weapon
 			stockMax = 0;	// scope declaration
 			stockMax = WeaponStartAmmo( weapon ); 
+			if(is_true(zhc_max_check_override) && level.MAX_AMMO_SYSTEM){
+				stockMax = self.ZHC_weapon_ammos_max[self.ZHC_weapons[weapon]];
+			}
 
 			// Get the current weapon clip count
 			clipCount = self GetWeaponAmmoClip( weapon ); 
