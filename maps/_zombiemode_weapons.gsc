@@ -1826,6 +1826,7 @@ ZHC_wall_buy_options_init(){
 
 	level.ZHC_WALL_UPGRADE_WEAPON_ON_CLONE_PICK_UP = false;
 
+	level.ZHC_WALL_GUN_BUYABLE_SPAWN_POWERUPS = true;
 	level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE = false;
 		level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_AMMO = false;
 		level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN = false;
@@ -1850,9 +1851,11 @@ ZHC_treasure_chest_options_init(){
 		level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE = true;
 			level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN = true;
 
+	level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS = true;
 	level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE = true;
 		level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_AMMO = true;
 		//level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN = false;
+
 
 	level.ZHC_ALL_CHESTS = true;
 		level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM = true;
@@ -2121,11 +2124,10 @@ treasure_chest_think(){
 	self disable_trigger(); 
 
 	self middle_box_logic(costs_money,user_cost,user);
-
+	if(self.ZHC_GUN_BUYABLE)
+		self notify ("weapon_stop");
+	
 	self.grab_weapon_hint = false;
-
-
-
 	self.chest_origin.ZHC_teddy_here = false;
 
 	//self._box_open = false;
@@ -2292,7 +2294,7 @@ middle_box_logic(costs_money,user_cost,user){
 
 				if(!self.ZHC_GUN_BUYABLE){
 					// Let the player grab the weapon and re-enable the box //
-					self sethintstring( &"ZOMBIE_TRADE_WEAPONS" ); 
+					self sethintstring( &"ZOMBIE_TRADE_WEAPONS" );
 					self setCursorHint( "HINT_NOICON" ); 
 
 					if(!self.ZHC_GUN_CYCLE && !self.ZHC_GUN_SWAP)//&& !self.ZHC_GUN_BUYABLE					//NORMAL BOX
@@ -4284,7 +4286,7 @@ treasure_chest_glowfx(chest, waitToString)
 	fxobj delete(); 
 }
 ZHC_upgrade_weapon(weapon_string, effect_origin){
-	if(is_true(level.UPGRADE_WEAPON_SYSTEM)){
+	if(is_true(level.ZHC_UPGRADE_WEAPON_SYSTEM)){
 		self maps\ZHC_zombiemode_weapons::upgrade_weapon(weapon_string);
 		playfx(level._effect["poltergeist"], effect_origin);
 	}
@@ -5052,12 +5054,19 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 	if(!IsDefined( can_buy_ammo ))
 		can_buy_ammo = true;
 
-	if(is_chest){
-		self endon ("box_hacked_respin");
-		self endon ("box_finished");
-	}else{
+	if((is_chest && level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS) || (!is_chest && level.ZHC_WALL_GUN_BUYABLE_SPAWN_POWERUPS))	//chest only?
+		self thread ZHC_wall_buy_manage_power_up_spawn(weapon);
+
+	if(!level.ZHC_UPGRADE_WEAPON_SYSTEM)
+		can_upgrade = false;
+
+	/*if(is_chest){
 		self endon ("weapon_stop");
-	}
+		self endon ("box_hacked_respin");
+		self endon ("box_finished");	////might be better to make weapon stop fire in the chest code, trather than rely on box finished.
+	}else{*/
+		self endon ("weapon_stop");		//should work for all cases
+	//}
 
 	if(!IsDefined( weapon )){
 		if(is_chest){
@@ -5095,21 +5104,21 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 	}
 
 
-	if(is_chest && level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE)
+	/*if(is_chest && level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE)
 		self thread decide_hide_show_hint("weapon_grabbed", "box_finished", "weapon_stop");
 	else if (is_chest)
 		self thread decide_hide_show_hint("box_finished", "weapon_stop");
-	else
-		self thread decide_hide_show_hint("weapon_stop");
+	else*/
+		self thread decide_hide_show_hint("weapon_stop");	//should work for all cases.
 
 	//IPrintLn(!can_upgrade +""+ !isDefined(player_has_weapon) +""+can_buy_ammo+""+ !is_grenade);
 	if(can_upgrade){	
-		endon_string = undefined;
-		if(is_chest)
-			endon_string = "box_finished";
+		//endon_string = undefined;
+		//if(is_chest)
+		//	endon_string = "box_finished";
 		if(!isDefined(self.ZHC_WALL_GUN_can_upgrade))
 			self.ZHC_WALL_GUN_can_upgrade = true;
-		self thread zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, weapon, "weapon_stop", endon_string );
+		self thread zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, weapon, "weapon_stop" );//, endon_string );
 		
 	}
 	else if(!isDefined(player_has_weapon) && can_buy_ammo && !is_grenade)
@@ -5182,7 +5191,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 					player set_player_lethal_grenade( weapon );
 				}
 
-				if(is_chest && level.MAX_AMMO_SYSTEM && isDefined(player.ZHC_weapons[weapon]))	//if getting weapon from chest && player has gotten weapon before, increase max amm of weapon.
+				if(is_chest && level.ZHC_MAX_AMMO_SYSTEM && isDefined(player.ZHC_weapons[weapon]))	//if getting weapon from chest && player has gotten weapon before, increase max amm of weapon.
 					player maps\ZHC_zombiemode_weapons::upgrade_stock_ammo(weapon);
 
 				player weapon_give( weapon );
@@ -5224,6 +5233,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 						}
 					}
 				}else{
+					self notify("weapon_grabbed");//uses same notif as chest does.
 					if(level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE)
 					{
 						if(level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN)
@@ -5304,6 +5314,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 						bbPrint( "zombie_uses: playername %s playerscore %d teamscore %d round %d cost %d name %s x %f y %f z %f type ammo",
 						player.playername, player.score, level.team_pool[ player.team_num ].score, level.round_number, self.ZHC_weapon_upgrade_cost, weapon, self.origin );
 
+						self notify("weapon_upgrade_bought");
 
 						if(is_chest){
 							if(level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE)
@@ -5433,6 +5444,8 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 
 					bbPrint( "zombie_uses: playername %s playerscore %d teamscore %d round %d cost %d name %s x %f y %f z %f type ammo",
 						player.playername, player.score, level.team_pool[ player.team_num ].score, level.round_number, ammo_cost, weapon, self.origin );
+					
+					self notify("weapon_ammo_bought");
 				}
 			}
 			else
@@ -5533,6 +5546,77 @@ weapon_hide(player, slow_hide){
 		self.origin = self.og_origin;
 	} else
 		self Hide();
+}
+
+ZHC_wall_buy_get_power_up_spawn_position(){
+	return self.origin + ( AnglesToForward( ( 0, -25 * self.yaw, 160 ) ) ); 
+}
+ZHC_wall_buy_get_power_up_drop_position(){
+	return self.origin + ( AnglesToForward( ( 0, -25 * self.yaw, 0 ) ) ); 
+}
+ZHC_wall_buy_manage_power_up_spawn(weapon){
+	self endon "weapon_stop";
+	if(!level.ZHC_WEAPONS_KILL_NOTIFY || !is_true(level.ZHC_WEAPONS_KILL_NOTIFY_WEAPON_BUY_DROP))
+		return;
+	round_to_reset_kill_goal = define_or(level.next_dog_round,0);
+	kill_goal = min(define_or(level.zombie_total_start,6) + 1, 18);
+	while(1){
+		weapon_kills = 0;
+		while(weapon_kills < kill_goal){
+			level waittill("zhc_"+weapon +"_kill");
+			weapon_kills++;
+		}
+		while(level.zombie_vars["zombie_drop_item"] != 1 || IsDefined( self.ZHC_powerup )){
+			wait_network_frame();
+		}
+		self thread ZHC_cycle_power_ups(maps\ZHC_zombiemode_weapons::GetWeaponPowerupCycle(weapon));
+		self thread ZHC_wall_buy_drop_power_up();
+		self waittill("stop_zhc_powerup_cycle");
+		if(level.round_number >= round_to_reset_kill_goal)
+			kill_goal = min(define_or(level.zombie_total_start,6) + 1, 18);
+		else
+			kill_goal = int(kill_goal * 1.5);
+
+	}
+
+}
+ZHC_wall_buy_drop_power_up(){
+	ret = self waittill_any_return( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought","weapon_stop");//common_scripts\utility.gsc: );
+	if(ret == "weapon_stop"){
+		self.ZHC_powerup maps\_zombiemode_powerups::powerup_timeout(2.5);
+		return;
+	}
+	self notify ("stop_zhc_powerup_cycle");
+	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_grab();
+	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_timeout(60);
+	self.ZHC_powerup MoveTo( self ZHC_wall_buy_get_power_up_drop_position,4,0.2,1);
+	self.ZHC_powerup waittill_any( "powerup_grabbed", "powerup_timedout" );
+	self.ZHC_powerup = undefined;
+}
+ZHC_cycle_power_ups(cycle){
+	endon( "stop_zhc_powerup_cycle" );
+	endon( "weapon_stop" );
+	index = 0;
+	while(1){
+		if(!if(IsDefined( self.ZHC_powerup) || (index == 0 && cycle[0] != cycle[cycle.size-1]) || cycle[index] != cycle[index-1]){	
+			if(IsDefined( self.ZHC_powerup) )
+				self.ZHC_powerup maps\_zombiemode_powerups::powerup_timeout(0);//instantly times out powerup
+			self.ZHC_powerup = level maps\_zombiemode_powerups::specific_powerup_drop( cycle[index], self ZHC_wall_buy_get_power_up_spawn_position(),false, undefined, false);
+		}
+		self.ZHC_powerup ZHC_basic_goal_cooldown_func2(
+		1,//	goals_required, 
+		undefined,//	wait_time, 
+		undefined,//	additional_kills_wanted, 
+		1,//	additional_rounds_to_wait, 
+		undefined,//	dog_rounds_to_wait, 
+		true,//	round_goals_on_round_end, 
+		1,//	additional_dog_kills_wanted
+		);
+		index++;
+		if(index >= level.ZHC_wall_buy_powerup_cycle.size)
+			index = 0;
+	}
+
 }
 
 get_pack_a_punch_weapon_options( weapon )
@@ -5769,7 +5853,7 @@ ammo_give( weapon , zhc_max_check_override)
 			// get the max allowed ammo on the current weapon
 			stockMax = 0;	// scope declaration
 			stockMax = WeaponStartAmmo( weapon ); 
-			if(is_true(zhc_max_check_override) && level.MAX_AMMO_SYSTEM){
+			if(is_true(zhc_max_check_override) && level.ZHC_MAX_AMMO_SYSTEM){
 				stockMax = self.ZHC_weapon_ammos_max[self.ZHC_weapons[weapon]];
 			}
 

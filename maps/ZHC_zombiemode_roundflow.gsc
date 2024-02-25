@@ -75,14 +75,26 @@ rooms_init(){
 	if(level.ZHC_ROOMFLOW)
 		level thread manage_room_activity();
 
+
+
+	//first room is hard.
 	level waittill( "start_of_round" );
 	wait_network_frame( );
+
 	level.zombie_total = 50;
-	level notify("zhc_update_flow_difficulty_roomId_"+0, 7);
+	start_round_zombie_limit_mult = 2;
+	start_round_spawning_speed_mult = 0.5;
+	level notify("zhc_update_flow_difficulty_roomId_"+0, 10);
+	level.ZHC_round_zombie_limit_mult *= start_round_zombie_limit_mult; //applies its effect on the global mult;
+	level.ZHC_round_spawning_speed_mult *= start_round_spawning_speed_mult;
+	level waittill( "end_of_round" );
+	level notify("zhc_update_flow_difficulty_roomId_"+0, -11);
+	level.ZHC_round_zombie_limit_mult /= start_round_spawning_speed_mult; //undoes its effect on the global mult;
+	level.ZHC_round_spawning_speed_mult /= start_round_spawning_speed_mult;
 }
 
 room_think(roomId){
-	level.ZHC_room_info[roomId]["flow_difficulty"] = 0;
+	level.ZHC_room_info[roomId]["flow_difficulty"] = -1;
 	level.ZHC_room_info[roomId]["active"] = false;
 	level.ZHC_room_info[roomId]["last_round_active"] = 0;
 
@@ -93,7 +105,6 @@ room_think(roomId){
 		difficulty = level.ZHC_room_info[roomId]["flow_difficulty"];
 		data = update_round_flow_difficulty(difficulty);
 		active = level.ZHC_room_info[roomId]["active"];
-
 		if(active){
 			level.ZHC_round_zombie_limit_mult /= level.ZHC_room_info[roomId]["round_zombie_limit_mult"]; //undoes its effect on the global mult;
 			level.ZHC_round_spawning_speed_mult /= level.ZHC_room_info[roomId]["round_spawning_speed_mult"];
@@ -101,7 +112,7 @@ room_think(roomId){
 		level.ZHC_room_info[roomId]["round_zombie_limit_mult"] = data["round_zombie_limit_mult"];
 		level.ZHC_room_info[roomId]["round_spawning_speed_mult"] = data["round_spawning_speed_mult"];
 		if(active){
-			level.ZHC_round_zombie_limit_mult *= level.ZHC_room_info[roomId]["round_zombie_limit_mult"]; //undoes its effect on the global mult;
+			level.ZHC_round_zombie_limit_mult *= level.ZHC_room_info[roomId]["round_zombie_limit_mult"]; //applies its effect on the global mult;
 			level.ZHC_round_spawning_speed_mult *= level.ZHC_room_info[roomId]["round_spawning_speed_mult"];
 			//IPrintLn(level.ZHC_room_info[roomId]["name"] + " zombie_limit_mult:"+level.ZHC_round_zombie_limit_mult +"  spawning_speed_mult:" +level.ZHC_round_spawning_speed_mult);
 		}

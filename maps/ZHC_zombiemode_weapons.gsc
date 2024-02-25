@@ -3,11 +3,18 @@
 #include maps\_zombiemode_utility;
 
 init(){
-	level.MAX_AMMO_SYSTEM = true;
-	level.MAX_AMMO_SYSTEM_EQUIPMENT = false;
-	level.UPGRADE_WEAPON_SYSTEM = true;
+	level.ZHC_MAX_AMMO_SYSTEM = true;
+	level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT = false;
+	level.ZHC_UPGRADE_WEAPON_SYSTEM = true;
 	level.ZCH_UPGRADE_FLOW_INTREVAL = -1;
 	level.ZHC_CERTAIN_WEAPONS_DONT_REFILL_ON_MAX_AMMO = 1;
+
+	level.ZHC_WEAPONS_KILL_NOTIFY = true;
+	if(level.ZHC_WEAPONS_KILL_NOTIFY){
+		level.ZHC_WEAPONS_KILL_NOTIFY_PLAYER = false;
+		level.ZHC_WEAPONS_KILL_NOTIFY_WEAPON_BUY_DROPS = true;
+	}
+
 	thread set_up_weapon_system();
 }
 set_up_weapon_system(){
@@ -17,7 +24,7 @@ set_up_weapon_system(){
 	for ( i = 0; i < players.size; i++ ){
 		players[i] init_weapon_vars();
 		players[i] check_primary_ids();
-		if(level.MAX_AMMO_SYSTEM)
+		if(level.ZHC_MAX_AMMO_SYSTEM)
 			players[i] thread  manage_player_ammo();
 	}
 }
@@ -112,6 +119,7 @@ GetWeaponBalancingDamageMult(weapon_name,mod, headshot){
 GetWeaponBalancingAmmoStockMult(weapon_name){
 	switch(weapon_name){
 		case"hk21_zm":
+			return 1.65;
 		case"rpk_zm":
 			return 1.5;
 		case"commando_zm":
@@ -162,6 +170,91 @@ GetWeaponBalancingAmmoClipMult(weapon_name){
 			return 1;
 	}
 }
+
+GetWeaponPowerupCycle(weapon_name){
+	if(!isDefined(level.ZHC_wall_buy_powerup_cycle)){
+		level.ZHC_wall_buy_powerup_cycle = [];
+		level.ZHC_wall_buy_powerup_cycle[level.ZHC_wall_buy_powerup_cycle.size] = "insta_kill";
+		level.ZHC_wall_buy_powerup_cycle[level.ZHC_wall_buy_powerup_cycle.size] = "double_points";
+		level.ZHC_wall_buy_powerup_cycle[level.ZHC_wall_buy_powerup_cycle.size] = "carpenter";
+		level.ZHC_wall_buy_powerup_cycle[level.ZHC_wall_buy_powerup_cycle.size] = "nuke";
+	}
+
+
+	switch(weapon_name){
+		case "china_lake_zm":
+			cycle = [];
+			cycle[cycle.size] = "double_points";
+			cycle[cycle.size] = "double_points";
+			cycle[cycle.size] = "carpenter";
+			cycle[cycle.size] = "carpenter";
+			return cycle;
+		case "dragunov_zm":
+			cycle = [];
+			cycle[cycle.size] = "double_points";
+			cycle[cycle.size] = "carpenter";
+			cycle[cycle.size] = "insta_kill";
+			cycle[cycle.size] = "nuke";
+			return cycle;
+		case "l96a1_zm":
+			cycle = [];
+			cycle[cycle.size] = "carpenter";
+			cycle[cycle.size] = "double_points";
+			cycle[cycle.size] = "double_points";
+			cycle[cycle.size] = "double_points";
+			return cycle;
+		case "crossbow_explosive_zm":
+			cycle = [];
+			cycle[cycle.size] = "nuke";
+			return cycle;
+		case "knife_ballistic_zm":
+			cycle = [];
+			cycle[cycle.size] = "insta_kill";
+			return cycle;
+		case "g11_lps_zm":
+			cycle = [];
+			cycle[cycle.size] = "carpenter";
+			return cycle;
+		case "m72_law_zm":
+			cycle = [];
+			cycle[cycle.size] = "double_points";
+			return cycle;
+		case "frag_grenade_zm":
+			cycle = [];
+			cycle[cycle.size] = "full_ammo";
+			return cycle;
+		case"spas_zm":
+			cycle = [];
+			cycle[cycle.size] = "insta_kill";
+			cycle[cycle.size] = "insta_kill";
+			cycle[cycle.size] = "insta_kill";
+			cycle[cycle.size] = "nuke";
+			return cycle;
+		case"hk21_zm":
+			cycle = [];
+			cycle[cycle.size] = "insta_kill";
+			cycle[cycle.size] = "carpenter";
+			return cycle;
+		case "cz75dw_zm":
+		case"cz75_zm":
+			cycle = [];
+			cycle[cycle.size] = "insta_kill";
+			cycle[cycle.size] = "carpenter";
+			cycle[cycle.size] = "insta_kill";
+			cycle[cycle.size] = "full_ammo";
+			return cycle;
+		case"python_zm":
+			cycle = [];
+			cycle[cycle.size] = "carpenter";
+			cycle[cycle.size] = "carpenter";
+			cycle[cycle.size] = "carpenter";
+			cycle[cycle.size] = "full_ammo";
+		default:
+			if(maps\_zombiemode_weapons::get_is_wall_buy(weapon_name))
+				return array_randomize(level.ZHC_wall_buy_powerup_cycle);
+			return array_swap( level.ZHC_wall_buy_powerup_cycle,RandomInt( level.ZHC_wall_buy_powerup_cycle.size ),RandomInt( level.ZHC_wall_buy_powerup_cycle.size ) );
+	} 
+}
 //weapon balancing ^^^
 
 
@@ -179,7 +272,7 @@ init_weapon_vars()
 
 	self.ZHC_weapon_is_equipment_or_grenade = [];
 
-	if(level.MAX_AMMO_SYSTEM){
+	if(level.ZHC_MAX_AMMO_SYSTEM){
 		self.ZHC_weapon_ammos_max = [];
 		self.ZHC_weapon_ammos_max_clip = [];
 	}
@@ -237,7 +330,7 @@ add_weapon_info(weapon_name){
 
 	self.ZHC_weapon_is_equipment_or_grenade[id] = (is_placeable_mine( weapon_name ) || is_equipment( weapon_name ) || (WeaponType( weapon_name ) == "grenade"));
 
-	if(level.MAX_AMMO_SYSTEM && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.MAX_AMMO_SYSTEM_EQUIPMENT)){
+	if(level.ZHC_MAX_AMMO_SYSTEM && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)){
 		self update_max_ammo(weapon_name, id);
 	}
 	else{
@@ -342,14 +435,14 @@ update_max_ammo(weapon_name, id){
 }
 
 check_weapon_ammo(og_weapon_name,weapon_name){	//name should already be checked.
-	if(!level.MAX_AMMO_SYSTEM)
+	if(!level.ZHC_MAX_AMMO_SYSTEM)
 		return;
 
 	id = self.ZHC_weapons[weapon_name];
 	if(!isDefined (id))
 		return;
 
-	if(self.ZHC_weapon_is_equipment_or_grenade[id] && !level.MAX_AMMO_SYSTEM_EQUIPMENT)
+	if(self.ZHC_weapon_is_equipment_or_grenade[id] && !level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)
 		return;
 
 	max_ammo = self.ZHC_weapon_ammos_max_clip[id];
@@ -416,12 +509,12 @@ give_weapon(weapon_name, set_to_prev_ammo){
 }
 
 refill_weapon_ammo(weapon_name){
-	if(level.MAX_AMMO_SYSTEM){
+	if(level.ZHC_MAX_AMMO_SYSTEM){
 		og_weapon_name = weapon_name;
 		weapon_name = weapon_name_check(weapon_name);
 		id = self check_has_id(weapon_name);
 
-		if(self.ZHC_weapon_is_equipment_or_grenade[id] && !level.MAX_AMMO_SYSTEM_EQUIPMENT){
+		if(self.ZHC_weapon_is_equipment_or_grenade[id] && !level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT){
 			self GiveMaxAmmo( weapon_name );
 			return;
 		}
@@ -457,18 +550,18 @@ max_ammo_override(weapon_name){ //if false, no override. and carries out as norm
 			}																		//
 		}
 		if(level.ZHC_CERTAIN_WEAPONS_DONT_REFILL_ON_MAX_AMMO >= 1 && weapon_name == "zombie_cymbal_monkey"){ //REALISTIC EQUIPMENT
-			//if(level.MAX_AMMO_SYSTEM)
+			//if(level.ZHC_MAX_AMMO_SYSTEM)
 				//add_weapon_ammo(weapon_name, 1);												//if we only want to add 1 monkey.
 			return true; 																		//for now max ammo wont work at all on monkies.
 		}
 	}
 		
-	if(level.MAX_AMMO_SYSTEM ){
+	if(level.ZHC_MAX_AMMO_SYSTEM ){
 		if (!self.ZHC_weapon_is_equipment_or_grenade[id]){
 			max_ammo = self.ZHC_weapon_ammos_max[id];
 			self SetWeaponAmmoStock(og_weapon_name, max_ammo);
 		}else{
-			if(!level.MAX_AMMO_SYSTEM_EQUIPMENT)
+			if(!level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)
 				return false;
 			max_grenade_total = int(self.ZHC_weapon_ammos_max_clip[id]);
 			self SetWeaponAmmoClip( og_weapon_name, max_grenade_total );
@@ -488,7 +581,7 @@ add_weapon_ammo(weapon_name, amount){
 			self SetWeaponAmmoClip(weapon_name, self GetWeaponAmmoClip( weapon_name ) + amount);
 		else
 			self SetWeaponAmmoStock( weapon_name, self GetWeaponAmmoStock( weapon_name ) + amount);
-	}else if(level.MAX_AMMO_SYSTEM && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.MAX_AMMO_SYSTEM_EQUIPMENT)) {
+	}else if(level.ZHC_MAX_AMMO_SYSTEM && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)) {
 		if (!self.ZHC_weapon_is_equipment_or_grenade[id]){
 			new_ammo_total = int(min(self GetWeaponAmmoStock( og_weapon_name )+amount, self.ZHC_weapon_ammos_max[id]));
 			self SetWeaponAmmoStock(og_weapon_name, new_ammo_total);
@@ -512,7 +605,7 @@ set_weapon_ammo(weapon_name, amount){
 			self SetWeaponAmmoClip(weapon_name, amount);
 		else
 			self SetWeaponAmmoStock( weapon_name, amount);
-	}else if(level.MAX_AMMO_SYSTEM  && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.MAX_AMMO_SYSTEM_EQUIPMENT)){
+	}else if(level.ZHC_MAX_AMMO_SYSTEM  && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)){
 		if (!self.ZHC_weapon_is_equipment_or_grenade[id]){
 			new_ammo_total = int(min(amount, self.ZHC_weapon_ammos_max[id]));
 			self SetWeaponAmmoStock(og_weapon_name, new_ammo_total);
@@ -551,7 +644,7 @@ upgrade_weapon(weapon_name, dont_upgrade_other){
 
 	lvl = self.ZHC_weapon_levels[id];
 
-	if(level.MAX_AMMO_SYSTEM  && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.MAX_AMMO_SYSTEM_EQUIPMENT) ){
+	if(level.ZHC_MAX_AMMO_SYSTEM  && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT) ){
 		if(IsDefined( self.ZHC_weapon_level_stock_ammos ) && IsDefined( self.ZHC_weapon_level_stock_ammos[id] ))
 			self.ZHC_weapon_level_stock_ammos[id]++;
 		if(IsDefined( self.ZHC_weapon_level_clip_ammos )&& IsDefined( self.ZHC_weapon_level_clip_ammos[id] ))
@@ -574,7 +667,7 @@ upgrade_weapon(weapon_name, dont_upgrade_other){
 	return id;
 }
 upgrade_stock_ammo(weapon_name){
-	if(!level.MAX_AMMO_SYSTEM)
+	if(!level.ZHC_MAX_AMMO_SYSTEM)
 		return;
 	og_weapon_name = weapon_name;
 	weapon_name = weapon_name_check(weapon_name);
@@ -584,7 +677,7 @@ upgrade_stock_ammo(weapon_name){
 		return;
 
 	if(self.ZHC_weapon_is_equipment_or_grenade[id]){
-		if(level.MAX_AMMO_SYSTEM_EQUIPMENT)
+		if(level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)
 			self upgrade_clip_size(weapon_name);
 		return;
 	}
@@ -601,7 +694,7 @@ upgrade_stock_ammo(weapon_name){
 upgrade_clip_size(weapon_name){
 	if(level.DOUBLETAP_INCREASE_CLIP_SIZE)
 		return;
-	if(!level.MAX_AMMO_SYSTEM)
+	if(!level.ZHC_MAX_AMMO_SYSTEM)
 		return;
 	og_weapon_name = weapon_name;
 	weapon_name = weapon_name_check(weapon_name);
@@ -610,7 +703,7 @@ upgrade_clip_size(weapon_name){
 	if(!IsDefined( id ))
 		return;
 
-	if(self.ZHC_weapon_is_equipment_or_grenade[id] && !level.MAX_AMMO_SYSTEM_EQUIPMENT)
+	if(self.ZHC_weapon_is_equipment_or_grenade[id] && !level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)
 		return;
 	
 	if(!IsDefined( self.ZHC_weapon_level_clip_ammos ))

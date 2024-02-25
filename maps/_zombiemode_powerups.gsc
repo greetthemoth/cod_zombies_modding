@@ -626,6 +626,7 @@ powerup_round_start()
 
 powerup_drop(drop_point)
 {
+
 	if( level.mutators["mutator_noPowerups"] )
 	{
 		return;
@@ -718,20 +719,22 @@ powerup_drop(drop_point)
 
 //
 //	Drop the specified powerup
-specific_powerup_drop( powerup_name, drop_spot )
+specific_powerup_drop( powerup_name, drop_spot, can_timeout, time_out_time, can_grab)	//do_timeout added for mod
 {
 	powerup = maps\_zombiemode_net::network_safe_spawn( "powerup", 1, "script_model", drop_spot + (0,0,40));
 
 	level notify("powerup_dropped", powerup);
 
-	if ( IsDefined(powerup) )
+	if ( IsDefined(powerup) )	
 	{
 		powerup powerup_setup( powerup_name );
-
-		powerup thread powerup_timeout();
+		if(!is_false(can_timeout))					//added for mod
+			powerup thread powerup_timeout(time_out_time);
 		powerup thread powerup_wobble();
-		powerup thread powerup_grab();
+		if(!is_false(can_grab))
+			powerup thread powerup_grab();
 	}
+	return powerup;
 }
 
 
@@ -1638,14 +1641,23 @@ powerup_wobble()
 	}
 }
 
-powerup_timeout()
+powerup_timeout(wait_time)
 {
 	self endon( "powerup_grabbed" );
 	self endon( "death" );
 
-	wait 15;
+	if(!IsDefined( wait_time ))
+		wait_time = 26.5;
 
-	for ( i = 0; i < 40; i++ )
+	flashes = 40;
+	if(wait_time < 11.5){
+		flashes = int(flashes * (wait_time/11.5));
+	}else{
+		wait(max(wait_time-11.5));
+	}
+
+
+	for ( i = 0; i < flashes; i++ )
 	{
 		// hide and show
 		if ( i % 2 )

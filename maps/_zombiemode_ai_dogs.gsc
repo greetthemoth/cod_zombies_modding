@@ -288,9 +288,9 @@ dog_round_aftermath()
 }
 
 dog_round_reward(){
-	if(!is_true(level.DOG_ROUND_LAST_DOG_TURN_ON_PERK) || !level maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(level.last_dog_origin, 200, 12, 0.5))
-		level thread maps\_zombiemode_powerups::specific_powerup_drop( "full_ammo", level.last_dog_origin );		
-		//level thread maps\_zombiemode_powerups::specific_powerup_drop( "free_perk", power_up_origin );
+	if(!is_true(level.DOG_ROUND_LAST_DOG_TURN_ON_PERK) || !level maps\ZHC_zombiemode_zhc::turn_on_nearest_perk(level.last_dog_origin, 200, 12, 0.5))	//added for mod
+		level maps\_zombiemode_powerups::specific_powerup_drop( "full_ammo", level.last_dog_origin,false);	//doesnt time out. //changed for mod	
+		//level maps\_zombiemode_powerups::specific_powerup_drop( "free_perk", power_up_origin );
 }
 
 //

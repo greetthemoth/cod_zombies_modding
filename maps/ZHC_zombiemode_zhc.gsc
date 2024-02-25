@@ -104,6 +104,11 @@ kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	/
 	if(IsPlayer( attacker ) && IsDefined( attacker ) && IsAlive( attacker )){
 		oneShot1Kill = attacker give1ShotKillBonusPoints(self, mod, damage, sHitLoc);
 		attacker addToCollateralPointBonus(mod, weapon, oneShot1Kill);
+		if(level.ZHC_WEAPONS_KILL_NOTIFY){
+			if(level.ZHC_WEAPONS_KILL_NOTIFY_PLAYER)
+				attacker notify( "zhc_"+weapon +"_kill" );
+			level notify( "zhc_"+weapon +"_kill" );
+		}
 	}
 }
 //called from maps\_zombiemode.gsc line 5048.
@@ -136,6 +141,7 @@ zombie_damage( mod, hit_location, hit_origin, player, amount, weapon ){
 	if(additional_amount > 0){
 		if(additional_amount > self.health){
 			player maps\_zombiemode_score::player_add_points( "death", mod, hit_location, self.isdog );
+			self kill( self, player, new_amount, mod, weapon, undefined, hit_location, undefined );	//get collateral points and stuff
 			//self DoDamage( additional_amount, player.origin );
 			//return false;
 		}
@@ -797,9 +803,17 @@ giveCollateralKillBonus(waitFirst){
 		if(self.curCollateralSpecial)
 			reward = self.curCollateralKills*20;
 		else{
-			reward = 30;
-			for( i = 3; i <= self.curCollateralKills && i < 8; i++){
-				reward += i * 10;
+			reward = 20;	//+20
+			peak = 6;
+
+
+			for( n = 3; n <= self.curCollateralKills //&& n < 8
+				; n++){
+				i = n % ((peak*2)-1)
+				if(i <= peak)
+					reward += i * 10;	//+30,+40,+50,+60
+				else
+					reward += min(peak - (i - peak),2) * 10;	//+50,+40,+30,+20... 
 				//if(self.curCollateralSpecial){
 				//	reward += (30 - ((i-2)*10));
 				//}
@@ -810,7 +824,10 @@ giveCollateralKillBonus(waitFirst){
 		//reward = max(reward, 0);
 		//reward = min(self.curCollateralKills * self.curCollateralMostPointsForKill, reward);
 		//reward = (self.curCollateralKills*self.curCollateralKills*10);
-		IPrintLnBold("curScore"+self.score+"  +  "+reward );
+
+		IPrintLnBold("x"+self.curCollateralKills+ " kills +"+reward );
+		//IPrintLnBold("curScore"+self.score+  "+"+  reward );
+
 		//self maps\_zombiemode_score::player_add_points( "collateral", reward);
 		self maps\_zombiemode_score::player_add_points( "reviver", reward);
 	}

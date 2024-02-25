@@ -196,19 +196,18 @@ zombie_spawn_init( animname_set )
 		self.maxhealth = level.zombie_health; 
 		self.health = level.zombie_health; 
 	}else{
-		self.ZHC_roomId =  maps\_zombiemode_blockers::Get_Zone_Room_ID(self.zone_name);
 		self.maxhealth = level.zombie_health; 
 		self.ZHC_zombie_move_speed_spike_chance = 1 ;
 		self.ZHC_zombie_move_speed_spike = 1;
 
-		if(isDefined(level.ZHC_room_info[self.ZHC_roomId]))
-			self.maxhealth = level.ZHC_room_info[self.ZHC_roomId]["zombie_health"];
+		if(isDefined(level.ZHC_room_info[self ZHC_get_roomId()]))
+			self.maxhealth = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_health"];
 		else
-			IPrintLn( "level.ZHC_room_info["+self.ZHC_roomId+"] is not defined.");
+			IPrintLn( "level.ZHC_room_info["+self ZHC_get_roomId()+"] is not defined.");
 
 		self.health = self.maxhealth;
-		self.ZHC_zombie_move_speed_spike_chance = level.ZHC_room_info[self.ZHC_roomId]["zombie_move_speed_spike_chance"];
-		self.ZHC_zombie_move_speed_spike = level.ZHC_room_info[self.ZHC_roomId]["zombie_move_speed_spike"];
+		self.ZHC_zombie_move_speed_spike_chance = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_move_speed_spike_chance"];
+		self.ZHC_zombie_move_speed_spike = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_move_speed_spike"];
 	}
 
 	self.freezegun_damage = 0;
@@ -283,6 +282,10 @@ zombie_spawn_init( animname_set )
 
 	self.zombie_init_done = true;
 	self notify( "zombie_init_done" );
+}
+
+ZHC_get_roomId(){
+	return maps\_zombiemode_blockers::Get_Zone_Room_ID(self.zone_name);
 }
 
 /*manageKillNow(){
@@ -501,7 +504,7 @@ set_run_speed()
 		ZHC_zombie_move_speed_spike_chance = level.ZHC_zombie_move_speed_spike_chance;
 		ZHC_zombie_move_speed_spike = level.ZHC_zombie_move_speed_spike;
 	}else{
-		zombie_move_speed = level.ZHC_room_info[self.ZHC_roomId]["zombie_move_speed"];
+		zombie_move_speed = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_move_speed"];
 		ZHC_zombie_move_speed_spike_chance = self.ZHC_zombie_move_speed_spike_chance;
 		ZHC_zombie_move_speed_spike = self.ZHC_zombie_move_speed_spike;
 	} 

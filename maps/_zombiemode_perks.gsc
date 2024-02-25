@@ -1563,7 +1563,7 @@ give_perk( perk, bought )
 		self notify( "perk_gained", perk );
 	}
 
-	if(level.MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
+	if(level.ZHC_MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
 		for(i = 0; i < self.ZHC_weapon_names.size; i++){
 			self maps\ZHC_zombiemode_weapons::update_max_ammo(self.ZHC_weapon_names[i], i);
 		}
@@ -2039,7 +2039,7 @@ perk_think( perk, recall_checked)
 				self ClearClientFlag(level._ZOMBIE_PLAYER_FLAG_DEADSHOT_PERK);
 			break;
 		case "specialty_rof":
-			if(level.MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
+			if(level.ZHC_MAX_AMMO_SYSTEM && level.DOUBLETAP_INCREASE_CLIP_SIZE && perk == "specialty_rof"){
 				for(i = 0; i < self.ZHC_weapon_names.size; i++){
 					self maps\ZHC_zombiemode_weapons::update_max_ammo(self.ZHC_weapon_names[i], i);
 				}
