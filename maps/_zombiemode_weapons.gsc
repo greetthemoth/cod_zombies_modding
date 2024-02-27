@@ -606,16 +606,16 @@ door_barr_weapon(){
 
 	same_side = true;
 
-	if(!IsDefined( self.roomIDs_to_occupy ) || (!same_side && !IsDefined( self.roomIDs_to_occupy[level.number_of_rooms] )) || (same_side && !IsDefined( self.roomIDs_to_occupy[1] )) ){
-		IPrintLnBold( "DOOR BARR ROOMIDS_TO_OCCUPY NOT SET"  );
+	if((!same_side && !IsDefined( self.roomId_bought_from)) || (same_side && !IsDefined( self.roomId_bought_to )) ){
+		IPrintLnBold( "DOOR BARR ROOMIDS NOT SET"  );
 		return;
 	}
 
 	//room_to_wait_to_be_occupied = maps\_zombiemode_blockers::Get_Zone_Room_ID(maps\_zombiemode_blockers::Get_Players_Current_Zone(player));	//room id of the player that bought the door
 	if(same_side)
-		room_to_wait_to_be_occupied = self.roomIDs_to_occupy[1];
+		room_to_wait_to_be_occupied = self.roomId_bought_to;
 	else
-		room_to_wait_to_be_occupied = self.roomIDs_to_occupy[level.number_of_rooms];	//way cheaper and uses already accesible info
+		room_to_wait_to_be_occupied = self.roomId_bought_from;	//way cheaper and uses already accesible info
 
 	//wait for player be inside room.
 	if(IsDefined( room_to_wait_to_be_occupied )){
@@ -636,7 +636,7 @@ door_barr_weapon(){
 	can_upgrade = true;
 	CAN_ONLY_UPGRADE_IF_ROOM_LOCKED = true;
 	if(CAN_ONLY_UPGRADE_IF_ROOM_LOCKED){
-		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(self.roomIDs_to_occupy[1]); //doors in room accessed
+		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(self.roomId_bought_to); //doors in room accessed
 		doorIds = array_remove( doorIds,self maps\_zombiemode_blockers::get_door_id() );
 		doorIds = array_remove(doorIds, 6);doorIds = array_remove(doorIds, 9);	//remove electrical doors
 		can_upgrade = !maps\_zombiemode_blockers::one_door_is_unbarred(doorIds);
@@ -686,7 +686,7 @@ door_barr_weapon(){
 		if(sister != self){
 			sister = maps\_zombiemode_blockers::get_sister_door();
 			sister door_barr_set_info_on_buy_door(player);
-			sister door_barr_weapon_spawn(weapon, weapon_model, false, self.roomIDs_to_occupy[1], can_upgrade);
+			sister door_barr_weapon_spawn(weapon, weapon_model, false, self.roomId_bought_to, can_upgrade);
 			return;
 		}
 	}

@@ -187,6 +187,14 @@ dog_round_counter(){
 		if(GAIN_PERK_SLOTS_AFTER_DOG_ROUND)
 			gain_perk_slot_all_players();
 
+		if(IsDefined( level.ZHC_ROOMFLOW_doors_flow_difficulty_to_close_adj ))
+			level.ZHC_ROOMFLOW_difficulty_to_close_door = 
+				4 +
+				clamp(level.dog_round_count/2, 0, 1) + 	//after 2 dog rounds add 1.
+				clamp((level.dog_round_count-2)/3, 0, 1) + //after 3 more dog rounds add 1
+				clamp((level.dog_round_count-5)/4, 0, 1) + //after 4 more dog rounds add 1
+				clamp((level.dog_round_count-9)/5, 0, 1);	//after 5 more dog rounds add 1
+
 		/*if(IsDefined( level.ZHC_quickrevive_cost_forgiveness ))
 			IPrintLnBold( "QR forgiveness "+level.ZHC_quickrevive_cost_forgiveness );
 		else

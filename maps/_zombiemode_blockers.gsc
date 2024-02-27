@@ -1118,20 +1118,43 @@ door_buy_expired(){
 		return;
 	}
 
-
-	self roomId_expire_system_setup_func();
-	if(IsDefined( level.number_of_rooms ) && IsDefined( self.roomIDs_to_occupy )){
-		self thread check_roomIDs_to_occupy();
-		self waittill( "found_all_roomIDs_to_occupy" );
-	}else{
-		IPrintLnBold( "ROOMS NOT SET UP" );
-		wait(5);
+	self roomId_setup();
+	if(true){	//room flow increase difficulty
+		if(level.ZHC_ROOMFLOW){
+			if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
+				level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
+			while(1){
+				if(!flag("dog_round") && level.ZHC_room_info[self.roomId_bought_from]["flow_difficulty"] < 4 + level.ZHC_ROOMFLOW_doors_flow_difficulty_to_close_adj){
+					level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
+					wait_network_frame( );
+					wait_network_frame( );
+				}else 		//simply waiting to not be occupied
+					wait(0.15);
+				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
+				if(!level.ZHC_room_info[self.roomId_bought_from]["occupied"] && (flag("dog_round") || level.ZHC_room_info[self.roomId_bought_from]["flow_difficulty"] >= level.ZHC_ROOMFLOW_difficulty_to_close_door))
+					break;
+			}
+			level.ZHC_ROOMFLOW_difficulty_to_close_door += 1;
+		}
+		else{
+			IPrintLnBold( "ZHC_ROOMFLOW is false" );
+			wait(5);
+		}
+	}
+	if(false){			//occupy rooms to expire
+		self check_roomIDs_to_occupy_setup();
+		if(IsDefined( level.number_of_rooms ) && IsDefined( self.roomIDs_to_occupy )){
+			self thread check_roomIDs_to_occupy();
+			self waittill( "found_all_roomIDs_to_occupy" );
+		}else{
+			IPrintLnBold( "ROOMS NOT SET UP" );
+			wait(5);
+		}
 	}
 
 	CANT_CLOSE_DOOR_IN_DOG_ROUNDS = false;
-
 	if(CANT_CLOSE_DOOR_IN_DOG_ROUNDS && flag("dog_round")){
-		level waittill( "end_of_round" );	//we dont want doors to close durring dog rounds because dogs can get stuck through walls.
+		level waittill( "end_of_round" );	//we dont want doors to close durring dog rounds because dogs can get stuck through walls.//fixed.
 	}
 
 	self notify( "close_door" );
@@ -1265,15 +1288,7 @@ get_player_with_current_zone(zone){
 	}
 	return undefined;
 }
-
-roomId_expire_system_setup_func(player){
-	//if(self.script_noteworthy == "electric_door") //only applies to buyable doors. convinenet because for whatever reason this func doesnt work on power door.
-	//	return;										//not needed because this func now runs within the door_buy_expire func (which doesnt run in electric doors)
-
-	if(!isDefined(level.number_of_rooms)){		//map myust have room ids defined.
-		IPrintLnBold( "ROOMS NUMBER NOT SET" );
-		return;
-	}
+roomId_setup(){
 	if(!isDefined(player)){
 		if(IsDefined( self.last_user ))
 			player = self.last_user;
@@ -1297,17 +1312,30 @@ roomId_expire_system_setup_func(player){
 	zone_door_connects_to = Get_Other_Zone(zone_name, self);
 
 
-	eight = level.number_of_rooms;
+	
 
 	roomid = self Get_Zone_Room_ID(zone_name);
 	roomid2 = Get_Zone_Room_ID(zone_door_connects_to);
 
-	reverse = (roomid2 < roomid);
-	if((roomid2 == eight - 1 && roomid == 0) || (roomid2 == 0 && roomid == eight - 1) )
-		reverse = !reverse;
+	self.roomId_bought_from = roomid;
+	self.roomId_bought_to = roomId2;
+}
+check_roomIDs_to_occupy_setup(player){
+	//if(self.script_noteworthy == "electric_door") //only applies to buyable doors. convinenet because for whatever reason this func doesnt work on power door.
+	//	return;										//not needed because this func now runs within the door_buy_expire func (which doesnt run in electric doors)
 
+	if(!isDefined(level.number_of_rooms)){		//map myust have room ids defined.
+		IPrintLnBold( "ROOMS NUMBER NOT SET" );
+		return;
+	}
+
+	eight = level.number_of_rooms;
+	reverse = (self.roomId_bought_to < self.roomId_bought_from);
+	if((self.roomId_bought_to == eight - 1 && self.roomId_bought_from == 0) || (self.roomId_bought_to == 0 && self.roomId_bought_from == eight - 1) )
+		reverse = !reverse;
+	self thread set_roomIDs_to_occupy(reverse, self.roomId_bought_from);
 	
-	self thread set_roomIDs_to_occupy(reverse, roomid);
+	
 }
 
 set_roomIDs_to_occupy(reverse, roomid){
@@ -2023,7 +2051,7 @@ door_cooldown(){
 
 	ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN = true;
 	if(ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN){
-		roomId = self.roomIDs_to_occupy[1];
+		roomId = self.roomId_bought_to;
 		doorIds = Get_Doors_Accesible_in_room(roomId); //doors in room accessed
 		doorIds = array_remove( doorIds,self get_door_id() );
 		wait_for_one_door_to_be_open(doorIds);

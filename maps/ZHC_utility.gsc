@@ -17,3 +17,6 @@ define_or(s,or){
 		return s;
 	return or;
 }
+clamp(n, min, max){
+	return min(max,max(min,n));
+}
