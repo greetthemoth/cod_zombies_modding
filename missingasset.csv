@@ -1,5 +1,4 @@
 rawfile,autoexec_dev.cfg
-rawfile,configure.cfg
 image,$pixelcostcolorcode
 material,$floatz_donotremove
 material,$processed_floatz_donotremove
@@ -208,4 +207,18 @@ rawfile,shock/electrocution.shock
 rawfile,shock/electrocution.shock
 rawfile,shock/zombie_death.shock
 rawfile,shock/electrocution.shock
-xanim,void_loop
+rawfile,shock/electrocution.shock
+rawfile,shock/zombie_death.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/zombie_death.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/zombie_death.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/zombie_death.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/electrocution.shock
+rawfile,shock/zombie_death.shock
+rawfile,shock/electrocution.shock

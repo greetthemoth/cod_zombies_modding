@@ -1580,9 +1580,10 @@ map_wait_to_update_rooms(){
 	flag_wait("all_players_connected");
 	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
 	level.ZHC_zoneToRoomID["theater_zone"] = map_get_zone_room_id("theater_zone");
+	maps\ZHC_zombiemode_roomflow::deactivate_room(100); //remove mults and stuff.
 	level.ZHC_room_info = array_remove_index( level.ZHC_room_info , 100 );
-	level.ZHC_room_info[4]["name"] = map_get_room_name(roomId);
-	level.ZHC_room_info[roomId]["doors"] = map_get_doors_accesible_in_room(roomId);
+	level.ZHC_room_info[4]["name"] = map_get_room_name(4);
+	level.ZHC_room_info[4]["doors"] = map_get_doors_accesible_in_room(4);
 	level.ZHC_room_info[4]["zones"] = array_combine( level.ZHC_room_info[4]["zones"],level.ZHC_room_info[100]["zones"] );
 }
 map_get_zone_room_id(zone_name){

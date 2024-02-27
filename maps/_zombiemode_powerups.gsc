@@ -626,6 +626,7 @@ powerup_round_start()
 
 powerup_drop(drop_point)
 {
+	if(!level.ZHC_ZOMBIES_CAN_DROP_POWERUPS) return; //added for mod;
 
 	if( level.mutators["mutator_noPowerups"] )
 	{
@@ -986,6 +987,10 @@ powerup_setup( powerup_override )
 	}
 	else
 	{
+		/*if(!isDefined(struct)){
+			IPrintLn( "could not find struct for "+powerup );		//if this happens you probably either didnt include the powerup in the map,  or misplessed the powerup string
+			return;
+		}*/
 		self SetModel( struct.model_name );
 	}
 
@@ -1649,15 +1654,13 @@ powerup_timeout(wait_time)
 	if(!IsDefined( wait_time ))
 		wait_time = 26.5;
 
-	flashes = 40;
-	if(wait_time < 11.5){
-		flashes = int(flashes * (wait_time/11.5));
-	}else{
-		wait(max(wait_time-11.5));
+	if(wait_time >= 11.5){
+		wait(wait_time-11.5);
+		wait_time = 11.5;
 	}
 
-
-	for ( i = 0; i < flashes; i++ )
+	cur_flash_time = 0;
+	for ( i = 0; cur_flash_time < wait_time; i++ )
 	{
 		// hide and show
 		if ( i % 2 )
@@ -1680,14 +1683,17 @@ powerup_timeout(wait_time)
 		if ( i < 15 )
 		{
 			wait( 0.5 );
+			cur_flash_time += 0.5;
 		}
 		else if ( i < 25 )
 		{
 			wait( 0.25 );
+			cur_flash_time += 0.25;
 		}
 		else
 		{
 			wait( 0.1 );
+			cur_flash_time += 0.1;
 		}
 	}
 

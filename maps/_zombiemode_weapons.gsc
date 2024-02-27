@@ -6,6 +6,7 @@
 
 init()
 {
+	maps\ZHC_zombiemode_weapons::init();
 	init_weapons();
 	init_weapon_upgrade();
 	init_weapon_toggle();
@@ -2124,8 +2125,8 @@ treasure_chest_think(){
 	self disable_trigger(); 
 
 	self middle_box_logic(costs_money,user_cost,user);
-	if(self.ZHC_GUN_BUYABLE)
-		self notify ("weapon_stop");
+	//if(self.ZHC_GUN_BUYABLE)		//commented out to avoid potential complications, which may or may not exist
+	self notify ("weapon_stop");
 	
 	self.grab_weapon_hint = false;
 	self.chest_origin.ZHC_teddy_here = false;
@@ -4286,7 +4287,7 @@ treasure_chest_glowfx(chest, waitToString)
 	fxobj delete(); 
 }
 ZHC_upgrade_weapon(weapon_string, effect_origin){
-	if(is_true(level.ZHC_UPGRADE_WEAPON_SYSTEM)){
+	if(level.ZHC_UPGRADE_WEAPON_SYSTEM){
 		self maps\ZHC_zombiemode_weapons::upgrade_weapon(weapon_string);
 		playfx(level._effect["poltergeist"], effect_origin);
 	}
@@ -5054,9 +5055,6 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 	if(!IsDefined( can_buy_ammo ))
 		can_buy_ammo = true;
 
-	if((is_chest && level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS) || (!is_chest && level.ZHC_WALL_GUN_BUYABLE_SPAWN_POWERUPS))	//chest only?
-		self thread ZHC_wall_buy_manage_power_up_spawn(weapon);
-
 	if(!level.ZHC_UPGRADE_WEAPON_SYSTEM)
 		can_upgrade = false;
 
@@ -5075,6 +5073,14 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 		else{
 			weapon = self.zombie_weapon_upgrade;
 		}
+	}
+	spawns_powerups = (	level.ZHC_WEAPONS_KILL_NOTIFY &&
+							(is_chest && level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS) || 
+							(!is_chest && level.ZHC_WALL_GUN_BUYABLE_SPAWN_POWERUPS)
+						);
+	if(spawns_powerups)	//chest only?
+	{
+		self thread ZHC_wall_buy_manage_power_up_spawn(weapon);
 	}
 
 	cost = undefined;
@@ -5148,6 +5154,8 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 	{
 		self waittill( "trigger", player ); 		
 		// if not first time and they have the weapon give ammo
+		if(!is_chest && spawns_powerups)	//needed for powerups
+			self.weapon_model wall_buy_set_weapon_yaw(player);
 
 		if( !is_player_valid( player ) )
 		{
@@ -5466,6 +5474,29 @@ weapon_model_hide(player, slow_hide){
 		self.weapon_model_dw thread weapon_hide(player, slow_hide);
 	self.weapon_model thread weapon_hide(player, slow_hide);
 }
+wall_buy_set_weapon_yaw(player){
+	player_angles = VectorToAngles( player.origin - self.origin ); 
+
+	player_yaw = player_angles[1]; 
+	weapon_yaw = self.angles[1];
+
+	if ( isdefined( self.script_int ) )
+	{
+		weapon_yaw -= self.script_int;
+	}
+
+	yaw_diff = AngleClamp180( player_yaw - weapon_yaw ); 
+
+	if( yaw_diff > 0 )
+	{
+		yaw = weapon_yaw - 90; 
+	}
+	else
+	{
+		yaw = weapon_yaw + 90; 
+	}
+	self.yaw = yaw;
+}
 weapon_show( player )
 {
 	if(!IsDefined( self.yaw )){
@@ -5473,27 +5504,7 @@ weapon_show( player )
 			self Show();
 			return;
 		}
-		player_angles = VectorToAngles( player.origin - self.origin ); 
-
-		player_yaw = player_angles[1]; 
-		weapon_yaw = self.angles[1];
-
-		if ( isdefined( self.script_int ) )
-		{
-			weapon_yaw -= self.script_int;
-		}
-
-		yaw_diff = AngleClamp180( player_yaw - weapon_yaw ); 
-
-		if( yaw_diff > 0 )
-		{
-			yaw = weapon_yaw - 90; 
-		}
-		else
-		{
-			yaw = weapon_yaw + 90; 
-		}
-		self.yaw = yaw;
+		self wall_buy_set_weapon_yaw(player);
 	}
 	if(!isdefined(self.og_origin))
 		self.og_origin = self.origin; 
@@ -5511,27 +5522,7 @@ weapon_show( player )
 
 weapon_hide(player, slow_hide){
 	if(!IsDefined( self.yaw ) && isDefined(player)){
-		player_angles = VectorToAngles( player.origin - self.origin ); 
-
-		player_yaw = player_angles[1]; 
-		weapon_yaw = self.angles[1];
-
-		if ( isdefined( self.script_int ) )
-		{
-			weapon_yaw -= self.script_int;
-		}
-
-		yaw_diff = AngleClamp180( player_yaw - weapon_yaw ); 
-
-		if( yaw_diff > 0 )
-		{
-			yaw = weapon_yaw - 90; 
-		}
-		else
-		{
-			yaw = weapon_yaw + 90; 
-		}
-		self.yaw = yaw;
+		self wall_buy_set_weapon_yaw(player);
 	}
 	if(is_true(slow_hide)){
 		if(!isdefined(self.og_origin))
@@ -5549,68 +5540,87 @@ weapon_hide(player, slow_hide){
 }
 
 ZHC_wall_buy_get_power_up_spawn_position(){
-	return self.origin + ( AnglesToForward( ( 0, -25 * self.yaw, 160 ) ) ); 
+	yaw = 0;
+	if(IsDefined( self.weapon_model ) && IsDefined( self.weapon_model.yaw ))
+		yaw = self.weapon_model.yaw;
+	return self.origin + ( AnglesToForward( ( 0, yaw, 0)  ) * -35 ) + (0,0,45); 
 }
 ZHC_wall_buy_get_power_up_drop_position(){
-	return self.origin + ( AnglesToForward( ( 0, -25 * self.yaw, 0 ) ) ); 
+	yaw = 0;
+	if(IsDefined( self.weapon_model ) && IsDefined( self.weapon_model.yaw ))
+		yaw = self.weapon_model.yaw;
+	return self.origin + ( AnglesToForward( ( 0, yaw, 0)  ) * -35 ); 
 }
 ZHC_wall_buy_manage_power_up_spawn(weapon){
-	self endon "weapon_stop";
-	if(!level.ZHC_WEAPONS_KILL_NOTIFY || !is_true(level.ZHC_WEAPONS_KILL_NOTIFY_WEAPON_BUY_DROP))
+	self endon ("weapon_stop");
+	if(!level.ZHC_WEAPONS_KILL_NOTIFY)
 		return;
 	round_to_reset_kill_goal = define_or(level.next_dog_round,0);
-	kill_goal = min(define_or(level.zombie_total_start,6) + 1, 18);
+	starting_kills = define_or(level.ZHC_weapon_total_kills[weapon],0);
+	kill_goal = starting_kills + min(define_or(level.zombie_total_start,6) + 1, 18);
+	IPrintLn("kill_goal " + kill_goal);
 	while(1){
-		weapon_kills = 0;
-		while(weapon_kills < kill_goal){
-			level waittill("zhc_"+weapon +"_kill");
-			weapon_kills++;
+		TESTING = false;
+		if(TESTING){
+			self waittill_any( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought","weapon_stop");	//testo
+		}else{
+			while(define_or(level.ZHC_weapon_total_kills[weapon],0) < kill_goal){
+				level waittill("zhc_"+weapon +"_kill");
+				IPrintLn( weapon +" "+(level.ZHC_weapon_total_kills[weapon] - starting_kills) +"/"+ (kill_goal - starting_kills) );
+			}
+			while(
+				//level.zombie_vars["zombie_drop_item"] != 1 || 
+				IsDefined( self.ZHC_powerup )
+				){
+				wait_network_frame();
+			}
 		}
-		while(level.zombie_vars["zombie_drop_item"] != 1 || IsDefined( self.ZHC_powerup )){
-			wait_network_frame();
-		}
+		level.zombie_vars["zombie_drop_item"] = 0;
 		self thread ZHC_cycle_power_ups(maps\ZHC_zombiemode_weapons::GetWeaponPowerupCycle(weapon));
 		self thread ZHC_wall_buy_drop_power_up();
 		self waittill("stop_zhc_powerup_cycle");
+		starting_kills = level.ZHC_weapon_total_kills[weapon];
 		if(level.round_number >= round_to_reset_kill_goal)
-			kill_goal = min(define_or(level.zombie_total_start,6) + 1, 18);
+			kill_goal = starting_kills + min(define_or(level.zombie_total_start,6) + 1, 18);
 		else
-			kill_goal = int(kill_goal * 1.5);
+			kill_goal = starting_kills + int(kill_goal * 1.5);
 
 	}
 
 }
 ZHC_wall_buy_drop_power_up(){
 	ret = self waittill_any_return( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought","weapon_stop");//common_scripts\utility.gsc: );
-	if(ret == "weapon_stop"){
+	if(!isDefined(ret))
+		IPrintLnBold( "ret is not defined" );
+	if(!isDefined(ret) || ret == "weapon_stop"){
 		self.ZHC_powerup maps\_zombiemode_powerups::powerup_timeout(2.5);
 		return;
 	}
 	self notify ("stop_zhc_powerup_cycle");
 	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_grab();
 	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_timeout(60);
-	self.ZHC_powerup MoveTo( self ZHC_wall_buy_get_power_up_drop_position,4,0.2,1);
+	self.ZHC_powerup MoveTo( self ZHC_wall_buy_get_power_up_drop_position(),4,0.2,1);
 	self.ZHC_powerup waittill_any( "powerup_grabbed", "powerup_timedout" );
 	self.ZHC_powerup = undefined;
 }
 ZHC_cycle_power_ups(cycle){
-	endon( "stop_zhc_powerup_cycle" );
-	endon( "weapon_stop" );
+	self endon( "stop_zhc_powerup_cycle" );
+	self endon( "weapon_stop" );
 	index = 0;
 	while(1){
-		if(!if(IsDefined( self.ZHC_powerup) || (index == 0 && cycle[0] != cycle[cycle.size-1]) || cycle[index] != cycle[index-1]){	
+		if(!IsDefined( self.ZHC_powerup) || (index == 0 && cycle[0] != cycle[cycle.size-1]) || (cycle.size > 1 && cycle[index] != cycle[index-1]) ){	
 			if(IsDefined( self.ZHC_powerup) )
 				self.ZHC_powerup maps\_zombiemode_powerups::powerup_timeout(0);//instantly times out powerup
 			self.ZHC_powerup = level maps\_zombiemode_powerups::specific_powerup_drop( cycle[index], self ZHC_wall_buy_get_power_up_spawn_position(),false, undefined, false);
 		}
-		self.ZHC_powerup ZHC_basic_goal_cooldown_func2(
+		self.ZHC_powerup maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(
 		1,//	goals_required, 
 		undefined,//	wait_time, 
 		undefined,//	additional_kills_wanted, 
 		1,//	additional_rounds_to_wait, 
 		undefined,//	dog_rounds_to_wait, 
 		true,//	round_goals_on_round_end, 
-		1,//	additional_dog_kills_wanted
+		1//	additional_dog_kills_wanted
 		);
 		index++;
 		if(index >= level.ZHC_wall_buy_powerup_cycle.size)

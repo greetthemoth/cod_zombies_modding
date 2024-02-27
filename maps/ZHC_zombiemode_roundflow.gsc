@@ -18,6 +18,7 @@ init(){
 
 	
 	level.ZHC_ROOMFLOW = true;
+	level.ZHC_ROOMFLOW_FIRST_ROOM_HARDER = false;//testo
 	level.ZHC_ROUND_FLOW = 1; //0 = default| 1 = alternate| 2 = "harder"
 
 	if(ZHC_ROUND_FLOW_check())
@@ -75,13 +76,17 @@ rooms_init(){
 	if(level.ZHC_ROOMFLOW)
 		level thread manage_room_activity();
 
+	if(level.ZHC_ROOMFLOW_FIRST_ROOM_HARDER)
+		first_room_harder();	
 
-
-	//first room is hard.
+}
+first_room_harder(){
+		//first room is hard.
 	level waittill( "start_of_round" );
 	wait_network_frame( );
 
 	level.zombie_total = 50;
+	thread first_room_harder__wait_till_first_room_inactive_to_reduce_zombie_total();
 	start_round_zombie_limit_mult = 2;
 	start_round_spawning_speed_mult = 0.5;
 	level notify("zhc_update_flow_difficulty_roomId_"+0, 10);
@@ -91,6 +96,13 @@ rooms_init(){
 	level notify("zhc_update_flow_difficulty_roomId_"+0, -11);
 	level.ZHC_round_zombie_limit_mult /= start_round_spawning_speed_mult; //undoes its effect on the global mult;
 	level.ZHC_round_spawning_speed_mult /= start_round_spawning_speed_mult;
+}
+first_room_harder__wait_till_first_room_inactive_to_reduce_zombie_total(){
+	level endon( "end_of_round" );	//only happens in the first round.
+	while(level.ZHC_room_info[0]["active"] == true){
+		wait_network_frame( );
+	}
+	level.zombie_total = int(min(level.zombie_total, 6));
 }
 
 room_think(roomId){
@@ -412,7 +424,7 @@ ZHC_ROUND_FLOW_check(){
 	return level.ZHC_ROUND_FLOW==1;
 }
 
-update_round_flow_difficulty(flow_difficulty){
+update_round_flow_difficulty(){
 
 	data = [];
 	DEBUG_FLOW = false;
@@ -420,8 +432,7 @@ update_round_flow_difficulty(flow_difficulty){
 	fr = level.round_number - (level.dog_round_count-1); //flow round number - excludes dog rounds 
 
 	FLOW_ROUND_LENGTH = 4;
-	if(!isDefined(flow_difficulty))
-		flow_difficulty = ((fr-1) % FLOW_ROUND_LENGTH );				//fluctuates from 0 -> FLOW_ROUND_LENGTH-1 based on stage in FLOW_ROUND_LENGTH
+	flow_difficulty = ((fr-1) % FLOW_ROUND_LENGTH );				//fluctuates from 0 -> FLOW_ROUND_LENGTH-1 based on stage in FLOW_ROUND_LENGTH
 	flow_difficulty_percent = max(0,min(1,flow_difficulty/(FLOW_ROUND_LENGTH-1)));	//fluctuates from 0 -> 1 based on stage in FLOW_ROUND_LENGTH
 	inverse_flow_difficulty_percent = max(0,min(1,((FLOW_ROUND_LENGTH-flow_difficulty)/FLOW_ROUND_LENGTH))) ; 
 																		//fructuates from 1 -> 0 based on stage in FLOW_ROUND_LENGTH.
@@ -470,6 +481,10 @@ update_round_flow_difficulty(flow_difficulty){
 	if(DEBUG_FLOW)
 		IPrintLn( "ZHC_round_spawning_speed_mult: "+round_spawning_speed_mult);
 
+	
+	FLOW2_ROUND_LENGTH = FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH;
+	flow2_difficulty = ((fr-1)%FLOW2_ROUND_LENGTH)/FLOW_ROUND_LENGTH; //0-(FLOW_ROUND_LENGTH-1) based on as fr goes from 1 - 16. this repeats every 16 rounds. 16 = (FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH)
+	flows2_completed = int((fr-1)/FLOW2_ROUND_LENGTH);		//the number of time 16 rounds were reached
 	
 	FLOW2_ROUND_LENGTH = FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH;
 	flow2_difficulty = ((fr-1)%FLOW2_ROUND_LENGTH)/FLOW_ROUND_LENGTH; //0-(FLOW_ROUND_LENGTH-1) based on as fr goes from 1 - 16. this repeats every 16 rounds. 16 = (FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH)
@@ -585,5 +600,143 @@ update_round_flow_difficulty(flow_difficulty){
 	   ) + " to int-> " + level.ZHC_dogs_to_spawn_this_round
 	 );*/
 	 return data;
+}
 
+update_round_difficulty(){
+
+}
+
+update_room_difficulty( difficulty, roomId){
+	data = [];
+	DEBUG_FLOW = false;
+
+	fr = level.round_number - (level.dog_round_count-1); //flow round number - excludes dog rounds 
+
+	SPEED_FLOW_ROUND_LENGTH = 5;
+	speed_flow_percent_completion = (((fr+room_id)-1 ) % SPEED_FLOW_ROUND_LENGTH )/(SPEED_FLOW_ROUND_LENGTH-1);
+	speed_flow_percent = abs(speed_flow_percent_completion - 0.5)*2;	//flow peaks in the ends, dips in the middle and goes back t 1. 0 = 1; 0.5 = 0. 1 = 1
+	speed_flows_completed = int((fr-1)/SPEED_FLOW_ROUND_LENGTH);
+
+	speed_flows_completed_in_room_float = (difficulty-1)/SPEED_FLOW_ROUND_LENGTH;		//missnomer but whatecver
+	speed_flows_completed_in_room= int(speed_flows_completed_in_room_float);				//missnomer but whatever
+
+
+
+
+	if(DEBUG_FLOW)
+		IPrintLnBold( "room_difficulty: " + difficulty + "  speed_flow_percent: "+speed_flow_percent );
+
+	damp5 = abs(min(((fr-1) - 5) , 0)) /5; //fluctuates from 1 - 0 from (r1 to r6)
+	damp10 = abs(min(((fr-1) - 10) , 0)) /10; //fluctuates from 1 - 0 from (r1 to r11)
+	damp15 =  abs(min(((fr-1) - 15) , 0)) /15; 	//fluctuates from 1 - 0 from (r1 to r16)
+	damp20 =  abs(min(((fr-1) - 20) , 0)) /20; 	//fluctuates from 1 - 0 from (r1 to r21)
+	damp25 =  abs(min(((fr-1) - 25) , 0)) /25; 	//fluctuates from 1 - 0 from (r1 to r26)
+
+		//zombie total
+	{
+		room_zombie_total_mult_speed_flow_percent_influence = 0.3; //set to 0 -> 1. how much influence does the speed flow have on spawning speed.
+		//vvv fluctuates between 0.85 - 0.15  or +- 0.3/2) based on the room flow.
+		room_zombie_total_mult_speed_flow_mult =  (1 - room_zombie_total_mult_speed_flow_percent_influence) + (speed_flow_percent*room_zombie_total_mult_speed_flow_percent_influence) + (room_zombie_total_mult_speed_flow_percent_influence/2) ;
+		
+		diminished_dampner = ((damp10 * 0.4)+(1 - 0.4));	//will only dampen down 1 -> 0.6. 0.6 will always remain after 10 rounds.
+		room_zombie_total_mult = (difficulty * 0.12 *  diminished_dampner * room_zombie_total_mult_speed_flow_mult) + 1;
+		data["room_zombie_total_mult"] = room_zombie_total_mult;
+		if(DEBUG_FLOW)
+			IPrintLn( "room_zombie_total_mult: "+room_zombie_total_mult);
+	}
+
+		//zombie limit
+	{
+		diminished_dampner = ((damp10 * 0.7)+(1 - 0.7)); //will only dampen down 1 -> 0.3. 0.3 will always remain after 10 rounds.
+		room_zombie_limit_mult = (difficulty * 0.5 * diminished_dampner)+1;
+		data["room_zombie_limit_mult"] = room_zombie_limit_mult;
+		if(DEBUG_FLOW)
+			IPrintLn( "room_zombie_limit_mult: "+ room_zombie_limit_mult);
+	}
+
+
+		//zombie spawning speed
+	{
+		diminished_IFD = (0.5 * (1 - spawning_speed_mult) * damp25) + 1;	//fluctuares between 1 and 1.5. effect deminishes until round 25.
+		//diminished_IFD = (0.3 * inverse_flo_wdifficulty_percent * dampner) + (1 - 0.3 * dampner);	// == 1 when dampner is 0. 
+																									// == (ifdp * 0.3)+0.7 when dampener is 1. 
+																										//(ifdp * 0.3)+0.7 fluctuates between 1 - 0.5 as the FLOW_ROUND_LENGTH progresses
+
+		room_spawning_speed_mult_speed_flow_percent_influence = 0.45; //set to 0 -> 1. how much influence does the speed flow have on spawning speed.
+		room_spawning_speed_mult_speed_flow_mult =  (1 - room_spawning_speed_mult_speed_flow_percent_influence) + (speed_flow_percent*room_spawning_speed_mult_speed_flow_percent_influence) + (room_spawning_speed_mult_speed_flow_percent_influence/2) ;
+		
+		room_spawning_speed_mult = diminished_IFD * room_spawning_speed_mult_speed_flow_mult;
+		data["room_spawning_speed_mult"] = room_spawning_speed_mult;
+		if(DEBUG_FLOW)
+			IPrintLn( "room_spawning_speed_mult: "+room_spawning_speed_mult);
+	}
+
+	/*
+	FLOW2_ROUND_LENGTH = FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH;
+	flow2_difficulty = ((fr-1)%FLOW2_ROUND_LENGTH)/FLOW_ROUND_LENGTH; //0-(FLOW_ROUND_LENGTH-1) based on as fr goes from 1 - 16. this repeats every 16 rounds. 16 = (FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH)
+	flows2_completed = int((fr-1)/FLOW2_ROUND_LENGTH);		//the number of time 16 rounds were reached
+	
+	SPEED_FLOW2_ROUND_LENGTH = SPEED_FLOW_ROUND_LENGTH*SPEED_FLOW_ROUND_LENGTH;
+	flow2_difficulty = ((fr-1)%SPEED_FLOW2_ROUND_LENGTH)/SPEED_FLOW_ROUND_LENGTH; //0-(FLOW_ROUND_LENGTH-1) based on as fr goes from 1 - 16. this repeats every 16 rounds. 16 = (FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH)
+	flows2_completed = int((fr-1)/SPEED_FLOW2_ROUND_LENGTH);		//the number of time 16 rounds were reached
+	*/
+	
+
+		//zombie move speed
+	{
+		animSpeed = 
+			1 +
+			min((fr * 0.15), 1 + (speed_flow_percent * 2 ) ) +
+			((1 - damp15) * difficulty * speed_flow_percent) + 
+			(difficulty * speed_flow_percent)
+			;
+
+		DEBUG_SPEED_FUNC = false;
+		if(DEBUG_FLOW && DEBUG_SPEED_FUNC){
+			IPrintLn( "    1+" );
+			IPrintLn( "    "+min((fr * 0.15), 1 + (speed_flow_percent * 2) ) + "+" );
+			IPrintLn( "    "+((1 - damp15) * difficulty * speed_flow_percent)+"+" );
+			IPrintLn( "    "+(difficulty * speed_flow_percent) );
+			IPrintLn( "    = "+animSpeed );		
+		}
+
+		zombie_move_speed = int(animSpeed * level.zombie_vars["zombie_move_speed_multiplier"]); //0-40 = walk, 41-70 = run, 71+ = sprint
+		data["zombie_move_speed"] = zombie_move_speed;
+		if(DEBUG_FLOW)
+			IPrintLn("zombie_move_speed = " + zombie_move_speed );
+
+			//zombie move speed spike
+		{
+			zombie_move_speed_spike_chance = int( 7.5 + 
+				(speed_flow_percent_completion * SPEED_FLOW_ROUND_LENGTH * 2.5) + 
+				min(speed_flows_completed*SPEED_FLOW_ROUND_LENGTH*0.15,7.5) + 
+				(speed_flows_completed_in_room_float * SPEED_FLOW_ROUND_LENGTH *0.3,12.5) 
+			);
+
+			zombie_move_speed_spike = 10 +
+				int(zombie_move_speed * (
+					1 + ( min(speed_flows_completed_in_room_float * SPEED_FLOW_ROUND_LENGTH, 7.5) * 0.07 )
+				));
+			data["zombie_move_speed_spike"] = zombie_move_speed_spike;
+			data["zombie_move_speed_spike_chance"] = zombie_move_speed_spike_chance;
+		}
+	}
+
+
+	
+		//zombie health
+	{
+		room_zombie_health_mult = 1;
+		//room_zombie_health_mult *=  pow(((FLOW_ROUND_LENGTH * 0.1) + 1), flows_completed);	
+		//room_zombie_health_mult *= min(fr-1,9) * 0.1;
+		//IPrintLn( "zh_mult: "+ room_zombie_health_mult +"  f_compl:"+flows_completed);
+		//room_zombie_health_mult *=  1 + ((difficulty_percent == 1) * 0.16 * difficulty);
+		//room_zombie_health_mult *= (  inverse_difficulty_percent  *3* min((flows_completed*0.333),3) )  +1; 
+		//room_zombie_health_mult *= 1 + mult_go_to_health_instead;
+		room_zombie_health_mult = 1 + ((1 - speed_flow_percent) * (difficulty + 1) ) 
+		data["room_zombie_health_mult"] = room_zombie_health_mult;
+		if(DEBUG_FLOW)
+			IPrintLn( "room_zombie_health_mult: "+ room_zombie_health_mult);
+	}
+	
 }

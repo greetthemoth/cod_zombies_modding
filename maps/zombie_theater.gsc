@@ -282,7 +282,7 @@ include_weapons()
 
 include_powerups()
 {
-	//include_powerup( "nuke" );			//removed for mod
+	include_powerup( "nuke" );			//removed for mod
 	//include_powerup( "bonus_points_team" );	//added for mod not working because model not loaded for some reason.
 	include_powerup( "insta_kill" );
 	include_powerup( "double_points" );

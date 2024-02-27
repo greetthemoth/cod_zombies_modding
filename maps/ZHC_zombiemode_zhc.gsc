@@ -47,7 +47,11 @@ init(){
 	level.DOG_LIGHTNING_TURN_ON_PERK = true;
 	level.DOG_ROUND_LAST_DOG_TURN_ON_PERK = false;
 
-	maps\ZHC_zombiemode_weapons::init();
+	level.ZHC_ZOMBIES_CAN_DROP_POWERUPS = false;
+
+
+
+	//maps\ZHC_zombiemode_weapons::init();	//runs in zombiemode_weapons::init()
 	maps\ZHC_zombiemode_roundflow::init();
 
 
@@ -58,7 +62,6 @@ init(){
 	thread testing_ground();		//testo
 
 	init_quad_zombie_stuff();
-
 }
 
 testing_ground(){
@@ -105,9 +108,12 @@ kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	/
 		oneShot1Kill = attacker give1ShotKillBonusPoints(self, mod, damage, sHitLoc);
 		attacker addToCollateralPointBonus(mod, weapon, oneShot1Kill);
 		if(level.ZHC_WEAPONS_KILL_NOTIFY){
+			if(!IsDefined( level.ZHC_weapon_total_kills[weapon] ))
+				level.ZHC_weapon_total_kills[weapon] = 0;
+			level.ZHC_weapon_total_kills[weapon]++;
+			level notify( "zhc_"+weapon +"_kill" );
 			if(level.ZHC_WEAPONS_KILL_NOTIFY_PLAYER)
 				attacker notify( "zhc_"+weapon +"_kill" );
-			level notify( "zhc_"+weapon +"_kill" );
 		}
 	}
 }
@@ -809,7 +815,7 @@ giveCollateralKillBonus(waitFirst){
 
 			for( n = 3; n <= self.curCollateralKills //&& n < 8
 				; n++){
-				i = n % ((peak*2)-1)
+				i = n % ((peak*2)-1);
 				if(i <= peak)
 					reward += i * 10;	//+30,+40,+50,+60
 				else

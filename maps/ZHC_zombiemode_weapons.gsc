@@ -9,12 +9,12 @@ init(){
 	level.ZCH_UPGRADE_FLOW_INTREVAL = -1;
 	level.ZHC_CERTAIN_WEAPONS_DONT_REFILL_ON_MAX_AMMO = 1;
 
+	level.ZHC_weapon_total_kills = [];
+
 	level.ZHC_WEAPONS_KILL_NOTIFY = true;
 	if(level.ZHC_WEAPONS_KILL_NOTIFY){
 		level.ZHC_WEAPONS_KILL_NOTIFY_PLAYER = false;
-		level.ZHC_WEAPONS_KILL_NOTIFY_WEAPON_BUY_DROPS = true;
 	}
-
 	thread set_up_weapon_system();
 }
 set_up_weapon_system(){
