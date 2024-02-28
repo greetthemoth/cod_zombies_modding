@@ -603,25 +603,27 @@ door_barr_weapon(){
 		return;
 	}
 
-
 	same_side = true;
 
-	if((!same_side && !IsDefined( self.roomId_bought_from)) || (same_side && !IsDefined( self.roomId_bought_to )) ){
+	//roomId_barr_appears_from = maps\_zombiemode_blockers::Get_Zone_Room_ID(maps\_zombiemode_blockers::Get_Players_Current_Zone(player));	//room id of the player that bought the door
+	if(same_side)
+		roomId_barr_appears_from = self.roomId_bought_to;
+	else
+		roomId_barr_appears_from = self.roomId_bought_from;	//way cheaper and uses already accesible info
+
+	
+
+	if(!IsDefined( roomId_barr_appears_from) ){
 		IPrintLnBold( "DOOR BARR ROOMIDS NOT SET"  );
 		return;
 	}
 
-	//room_to_wait_to_be_occupied = maps\_zombiemode_blockers::Get_Zone_Room_ID(maps\_zombiemode_blockers::Get_Players_Current_Zone(player));	//room id of the player that bought the door
-	if(same_side)
-		room_to_wait_to_be_occupied = self.roomId_bought_to;
-	else
-		room_to_wait_to_be_occupied = self.roomId_bought_from;	//way cheaper and uses already accesible info
 
 	//wait for player be inside room.
-	if(IsDefined( room_to_wait_to_be_occupied )){
+	if(IsDefined( roomId_barr_appears_from )){
 		wait_network_frame( );
 		//while(1){
-		player = self maps\_zombiemode_blockers::waittill_roomID_is_occupied_return_player(room_to_wait_to_be_occupied);
+		player = self maps\_zombiemode_blockers::waittill_roomID_is_occupied_return_player(roomId_barr_appears_from);
 		//	if(!maps\_zombiemode_blockers::player_is_in_dead_zone(player, self maps\_zombiemode_blockers::get_door_id()))
 		//		break;
 		//	else
@@ -636,7 +638,7 @@ door_barr_weapon(){
 	can_upgrade = true;
 	CAN_ONLY_UPGRADE_IF_ROOM_LOCKED = true;
 	if(CAN_ONLY_UPGRADE_IF_ROOM_LOCKED){
-		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(self.roomId_bought_to); //doors in room accessed
+		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(roomId_barr_appears_from); //doors in room accessed
 		doorIds = array_remove( doorIds,self maps\_zombiemode_blockers::get_door_id() );
 		doorIds = array_remove(doorIds, 6);doorIds = array_remove(doorIds, 9);	//remove electrical doors
 		can_upgrade = !maps\_zombiemode_blockers::one_door_is_unbarred(doorIds);
@@ -680,24 +682,22 @@ door_barr_weapon(){
 		else
 			weapon_model = GetWeaponModel("knife_zm");
 	}	
-
+	
+	
 	if(same_side){
 		sister = self maps\_zombiemode_blockers::get_sister_door();
 		if(sister != self){
 			sister = maps\_zombiemode_blockers::get_sister_door();
 			sister door_barr_set_info_on_buy_door(player);
-			sister door_barr_weapon_spawn(weapon, weapon_model, false, self.roomId_bought_to, can_upgrade);
+			sister door_barr_weapon_spawn(weapon, weapon_model, false, roomId_barr_appears_from, can_upgrade);
 			return;
 		}
 	}
-
-	
 	
 	//self.cur_barr_weapon = weapon;   //set that weapon to self.cur_barr_weapon
 
-	self door_barr_weapon_spawn(weapon, weapon_model, same_side, room_to_wait_to_be_occupied, can_upgrade);		//spawn weapon
+	self door_barr_weapon_spawn(weapon, weapon_model, same_side, roomId_barr_appears_from, can_upgrade);		//spawn weapon
 }
-
 
 door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_from, can_upgrade){
 	self notify ("door_barr_started");
@@ -713,14 +713,35 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	//playfx(level._effect["poltergeist"], barr_weapon_trigger_origin);	//playes electricity effect when barr weapon spawns.
 
 
-	self thread weapon_stop_on_door_open();
+	self thread weapon_end_on_door_open();
 	self thread weapon_thread_manage_triggers(roomId_visible_from);
+
+	chestIds = ZHC_room_info[roomId_visible_from]["chests"];
+	for(i = 0; i < chestIds.size; i++){
+		thread level.chests[chestIds[i]].chest_origin chest_weapon_grab_change_door_weapon();
+	}
+
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
-	can_init_buy = true;	//always true for now.
+	can_init_buy = false;	//always true for now.
 	can_buy_ammo = is_equipment || true; //lets make it always true for now
 	can_upgrade = !is_equipment && can_upgrade;
 	self.weapon_trigger thread weapon_spawn_think(false, undefined, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
 }
+
+chest_weapon_grab_change_door_weapon(door){
+	door.weapon_trigger endon("deleted");
+	while(1){
+		self waittill("weapon_grabbed", weapon);
+		if(is_offhand_weapon(weapon))	//not a primary weapon.
+			continue;
+		is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
+		can_init_buy = false;	//always true for now.
+		can_buy_ammo = is_equipment || true; //lets make it always true for now
+		can_upgrade = !is_equipment && can_upgrade;
+		self.weapon_trigger thread swap_weapon_buyable(false, undefined, can_init_buy, can_buy_ammo ,can_upgrade, weapon);
+	}
+}
+
 
 door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw, barr_weapon_yaw
 	){
@@ -770,8 +791,8 @@ door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_
 
 weapon_thread_manage_triggers(roomId_visible_from){
 
-	self.weapon_trigger endon("weapon_stop");
-
+	//self.weapon_trigger endon("weapon_stop");	//instead checks if weapon_trigger exists
+	self.weapon_trigger endon("deleted");	//should end when weapon trigger gets destroyed by thread weapon_stop_on_door_open()
 
 	zones = maps\_zombiemode_blockers::roomIDToZones(roomId_visible_from);
 
@@ -781,6 +802,8 @@ weapon_thread_manage_triggers(roomId_visible_from){
 	}
 	players = get_players();
 	while(1){
+		//if(!IsDefined( weapon_trigger ))	//checks if weapon_trigger exists
+		//	return;
 		playervis = [];
 		for(zz = 0; zz < zones.size; zz++){
 			if(level.zones[zones[zz]].is_occupied){
@@ -807,7 +830,7 @@ weapon_thread_manage_triggers(roomId_visible_from){
 	}
 }
 
-weapon_stop_on_door_open(){
+weapon_end_on_door_open(){
 	self waittill_either( "door_open", "end_door_cooldown" );
 	playfx(level._effect["poltergeist"], self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 45 ));
 
@@ -817,7 +840,8 @@ weapon_stop_on_door_open(){
 	//self.barr_weapon_yaw = undefined;			//keeps these vars as is
 	self.player_yaw = undefined;
 
-	self.weapon_trigger notify("weapon_stop"); 
+	self.weapon_trigger notify("weapon_stop");
+	self.weapon_trigger notify("deleted"); 
 	self.weapon_trigger delete();
 
 	players = get_players();
@@ -2061,19 +2085,21 @@ treasure_chest_think(){
 		}else{
 			//if(!self.ZHC_ALL_CHESTS_chest_active && !self box_currently_affect_by_firesale())
 			
-			if(!isDefined(self.zone_name)){	//finding zone
+			if(!isDefined(self.roomId)){	//finding zone
 				user = self.chest_origin a_player_is_close_to_origin(120);
 				if(!isDefined(user)){
 					wait 0.5;
 				}
 				else{
-					
-					self.zone_name = user.current_zone;
-					if(!isDefined(self.zone_name)){
+					zone = user.current_zone;
+					//zone = maps\_zombiemode_blockers::Get_Players_Current_Zone_Patient(user);	//contains waits.
+					self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(user.current_zone);
+					level.ZHC_room_info[self.roomId]["chests"][level.ZHC_room_info[self.roomId]["chests"].size] = get_chest_index(self);
+					if(!isDefined(self.roomId)){
 						wait(1);
 					}
 				}
-			}else if( level.zones[self.zone_name].is_occupied){
+			}else if(level.ZHC_room_info[self.roomId]["occupied"]){
 				if(level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK)
 					break;
 				user = self.chest_origin a_player_is_close_to_origin(120);
@@ -2589,9 +2615,9 @@ weapon_to_grab_think( user, swap, cycle){
 			wait 0.05; 
 		}
 		if(firstTimeActivated || cycle)
-			chest_weapon_grabbed(true);
+			chest_weapon_grabbed(true, self.chest_origin.weapon_string);
 		else
-			chest_weapon_grabbed(false);
+			chest_weapon_grabbed(false, self.chest_origin.weapon_string);
 		firstTimeActivated = false;
 		if(!swap && !cycle)
 			break;
@@ -2617,8 +2643,8 @@ ZHC_GUN_CYCLE_cycle_weapons(player){
 	}
 }
 
-chest_weapon_grabbed(affect_counters){
-	self.chest_origin notify( "weapon_grabbed" );
+chest_weapon_grabbed(affect_counters, weapon_name){
+	self.chest_origin notify( "weapon_grabbed" , weapon_name);
 
 	if(affect_counters){
 		if ( !is_true( self._box_opened_by_fire_sale ) )
@@ -5230,7 +5256,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 					else if(self.ZHC_GUN_STAYS && level.ZHC_BOX_GUN_STAYS_WAIT_GUN_BUYABLE_RESET_EXPIRE_TIMER)
 						self notify ("reset_expire_timer", 1);
 
-					chest_weapon_grabbed(!first_time_triggered);
+					chest_weapon_grabbed(!first_time_triggered, weapon);
 					if(can_upgrade && level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE){
 						if(self.ZHC_WALL_GUN_can_upgrade == true){								//if simply buying gun, wont reset upgrade timer 
 																								//(espcially given the fact that we currently have it at stength 1 which skips cooldown entirely)
@@ -5331,7 +5357,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 								self notify ("reset_expire_timer",self.ZHC_weapon_upgrade_lvl);
 
 							if(level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE )
-								chest_weapon_grabbed(true);
+								chest_weapon_grabbed(true, weapon);
 							else if(level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE){
 								self.ZHC_WALL_GUN_can_upgrade = false;
 								if(level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN)
@@ -5444,9 +5470,9 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 							//currently making it so you have to be upgrade in order to work.
 							self notify ("reset_expire_timer", 1);
 						if(level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_AMMO)
-							chest_weapon_grabbed(true);
+							chest_weapon_grabbed(true, weapon);
 					}else if(level.ZHC_WALL_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_AMMO)
-						chest_weapon_grabbed(true);
+						chest_weapon_grabbed(true, weapon);
 
 					player maps\_zombiemode_score::minus_to_player_score( ammo_cost ); // this give him ammo to early
 

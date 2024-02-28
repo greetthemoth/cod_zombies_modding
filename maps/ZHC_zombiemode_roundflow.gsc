@@ -62,7 +62,7 @@ rooms_init(){
 			level.ZHC_room_info[roomId]["name"] = maps\_zombiemode_blockers::map_get_room_name(roomId);
 			level.ZHC_room_info[roomId]["doors"] = maps\_zombiemode_blockers::map_get_doors_accesible_in_room(roomId);
 			level.ZHC_room_info[roomId]["occupied"] = false;
-			//level.ZHC_room_info[roomId]["chests"] = 
+			level.ZHC_room_info[roomId]["chests"] = [];
 			//level.ZHC_room_info[roomId]["wall_buys"] = 
 			//level.ZHC_room_info[roomId]["spawners"] = 
 			if(level.ZHC_ROOMFLOW){
