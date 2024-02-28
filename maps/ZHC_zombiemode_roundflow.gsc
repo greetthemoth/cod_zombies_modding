@@ -19,7 +19,7 @@ init(){
 	level.ZHC_ROOMFLOW_doors_flow_difficulty_to_close_adj = undefined;
 	
 	level.ZHC_ROOMFLOW = true;
-	level.ZHC_ROOMFLOW_FIRST_ROOM_HARDER = false;//testo
+	level.ZHC_ROOMFLOW_FIRST_ROOM_HARDER = true;//testo
 	level.ZHC_ROUND_FLOW = 1; //0 = default| 1 = alternate| 2 = "harder"
 
 	if(ZHC_ROUND_FLOW_check())

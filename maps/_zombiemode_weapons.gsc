@@ -716,10 +716,8 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self thread weapon_end_on_door_open();
 	self thread weapon_thread_manage_triggers(roomId_visible_from);
 
-	chestIds = ZHC_room_info[roomId_visible_from]["chests"];
-	for(i = 0; i < chestIds.size; i++){
-		thread level.chests[chestIds[i]].chest_origin chest_weapon_grab_change_door_weapon();
-	}
+	self.zombie_weapon_upgrade = weapon_string; //neaded for swap. but also good info to have generally.
+	self thread chest_weapon_swap(roomId_visible_from, can_upgrade);
 
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 	can_init_buy = false;	//always true for now.
@@ -728,17 +726,40 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self.weapon_trigger thread weapon_spawn_think(false, undefined, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
 }
 
-chest_weapon_grab_change_door_weapon(door){
-	door.weapon_trigger endon("deleted");
+chest_weapon_swap(roomId_visible_from, can_upgrade){
+	self.weapon_trigger endon("deleted");
+	last_threaded_chestIds_index = 0;
+	max_chest_size = 1;
 	while(1){
-		self waittill("weapon_grabbed", weapon);
+		chestIds = level.ZHC_room_info[roomId_visible_from]["chests"];
+		if(chestIds.size <= last_threaded_chestIds_index)	//sees if new chest was added
+			wait(0.5);
+		else{
+			self thread chest_weapon_grab_change_door_weapon(level.chests[chestIds[last_threaded_chestIds_index]].chest_origin, can_upgrade);
+			last_threaded_chestIds_index++;
+			if(last_threaded_chestIds_index >= max_chest_size)
+				return;
+		}
+	}
+	/*for(i = 0; i < chestIds.size; i++){
+		self thread chest_weapon_grab_change_door_weapon(level.chests[chestIds[i]].chest_origin, can_upgrade);
+	}*/
+}
+
+chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
+	self.weapon_trigger endon("deleted");
+	while(1){
+		chest_origin waittill("weapon_grabbed", weapon);
 		if(is_offhand_weapon(weapon))	//not a primary weapon.
+			continue;
+		if(self.zombie_weapon_upgrade == weapon)
 			continue;
 		is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 		can_init_buy = false;	//always true for now.
 		can_buy_ammo = is_equipment || true; //lets make it always true for now
 		can_upgrade = !is_equipment && can_upgrade;
-		self.weapon_trigger thread swap_weapon_buyable(false, undefined, can_init_buy, can_buy_ammo ,can_upgrade, weapon);
+		self.zombie_weapon_upgrade = weapon;
+		self.weapon_trigger thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon);
 	}
 }
 
@@ -5047,7 +5068,7 @@ wall_upgrade_wait_to_return(is_chest, strength){
 	self notify ("update_hintstrings");
 }
 
-swap_weapon_buyable(is_chest, can_init_buy, can_upgrade, can_buy_ammo, weapon){
+swap_weapon_buyable(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon){
 	last_weapon = undefined;
 	if(is_chest){
 		last_weapon = self.chest_origin.weapon_string;
@@ -5055,12 +5076,24 @@ swap_weapon_buyable(is_chest, can_init_buy, can_upgrade, can_buy_ammo, weapon){
 	else{
 		last_weapon = self.zombie_weapon_upgrade;
 	}
-	if(!isDefined(self.original_weapon))
-		self.original_weapon = last_weapon;
+
+	if(IsDefined( last_weapon ) ){
+		if(!isDefined(self.original_weapon))
+			self.original_weapon = last_weapon;
+	}
 
 	self notify( "weapon_stop" );
-	if(weapon!=last_weapon){
-		self weapon_model_hide(undefined, true);	//dont thread so we see the whole process.
+
+	if(IsDefined( self.ZHC_WALL_GUN_can_upgrade ) || can_upgrade){
+		self.ZHC_WALL_GUN_can_upgrade = undefined;
+		self.ZHC_weapon_upgrade_lvl = undefined;
+		self.ZHC_weapon_upgrade_cost = undefined;
+	}
+
+	if(!IsDefined( last_weapon ) || weapon != last_weapon){
+		self thread weapon_model_hide(undefined, true);
+		wait(1);
+		self wait_network_frame( );
 	}
 	self set_box_weapon_model_to(weapon);
 	self thread show_weapon_model();

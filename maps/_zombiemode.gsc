@@ -2212,7 +2212,7 @@ take_additionalprimaryweapon(additional_weapons)
 		else
 			weapons_taken = [];
 		weaponsAmountToTake = count - (level.zhc_starting_weapon_slots + additional_weapons);
-		IPrintLn( "weaponsAmountToTake "+weaponsAmountToTake );
+		//IPrintLn( "weaponsAmountToTake "+weaponsAmountToTake );
 		for(i = 0; i<weaponsAmountToTake; i++){
 			weapon_to_take = [];
 			//weapon_to_take[0] = primary_weapons_that_can_be_taken[primary_weapons_that_can_be_taken.size - (1 + i)];
@@ -2228,7 +2228,7 @@ take_additionalprimaryweapon(additional_weapons)
 			}*/
 			self maps\ZHC_zombiemode_weapons::take_weapon(weapon_to_take[0]);
 			self TakeWeapon( weapon_to_take[0] );
-			IPrintLn( "taking "+weapon_to_take[0]  );
+			//IPrintLn( "taking "+weapon_to_take[0]  );
 			weapons_taken[weapons_taken.size] = weapon_to_take;
 		}
 		//self thread thread_take_weapons(weapons_taken);
