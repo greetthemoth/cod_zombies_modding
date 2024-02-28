@@ -117,7 +117,7 @@ room_think(roomId){
 	difficulty_change = false;
 	while(1){
 		difficulty = level.ZHC_room_info[roomId]["flow_difficulty"];
-		data = update_room_difficulty(difficulty);
+		data = update_room_difficulty(difficulty, roomId);
 		active = level.ZHC_room_info[roomId]["active"];
 		if(active){
 			level.ZHC_round_zombie_limit_mult /= level.ZHC_room_info[roomId]["room_zombie_limit_mult"]; //undoes its effect on the global mult;
@@ -131,8 +131,8 @@ room_think(roomId){
 			//IPrintLn(level.ZHC_room_info[roomId]["name"] + " zombie_limit_mult:"+level.ZHC_round_zombie_limit_mult +"  spawning_speed_mult:" +level.ZHC_round_spawning_speed_mult);
 		}
 
-		level.ZHC_room_info[roomId]["zombie_health"] = level.zombie_health * data["room_zombie_health_mult"];
-		if(active) IPrintLn(level.ZHC_room_info[roomId]["name"] + " zombie_health:"+level.ZHC_room_info[roomId]["zombie_health"]);
+		level.ZHC_room_info[roomId]["zombie_health"] = int(level.zombie_health * data["room_zombie_health_mult"]);
+		//if(active) IPrintLn(level.ZHC_room_info[roomId]["name"] + " zombie_health:"+level.ZHC_room_info[roomId]["zombie_health"]);
 
 		level.ZHC_room_info[roomId]["zombie_move_speed"] = data["zombie_move_speed"];
 		//if(active) IPrintLn(level.ZHC_room_info[roomId]["name"] + " zombie_move_speed:"+level.ZHC_room_info[roomId]["zombie_move_speed"]);
@@ -148,7 +148,7 @@ room_think(roomId){
 			new_dif = max(0,prev_dif+difficulty_adj);
 			level.ZHC_room_info[roomId]["flow_difficulty"] = new_dif;
 			difficulty_change = prev_dif != new_dif;
-			if(difficulty_change) IPrintLn(level.ZHC_room_info[roomId]["name"] + " flow_difficulty:"+ level.ZHC_room_info[roomId]["flow_difficulty"] +"  active:" + level.ZHC_room_info[roomId]["active"] );
+			//if(difficulty_change) IPrintLn(level.ZHC_room_info[roomId]["name"] + " flow_difficulty:"+ level.ZHC_room_info[roomId]["flow_difficulty"] +"  active:" + level.ZHC_room_info[roomId]["active"] );
 		}
 	}
 }
@@ -202,7 +202,7 @@ updateRoomActivity(){
 	roomIds = GetArrayKeys( level.ZHC_room_info );
 	for(i = 0; i <  roomIds.size; i++){
 		active = updateRoomIsActive(roomIds[i]);
-		updateRoomIsOccupied(roomIds[i])
+		updateRoomIsOccupied(roomIds[i]);
 		if(active)
 			activate_room(roomIds[i]);
 		else
@@ -639,6 +639,7 @@ update_round_flow_difficulty(){
 
 update_round_difficulty(){
 
+	DEBUG_FLOW = false;
 		//zombie total
 	{
 		round_zombie_total_mult = 1;
@@ -668,16 +669,16 @@ update_round_difficulty(){
 
 		//zombie movement speed
 	{
-		animSpeed = 1+ 																				//base amount
+		animSpeed = 1 + 																				//base amount
 					min(max(0,level.round_number-10)*0.125, 2) + 									//slight increase every round till round 25.
-					( 	((min(0,level.round_number-6)%4)/4) * 				//0 - 1 peaks every 4 rounds. first 2 round grace period.
+					( 	( int(max(0,level.round_number-6))%int(4-1)/4) * 				//0 - 1 peaks every 4 rounds. first 2 round grace period.
 						min(2.5,max(0.75,level.round_number * 0.1))			//flow mult. increase every round. peaks at +22 movespeed per flow.
 					)																				//flow mult peaks every 4 rounds, with 2 round grace period.
 					;
 		zombie_move_speed = int(animSpeed * level.zombie_vars["zombie_move_speed_multiplier"]); //x8 //0-40 = walk, 41-70 = run, 71+ = sprint
 		data["zombie_move_speed"] = zombie_move_speed;
 
-		zombie_move_speed_spike_chance = 10 + (max(0,level.round_number-10), 15);
+		zombie_move_speed_spike_chance = 10 + min(max(0,level.round_number-10), 15);
 		zombie_move_speed_spike = 20 + zombie_move_speed ;
 		data["zombie_move_speed_spike"] = zombie_move_speed_spike;
 		data["zombie_move_speed_spike_chance"] = zombie_move_speed_spike_chance;
@@ -716,17 +717,18 @@ update_round_difficulty(){
 		if(DEBUG_FLOW)
 			IPrintLnBold("dog_round_count: "+level.dog_round_count + "  ZHC_dogs_to_spawn_this_round: "+ dogs_to_spawn_this_round + "  mixed_rounds_enabled: " +mixed_rounds_enabled );
 	}
+	return data;
 
 }
 
 update_room_difficulty( difficulty, roomId){
 	data = [];
-	DEBUG_FLOW = false;
+	DEBUG_FLOW = true;
 
 	fr = level.round_number - (level.dog_round_count-1); //flow round number - excludes dog rounds 
 
 	SPEED_FLOW_ROUND_LENGTH = 5;
-	speed_flow_percent_completion = (((fr+room_id)-1 ) % SPEED_FLOW_ROUND_LENGTH )/(SPEED_FLOW_ROUND_LENGTH-1);
+	speed_flow_percent_completion = ( ((fr+roomId)-1 ) % SPEED_FLOW_ROUND_LENGTH ) / (SPEED_FLOW_ROUND_LENGTH-1);
 	speed_flow_percent = abs(speed_flow_percent_completion - 0.5)*2;	//flow peaks in the ends, dips in the middle and goes back t 1. 0 = 1; 0.5 = 0. 1 = 1
 	speed_flows_completed = int((fr-1)/SPEED_FLOW_ROUND_LENGTH);
 
@@ -771,7 +773,7 @@ update_room_difficulty( difficulty, roomId){
 
 		//zombie spawning speed
 	{
-		diminished_IFD = (0.5 * (1 - spawning_speed_mult) * damp25) + 1;	//fluctuares between 1 and 1.5. effect deminishes until round 25.
+		diminished_IFD = (0.5 * (1 - speed_flow_percent) * damp25) + 1;	//fluctuares between 1 and 1.5. effect deminishes until round 25.
 		//diminished_IFD = (0.3 * inverse_flo_wdifficulty_percent * dampner) + (1 - 0.3 * dampner);	// == 1 when dampner is 0. 
 																									// == (ifdp * 0.3)+0.7 when dampener is 1. 
 																										//(ifdp * 0.3)+0.7 fluctuates between 1 - 0.5 as the FLOW_ROUND_LENGTH progresses
@@ -805,7 +807,7 @@ update_room_difficulty( difficulty, roomId){
 			(difficulty * speed_flow_percent)
 			;
 
-		DEBUG_SPEED_FUNC = false;
+		DEBUG_SPEED_FUNC = true;
 		if(DEBUG_FLOW && DEBUG_SPEED_FUNC){
 			IPrintLn( "    1+" );
 			IPrintLn( "    "+min((fr * 0.15), 1 + (speed_flow_percent * 2) ) + "+" );
@@ -816,23 +818,26 @@ update_room_difficulty( difficulty, roomId){
 
 		zombie_move_speed = int(animSpeed * level.zombie_vars["zombie_move_speed_multiplier"]); //0-40 = walk, 41-70 = run, 71+ = sprint
 		data["zombie_move_speed"] = zombie_move_speed;
-		if(DEBUG_FLOW)
-			IPrintLn("zombie_move_speed = " + zombie_move_speed );
+		//if(DEBUG_FLOW)
+		//	IPrintLn("zombie_move_speed = " + zombie_move_speed );
 
 			//zombie move speed spike
 		{
 			zombie_move_speed_spike_chance = int( 7.5 + 
 				(speed_flow_percent_completion * SPEED_FLOW_ROUND_LENGTH * 2.5) + 
-				min(speed_flows_completed*SPEED_FLOW_ROUND_LENGTH*0.15,7.5) + 
-				(speed_flows_completed_in_room_float * SPEED_FLOW_ROUND_LENGTH *0.3,12.5) 
+				min(speed_flows_completed * SPEED_FLOW_ROUND_LENGTH * 0.15,7.5) + 
+				min(speed_flows_completed_in_room_float * SPEED_FLOW_ROUND_LENGTH * 0.3,12.5) 
 			);
 
 			zombie_move_speed_spike = 10 +
-				int(zombie_move_speed * (
+				int(zombie_move_speed * ( 
 					1 + ( min(speed_flows_completed_in_room_float * SPEED_FLOW_ROUND_LENGTH, 7.5) * 0.07 )
 				));
 			data["zombie_move_speed_spike"] = zombie_move_speed_spike;
 			data["zombie_move_speed_spike_chance"] = zombie_move_speed_spike_chance;
+
+			if(DEBUG_FLOW)
+			IPrintLnBold( "zombie_move_speed: "+zombie_move_speed +"   spike "+ zombie_move_speed_spike +"    chance "+ zombie_move_speed_spike_chance+"%");
 		}
 	}
 
@@ -847,10 +852,11 @@ update_room_difficulty( difficulty, roomId){
 		//room_zombie_health_mult *=  1 + ((difficulty_percent == 1) * 0.16 * difficulty);
 		//room_zombie_health_mult *= (  inverse_difficulty_percent  *3* min((flows_completed*0.333),3) )  +1; 
 		//room_zombie_health_mult *= 1 + mult_go_to_health_instead;
-		room_zombie_health_mult = 1 + ((1 - speed_flow_percent) * (difficulty + 1) ) 
+		room_zombie_health_mult = 1 + ((1 - speed_flow_percent) * (difficulty + 1) );
 		data["room_zombie_health_mult"] = room_zombie_health_mult;
 		if(DEBUG_FLOW)
 			IPrintLn( "room_zombie_health_mult: "+ room_zombie_health_mult);
 	}
+	return data;
 	
 }

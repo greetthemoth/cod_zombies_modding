@@ -1124,7 +1124,7 @@ door_buy_expired(){
 			if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 				level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
 			while(1){
-				if(!flag("dog_round") && level.ZHC_room_info[self.roomId_bought_from]["flow_difficulty"] < 4 + level.ZHC_ROOMFLOW_doors_flow_difficulty_to_close_adj){
+				if(!flag("dog_round") && level.ZHC_room_info[self.roomId_bought_from]["flow_difficulty"] < 4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
 					level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
 					wait_network_frame( );
 					wait_network_frame( );
@@ -1288,7 +1288,7 @@ get_player_with_current_zone(zone){
 	}
 	return undefined;
 }
-roomId_setup(){
+roomId_setup(player){
 	if(!isDefined(player)){
 		if(IsDefined( self.last_user ))
 			player = self.last_user;
@@ -1320,7 +1320,7 @@ roomId_setup(){
 	self.roomId_bought_from = roomid;
 	self.roomId_bought_to = roomId2;
 }
-check_roomIDs_to_occupy_setup(player){
+check_roomIDs_to_occupy_setup(){
 	//if(self.script_noteworthy == "electric_door") //only applies to buyable doors. convinenet because for whatever reason this func doesnt work on power door.
 	//	return;										//not needed because this func now runs within the door_buy_expire func (which doesnt run in electric doors)
 
@@ -1608,7 +1608,7 @@ map_wait_to_update_rooms(){
 	flag_wait("all_players_connected");
 	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
 	level.ZHC_zoneToRoomID["theater_zone"] = map_get_zone_room_id("theater_zone");
-	maps\ZHC_zombiemode_roomflow::deactivate_room(100); //remove mults and stuff.
+	maps\ZHC_zombiemode_roundflow::deactivate_room(100); //remove mults and stuff.
 	level.ZHC_room_info = array_remove_index( level.ZHC_room_info , 100 );
 	level.ZHC_room_info[4]["name"] = map_get_room_name(4);
 	level.ZHC_room_info[4]["doors"] = map_get_doors_accesible_in_room(4);
