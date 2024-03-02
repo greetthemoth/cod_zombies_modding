@@ -2063,7 +2063,7 @@ door_cooldown(){
 		roomId = self.roomId_bought_to;
 		doorIds = Get_Doors_Accesible_in_room(roomId); //doors in room accessed
 		doorIds = array_remove( doorIds,self get_door_id() );
-		wait_for_one_door_to_be_open(doorIds);
+		wait_for_one_door_to_be_open_or_barred(doorIds);
 		IPrintLnBold( Get_Room_Name(roomId) +" one door opened now weapon barr cooldown can start" );
 	}
 	
@@ -2124,6 +2124,14 @@ wait_for_one_door_to_be_open(doorIds){
 		wait(0.5);
 	}
 }
+wait_for_one_door_to_be_open_or_barred(doorIds){
+	zombie_doors =  GetEntArray( "zombie_door", "targetname" );
+	while(1){
+		if(one_door_is_opened(doorIds, zombie_doors) || one_door_is_barred(doorIds, zombie_doors))
+			return;
+		wait(0.5);
+	}
+}
 one_door_is_opened(doorIds, all_doors){
 	if(!IsDefined( all_doors ))
 		all_doors =  GetEntArray( "zombie_door", "targetname" );
@@ -2141,6 +2149,17 @@ one_door_is_unbarred(doorIds, all_doors){
 	for(i = 0; i < doorIds.size; i++){
 		door = all_doors[doorIds[i]];
 		if(door get_door_is_open_or_opening() && !is_true(door.dont_reset_cooldown_once) || door.door_stage == "buying"){
+			return true;
+		}
+	}
+	return false;
+}
+one_door_is_barred(doorIds, all_doors){
+	if(!IsDefined( all_doors ))
+		all_doors =  GetEntArray( "zombie_door", "targetname" );
+	for(i = 0; i < doorIds.size; i++){
+		door = all_doors[doorIds[i]];
+		if(door get_door_is_closed_or_closing() && door.door_stage == "cooldown"){
 			return true;
 		}
 	}

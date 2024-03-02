@@ -2114,7 +2114,8 @@ treasure_chest_think(){
 					zone = user.current_zone;
 					//zone = maps\_zombiemode_blockers::Get_Players_Current_Zone_Patient(user);	//contains waits.
 					self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(user.current_zone);
-					maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"][maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"].size] = get_chest_index(self);
+					roomInfo  = maps\_zombiemode_blockers::map_get_room_info(self.roomId);
+					roomInfo["chests"][roomInfo["chests"].size] = get_chest_index(self);
 					if(!isDefined(self.roomId)){
 						wait(1);
 					}
