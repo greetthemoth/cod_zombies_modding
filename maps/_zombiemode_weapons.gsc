@@ -716,7 +716,7 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self thread weapon_end_on_door_open();
 	self thread weapon_thread_manage_triggers(roomId_visible_from);
 
-	self.zombie_weapon_upgrade = weapon_string; //neaded for swap. but also good info to have generally.
+	self.weapon_trigger.zombie_weapon_upgrade = weapon_string; //neaded for swap. but also good info to have generally.
 	self thread chest_weapon_swap(roomId_visible_from, can_upgrade);
 
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
@@ -731,7 +731,7 @@ chest_weapon_swap(roomId_visible_from, can_upgrade){
 	last_threaded_chestIds_index = 0;
 	max_chest_size = 1;
 	while(1){
-		chestIds = level.ZHC_room_info[roomId_visible_from]["chests"];
+		chestIds = maps\_zombiemode_blockers::map_get_room_info(roomId_visible_from)["chests"];
 		if(chestIds.size <= last_threaded_chestIds_index)	//sees if new chest was added
 			wait(0.5);
 		else{
@@ -752,13 +752,13 @@ chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
 		chest_origin waittill("weapon_grabbed", weapon);
 		if(is_offhand_weapon(weapon))	//not a primary weapon.
 			continue;
-		if(self.zombie_weapon_upgrade == weapon)
+		if(self.weapon_trigger.zombie_weapon_upgrade == weapon)
 			continue;
 		is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 		can_init_buy = false;	//always true for now.
 		can_buy_ammo = is_equipment || true; //lets make it always true for now
 		can_upgrade = !is_equipment && can_upgrade;
-		self.zombie_weapon_upgrade = weapon;
+		self.weapon_trigger.zombie_weapon_upgrade = weapon;
 		self.weapon_trigger thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon);
 	}
 }
@@ -767,8 +767,7 @@ chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
 door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw, barr_weapon_yaw
 	){
 	if(same_side)
-	player_yaw = AngleClamp180(player_yaw + 180);
-
+		player_yaw = AngleClamp180(player_yaw + 180);
 	barr_weapon_origin = door_barr_middle_origin - ( AnglesToForward( ( 0, player_yaw, 0 ) ) * 8 );
 	barr_weapon_trigger_origin = door_barr_middle_origin - ( AnglesToForward( ( 0, player_yaw, 0 ) ) * 8 );
 	//barr_weapon_locked_side_trigger_origin = self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 50 );
@@ -2115,12 +2114,12 @@ treasure_chest_think(){
 					zone = user.current_zone;
 					//zone = maps\_zombiemode_blockers::Get_Players_Current_Zone_Patient(user);	//contains waits.
 					self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(user.current_zone);
-					level.ZHC_room_info[self.roomId]["chests"][level.ZHC_room_info[self.roomId]["chests"].size] = get_chest_index(self);
+					maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"][maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"].size] = get_chest_index(self);
 					if(!isDefined(self.roomId)){
 						wait(1);
 					}
 				}
-			}else if(level.ZHC_room_info[self.roomId]["occupied"]){
+			}else if(maps\_zombiemode_blockers::map_get_room_info(self.roomId)["occupied"]){
 				if(level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK)
 					break;
 				user = self.chest_origin a_player_is_close_to_origin(120);
@@ -2219,7 +2218,7 @@ treasure_chest_think(){
 ZHC_box_wait_to_become_reopenable(){
 	self thread firesale_make_box_reopenable();
 	if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_DOG_KILL_ENDS_WAIT){
-		dognum =min(
+		/*dognum =min(
 					min(
 						define_or(self.times_chest_opened,0),
 						define_or(level.zombie_total_start, 0) - define_or(level.zombie_total,0)
@@ -2227,7 +2226,11 @@ ZHC_box_wait_to_become_reopenable(){
 					max( int(flag("dog_round")) * 99,
 						define_or(level.ZHC_dogs_spawned_this_mixed_round,0)
 					)
-				);
+				);*/
+		if(level.ZHC_ORDERED_BOX)
+			dognum = self.chest_origin.ZHC_chest_owned_weapon_index/3;
+		else
+			dognum = define_or(self.times_chest_opened,0)/3;
 
 		dogs_kills_to_open_box = min(max(1,dognum),3);
 		self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, undefined, undefined, undefined, dogs_kills_to_open_box);
@@ -5069,6 +5072,8 @@ wall_upgrade_wait_to_return(is_chest, strength){
 }
 
 swap_weapon_buyable(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon){
+	self endon ("deleted");
+
 	last_weapon = undefined;
 	if(is_chest){
 		last_weapon = self.chest_origin.weapon_string;
@@ -5580,8 +5585,13 @@ weapon_show( player )
 }
 
 weapon_hide(player, slow_hide){
-	if(!IsDefined( self.yaw ) && isDefined(player)){
-		self wall_buy_set_weapon_yaw(player);
+	if(!IsDefined( self.yaw )){
+		if(isDefined(player)){
+			self wall_buy_set_weapon_yaw(player);
+		}else{
+			self Hide();
+			return;
+		}
 	}
 	if(is_true(slow_hide)){
 		if(!isdefined(self.og_origin))
@@ -5594,7 +5604,7 @@ weapon_hide(player, slow_hide){
 		self Hide();
 		wait(0.05);
 		self.origin = self.og_origin;
-	} else
+	}else
 		self Hide();
 }
 
@@ -5618,6 +5628,9 @@ ZHC_wall_buy_manage_power_up_spawn(weapon){
 	starting_kills = define_or(level.ZHC_weapon_total_kills[weapon],0);
 	kill_goal = starting_kills + min(define_or(level.zombie_total_start,6) + 1, 18);
 	IPrintLn("kill_goal " + kill_goal);
+	cycle = maps\ZHC_zombiemode_weapons::GetWeaponPowerupCycle(weapon);
+	randomize_at_end_of_cycle = get_is_wall_buy(weapon);
+	self.power_up_index = 0;
 	while(1){
 		TESTING = false;
 		if(TESTING){
@@ -5635,14 +5648,16 @@ ZHC_wall_buy_manage_power_up_spawn(weapon){
 			}
 		}
 		level.zombie_vars["zombie_drop_item"] = 0;
-		self thread ZHC_cycle_power_ups(maps\ZHC_zombiemode_weapons::GetWeaponPowerupCycle(weapon));
+		self thread ZHC_cycle_power_ups(cycle,randomize_at_end_of_cycle);
 		self thread ZHC_wall_buy_drop_power_up();
 		self waittill("stop_zhc_powerup_cycle");
 		starting_kills = level.ZHC_weapon_total_kills[weapon];
+		excess_kill = starting_kills - kill_goal; 
 		if(level.round_number >= round_to_reset_kill_goal)
 			kill_goal = starting_kills + min(define_or(level.zombie_total_start,6) + 1, 18);
 		else
 			kill_goal = starting_kills + int(kill_goal * 1.5);
+		kill_goal -= excess_kill;
 
 	}
 
@@ -5662,28 +5677,30 @@ ZHC_wall_buy_drop_power_up(){
 	self.ZHC_powerup waittill_any( "powerup_grabbed", "powerup_timedout" );
 	self.ZHC_powerup = undefined;
 }
-ZHC_cycle_power_ups(cycle){
+ZHC_cycle_power_ups(cycle,randomize_at_end_of_cycle){
 	self endon( "stop_zhc_powerup_cycle" );
 	self endon( "weapon_stop" );
-	index = 0;
 	while(1){
-		if(!IsDefined( self.ZHC_powerup) || (index == 0 && cycle[0] != cycle[cycle.size-1]) || (cycle.size > 1 && cycle[index] != cycle[index-1]) ){	
+		if(!IsDefined( self.ZHC_powerup) || (self.power_up_index == 0 && cycle[0] != cycle[cycle.size-1]) || (cycle.size > 1 && cycle[self.power_up_index] != cycle[self.power_up_index-1]) ){	
 			if(IsDefined( self.ZHC_powerup) )
 				self.ZHC_powerup maps\_zombiemode_powerups::powerup_timeout(0);//instantly times out powerup
-			self.ZHC_powerup = level maps\_zombiemode_powerups::specific_powerup_drop( cycle[index], self ZHC_wall_buy_get_power_up_spawn_position(),false, undefined, false);
+			self.ZHC_powerup = level maps\_zombiemode_powerups::specific_powerup_drop( cycle[self.power_up_index], self ZHC_wall_buy_get_power_up_spawn_position(),false, undefined, false);
 		}
+		self.power_up_index++;
 		self.ZHC_powerup maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(
 		1,//	goals_required, 
 		undefined,//	wait_time, 
 		undefined,//	additional_kills_wanted, 
-		1,//	additional_rounds_to_wait, 
+		undefined,//1,//	additional_rounds_to_wait, 
 		undefined,//	dog_rounds_to_wait, 
 		true,//	round_goals_on_round_end, 
 		1//	additional_dog_kills_wanted
 		);
-		index++;
-		if(index >= level.ZHC_wall_buy_powerup_cycle.size)
-			index = 0;
+		if(self.power_up_index >= level.ZHC_wall_buy_powerup_cycle.size){
+			if(randomize_at_end_of_cycle)
+				cycle = array_randomize( cycle );
+			self.power_up_index = 0;
+		}
 	}
 
 }

@@ -301,8 +301,12 @@ pathfinding_kill(){ //called by _zombiemode_spawner slef is the zombie entity
 							    //we add this condition to avoid complication with the 
 							   	//zombie_spawning while loop [while(level.zombie_total > 0)]
 							   	//adds some knowledge-cap, altho its a bit unclear and may unknowingly promote counter productive strategies.
-	level.zombie_total = min(level.zombie_total_start,level.zombie_total+1);
-	level.total_zombies_killed --;
+	if(level.zombies_to_ignore_refund > 0){
+		level.zombies_to_ignore_refund--;
+	}else{
+		level.zombie_total = int(min(level.zombie_total_start,level.zombie_total+1));
+		level.total_zombies_killed --;
+	}
 	//IPrintLnBold( "pf kill" +" zt:"+ level.zombie_total);
 	self DoDamage( self.health + 10, self.origin );
 }

@@ -1124,14 +1124,14 @@ door_buy_expired(){
 			if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 				level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
 			while(1){
-				if(!flag("dog_round") && level.ZHC_room_info[self.roomId_bought_from]["flow_difficulty"] < 4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
+				if(!flag("dog_round") && map_get_room_info(self.roomId_bought_from)["flow_difficulty"] < 4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
 					level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
 					wait_network_frame( );
 					wait_network_frame( );
 				}else 		//simply waiting to not be occupied
 					wait(0.15);
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
-				if(!level.ZHC_room_info[self.roomId_bought_from]["occupied"] && (flag("dog_round") || level.ZHC_room_info[self.roomId_bought_from]["flow_difficulty"] >= level.ZHC_ROOMFLOW_difficulty_to_close_door))
+				if(!map_get_room_info(self.roomId_bought_from)["occupied"] && (flag("dog_round") || map_get_room_info(self.roomId_bought_from)["flow_difficulty"] >= level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
 			}
 			level.ZHC_ROOMFLOW_difficulty_to_close_door += 1;
@@ -1604,15 +1604,18 @@ Get_Zone_Room_ID(zone_name){
 	}
 	return level.ZHC_zoneToRoomID[zone_name];
 }
+
 map_wait_to_update_rooms(){
 	flag_wait("all_players_connected");
 	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
 	level.ZHC_zoneToRoomID["theater_zone"] = map_get_zone_room_id("theater_zone");
 	maps\ZHC_zombiemode_roundflow::deactivate_room(100); //remove mults and stuff.
+	level notify( "room_stop_"+100 );
+	level.ZHC_room_info[4]["zones"] = array_combine( level.ZHC_room_info[4]["zones"],level.ZHC_room_info[100]["zones"] );
 	level.ZHC_room_info = array_remove_index( level.ZHC_room_info , 100 );
 	level.ZHC_room_info[4]["name"] = map_get_room_name(4);
 	level.ZHC_room_info[4]["doors"] = map_get_doors_accesible_in_room(4);
-	level.ZHC_room_info[4]["zones"] = array_combine( level.ZHC_room_info[4]["zones"],level.ZHC_room_info[100]["zones"] );
+	
 }
 map_get_zone_room_id(zone_name){
 	switch( zone_name){
@@ -1644,7 +1647,7 @@ map_get_zone_room_id(zone_name){
 	}
 }
 Get_Doors_Accesible_in_room(room_id){
-	return level.ZHC_room_info[room_id]["doors"];
+	return map_get_room_info(room_id)["doors"];
 }
 map_get_doors_accesible_in_room(room_id){
 	doors = [];
@@ -1705,7 +1708,13 @@ map_get_doors_accesible_in_room(room_id){
 	return doors;
 }
 Get_Room_Name(room_id){
-	return level.ZHC_room_info[room_id]["name"];
+	return map_get_room_info(room_id)["name"];
+}
+map_get_room_info(roomId){
+	if(roomId == 100 && flag("curtains_done"))
+		return level.ZHC_room_info[4];
+	else
+		return level.ZHC_room_info[roomId];
 }
 map_get_room_name(room_id){
 	switch(room_id){

@@ -251,7 +251,8 @@ GetWeaponPowerupCycle(weapon_name){
 			cycle[cycle.size] = "full_ammo";
 		default:
 			if(maps\_zombiemode_weapons::get_is_wall_buy(weapon_name))
-				return array_randomize(level.ZHC_wall_buy_powerup_cycle);
+				//return array_randomize(level.ZHC_wall_buy_powerup_cycle);
+				return level.ZHC_wall_buy_powerup_cycle;
 			return array_swap( level.ZHC_wall_buy_powerup_cycle,RandomInt( level.ZHC_wall_buy_powerup_cycle.size ),RandomInt( level.ZHC_wall_buy_powerup_cycle.size ) );
 	} 
 }

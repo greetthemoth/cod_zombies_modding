@@ -199,12 +199,8 @@ zombie_spawn_init( animname_set )
 		self.maxhealth = level.zombie_health; 
 		self.ZHC_zombie_move_speed_spike_chance = 1 ;
 		self.ZHC_zombie_move_speed_spike = 1;
-
-		if(isDefined(level.ZHC_room_info[self ZHC_get_roomId()]))
-			self.maxhealth = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_health"];
-		else
-			IPrintLn( "level.ZHC_room_info["+self ZHC_get_roomId()+"] is not defined.");
-
+		self.maxhealth = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_health"];
+		level.ZHC_room_info[self ZHC_get_roomId()]["enemy_count"] ++;
 		self.health = self.maxhealth;
 		self.ZHC_zombie_move_speed_spike_chance = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_move_speed_spike_chance"];
 		self.ZHC_zombie_move_speed_spike = level.ZHC_room_info[self ZHC_get_roomId()]["zombie_move_speed_spike"];
@@ -4009,6 +4005,8 @@ zombie_flame_damage( mod, player )
 zombie_death_event( zombie )
 {
 	zombie waittill( "death" );
+
+	level.ZHC_room_info[zombie ZHC_get_roomId()]["enemy_count"] --;
 
 	// Need to check in case he got deleted earlier
 	if ( !IsDefined( zombie ) )
