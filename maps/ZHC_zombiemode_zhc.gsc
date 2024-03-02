@@ -4,7 +4,7 @@
 #include maps\ZHC_utility;
 
 get_testing_level(){
-	return 0.5;
+	return 6;
 	//
 	//level 0.5: extra points
 	//level 6 : power on

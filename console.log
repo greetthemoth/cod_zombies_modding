@@ -1,5 +1,5 @@
 Build 7.0.152 CL(966072) CODPCAB-V64 CEG Thu Sep 01 16:06:17 2011
-logfile opened on Fri Mar 01 18:40:26 2024
+logfile opened on Sat Mar 02 14:33:24 2024
 
 Current language: english
 Current search path:
@@ -212,7 +212,7 @@ CPU name is "Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz"
 8 logical CPUs reported
 8 physical CPUs detected
 Measured CPU speed is 0.01 GHz
-Total CPU performance is estimated as 0.10 GHz
+Total CPU performance is estimated as 0.09 GHz
 System memory is 1024 MB (capped at 1 GB)
 Video card is "NVIDIA GeForce MX250"
 Streaming SIMD Extensions (SSE) supported
@@ -246,12 +246,12 @@ Adding fastfile 'en_patch' to queue
 Adding fastfile 'patch' to queue
 Adding fastfile 'frontend_patch' to queue
 Adding fastfile 'mod' to queue
+Using 1 GPU(s).
+Initializing render targets...
 Loading fastfile 'en_patch'
 used 0.02 MB memory in DB alloc
 Loading fastfile 'patch'
-Using 1 GPU(s).
 used 3.96 MB memory in DB alloc
-Initializing render targets...
 Requested frame buffer to be 24-bit color with 8-bit alpha
 DirectX returned a frame buffer that is 24-bit color with 8-bit alpha
 INTZ format supported
@@ -294,7 +294,7 @@ used 0.00 MB memory in DB alloc
 --- Initializing Voice ---
       dvar set tu_onlyhostqos 0
 Hostname: LAPTOP-F97P0NQ8
-Binding to 192.168.1.165:3074
+Binding to 192.168.1.158:3074
 --------------
 GamerProfile_ResetSPDvars():
  "mis_01" = "0".
@@ -324,7 +324,7 @@ execing buttons_default.cfg from fastfile
 execing otherkeysdefaults.cfg from fastfile
 execing thumbstick_default.cfg from fastfile
 Unknown command "updatevehiclebindings"
-end $init 5175 ms
+end $init 4789 ms
 --- Common Initialization Complete ---
 =============================== DVAR DUMP ========================================
 
@@ -334,7 +334,7 @@ end $init 5175 ms
       dvar set zombieStopSplitScreen 1
       dvar set zombiemode 1
       dvar set sv_cheats 1
-Timestamp: SV_SpawnServer 1709336431
+Timestamp: SV_SpawnServer 1709408008
 g_gametype cmp is not a valid gametype, defaulting to cmp
 Redundant asset: 'localize','MENU_TESTINGBANDWIDTH'
 Redundant asset: 'localize','MENU_DOWNLOADING_GAME_SETTINGS_CAPS'
@@ -563,13 +563,13 @@ Redundant asset: 'stringtable','maps/mapstable.csv'
 Redundant asset: 'rawfile','coopmaps.arena'
 Redundant asset: 'rawfile','mod'
       dvar set com_maxclients 1
-[00005381] 0: CA_DISCONNECTED
+[00005026] 0: CA_DISCONNECTED
       dvar set mapname zombie_theater
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 615268088, challengeNum 2441353272 to server
+CHALLENGERESPONSE: Sending nonce 3628255955, challengeNum 462981447 to server
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 615268088, challengeNum 2441353272 to server
-Huffman Took 2 Milliseconds
+CHALLENGERESPONSE: Sending nonce 3628255955, challengeNum 462981447 to server
+Huffman Took 1 Milliseconds
 ------ Server Initialization ------
 Server: zombie_theater
       dvar set sv_running 1
@@ -595,7 +595,7 @@ FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'LongerGas
 FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'usermaps'
 Customized arena file not found: mod.arena
       dvar set ui_netGametypeName zom
-Save Message First Frame Shown: 5542
+Save Message First Frame Shown: 5122
 BinkOpen failed on C:\Steam\steamapps\common\Call of Duty Black Ops\mods/cod_zombies_modding\video\zombie_theater_load.bik because: Error opening file.
 Adding fastfile 'common_zombie_patch' to queue
 Adding fastfile 'en_common_zombie' to queue
@@ -957,11 +957,12 @@ Adding fastfile 'zombie_theater_patch_override' to queue
 Loading fastfile 'zombie_theater_patch'
 used 0.74 MB memory in DB alloc
       dvar set nextmap map_restart
+      dvar set gpad_present 1
 Loading fastfile 'en_zombie_theater'
 used 1.61 MB memory in DB alloc
 Loading fastfile 'zombie_theater'
 used 103.04 MB memory in DB alloc
-Waited 3349 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
+Waited 3298 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
       dvar set player_damageMultiplier 1
       dvar set player_damageMultiplier 0.363636
 ----------------------
@@ -989,39 +990,153 @@ maps/_callbacksetup
 ++++++++++++maps/_zombiemode_server_throttle
 ++++++++++++maps/_laststand
 ++++++++++++maps/_zombiemode_weapons
-Error: 
-******* Server script compile error *******
-Error: not an lvalue: (file 'maps/_zombiemode_weapons.gsc', line 2117)
-     maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"][maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"].size] = get_chest_index(self);
-                                                 *
-
-====================================================
-Com_ERROR:  Server script compile error
-not an lvalue
-maps/_zombiemode_weapons.gsc(2116):
-      maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"][maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"].size] = get_chest_index(self);
-(see console for details)
-
-====================================================
-
-      dvar set ui_menuLvlNotify 0
++++++++++++++maps/_zombiemode_audio
+++++++++++++++maps/_music
+++++++++++++++maps/_busing
+++++++++++++++maps/_zombiemode_spawner
++++++++++++++++maps/_zombiemode_net
++++++++++++++++maps/_zombiemode
+++++++++++++++++maps/_anim
++++++++++++++++++animscripts/face
+++++++++++++++++maps/_zombiemode_ffotd
++++++++++++++++++animscripts/zombie_utility
+++++++++++++++++++animscripts/zombie_setposemovement
++++++++++++++++++++animscripts/zombie_run
+++++++++++++++++++++animscripts/zombie_shared
++++++++++++++++++++animscripts/walk
+++++++++++++++++++maps/_mgturret
++++++++++++++++++++maps/_spawner
+++++++++++++++++++++maps/_serverfaceanim
+++++++++++++++++++++maps/_audio
+++++++++++++++++++++maps/_mg_penetration
+++++++++++++++++++++maps/_friendlyfire
++++++++++++++++++++++maps/_load_common
+++++++++++++++++++++++maps/_lights
+++++++++++++++++++++++maps/_createfx
++++++++++++++++++++++++maps/_createfxmenu
++++++++++++++++++++++++maps/_fx
+++++++++++++++++++++++maps/_colors
+++++++++++++++++++++maps/_patrol
+++++++++++++++++++++maps/_spiderhole
++++++++++++++++++++++maps/_banzai
+++++++++++++++++++++maps/_dds
+++++++++++++++++maps/_zombiemode_load
++++++++++++++++++animscripts/traverse/zombie_shared
+++++++++++++++++++animscripts/zombie_death
++++++++++++++++++++animscripts/zombie_pain
++++++++++++++++++animscripts/revive
++++++++++++++++++maps/_constants
++++++++++++++++++maps/_gamemode
++++++++++++++++++maps/_cheat
++++++++++++++++++maps/_art
++++++++++++++++++maps/_vehicle
+++++++++++++++++++maps/_vehicletypes
+++++++++++++++++++maps/_vehicle_aianim
+++++++++++++++++++maps/_destructible
+++++++++++++++++++maps/_vehicledrive
+++++++++++++++++++maps/_huey
+++++++++++++++++++maps/_hind_player
+++++++++++++++++++maps/_treadfx
+++++++++++++++++++maps/_vehiclenames
+++++++++++++++++++maps/_t72
+++++++++++++++++++maps/_tank_zsu23
+++++++++++++++++++maps/_truck
+++++++++++++++++++maps/_boat_pbr
+++++++++++++++++++maps/_truck_gaz66
+++++++++++++++++++maps/_truck_gaz63
+++++++++++++++++++maps/_uaz
+++++++++++++++++++maps/_jeep
+++++++++++++++++++maps/_chinook
+++++++++++++++++++maps/_cobra
+++++++++++++++++++maps/_hip
+++++++++++++++++++maps/_mig17
++++++++++++++++++++maps/_plane_weapons
+++++++++++++++++++maps/_zpu_antiair
+++++++++++++++++++maps/_apc
+++++++++++++++++++maps/_btr
+++++++++++++++++++maps/_civ_vehicle
+++++++++++++++++++maps/_tiara
+++++++++++++++++++maps/_policecar
+++++++++++++++++++maps/_snowcat
+++++++++++++++++++maps/_rcbomb
+++++++++++++++++++maps/_sampan
+++++++++++++++++++maps/_boat_nvapbr
+++++++++++++++++++maps/_boat_patrol_nva
+++++++++++++++++++maps/_motorcycle
++++++++++++++++++maps/_callbackglobal
+++++++++++++++++++maps/_flashgrenades
+++++++++++++++++++maps/_damagefeedback
+++++++++++++++++++maps/_bulletcam
++++++++++++++++++++maps/_debug
+++++++++++++++++++++maps/_endmission
++++++++++++++++++++++maps/_hud_message
++++++++++++++++++++++maps/_cooplogic
+++++++++++++++++++++maps/_createmenu
+++++++++++++++++++maps/_introscreen
++++++++++++++++++maps/_loadout
+++++++++++++++++++mptype/player_t5_zt
++++++++++++++++++++codescripts/character
++++++++++++++++++++character/c_usa_sog2_zt
++++++++++++++++++++character/c_zom_blue_guy_zt
++++++++++++++++++++character/c_zom_red_guy_zt
++++++++++++++++++++character/c_zom_yellow_guy_zt
+++++++++++++++++++mptype/player_t5_zm_pentagon
++++++++++++++++++++character/c_usa_nixon_zt
++++++++++++++++++++character/c_cub_castro_zt
++++++++++++++++++++character/c_usa_jfk_zt
++++++++++++++++++++character/c_usa_mcnamara_zt
+++++++++++++++++++mptype/player_t5_zm_theater
++++++++++++++++++++character/c_ger_richtofen_zt
++++++++++++++++++++character/c_jap_takeo_zt
++++++++++++++++++++character/c_rus_nikolai_zt
++++++++++++++++++++character/c_usa_dempsey_zt
+++++++++++++++++++mptype/player_t5_zm
++++++++++++++++++++character/c_usa_marine_michael_carter_player_zm
++++++++++++++++++maps/_weapons
+++++++++++++++++++maps/_weaponobjects
++++++++++++++++++++maps/_ballistic_knife
+++++++++++++++++++maps/_explosive_bolt
+++++++++++++++++++maps/_flamethrower_plight
+++++++++++++++++++maps/_shellshock
++++++++++++++++++maps/_detonategrenades
++++++++++++++++++maps/_flareweapon
++++++++++++++++++maps/_autosave
++++++++++++++++++maps/_ingamemenus
++++++++++++++++++maps/_global_fx
++++++++++++++++++maps/_contextual_melee
++++++++++++++++++maps/_minefields
++++++++++++++++++maps/_spawn_manager
+++++++++++++++++++maps/_names
++++++++++++++++++maps/_hud
++++++++++++++++++maps/_animatedmodels
++++++++++++++++++maps/_swimming
++++++++++++++++++animscripts/zombie_init
+++++++++++++++++++animscripts/squadmanager
++++++++++++++++++++animscripts/battlechatter
+++++++++++++++++++++animscripts/battlechatter_ai
+++++++++++++++++maps/_zombiemode_zone_manager
+++++++++++++++++maps/_zombiemode_claymore
++++++++++++++++++maps/_zombiemode_score
+++++++++++++++++maps/_zombiemode_equipment
+++++++++++++++++maps/_zombiemode_blockers
++++++++++++++++++maps/zhc_zombiemode_zhc
+++++++++++++++++++maps/zhc_utility
+++++++++++++++++++maps/zhc_zombiemode_roundflow
+++++++++++++++++++maps/zhc_zombiemode_weapons
 WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\zombie_theater_patch_override.ff'
-      dvar set com_errorTitle Error
-      dvar set com_errorMessage  Server script compile error
-not an lvalue
-maps/_zombiemode_weapons.gsc(2116):
-      maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"][maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"].size] = get_chest_index(self);
-(see console for details)
-
-********************
-ERROR:  Server script compile error
-not an lvalue
-maps/_zombiemode_weapons.gsc(2116):
-      maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"][maps\_zombiemode_blockers::map_get_room_info(self.roomId)["chests"].size] = get_chest_index(self);
-(see console for details)
-
-********************
------ Server Shutdown -----
+++++++++++++++++++maps/_zombiemode_powerups
+++++++++++++++++maps/_zombiemode_user
+++++++++++++++++maps/_zombiemode_weap_cymbal_monkey
+++++++++++++++++maps/_zombiemode_weap_freezegun
+++++++++++++++++maps/_zombiemode_weap_tesla
+++++++++++++++++maps/_zombiemode_weap_thundergun
+++++++++++++++++maps/_zombiemode_weap_crossbow
+++++++++++++++++maps/_zombiemode_bowie
+++++++++++++++++maps/_zombiemode_traps
+++++++++++++++++maps/_zombiemode_weapon_box
+++++++++++++++++maps/_zombiemode_ai_dogs
++++++++++++++++++animscripts/zombie_dog_init
+++maps/_meatshield
 Redundant asset: 'weapon','python_zm'
 Redundant asset: 'weapon','python_upgraded_zm'
 Redundant asset: 'weapon','cz75dw_zm'
@@ -1081,38 +1196,2382 @@ Redundant asset: 'rawfile','animscripts/traverse/zombie_jump_down_240.gsc'
 Redundant asset: 'rawfile','animscripts/traverse/zombie_wall_crawl_drop.gsc'
 [Idx 0001] Setting up weapon defaultweapon...
 [Idx 0002] Setting up weapon zombie_bullet_crouch...
-ShutdownGame:
-------------------------------------------------------------
-      dvar set sv_running 0
----------------------------
-PMem_Free( PerLocalClient, Low )
-PMem_Free( PerLocalClient, High )
-      dvar set com_maxclients 4
------ R_Init -----
-Video memory for device: 128 MB.
-Rounded video memory size: 128 MB.
-DirectX reports 128 MB of video memory and 4000 MB of available texture memory.
-Using video memory size to cap used texture memory at 112 MB.
-Texture detail is set automatically.
-Using picmip 1 on most textures, 1 on normal maps, and 1 on specular maps
-Cmd_AddCommand: setClanName already defined
-Cmd_AddCommand: checkClanName already defined
-Cmd_AddCommand: loadMaps already defined
-Cmd_AddCommand: refresh_filter already defined
-FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'apartment'
-FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'Büros Der Toten'
-FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'cod_zombies_modding'
-FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'cod_zombies_modding_backup'
-FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'common_zombie_patch_tut'
-FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'LongerGasMod'
-FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'usermaps'
-Customized arena file not found: mod.arena
+Error: Could not load rawfile "maps/gametypes/.gsc".
+animscripts/zombie_combat
++animscripts/zombie_melee
++maps/_bayonet
+animscripts/zombie_move
+animscripts/zombie_scripted
+animscripts/zombie_stop
+animscripts/zombie_dog_combat
+animscripts/zombie_dog_death
++animscripts/zombie_dog_pain
+animscripts/zombie_dog_move
+animscripts/zombie_dog_scripted
+animscripts/zombie_dog_stop
+animscripts/zombie_dog_flashed
+animscripts/zombie_dog_turn
+maps/zombie_theater
++maps/zombie_theater_magic_box
++maps/zombie_theater_movie_screen
+++maps/zombie_theater_amb
++++maps/_ambientpackage
++maps/zombie_theater_quad
++maps/zombie_theater_teleporter
++maps/zombie_theater_ffotd
++maps/zombie_theater_fx
+++maps/createart/zombie_theater_art
+++maps/createfx/zombie_theater_fx
++maps/_zombiemode_ai_quad
++maps/_compass
++maps/_zombiemode_auto_turret
+aitype/zombie_ger_zombie
++character/c_ger_honorguard_zt
+++xmodelalias/c_ger_honorguard_zomb_bodyalias
+++xmodelalias/c_ger_honorguard_zomb_headalias
+++xmodelalias/char_ger_hnrgrd_body1_g_rarmoffalias
+++xmodelalias/char_ger_hnrgrd_body1_g_larmoffalias
+++xmodelalias/char_ger_hnrgrd_body1_g_torsoalias
+++xmodelalias/char_ger_hnrgrd_body1_g_rlegoffalias
+++xmodelalias/char_ger_hnrgrd_body1_g_llegoffalias
+++xmodelalias/char_ger_hnrgrd_body1_g_legsoffalias
+aitype/zombie_quad
++character/c_zom_quad
+animscripts/traverse/zombie_mantle_over_40animscripts/traverse/zombie_mantle_over_40
+animscripts/traverse/zombie_jump_down_72animscripts/traverse/zombie_jump_down_72
+animscripts/traverse/zombie_jump_down_190animscripts/traverse/zombie_jump_down_190
+animscripts/traverse/zombie_jump_down_120animscripts/traverse/zombie_jump_down_120
+animscripts/traverse/zombie_jump_down_40animscripts/traverse/zombie_jump_down_40
+animscripts/traverse/zombie_wall_crawl_dropanimscripts/traverse/zombie_wall_crawl_drop
+animscripts/traverse/zombie_wall_crawl_drop_quickanimscripts/traverse/zombie_wall_crawl_drop_quick
+aitype/zombie_dog
++character/character_sp_zombie_dog
+animscripts/traverse/zombie_jump_down_127animscripts/traverse/zombie_jump_down_127
+animscripts/traverse/zombie_jump_down_240animscripts/traverse/zombie_jump_down_240
+animscripts/traverse/zombie_jump_down_286animscripts/traverse/zombie_jump_down_286
+Could not load xanim "generic_talker_allies".
+Could not load xanim "generic_talker_axis".
+Could not load xanim "generic_lookupleft".
+Could not load xanim "generic_lookupright".
+Could not load xanim "crew_truck_driver_climbin".
+Could not load xanim "crew_truck_passenger_climbin".
+Could not load xanim "crew_snowcat_driver_idle".
+Could not load xanim "crew_truck_guy8_climbin".
+Could not load xanim "crew_truck_guy7_climbin".
+Could not load xanim "crew_truck_guy6_climbin".
+Could not load xanim "crew_truck_guy5_climbin".
+Could not load xanim "crew_truck_guy4_climbin".
+Could not load xanim "crew_truck_guy3_climbin".
+Could not load xanim "crew_truck_guy2_climbin".
+Could not load xanim "crew_truck_guy1_climbin".
+Could not load xanim "ai_meatshield_hostage_dead_drop".
+Could not load xanim "int_meatshield_hostage_dead_drop".
+Could not load xanim "ai_meatshield_hostage_dead_idle_steady".
+Could not load xanim "int_meatshield_hostage_dead_idle_steady".
+Could not load xanim "ai_meatshield_hostage_dead_idle".
+Could not load xanim "int_meatshield_hostage_dead_idle".
+Could not load xanim "ai_meatshield_hostage_trans_2_dead".
+Could not load xanim "int_meatshield_hostage_trans_2_dead".
+Could not load xanim "ai_meatshield_victim_aim_idle_steady".
+Could not load xanim "int_meatshield_player_aim_idle_leftarm_steady".
+Could not load xanim "ai_meatshield_victim_aim_idle".
+Could not load xanim "int_meatshield_player_aim_idle_leftarm".
+Could not load xanim "ai_meatshield_grab".
+Could not load xanim "int_meatshield_grab".
+Could not load xanim "ai_contextual_melee_headpunch_quick".
+Could not load xanim "ai_contextual_melee_judochop_quick".
+Could not load xanim "ai_contextual_melee_elbow_hit_quick".
+Could not load xanim "ai_contextual_melee_kneekick_quick".
+Could not load xanim "ai_contextual_melee_crouch_neckstab_quick".
+Could not load xanim "ai_contextual_melee_neckstabcrouch_death_quick".
+Could not load xanim "ai_contextual_melee_neckstab_quick".
+Could not load xanim "ai_contextual_melee_necksnap_quick".
+Could not load xanim "ai_contextual_melee_garrotesit_death_quick".
+Could not load xanim "ai_contextual_melee_garrote_quick".
+Could not load xanim "ai_contextual_melee_neckstabcrouch_death".
+Could not load xanim "ai_contextual_melee_neckstabcrouch_idle".
+Could not load xanim "ai_contextual_melee_neckstab".
+Could not load xanim "ai_contextual_melee_necksnap".
+Could not load xanim "ai_contextual_melee_garrotesit_deathpose".
+Could not load xanim "ai_contextual_melee_garrotesit_death".
+Could not load xanim "ai_contextual_melee_garrotesit_idle".
+Could not load xanim "ai_contextual_melee_garrote".
+Could not load xanim "int_contextual_melee_headpunch_quick".
+Could not load xanim "int_contextual_melee_judochop_quick".
+Could not load xanim "int_contextual_melee_elbow_hit_quick".
+Could not load xanim "int_contextual_melee_kneekick_quick".
+Could not load xanim "int_contextual_melee_crouch_neckstab_quick".
+Could not load xanim "int_contextual_melee_neckstabcrouch_quick".
+Could not load xanim "int_contextual_melee_neckstab_quick".
+Could not load xanim "int_contextual_melee_necksnap_quick".
+Could not load xanim "int_contextual_melee_garrotesit_quick".
+Could not load xanim "int_contextual_melee_garrote_quick".
+Could not load xanim "int_contextual_melee_neckstabcrouch".
+Could not load xanim "int_contextual_melee_neckstab".
+Could not load xanim "int_contextual_melee_necksnap".
+Could not load xanim "int_contextual_melee_garrotesit".
+Could not load xanim "int_contextual_melee_garrote".
+Could not load xanim "crew_jeep1_passenger_to_driver".
+Could not load xanim "crew_jeep1_passenger3_climbin_fast".
+Could not load xanim "crew_jeep1_passenger2_climbin_fast".
+Could not load xanim "crew_jeep1_passenger1_climbin_fast".
+Could not load xanim "crew_jeep1_driver_climbin_fast".
+Could not load xanim "crew_jeep1_passenger3_climbout_fast".
+Could not load xanim "crew_jeep1_passenger2_climbout_fast".
+Could not load xanim "crew_jeep1_passenger1_climbout_fast".
+Could not load xanim "crew_jeep1_driver_climbout_fast".
+Could not load xanim "ai_zombie_quad_freeze_death_b".
+Could not load xanim "ai_zombie_quad_freeze_death_a".
+Could not load xanim "ai_zombie_crawl_freeze_death_02".
+Could not load xanim "ai_zombie_crawl_freeze_death_01".
+Could not load xanim "ai_zombie_freeze_death_e".
+Could not load xanim "ai_zombie_freeze_death_d".
+Could not load xanim "ai_zombie_freeze_death_c".
+Could not load xanim "ai_zombie_freeze_death_b".
+Could not load xanim "ai_zombie_freeze_death_a".
+Could not load xanim "ai_zombie_tesla_crawl_death_b".
+Could not load xanim "ai_zombie_tesla_crawl_death_a".
+Could not load xanim "ai_zombie_tesla_death_e".
+Could not load xanim "ai_zombie_tesla_death_d".
+Could not load xanim "ai_zombie_tesla_death_c".
+Could not load xanim "ai_zombie_tesla_death_b".
+Could not load xanim "ai_zombie_tesla_death_a".
+Could not load xanim "bog_melee_r_defend".
+Could not load xanim "bog_melee_r_attack".
+Could not load xanim "crew_bike_m72_aim_r_5".
+Could not load xanim "crew_bike_m72_aim_l_5".
+Could not load xanim "crew_bike_m72_aim_f_5".
+Could not load xanim "crew_bike_m72_blindfire".
+Could not load xanim "crew_bike_m72_lean_right_unarmed".
+Could not load xanim "crew_bike_m72_lean_right_armed".
+Could not load xanim "crew_bike_m72_lean_left_unarmed".
+Could not load xanim "crew_bike_m72_lean_left_armed".
+Could not load xanim "crew_bike_m72_jump_land_unarmed".
+Could not load xanim "crew_bike_m72_jump_land_armed".
+Could not load xanim "crew_bike_m72_jump_start_unarmed".
+Could not load xanim "crew_bike_m72_jump_start_armed".
+Could not load xanim "crew_bike_m72_drive_straight".
+Could not load xanim "crew_bike_m72_aim_gun_putaway".
+Could not load xanim "crew_bike_m72_aim_gun_pullot".
+Could not load xanim "crew_bike_m72_r_fire".
+Could not load xanim "crew_bike_m72_l_fire".
+Could not load xanim "crew_bike_m72_f_fire".
+Could not load xanim "crew_bike_m72_aim_r_8".
+Could not load xanim "crew_bike_m72_aim_l_8".
+Could not load xanim "crew_bike_m72_aim_f_8".
+Could not load xanim "crew_bike_m72_aim_r_6".
+Could not load xanim "crew_bike_m72_aim_l_6".
+Could not load xanim "crew_bike_m72_aim_f_6".
+Could not load xanim "crew_bike_m72_aim_r_4".
+Could not load xanim "crew_bike_m72_aim_l_4".
+Could not load xanim "crew_bike_m72_aim_f_4".
+Could not load xanim "crew_bike_m72_aim_r_2".
+Could not load xanim "crew_bike_m72_aim_l_2".
+Could not load xanim "crew_bike_m72_aim_f_2".
+Could not load xanim "ai_m113_gunner_aim_up".
+Could not load xanim "ai_m113_gunner_aim_down".
+Could not load xanim "ai_m113_gunner_aim".
+Could not load xanim "ai_boat_pbr_gunner_aim_up".
+Could not load xanim "ai_boat_pbr_gunner_aim_down".
+Could not load xanim "ai_boat_pbr_gunner_aim".
+Could not load xanim "ai_50cal_gunner_aim_down".
+Could not load xanim "ai_50cal_gunner_aim_up".
+Could not load xanim "ai_50cal_gunner_aim".
+Could not load xanim "crew_truck_guy6_climbout_fast".
+Could not load xanim "crew_truck_guy5_climbout_fast".
+Could not load xanim "crew_truck_guy2_climbout_fast".
+Could not load xanim "crew_truck_guy1_climbout_fast".
+Could not load xanim "crew_gaz63_passenger_climbout_fast".
+Could not load xanim "crew_gaz63_driver_jump_out".
+Could not load xanim "crew_truck_guy8_climbout".
+Could not load xanim "crew_truck_guy7_climbout".
+Could not load xanim "crew_truck_guy6_climbout".
+Could not load xanim "crew_truck_guy5_climbout".
+Could not load xanim "crew_truck_guy4_climbout".
+Could not load xanim "crew_truck_guy3_climbout".
+Could not load xanim "crew_truck_guy2_climbout".
+Could not load xanim "crew_truck_guy1_climbout".
+Could not load xanim "crew_truck_passenger_climbout".
+Could not load xanim "crew_truck_driver_climbout".
+Could not load xanim "crew_truck_guy8_sit_idle".
+Could not load xanim "crew_truck_guy7_sit_idle".
+Could not load xanim "crew_truck_guy6_sit_idle".
+Could not load xanim "crew_truck_guy5_sit_idle".
+Could not load xanim "crew_truck_guy4_sit_idle".
+Could not load xanim "crew_truck_guy3_sit_idle".
+Could not load xanim "crew_truck_guy2_sit_idle".
+Could not load xanim "crew_truck_guy1_sit_idle".
+Could not load xanim "crew_gaz63_passenger_sit_idle".
+Could not load xanim "crew_truck_passenger_sit_idle".
+Could not load xanim "crew_truck_driver_sit_idle".
+Could not load xanim "crew_police_passenger_climbout".
+Could not load xanim "crew_police_driver_climbout".
+Could not load xanim "crew_police_passenger_idle".
+Could not load xanim "crew_police_driver_idle".
+Could not load xanim "crew_uaz_passenger3_idle".
+Could not load xanim "crew_uaz_passenger2_idle".
+Could not load xanim "crew_uaz_passenger1_idle".
+Could not load xanim "crew_uaz_driver_idle".
+Could not load xanim "uaz_passenger_enter_from_huntedrun".
+Could not load xanim "crew_uaz_passenger3_tumbleout".
+Could not load xanim "crew_uaz_passenger1_tumbleout".
+Could not load xanim "crew_uaz_driver_tumbleout".
+Could not load xanim "uaz_driver_enter_from_huntedrun".
+Could not load xanim "crew_uaz_passenger3_climbout".
+Could not load xanim "crew_uaz_passenger2_climbout".
+Could not load xanim "crew_uaz_passenger1_climbout".
+Could not load xanim "crew_uaz_driver_climbout".
+Could not load xanim "crew_jeep1_passenger3_turn_right_heavy".
+Could not load xanim "crew_jeep1_passenger2_turn_right_heavy".
+Could not load xanim "crew_jeep1_passenger1_turn_right_heavy".
+Could not load xanim "crew_jeep1_driver_turn_right_heavy".
+Could not load xanim "crew_jeep1_passenger3_turn_right_light".
+Could not load xanim "crew_jeep1_passenger2_turn_right_light".
+Could not load xanim "crew_jeep1_passenger1_turn_right_light".
+Could not load xanim "crew_jeep1_driver_turn_right_light".
+Could not load xanim "crew_jeep1_passenger3_turn_left_heavy".
+Could not load xanim "crew_jeep1_passenger2_turn_left_heavy".
+Could not load xanim "crew_jeep1_passenger1_turn_left_heavy".
+Could not load xanim "crew_jeep1_driver_turn_left_heavy".
+Could not load xanim "crew_jeep1_passenger3_turn_left_light".
+Could not load xanim "crew_jeep1_passenger2_turn_left_light".
+Could not load xanim "crew_jeep1_passenger1_turn_left_light".
+Could not load xanim "crew_jeep1_driver_turn_left_light".
+Could not load xanim "crew_jeep1_passenger3_stop".
+Could not load xanim "crew_jeep1_passenger2_stop".
+Could not load xanim "crew_jeep1_passenger1_stop".
+Could not load xanim "crew_jeep1_driver_stop".
+Could not load xanim "crew_jeep1_passenger3_start".
+Could not load xanim "crew_jeep1_passenger2_start".
+Could not load xanim "crew_jeep1_passenger1_start".
+Could not load xanim "crew_jeep1_driver_start".
+Could not load xanim "crew_jeep1_passenger3_climbin".
+Could not load xanim "crew_jeep1_passenger2_climbin".
+Could not load xanim "crew_jeep1_passenger1_climbin".
+Could not load xanim "crew_jeep1_driver_climbin".
+Could not load xanim "crew_jeep1_passenger3_climbout".
+Could not load xanim "crew_jeep1_passenger2_climbout".
+Could not load xanim "crew_jeep1_passenger1_climbout".
+Could not load xanim "crew_jeep1_driver_climbout".
+Could not load xanim "crew_jeep1_passenger3_death_fire".
+Could not load xanim "crew_jeep1_passenger2_death_fire".
+Could not load xanim "crew_jeep1_passenger1_death_fire".
+Could not load xanim "crew_jeep1_driver_death_fire".
+Could not load xanim "crew_jeep1_passenger3_death_shot".
+Could not load xanim "crew_jeep1_passenger2_death_shot".
+Could not load xanim "crew_jeep1_passenger1_death_shot".
+Could not load xanim "crew_jeep1_driver_death_shot".
+Could not load xanim "crew_jeep1_passenger3_drive_under_fire".
+Could not load xanim "crew_jeep1_passenger2_drive_under_fire".
+Could not load xanim "crew_jeep1_passenger1_drive_under_fire".
+Could not load xanim "crew_jeep1_driver_drive_under_fire".
+Could not load xanim "crew_jeep1_passenger3_drive_idle".
+Could not load xanim "crew_jeep1_passenger2_drive_idle".
+Could not load xanim "crew_jeep1_passenger1_drive_idle".
+Could not load xanim "crew_jeep1_driver_drive_idle".
+Could not load xanim "ai_huey_passenger_waiting".
+Could not load xanim "ai_huey_passenger_b_rt_exit".
+Could not load xanim "ai_huey_passenger_b_rt".
+Could not load xanim "ai_huey_passenger_f_rt_exit".
+Could not load xanim "ai_huey_passenger_f_rt_enter".
+Could not load xanim "ai_huey_passenger_f_rt".
+Could not load xanim "ai_huey_passenger_m_rt_enter".
+Could not load xanim "ai_huey_passenger_m_lt_enter".
+Could not load xanim "ai_huey_passenger_f_lt_exit".
+Could not load xanim "ai_huey_passenger_f_lt_enter".
+Could not load xanim "ai_huey_passenger_f_lt".
+Could not load xanim "ai_huey_passenger_b_lt_exit".
+Could not load xanim "ai_huey_passenger_b_lt_enter".
+Could not load xanim "ai_huey_passenger_b_lt".
+Could not load xanim "ai_huey_gunner2_exit".
+Could not load xanim "ai_huey_gunner2_enter".
+Could not load xanim "ai_huey_gunner2".
+Could not load xanim "ai_huey_gunner1_exit".
+Could not load xanim "ai_huey_gunner1_enter".
+Could not load xanim "ai_huey_gunner1".
+Could not load xanim "ai_huey_pilot2_idle_loop1".
+Could not load xanim "ai_huey_pilot1_idle_loop1".
+Could not load xanim "ai_mi8_pilot1_idle_loop2".
+Could not load xanim "ai_mi8_pilot1_idle_loop1".
+Could not load xanim "ai_revive_reviver_onback_left_get_up".
+Could not load xanim "ai_revive_reviver_onback_left_revive".
+Could not load xanim "ai_revive_wounded_onback_left_get_up".
+Could not load xanim "ai_revive_wounded_onback_left_revive".
+Could not load xanim "ai_revive_wounded_onback_loop".
+Could not load xanim "ai_revive_wounded_onback_fall_crouch".
+Could not load xanim "ai_revive_wounded_onback_fall_stand".
+Could not load xanim "ai_dying_crawl_2_back_revive".
+Could not load xanim "ai_flame_wounded_stand_d".
+Could not load xanim "ai_flame_wounded_stand_c".
+Could not load xanim "ai_flame_wounded_stand_b".
+Could not load xanim "ai_flame_wounded_stand_a".
+Could not load xanim "ai_flame_wounded_crouch_d".
+Could not load xanim "ai_flame_wounded_crouch_c".
+Could not load xanim "ai_flame_wounded_crouch_b".
+Could not load xanim "ai_flame_wounded_crouch_a".
+Could not load xanim "run_pain_stumble".
+Could not load xanim "run_pain_stomach".
+Could not load xanim "run_pain_fallonknee_03".
+Could not load xanim "run_pain_fallonknee_02".
+Could not load xanim "run_pain_fallonknee".
+Could not load xanim "exposed_pain_right_arm".
+Could not load xanim "exposed_pain_leg".
+Could not load xanim "exposed_pain_left_arm".
+Could not load xanim "exposed_pain_groin".
+Could not load xanim "exposed_pain_dropgun".
+Could not load xanim "exposed_pain_back".
+Could not load xanim "exposed_pain_2_crouch".
+Could not load xanim "exposed_crouch_pain_right_arm".
+Could not load xanim "exposed_crouch_pain_left_arm".
+Could not load xanim "exposed_crouch_pain_headsnap".
+Could not load xanim "exposed_crouch_pain_flinch".
+Could not load xanim "exposed_crouch_pain_chest".
+Could not load xanim "back_pain".
+Could not load xanim "saw_gunner_lowwall_pain_02".
+Could not load xanim "saw_gunner_pain".
+Could not load xanim "ai_death_upontoback".
+Could not load xanim "ai_bayonet_right_death".
+Could not load xanim "ai_bayonet_left_death".
+Could not load xanim "ai_bayonet_back_death".
+Could not load xanim "ai_bayonet_shoulder_death".
+Could not load xanim "ai_bayonet_thrust_death".
+Could not load xanim "ai_deadly_wounded_torso_hit".
+Could not load xanim "ai_deadly_wounded_leg_r_hit".
+Could not load xanim "ai_deadly_wounded_leg_l_hit".
+Could not load xanim "ai_deadly_wounded_flamedb_hit".
+Could not load xanim "ai_deadly_wounded_flameda_hit".
+Could not load xanim "ai_flame_death_crouch_h".
+Could not load xanim "ai_flame_death_crouch_g".
+Could not load xanim "ai_flame_death_crouch_f".
+Could not load xanim "ai_flame_death_crouch_e".
+Could not load xanim "ai_flame_death_crouch_d".
+Could not load xanim "ai_flame_death_crouch_c".
+Could not load xanim "ai_flame_death_crouch_b".
+Could not load xanim "ai_flame_death_crouch_a".
+Could not load xanim "ai_flame_death_h".
+Could not load xanim "ai_flame_death_g".
+Could not load xanim "ai_flame_death_f".
+Could not load xanim "ai_flame_death_e".
+Could not load xanim "ai_flame_death_d".
+Could not load xanim "ai_flame_death_c".
+Could not load xanim "ai_flame_death_b".
+Could not load xanim "ai_flame_death_a".
+Could not load xanim "saw_gunner_lowwall_death".
+Could not load xanim "saw_gunner_death".
+Could not load xanim "run_death_roll".
+Could not load xanim "run_death_fallonback_02".
+Could not load xanim "run_death_fallonback".
+Could not load xanim "run_death_facedown".
+Could not load xanim "exposed_death_neckgrab".
+Could not load xanim "exposed_death_twist".
+Could not load xanim "exposed_death_nerve".
+Could not load xanim "exposed_death_headtwist".
+Could not load xanim "exposed_death_headshot".
+Could not load xanim "exposed_death_groin".
+Could not load xanim "exposed_death_firing_02".
+Could not load xanim "exposed_death_firing".
+Could not load xanim "exposed_death_falltoknees_02".
+Could not load xanim "exposed_death_falltoknees".
+Could not load xanim "exposed_death_02".
+Could not load xanim "exposed_death".
+Could not load xanim "exposed_crouch_death_twist".
+Could not load xanim "exposed_crouch_death_flip".
+Could not load xanim "exposed_crouch_death_fetal".
+Could not load xanim "death_explosion_stand_up_v2".
+Could not load xanim "death_explosion_stand_up_v1".
+Could not load xanim "death_explosion_run_l_v2".
+Could not load xanim "death_explosion_run_l_v1".
+Could not load xanim "death_explosion_run_r_v2".
+Could not load xanim "death_explosion_run_r_v1".
+Could not load xanim "death_explosion_run_b_v2".
+Could not load xanim "death_explosion_run_b_v1".
+Could not load xanim "death_explosion_run_f_v4".
+Could not load xanim "death_explosion_run_f_v3".
+Could not load xanim "death_explosion_run_f_v2".
+Could not load xanim "death_explosion_run_f_v1".
+Could not load xanim "death_explosion_stand_r_v2".
+Could not load xanim "death_explosion_stand_r_v1".
+Could not load xanim "death_explosion_stand_l_v3".
+Could not load xanim "death_explosion_stand_l_v2".
+Could not load xanim "death_explosion_stand_l_v1".
+Could not load xanim "death_explosion_stand_f_v4".
+Could not load xanim "death_explosion_stand_f_v3".
+Could not load xanim "death_explosion_stand_f_v2".
+Could not load xanim "death_explosion_stand_f_v1".
+Could not load xanim "death_explosion_stand_b_v4".
+Could not load xanim "death_explosion_stand_b_v3".
+Could not load xanim "death_explosion_stand_b_v2".
+Could not load xanim "death_explosion_stand_b_v1".
+Could not load xanim "ai_pillar_crouch_grenade_throw_03".
+Could not load xanim "ai_pillar_crouch_grenade_throw_02".
+Could not load xanim "ai_pillar_crouch_grenade_throw_01".
+Could not load xanim "ai_pillar_stand_grenade_throw_03".
+Could not load xanim "ai_pillar_stand_grenade_throw_02".
+Could not load xanim "ai_pillar_stand_grenade_throw_01".
+Could not load xanim "saw_gunner_lowwall_runout_mr".
+Could not load xanim "saw_gunner_lowwall_runout_ml".
+Could not load xanim "saw_gunner_lowwall_runout_m".
+Could not load xanim "saw_gunner_lowwall_runout_r".
+Could not load xanim "saw_gunner_lowwall_runout_l".
+Could not load xanim "saw_gunner_lowwall_runin_mr".
+Could not load xanim "saw_gunner_lowwall_runin_ml".
+Could not load xanim "saw_gunner_lowwall_runin_m".
+Could not load xanim "saw_gunner_lowwall_runin_r".
+Could not load xanim "saw_gunner_lowwall_runin_l".
+Could not load xanim "saw_gunner_runout_mr".
+Could not load xanim "saw_gunner_runout_ml".
+Could not load xanim "saw_gunner_runout_m".
+Could not load xanim "saw_gunner_runout_r".
+Could not load xanim "saw_gunner_runout_l".
+Could not load xanim "saw_gunner_runin_mr".
+Could not load xanim "saw_gunner_runin_ml".
+Could not load xanim "saw_gunner_runin_m".
+Could not load xanim "saw_gunner_runin_r".
+Could not load xanim "saw_gunner_runin_l".
+Could not load xanim "coverstand_pain_leg".
+Could not load xanim "coverstand_pain_groin".
+Could not load xanim "coverstand_death_right".
+Could not load xanim "coverstand_death_left".
+Could not load xanim "coverstand_trans_in_mr".
+Could not load xanim "coverstand_trans_in_ml".
+Could not load xanim "coverstand_trans_in_r".
+Could not load xanim "coverstand_trans_in_m".
+Could not load xanim "coverstand_trans_in_l".
+Could not load xanim "coverstand_trans_out_mr".
+Could not load xanim "coverstand_trans_out_ml".
+Could not load xanim "coverstand_trans_out_r".
+Could not load xanim "coverstand_trans_out_m".
+Could not load xanim "coverstand_trans_out_l".
+Could not load xanim "coverstand_grenadeb".
+Could not load xanim "coverstand_grenadea".
+Could not load xanim "cornercrr_trans_out_r".
+Could not load xanim "cornercrr_trans_out_mr".
+Could not load xanim "cornercrr_trans_out_ml".
+Could not load xanim "cornercrr_trans_out_mf".
+Could not load xanim "cornercrr_trans_out_m".
+Could not load xanim "cornercrr_trans_out_l".
+Could not load xanim "cornercrr_trans_out_f".
+Could not load xanim "cornercrr_trans_in_r".
+Could not load xanim "cornercrr_trans_in_mr".
+Could not load xanim "cornercrr_trans_in_ml".
+Could not load xanim "cornercrr_trans_in_mf".
+Could not load xanim "cornercrr_trans_in_m".
+Could not load xanim "cornercrr_trans_in_l".
+Could not load xanim "cornercrr_trans_in_f".
+Could not load xanim "cornercrr_grenadea".
+Could not load xanim "corner_standl_trans_out_8".
+Could not load xanim "corner_standl_trans_out_7".
+Could not load xanim "corner_standl_trans_out_6".
+Could not load xanim "corner_standl_trans_out_4".
+Could not load xanim "corner_standl_trans_out_3".
+Could not load xanim "corner_standl_trans_out_2".
+Could not load xanim "corner_standl_trans_out_1".
+Could not load xanim "corner_standl_trans_in_8".
+Could not load xanim "corner_standl_trans_in_7".
+Could not load xanim "corner_standl_trans_in_6".
+Could not load xanim "corner_standl_trans_in_3".
+Could not load xanim "corner_standl_trans_in_2".
+Could not load xanim "corner_standl_trans_in_1".
+Could not load xanim "corner_standl_trans_in_4".
+Could not load xanim "corner_standr_trans_out_9".
+Could not load xanim "corner_standr_trans_out_8".
+Could not load xanim "corner_standr_trans_out_6".
+Could not load xanim "corner_standr_trans_out_4".
+Could not load xanim "corner_standr_trans_out_3".
+Could not load xanim "corner_standr_trans_out_2".
+Could not load xanim "corner_standr_trans_out_1".
+Could not load xanim "corner_standr_trans_in_9".
+Could not load xanim "corner_standr_trans_in_8".
+Could not load xanim "corner_standr_trans_in_6".
+Could not load xanim "corner_standr_trans_in_3".
+Could not load xanim "corner_standr_trans_in_1".
+Could not load xanim "corner_standr_trans_in_2".
+Could not load xanim "corner_standr_trans_in_4".
+Could not load xanim "corner_standr_painc".
+Could not load xanim "corner_standr_painb".
+Could not load xanim "corner_standr_pain".
+Could not load xanim "corner_standr_grenade_b".
+Could not load xanim "corner_standr_grenade_a".
+Could not load xanim "corner_standr_deathb".
+Could not load xanim "corner_standr_deatha".
+Could not load xanim "cornercrl_trans_out_r".
+Could not load xanim "cornercrl_trans_out_mr".
+Could not load xanim "cornercrl_trans_out_ml".
+Could not load xanim "cornercrl_trans_out_mf".
+Could not load xanim "cornercrl_trans_out_m".
+Could not load xanim "cornercrl_trans_out_l".
+Could not load xanim "cornercrl_trans_out_f".
+Could not load xanim "cornercrl_trans_in_r".
+Could not load xanim "cornercrl_trans_in_mr".
+Could not load xanim "cornercrl_trans_in_ml".
+Could not load xanim "cornercrl_trans_in_mf".
+Could not load xanim "cornercrl_trans_in_m".
+Could not load xanim "cornercrl_trans_in_l".
+Could not load xanim "cornercrl_trans_in_f".
+Could not load xanim "cornercrl_grenadeb".
+Could not load xanim "cornercrl_grenadea".
+Could not load xanim "corner_standl_paine".
+Could not load xanim "corner_standl_paind".
+Could not load xanim "corner_standl_painc".
+Could not load xanim "corner_standl_painb".
+Could not load xanim "corner_standl_pain".
+Could not load xanim "corner_standl_grenade_b".
+Could not load xanim "corner_standl_grenade_a".
+Could not load xanim "corner_standl_deathb".
+Could not load xanim "corner_standl_deatha".
+Could not load xanim "ai_zombie_spets_roll_c".
+Could not load xanim "ai_zombie_spets_roll_b".
+Could not load xanim "ai_zombie_spets_roll_a".
+Could not load xanim "ai_zombie_spets_sidestep_right_b".
+Could not load xanim "ai_zombie_spets_sidestep_right_a".
+Could not load xanim "ai_zombie_spets_sidestep_left_b".
+Could not load xanim "ai_zombie_spets_sidestep_left_a".
+Could not load xanim "ai_zombie_crawl_jump_down_286".
+Could not load xanim "ai_zombie_crawl_jump_down_240".
+Could not load xanim "ai_zombie_crawl_jump_down_120".
+Could not load xanim "wall_death".
+Could not load xanim "covercrouch_death_3".
+Could not load xanim "covercrouch_death_2".
+Could not load xanim "covercrouch_death_1".
+Could not load xanim "covercrouch_grenadeb".
+Could not load xanim "covercrouch_grenadea".
+Could not load xanim "covercrouch_run_out_r".
+Could not load xanim "covercrouch_run_out_mr".
+Could not load xanim "covercrouch_run_out_m".
+Could not load xanim "covercrouch_run_out_ml".
+Could not load xanim "covercrouch_run_out_l".
+Could not load xanim "covercrouch_run_in_r".
+Could not load xanim "covercrouch_run_in_mr".
+Could not load xanim "covercrouch_run_in_m".
+Could not load xanim "covercrouch_run_in_ml".
+Could not load xanim "covercrouch_run_in_l".
+Could not load xanim "add_fire".
+Could not load xanim "prone_grenade_a".
+Could not load xanim "crouch_2run_180".
+Could not load xanim "crouch_2run_f".
+Could not load xanim "crouch_2run_r".
+Could not load xanim "crouch_2run_l".
+Could not load xanim "run_2_crouch_180l".
+Could not load xanim "run_2_crouch_90r".
+Could not load xanim "run_2_crouch_90l".
+Could not load xanim "run_2_crouch_f".
+Could not load xanim "stand_2_run_180_med".
+Could not load xanim "stand_2_run_f_2".
+Could not load xanim "stand_2_run_r".
+Could not load xanim "stand_2_run_l".
+Could not load xanim "run_2_stand_180l".
+Could not load xanim "run_2_stand_90r".
+Could not load xanim "run_2_stand_90l".
+Could not load xanim "run_2_stand_f_6".
+Could not load xanim "weapon_switch".
+Could not load xanim "exposed_grenadethrowc".
+Could not load xanim "exposed_grenadethrowb".
+Could not load xanim "prone_legs_down".
+Could not load xanim "prone_legs_up".
+Could not load xanim "exposed_tracking_turn180l".
+Could not load xanim "exposed_tracking_turn135r".
+Could not load xanim "exposed_tracking_turn90r".
+Could not load xanim "exposed_tracking_turn45r".
+Could not load xanim "exposed_tracking_turn135l".
+Could not load xanim "exposed_tracking_turn90l".
+Could not load xanim "exposed_tracking_turn45l".
+Could not load xanim "aim_8".
+Could not load xanim "aim_2".
+Could not load xanim "aim_6".
+Could not load xanim "aim_4".
+Could not load xanim "exposed_stand_2_crouch".
+Could not load xanim "exposed_crouch_2_stand".
+Could not load xanim "exposed_crouch_idle_alert_v3".
+Could not load xanim "exposed_crouch_idle_alert_v2".
+Could not load xanim "exposed_crouch_idle_alert_v1".
+Could not load xanim "exposed_idle_alert_v3".
+Could not load xanim "exposed_idle_alert_v2".
+Could not load xanim "exposed_idle_alert_v1".
+Could not load xanim "cqb_stand_signal_move_out".
+Could not load xanim "cqb_stand_signal_move_up".
+Could not load xanim "cqb_stand_signal_stop".
+Could not load xanim "cqb_stand_wave_go_v1".
+Could not load xanim "cqb_stand_wave_on_me".
+Could not load xanim "saw_gunner_run_slow".
+Could not load xanim "saw_gunner_run_fast".
+Could not load xanim "ai_mg_shoulder_run".
+Could not load xanim "ai_run_lowready_f_lean_r".
+Could not load xanim "ai_run_lowready_f_lean_l".
+Could not load xanim "crouch_fastwalk_r".
+Could not load xanim "crouch_fastwalk_l".
+Could not load xanim "crouch_fastwalk_b".
+Could not load xanim "run_lowready_b".
+Could not load xanim "run_lowready_r".
+Could not load xanim "run_lowready_l".
+Could not load xanim "patrol_bored_patrolwalk_twitch".
+Could not load xanim "patrol_bored_patrolwalk".
+Could not load xanim "sprint1_loop".
+Could not load xanim "crouch_fastwalk_f".
+Could not load xanim "run_lowready_f".
+Could not load xanim "ai_zombie_boss_idle_b".
+Could not load xanim "ai_zombie_boss_idle_a".
+Could not load xanim "ai_flamethrower_crouch_twitch".
+Could not load xanim "ai_flamethrower_crouch_idle_b".
+Could not load xanim "ai_flamethrower_crouch_idle_a".
+Could not load xanim "ai_flamethrower_stand_twitch".
+Could not load xanim "ai_flamethrower_stand_idle_casual_v1".
+Could not load xanim "ai_mg_shoulder_run2crouch".
+Could not load xanim "ai_mg_shoulder_crouch_idle".
+Could not load xanim "ai_mg_shoulder_run2stand".
+Could not load xanim "ai_mg_shoulder_stand_idle".
+Could not load xanim "cqb_stand_twitch".
+Could not load xanim "cqb_stand_idle".
+Could not load xanim "patrol_bored_2_walk_180turn".
+Could not load xanim "patrol_bored_2_walk".
+Could not load xanim "patrol_bored_twitch_stretch".
+Could not load xanim "patrol_bored_twitch_checkphone".
+Could not load xanim "patrol_bored_twitch_bug".
+Could not load xanim "patrol_bored_idle_cellphone".
+Could not load xanim "patrol_bored_idle_smoke".
+Could not load xanim "patrol_bored_idle".
+Could not load xanim "patrol_bored_walk_2_bored".
+Could not load xanim "casual_stand_idle_twitchb".
+Could not load xanim "casual_stand_idle_twitch".
+Could not load xanim "casual_stand_idle_trans_in".
+Could not load xanim "casual_stand_idle".
+Could not load xanim "casual_crouch_point".
+Could not load xanim "casual_crouch_twitch".
+Could not load xanim "casual_crouch_idle_in".
+Could not load xanim "casual_crouch_idle".
+Could not load xanim "casual_stand_v2_twitch_talk".
+Could not load xanim "casual_stand_v2_twitch_shift".
+Could not load xanim "casual_stand_v2_twitch_radio".
+Could not load xanim "casual_stand_v2_idle".
+Could not load xanim "crouch2stand".
+Could not load xanim "shoot".
+Could not load xanim "upperbody".
+Could not load xanim "void_loop".
+Could not load xanim "v_uaz_passenger3_door_open".
+Could not load xanim "v_uaz_passenger2_door_open".
+Could not load xanim "v_uaz_passenger_door_open".
+Could not load xanim "v_uaz_driver_door_open".
+Could not load xanim "v_jeep_passenger_door_open".
+Could not load xanim "v_jeep_driver_door_open".
+Could not load xanim "v_pow_b03_hind_landed".
+Could not load xanim "v_pow_b03_hind_exit_interior".
+Could not load xanim "v_pow_b03_hind_exit_exterior".
+Could not load xanim "v_pow_b03_hind_climbin_interior".
+Could not load xanim "v_pow_b03_hind_climbin_exterior".
+Could not load xanim "v_police_passenger_door_open".
+Could not load xanim "v_police_driver_door_open".
+Could not load xanim "v_gaz63_passenger_door_open".
+Could not load xanim "v_gaz63_driver_door_open".
+Could not load xanim "uaz_driving_idle_backward".
+Could not load xanim "uaz_driving_idle_forward".
+Could not load xanim "int_pow_b03_cockpit_exit".
+Could not load xanim "int_pow_b03_cockpit_inandup".
+Could not load xanim "viewmodel_swim_to_right".
+Could not load xanim "viewmodel_swim_to_left".
+Could not load xanim "viewmodel_swim_tread_water".
+Could not load xanim "viewmodel_swim_backwards_c".
+Could not load xanim "viewmodel_swim_backwards_b".
+Could not load xanim "viewmodel_swim_backwards_a".
+Could not load xanim "viewmodel_swim_breaststroke_c".
+Could not load xanim "viewmodel_swim_breaststroke_b".
+Could not load xanim "viewmodel_swim_breaststroke_a".
+Could not load xanim "prop_meatshield_bullet_tip_spin".
+Could not load xanim "prop_meatshield_bullet_tip_cam".
+Could not load xanim "prop_contextual_melee_garrotesit_chair_quick".
+Could not load xanim "prop_contextual_melee_garrotesit_chair".
+Could not load xanim "prop_contextual_melee_garrotesit_garrotewire_quick".
+Could not load xanim "prop_contextual_melee_garrotesit_garrotewire".
+Could not load xanim "prop_contextual_melee_garrote_garrotewire_quick".
+Could not load xanim "prop_contextual_melee_garrote_garrotewire".
+Could not load xanim "zombie_dog_run_pain_front".
+Could not load xanim "zombie_dog_pain_hit_right".
+Could not load xanim "zombie_dog_pain_hit_left".
+Could not load xanim "zombie_dog_pain_hit_front".
+Could not load xanim "zombie_dog_pain_hit_back".
+Could not load xanim "zombie_dog_run_pain".
+Could not load xanim "zombie_dog_run_flashbang".
+Could not load xanim "zd_attack_player_late".
+Could not load xanim "pb_pbr_driver_idle".
+Could not load xanim "pb_huey_passenger_b_rt".
+Could not load xanim "pb_huey_passenger_f_rt".
+Could not load xanim "pb_huey_passenger_m_rt".
+Could not load xanim "pb_huey_passenger_m_lt".
+Could not load xanim "pb_huey_passenger_f_lt".
+Could not load xanim "pb_huey_passenger_b_lt_aim_60up_60right".
+Could not load xanim "pb_huey_passenger_b_lt_aim_forward_60up".
+Could not load xanim "pb_huey_passenger_b_lt_aim_60up_60left".
+Could not load xanim "pb_huey_passenger_b_lt_aim_60right_level".
+Could not load xanim "pb_huey_passenger_b_lt_aim_forward_level".
+Could not load xanim "pb_huey_passenger_b_lt_aim_60left_level".
+Could not load xanim "pb_huey_passenger_b_lt_aim_60down_60right".
+Could not load xanim "pb_huey_passenger_b_lt_aim_forward_60down".
+Could not load xanim "pb_huey_passenger_b_lt_aim_60down_60left".
+Could not load xanim "p_driver_jeep_seated".
+Could not load xanim "pb_zipline_loop".
+Could not load xanim "pb_zipline_release".
+Could not load xanim "pb_zipline_grab".
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+misc_modle doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+stream_info doesn't have a spawn function
+-----------------------------------
+[Idx 0003] Setting up weapon ak47_zm...
+[Idx 0004] Setting up weapon m1911_zm...
+[Idx 0005] Setting up weapon frag_grenade_zm...
+frag_grenade_zm: WEAPON_FRAGGRENADE
+[Idx 0006] Setting up weapon dog_bite_zm...
+      dvar set sm_sunSampleSizeNear 0.93
+      dvar set r_lightGridEnableTweaks 1
+      dvar set r_lightGridIntensity 1.45
+      dvar set r_lightGridContrast 0.15
+      dvar set r_lightTweakSunLight 22
+Error: Could not load rawfile "shock/electrocution.shock".
+Error: couldn't open 'shock/electrocution.shock'.
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+Error: Could not load weapon "sticky_grenade_zm".
+[Idx 0007] Setting up weapon sticky_grenade_zm...
+[Idx 0008] Setting up weapon claymore_zm...
+claymore_zm: WEAPON_CLAYMORE
+[Idx 0009] Setting up weapon m1911_upgraded_zm...
+[Idx 0010] Setting up weapon m1911lh_upgraded_zm...
+[Idx 0011] Setting up weapon python_zm...
+[Idx 0012] Setting up weapon python_upgraded_zm...
+[Idx 0013] Setting up weapon cz75_zm...
+[Idx 0014] Setting up weapon cz75_upgraded_zm...
+[Idx 0015] Setting up weapon m14_zm...
+[Idx 0016] Setting up weapon m14_upgraded_zm...
+[Idx 0017] Setting up weapon m16_zm...
+[Idx 0018] Setting up weapon m16_gl_upgraded_zm...
+[Idx 0019] Setting up weapon gl_m16_upgraded_zm...
+[Idx 0020] Setting up weapon g11_lps_zm...
+[Idx 0021] Setting up weapon g11_lps_upgraded_zm...
+[Idx 0022] Setting up weapon famas_zm...
+[Idx 0023] Setting up weapon famas_upgraded_zm...
+[Idx 0024] Setting up weapon ak74u_zm...
+[Idx 0025] Setting up weapon ak74u_upgraded_zm...
+[Idx 0026] Setting up weapon mp5k_zm...
+[Idx 0027] Setting up weapon mp5k_upgraded_zm...
+[Idx 0028] Setting up weapon mp40_zm...
+[Idx 0029] Setting up weapon mp40_upgraded_zm...
+[Idx 0030] Setting up weapon mpl_zm...
+[Idx 0031] Setting up weapon mpl_upgraded_zm...
+[Idx 0032] Setting up weapon pm63_zm...
+[Idx 0033] Setting up weapon pm63_upgraded_zm...
+[Idx 0034] Setting up weapon pm63lh_upgraded_zm...
+[Idx 0035] Setting up weapon spectre_zm...
+[Idx 0036] Setting up weapon spectre_upgraded_zm...
+[Idx 0037] Setting up weapon cz75dw_zm...
+[Idx 0038] Setting up weapon cz75lh_zm...
+[Idx 0039] Setting up weapon cz75dw_upgraded_zm...
+[Idx 0040] Setting up weapon cz75lh_upgraded_zm...
+[Idx 0041] Setting up weapon ithaca_zm...
+[Idx 0042] Setting up weapon ithaca_upgraded_zm...
+[Idx 0043] Setting up weapon rottweil72_zm...
+[Idx 0044] Setting up weapon rottweil72_upgraded_zm...
+[Idx 0045] Setting up weapon spas_zm...
+[Idx 0046] Setting up weapon spas_upgraded_zm...
+[Idx 0047] Setting up weapon hs10_zm...
+[Idx 0048] Setting up weapon hs10_upgraded_zm...
+[Idx 0049] Setting up weapon hs10lh_upgraded_zm...
+[Idx 0050] Setting up weapon aug_acog_zm...
+[Idx 0051] Setting up weapon aug_acog_mk_upgraded_zm...
+[Idx 0052] Setting up weapon mk_aug_upgraded_zm...
+[Idx 0053] Setting up weapon galil_zm...
+[Idx 0054] Setting up weapon galil_upgraded_zm...
+[Idx 0055] Setting up weapon commando_zm...
+[Idx 0056] Setting up weapon commando_upgraded_zm...
+[Idx 0057] Setting up weapon fnfal_zm...
+[Idx 0058] Setting up weapon fnfal_upgraded_zm...
+[Idx 0059] Setting up weapon dragunov_zm...
+[Idx 0060] Setting up weapon dragunov_upgraded_zm...
+[Idx 0061] Setting up weapon l96a1_zm...
+[Idx 0062] Setting up weapon l96a1_upgraded_zm...
+[Idx 0063] Setting up weapon rpk_zm...
+[Idx 0064] Setting up weapon rpk_upgraded_zm...
+[Idx 0065] Setting up weapon hk21_zm...
+[Idx 0066] Setting up weapon hk21_upgraded_zm...
+[Idx 0067] Setting up weapon m72_law_zm...
+[Idx 0068] Setting up weapon m72_law_upgraded_zm...
+[Idx 0069] Setting up weapon china_lake_zm...
+[Idx 0070] Setting up weapon china_lake_upgraded_zm...
+[Idx 0071] Setting up weapon zombie_cymbal_monkey...
+zombie_cymbal_monkey: ZOMBIE_CYMBAL_MONKEY
+[Idx 0072] Setting up weapon ray_gun_zm...
+[Idx 0073] Setting up weapon ray_gun_upgraded_zm...
+[Idx 0074] Setting up weapon thundergun_zm...
+[Idx 0075] Setting up weapon thundergun_upgraded_zm...
+[Idx 0076] Setting up weapon crossbow_explosive_zm...
+[Idx 0077] Setting up weapon crossbow_explosive_upgraded_zm...
+[Idx 0078] Setting up weapon knife_ballistic_zm...
+[Idx 0079] Setting up weapon knife_ballistic_upgraded_zm...
+[Idx 0080] Setting up weapon knife_ballistic_bowie_zm...
+[Idx 0081] Setting up weapon knife_ballistic_bowie_upgraded_zm...
+Error: Could not load weapon "tesla_gun_zm".
+[Idx 0082] Setting up weapon tesla_gun_zm...
+Error: Could not load weapon "freezegun_zm".
+[Idx 0083] Setting up weapon freezegun_zm...
+Error: Could not load weapon "zombie_black_hole_bomb".
+[Idx 0084] Setting up weapon zombie_black_hole_bomb...
+Error: Could not load weapon "zombie_nesting_dolls".
+[Idx 0085] Setting up weapon zombie_nesting_dolls...
+[Idx 0086] Setting up weapon explosive_bolt_zm...
+explosive_bolt_zm: WEAPON_EXPLOSIVE_BOLT
+[Idx 0087] Setting up weapon explosive_bolt_upgraded_zm...
+explosive_bolt_upgraded_zm: WEAPON_EXPLOSIVE_BOLT
+      dvar set autodifficulty_frac 75
+      dvar set player_meleeDamageMultiplier 0.4
+      dvar set fire_world_damage 0
+      dvar set fire_world_damage_rate 0
+      dvar set fire_world_damage_duration 0
+Error: Could not load rawfile "shock/zombie_death.shock".
+Error: couldn't open 'shock/zombie_death.shock'.
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 1
+      dvar set bg_shock_soundLoop 
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.5
+      dvar set bg_shock_soundFadeOutTime 1.5
+      dvar set bg_shock_soundLoopFadeTime 0.25
+      dvar set bg_shock_soundLoopEndDelay 0.25
+      dvar set bg_shock_soundRoomType ber1
+      dvar set bg_shock_soundDryLevel 0
+      dvar set bg_shock_soundWetLevel 0
+      dvar set bg_shock_soundModEndDelay 0
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 0
+      dvar set bg_shock_lookControl_maxyawspeed 0
+      dvar set bg_shock_lookControl_mousesensitivityscale 0
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenType flashed
+      dvar set bg_shock_screenFlashWhiteFadeTime 3.5
+      dvar set bg_shock_screenFlashShotFadeTime 1
+      dvar set bg_shock_soundLoop chr_flashbang_tinnitus_loop
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeOutTime 1
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType shock_flashbang
+      dvar set bg_shock_soundDryLevel 0.5
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay 0.1
+      dvar set bg_shock_soundSnapshot flashbang
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_animation 1
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenFlashWhiteFadeTime 0
+      dvar set bg_shock_screenFlashShotFadeTime 0
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_soundSnapshot default
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_animation 0
+      dvar set bg_shock_screenBlurBlendTime 0.001
+      dvar set bg_shock_screenBlurBlendFadeTime 0.001
+      dvar set bg_shock_viewKickPeriod 1.5
+      dvar set bg_shock_viewKickRadius 0.5
+      dvar set bg_shock_viewKickFadeTime 0.5
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType generic
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.2
+      dvar set bg_shock_lookControl_fadeTime 1
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_viewKickPeriod 0.75
+      dvar set bg_shock_viewKickRadius 0.05
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 0.001
+      dvar set bg_shock_screenBlurBlendFadeTime 0.001
+      dvar set bg_shock_viewKickPeriod 0
+'0' is not a valid value for dvar 'bg_shock_viewKickPeriod'
+  Domain is any number from 0.001 to 1000
+      dvar set bg_shock_viewKickRadius 0
+      dvar set bg_shock_viewKickFadeTime 0.001
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundFadeOutTime 0.25
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType generic
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 0
+      dvar set bg_shock_lookControl_maxyawspeed 0
+      dvar set bg_shock_lookControl_mousesensitivityscale 0
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_viewKickRadius 0.05
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_viewKickFadeTime 0.5
+      dvar set bg_shock_soundLoop 
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.5
+      dvar set bg_shock_soundFadeOutTime 0.25
+      dvar set bg_shock_soundLoopFadeTime 0.1
+      dvar set bg_shock_soundLoopEndDelay 0.1
+      dvar set bg_shock_soundRoomType shock_death
+      dvar set bg_shock_soundDryLevel 0.5
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenBlurBlendTime 1
+      dvar set bg_shock_screenBlurBlendFadeTime 0.5
+      dvar set bg_shock_soundLoop chr_tinitus_loop
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.1
+      dvar set bg_shock_soundFadeOutTime 2
+      dvar set bg_shock_soundLoopFadeTime 0.1
+      dvar set bg_shock_soundLoopEndDelay 2
+      dvar set bg_shock_soundRoomType hangar
+      dvar set bg_shock_soundDryLevel 0.5
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay 0
+      dvar set bg_shock_soundSnapshot explosion_shock
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 35
+      dvar set bg_shock_lookControl_maxyawspeed 35
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.1
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_soundSnapshot default
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 1
+      dvar set bg_shock_soundLoop 
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.5
+      dvar set bg_shock_soundFadeOutTime 1.5
+      dvar set bg_shock_soundLoopFadeTime 0.25
+      dvar set bg_shock_soundLoopEndDelay 2.5
+      dvar set bg_shock_soundRoomType PLATE
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay 0
+      dvar set bg_shock_lookControl_maxpitchspeed 35
+      dvar set bg_shock_lookControl_maxyawspeed 35
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.1
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set r_watersim_enabled 0
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 0.001
+      dvar set bg_shock_screenBlurBlendFadeTime 0.001
+      dvar set bg_shock_viewKickRadius 0
+      dvar set bg_shock_viewKickFadeTime 0.001
+      dvar set bg_shock_soundLoop null
+      dvar set bg_shock_soundLoopSilent null
+      dvar set bg_shock_soundEnd null
+      dvar set bg_shock_soundEndAbort null
+      dvar set bg_shock_soundFadeInTime 0
+'0' is not a valid value for dvar 'bg_shock_soundFadeInTime'
+  Domain is any number from 0.001 to 1000
+      dvar set bg_shock_soundFadeOutTime 0
+      dvar set bg_shock_soundLoopFadeTime 1
+      dvar set bg_shock_soundLoopEndDelay -0.5
+      dvar set bg_shock_soundRoomType generic
+      dvar set bg_shock_soundModEndDelay -0.25
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 0
+      dvar set bg_shock_lookControl_maxyawspeed 0
+      dvar set bg_shock_lookControl_mousesensitivityscale 0
+      dvar set bg_shock_lookControl_fadeTime 0.001
+Error: Could not load xmodel "fx".
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_viewKickRadius 0.05
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_screenType flashed
+      dvar set bg_shock_screenFlashWhiteFadeTime 3.5
+      dvar set bg_shock_screenFlashShotFadeTime 1
+      dvar set bg_shock_soundLoop chr_flashbang_tinnitus_loop
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeOutTime 1
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType shock_flashbang
+      dvar set bg_shock_soundDryLevel 0.5
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay 0.1
+      dvar set bg_shock_soundSnapshot flashbang
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_animation 1
+[Idx 0088] Setting up weapon knife_zm...
+[Idx 0089] Setting up weapon bowie_knife_zm...
+[Idx 0090] Setting up weapon syrette_sp...
+syrette_sp: WEAPON_SYRETTE
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenFlashWhiteFadeTime 0
+      dvar set bg_shock_screenFlashShotFadeTime 0
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_soundSnapshot default
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_animation 0
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+[Idx 0091] Setting up weapon zombie_knuckle_crack...
+zombie_knuckle_crack: WEAPON_ZOMBIE_PERK_BOTTLE
+[Idx 0092] Setting up weapon zombie_perk_bottle_jugg...
+zombie_perk_bottle_jugg: WEAPON_ZOMBIE_PERK_BOTTLE
+[Idx 0093] Setting up weapon zombie_perk_bottle_sleight...
+zombie_perk_bottle_sleight: WEAPON_ZOMBIE_PERK_BOTTLE
+[Idx 0094] Setting up weapon zombie_perk_bottle_doubletap...
+zombie_perk_bottle_doubletap: WEAPON_ZOMBIE_PERK_BOTTLE
+[Idx 0095] Setting up weapon zombie_perk_bottle_revive...
+zombie_perk_bottle_revive: WEAPON_ZOMBIE_PERK_BOTTLE
+[Idx 0096] Setting up weapon zombie_perk_bottle_additionalprimaryweapon...
+zombie_perk_bottle_additionalprimaryweapon: WEAPON_ZOMBIE_PERK_BOTTLE
+Error: Could not load rawfile "shock/electrocution.shock".
+Error: couldn't open 'shock/electrocution.shock'.
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+[Idx 0097] Setting up weapon zombie_bowie_flourish...
+zombie_bowie_flourish: WEAPON_ZOMBIE_PERK_BOTTLE
+      dvar set dog_MeleeDamage 100
+Error: Invalid counter string id: global_solo_games
+-----------------------------------
+      dvar set com_errorTitle Error
+      dvar set cl_paused 1
+      dvar set com_errorTitle 
+Error: Could not load stringtable "credits_pc.csv".
 Working directory: C:\Steam\steamapps\common\Call of Duty Black Ops
+Not connected to a server.
+Not connected to a server.
+Not connected to a server.
 Unknown command "readStats"
+      dvar set sv_paused 1
 Connecting to Demonware...
       dvar set dw_popup popup_connecting_dw
 Hostname: LAPTOP-F97P0NQ8
-Binding to 192.168.1.165:3074
+Binding to 192.168.1.158:3074
 DW_DNS_RESOLVING
       dvar set dw_popup popup_dw_dns_lookup
-Initialize
+Initialized Messaging for controller 0.
+DW_REQUESTED_STEAM_TICKET
+STEAM: Wrote cached auth ticket
+STEAM: Retrieved auth ticket from Steam, sending to DemonWare
+DW_AUTHORIZING
+      dvar set dw_popup popup_dw_authorize_account
+DW_AUTHORIZED (229 msecs)
+Got license type 0
+DW_LOBBY_CONNECTING
+      dvar set dw_popup popup_dw_downloading_account_data
+DW_LOGON_GETFRIENDS
+      dvar set steamid 110000141f83ffa
+DW_LOGON_GETFRIENDS
+DW_LOGON_COMPLETE
+DW_LOGON_CHECKPROFILEEXISTS
+DW_LOGON_COMPLETE
+      dvar set dw_popup Logged in OK
+      dvar set dw_popup MENU_LOGIN_SUCCEED
+Hostname: LAPTOP-F97P0NQ8
+Binding to 192.168.1.158:3074
+      dvar set dw_loggedin 1
+Controller #0 signed in to live
+      dvar set xblive_loggedin 1
+      dvar set name mothphilo
+GamerProfile_LogInProfile took 0ms
+Cmd_AddCommand: incrementcounter already defined
+Cmd_AddCommand: dumpLiveCounters already defined
+Error: Global counter string table 'mp/globalcounters.csv' has an invalid value: a0.
+Error '101' trying to measure upload bandwidth
+Read 41 bytes of file spstatsCompressed. (200ms)
+Stats blob received from Demonware for controller 0.
+Read 80 bytes of file CompressedMetPlayer3.info. (203ms)
+Read 3493 bytes of file online_tu14_sp_english.wad. (203ms)
+WAD: Big-endian WAD on Small-endian machine
+Got Online WAD. 3 entries, generated: Mon Oct 10 20:50:22 2011
+      dvar set motd Zombies! Play back to back with friends in co-op to survive endless waves of the undead. Good luck.
+Warning: Invalid category ID found, returning first category.
+      dvar set cl_paused 0
+Unknown command "fade"
+Not connected to a server.
+SV_DirectConnect()
+CHALLENGE RESPONSE: Read userID 0, clientChallenge 462981447, nonce 3628255955
+Failed to parse userId!
+Connecting player #0 has a zero GUID
+Going from CS_FREE to CS_CONNECTED for  (num 0 guid 0)
+Received packet 0 of 1 of stats data
+Unknown Soldier 0 : dropped gamestate, resending
+SV_SendClientGameState() for Unknown Soldier 0
+Going from CS_CONNECTED to CS_CLIENTLOADING for Unknown Soldier 0
+--
+DynEnt_WriteGameState wrote 2 bytes
+--
+Sending 31336 bytes in gamestate to client: 0
+      dvar set com_voip_resume_time 36166
+Setting state to CA_LOADING in CL_DownloadsComplete
+      dvar set cl_paused 1
+[00036394] 0: CA_LOADING
+Setting state to CA_LOADING in CL_InitCGame
+      dvar set cl_paused 0
+Fade in 37394 1750
+Player 0 no longer burning at time: 0
+Player 0 no longer electrified at time: 0
+Player 0 no longer transporter sick at time: 0
+Error: Could not load material "net_disconnect".
+Error: Could not load material "nightvision_overlay_goggles".
+Error: Could not load material "ammo_counter_tesla".
+Error: Could not load material "decode_characters".
+Error: Could not load material "decode_characters_glow".
+codescripts/delete
+codescripts/struct
+clientscripts/_callbacks
++clientscripts/_utility
+++clientscripts/_utility_code
+++clientscripts/_fx
++++clientscripts/_music
++++clientscripts/_lights
++++clientscripts/_destructibles
++clientscripts/_vehicle
+++clientscripts/_helicopter_sounds
++++clientscripts/_audio
++clientscripts/_flamethrower_plight
++clientscripts/_explosive_bolt
++clientscripts/_treadfx
++clientscripts/_napalm
+++clientscripts/_airsupport
++clientscripts/_footsteps
+Error: Could not load rawfile "clientscripts/_destructible.csc".
+Could not find script 'clientscripts/_destructible'
+clientscripts/_zombiemode
++clientscripts/_zombiemode_dissolve
++clientscripts/_zombiemode_ffotd
++clientscripts/_load
+++clientscripts/_busing
+++clientscripts/_clientfaceanim
++++clientscripts/_face_utility
+++clientscripts/_ambient
+++clientscripts/_swimming
++++clientscripts/_ambientpackage
+++clientscripts/_global_fx
+++clientscripts/_contextual_melee
+++clientscripts/_face_generichuman
++clientscripts/_zombiemode_weap_freezegun
+++clientscripts/_zombiemode_weapons
++clientscripts/_zombiemode_weap_tesla
++clientscripts/_zombiemode_weap_thundergun
+clientscripts/zombie_theater
++clientscripts/zombie_theater_teleporter
++clientscripts/zombie_theater_fx
+++clientscripts/createfx/zombie_theater_fx
++clientscripts/zombie_theater_amb
++clientscripts/_zombiemode_deathcard
++character/clientscripts/c_ger_honorguard_zt
+++xmodelalias/c_ger_honorguard_zomb_bodyalias
++character/clientscripts/c_zom_quad
+LOADING... collision map
+LOADING... graphics
+LOADING... maps/zombie_theater.d3dbsp
+
+Foliage: --------------------------
+Foliage: smodelCount = 3326
+Foliage: dyn smodel count = 58 (max=2048)
+Foliage: sizeof(g_activeModelsHash) = 1152, sizeof(g_fullySquashedModelBits) = 256
+Foliage: --------------------------
+
+      dvar set r_lightTweakSunLight 13
+      dvar set r_lightTweakSunColor 0.638283 0.538236 0.342392
+      dvar set r_lightTweakSunDirection -48.9 -74.2 0
+      dvar set r_lightTweakAmbient 0
+      dvar set r_lightTweakDiffuseFraction 0
+      dvar set r_lightTweakSunDiffuseColor 0 0 0 1
+vertex stream 2: --------------------------
+vertex stream 2: needs 0 bytes
+vertex stream 2: already allocated 0 bytes
+vertex stream 2: --------------------------
+LOADING... game media
+LOADING...  - textures
+Error: Could not load material "objective_up".
+Error: Could not load material "objective_down".
+Error: Could not load material "objective_friendly_chat".
+Error: Could not load material "compass_waypoint_second_chance".
+Error: Could not load material "compassping_grenade".
+Error: Could not load material "compassping_explosion".
+Error: Could not load material "seven_segment".
+Error: Could not load material "watch_face_a".
+Error: Could not load material "watch_hour_a".
+Error: Could not load material "watch_minute_a".
+Error: Could not load material "watch_second_a".
+Error: Could not load material "watch_face_b".
+Error: Could not load material "watch_hour_b".
+Error: Could not load material "watch_minute_b".
+Error: Could not load material "watch_second_b".
+Error: Could not load material "compass_objpoint_airstrike_busy".
+Error: Could not load material "compass_objpoint_airstrike_friendly".
+Error: Could not load material "hud_onscreenobjectivepointer".
+LOADING...  - models
+LOADING...  - items
+LOADING...  - inline models
+LOADING...  - server models
+Error: Could not load fx "maps/zombie/fx_zombie_dog_breath".
+Error: Could not load fx "maps/mp_maps/fx_mp_zombie_hand_dirt_burst".
+Error: Could not load fx "maps/mp_maps/fx_mp_zombie_body_dirt_billowing".
+Error: Could not load fx "maps/mp_maps/fx_mp_zombie_body_dust_falling".
+Error: Could not load fx "maps/zombie/fx_zombie_theater_projection_screen".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_neck_spurt".
+Error: Could not load fx "env/fire/fx_fire_player_sm_1sec".
+Error: Could not load fx "weapon/bouncing_betty/fx_explosion_betty_generic".
+Error: Could not load fx "weapon/muzzleflashes/fx_pilot_light".
+Error: Could not load fx "misc/fx_zombie_powerup_on_red".
+Error: Could not load fx "misc/fx_zombie_powerup_red_grab".
+Error: Could not load fx "misc/fx_zombie_powerup_red_wave".
+Error: Could not load fx "misc/fx_zombie_powerup_caution_on".
+Error: Could not load fx "misc/fx_zombie_powerup_caution_grab".
+Error: Could not load fx "misc/fx_zombie_powerup_caution_wave".
+Error: Could not load fx "maps/zombie/fx_zmb_phdflopper_exp".
+Error: Could not load fx "maps/zombie/fx_zmb_cola_staminup_on".
+Error: Could not load fx "weapon/freeze_gun/fx_freezegun_shatter".
+Error: Could not load fx "weapon/freeze_gun/fx_freezegun_crumple".
+Error: Could not load fx "weapon/freeze_gun/fx_freezegun_smoke_cloud".
+Error: Could not load fx "maps/zombie/fx_zombie_freeze_torso".
+Error: Could not load fx "maps/zombie/fx_zombie_freeze_md".
+Error: Could not load fx "weapon/freeze_gun/fx_exp_freezegun_impact".
+Error: Could not load fx "weapon/freeze_gun/fx_trail_freezegun_blood_streak".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_bolt_secondary".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_shock".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_shock_secondary".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_rail_view".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_tube_view".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_tube_view2".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_tube_view3".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_rail_view_ug".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_tube_view_ug".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_tube_view2_ug".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_tube_view3_ug".
+Error: Could not load fx "maps/zombie/fx_zombie_tesla_shock_eyes".
+Error: Could not load fx "impacts/fx_deathfx_bloodpool_view".
+Error: Could not load fx "impacts/fx_deathfx_dogbite".
+Error: Could not load rawfile "shock/electrocution.shock".
+Error: couldn't open 'shock/electrocution.shock'.
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+Error: Could not load rawfile "shock/zombie_death.shock".
+Error: couldn't open 'shock/zombie_death.shock'.
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 1
+      dvar set bg_shock_soundLoop 
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.5
+      dvar set bg_shock_soundFadeOutTime 1.5
+      dvar set bg_shock_soundLoopFadeTime 0.25
+      dvar set bg_shock_soundLoopEndDelay 0.25
+      dvar set bg_shock_soundRoomType ber1
+      dvar set bg_shock_soundDryLevel 0
+      dvar set bg_shock_soundWetLevel 0
+      dvar set bg_shock_soundModEndDelay 0
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 0
+      dvar set bg_shock_lookControl_maxyawspeed 0
+      dvar set bg_shock_lookControl_mousesensitivityscale 0
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType underwater
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenType flashed
+      dvar set bg_shock_screenFlashWhiteFadeTime 3.5
+      dvar set bg_shock_screenFlashShotFadeTime 1
+      dvar set bg_shock_soundLoop chr_flashbang_tinnitus_loop
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeOutTime 1
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType shock_flashbang
+      dvar set bg_shock_soundDryLevel 0.5
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay 0.1
+      dvar set bg_shock_soundSnapshot flashbang
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_animation 1
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenFlashWhiteFadeTime 0
+      dvar set bg_shock_screenFlashShotFadeTime 0
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_soundSnapshot default
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_animation 0
+      dvar set bg_shock_screenBlurBlendTime 0.001
+      dvar set bg_shock_screenBlurBlendFadeTime 0.001
+      dvar set bg_shock_viewKickPeriod 1.5
+      dvar set bg_shock_viewKickRadius 0.5
+      dvar set bg_shock_viewKickFadeTime 0.5
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType generic
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.2
+      dvar set bg_shock_lookControl_fadeTime 1
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_viewKickPeriod 0.75
+      dvar set bg_shock_viewKickRadius 0.05
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 0.001
+      dvar set bg_shock_screenBlurBlendFadeTime 0.001
+      dvar set bg_shock_viewKickPeriod 0
+'0' is not a valid value for dvar 'bg_shock_viewKickPeriod'
+  Domain is any number from 0.001 to 1000
+      dvar set bg_shock_viewKickRadius 0
+      dvar set bg_shock_viewKickFadeTime 0.001
+      dvar set bg_shock_sound 0
+      dvar set bg_shock_soundFadeOutTime 0.25
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType generic
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 0
+      dvar set bg_shock_lookControl_maxyawspeed 0
+      dvar set bg_shock_lookControl_mousesensitivityscale 0
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_viewKickRadius 0.05
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_sound 1
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_viewKickFadeTime 0.5
+      dvar set bg_shock_soundLoop 
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.5
+      dvar set bg_shock_soundFadeOutTime 0.25
+      dvar set bg_shock_soundLoopFadeTime 0.1
+      dvar set bg_shock_soundLoopEndDelay 0.1
+      dvar set bg_shock_soundRoomType shock_death
+      dvar set bg_shock_soundDryLevel 0.5
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl_maxpitchspeed 45
+      dvar set bg_shock_lookControl_maxyawspeed 45
+      dvar set bg_shock_movement 0.4
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_movement 1
+      dvar set bg_shock_screenBlurBlendTime 1
+      dvar set bg_shock_screenBlurBlendFadeTime 0.5
+      dvar set bg_shock_soundLoop chr_tinitus_loop
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.1
+      dvar set bg_shock_soundFadeOutTime 2
+      dvar set bg_shock_soundLoopFadeTime 0.1
+      dvar set bg_shock_soundLoopEndDelay 2
+      dvar set bg_shock_soundRoomType hangar
+      dvar set bg_shock_soundDryLevel 0.5
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay 0
+      dvar set bg_shock_soundSnapshot explosion_shock
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 35
+      dvar set bg_shock_lookControl_maxyawspeed 35
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.1
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundDryLevel 1
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_soundSnapshot default
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 1
+      dvar set bg_shock_soundLoop 
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundFadeInTime 0.5
+      dvar set bg_shock_soundFadeOutTime 1.5
+      dvar set bg_shock_soundLoopFadeTime 0.25
+      dvar set bg_shock_soundLoopEndDelay 2.5
+      dvar set bg_shock_soundRoomType PLATE
+      dvar set bg_shock_soundWetLevel 1
+      dvar set bg_shock_soundModEndDelay 0
+      dvar set bg_shock_lookControl_maxpitchspeed 35
+      dvar set bg_shock_lookControl_maxyawspeed 35
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.1
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeInTime 0.25
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundWetLevel 0.5
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_screenType none
+      dvar set bg_shock_screenBlurBlendTime 0.001
+      dvar set bg_shock_screenBlurBlendFadeTime 0.001
+      dvar set bg_shock_viewKickRadius 0
+      dvar set bg_shock_viewKickFadeTime 0.001
+      dvar set bg_shock_soundLoop null
+      dvar set bg_shock_soundLoopSilent null
+      dvar set bg_shock_soundEnd null
+      dvar set bg_shock_soundEndAbort null
+      dvar set bg_shock_soundFadeInTime 0
+'0' is not a valid value for dvar 'bg_shock_soundFadeInTime'
+  Domain is any number from 0.001 to 1000
+      dvar set bg_shock_soundFadeOutTime 0
+      dvar set bg_shock_soundLoopFadeTime 1
+      dvar set bg_shock_soundLoopEndDelay -0.5
+      dvar set bg_shock_soundRoomType generic
+      dvar set bg_shock_soundModEndDelay -0.25
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 0
+      dvar set bg_shock_lookControl_maxyawspeed 0
+      dvar set bg_shock_lookControl_mousesensitivityscale 0
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_screenType blurred
+      dvar set bg_shock_screenBlurBlendTime 0.4
+      dvar set bg_shock_screenBlurBlendFadeTime 1
+      dvar set bg_shock_viewKickRadius 0.05
+      dvar set bg_shock_viewKickFadeTime 3
+      dvar set bg_shock_soundLoop shellshock_loop
+      dvar set bg_shock_soundLoopSilent shellshock_loop_silent
+      dvar set bg_shock_soundEnd shellshock_end
+      dvar set bg_shock_soundEndAbort shellshock_end_abort
+      dvar set bg_shock_soundFadeOutTime 2.5
+      dvar set bg_shock_soundLoopFadeTime 1.5
+      dvar set bg_shock_soundLoopEndDelay -3
+      dvar set bg_shock_soundRoomType default
+      dvar set bg_shock_soundModEndDelay 2
+      dvar set bg_shock_lookControl 1
+      dvar set bg_shock_lookControl_maxpitchspeed 90
+      dvar set bg_shock_lookControl_maxyawspeed 90
+      dvar set bg_shock_lookControl_mousesensitivityscale 0.5
+      dvar set bg_shock_lookControl_fadeTime 2
+      dvar set bg_shock_screenBlurBlendTime 0.001
+      dvar set bg_shock_screenBlurBlendFadeTime 0.001
+      dvar set bg_shock_viewKickRadius 0
+      dvar set bg_shock_viewKickFadeTime 0.001
+      dvar set bg_shock_soundLoop 
+      dvar set bg_shock_soundLoopSilent 
+      dvar set bg_shock_soundEnd 
+      dvar set bg_shock_soundEndAbort 
+      dvar set bg_shock_soundLoopFadeTime 2
+      dvar set bg_shock_soundLoopEndDelay -1.5
+      dvar set bg_shock_soundRoomType generic
+      dvar set bg_shock_soundModEndDelay -0.75
+      dvar set bg_shock_lookControl 0
+      dvar set bg_shock_lookControl_maxpitchspeed 0
+      dvar set bg_shock_lookControl_maxyawspeed 0
+      dvar set bg_shock_lookControl_mousesensitivityscale 0
+      dvar set bg_shock_lookControl_fadeTime 0.001
+      dvar set bg_shock_movement 0.4
+Error: Could not load fx "impacts/fx_flesh_hit_body_nonfatal_hero".
+Error: Could not load fx "vehicle/treadfx/fx_heli_dust_default".
+Error: Could not load fx "vehicle/treadfx/fx_heli_water_spray".
+Error: Could not load fx "trail/fx_trail_heli_white_smoke".
+Error: Could not load fx "trail/fx_trail_heli_black_smoke".
+Error: Could not load fx "trail/fx_trail_fire_smoke".
+Error: Could not load fx "vehicle/exhaust/fx_exhaust_jet_afterburner".
+Error: Could not load fx "temp_effects/fx_tmp_tank_tred_test".
+Error: Could not load fx "temp_effects/fx_tmp_jeep_tred_test".
+Error: Could not load fx "impacts/fx_water_hit_sm".
+Error: Could not load fx "impacts/fx_water_hit_md".
+Error: Could not load fx "impacts/fx_water_hit_lg".
+Error: Could not load fx "impacts/fx_water_object_ripple".
+Error: Could not load fx "bio/player/fx_water_hit_player_bubbles".
+Error: Could not load fx "bio/player/fx_player_water_waist_ripple".
+Error: Could not load fx "bio/player/fx_player_water_knee_ripple".
+Error: Could not load fx "bio/player/fx_player_water_splash_impact".
+Error: Could not load fx "weapon/ir_scope/fx_ir_scope_heartbeat".
+LOADING...  - game media done
+LOADING... clients
+Error: Could not load image "solid_camo_dusty".
+Error: Could not load image "solid_camo_ice".
+Error: Could not load image "solid_camo_od".
+Error: Could not load image "camo_desert_nevada".
+Error: Could not load image "camo_desert_sahara".
+Error: Could not load image "camo_jungle_erdl".
+Error: Could not load image "camo_jungle_tiger".
+Error: Could not load image "camo_urban_german".
+Error: Could not load image "camo_urban_warsaw".
+Error: Could not load image "camo_winter_siberia".
+Error: Could not load image "camo_winter_yukon".
+Error: Could not load image "camo_woodland".
+Error: Could not load image "camo_woodland_flora".
+Error: Could not load image "gold".
+Error: Could not load image "t5_weapon_nesting_bomb_dempsey_c".
+Error: Could not load image "t5_weapon_nesting_bomb_nikolai_c".
+Error: Could not load image "t5_weapon_nesting_bomb_takeo_c".
+Error: Could not load image "t5_weapon_nesting_bomb_richtofen_c".
+Error: Could not load image "solid_camo_desert_nevada".
+Error: Could not load image "solid_camo_desert_sahara".
+Error: Could not load image "solid_camo_jungle_erdl".
+Error: Could not load image "solid_camo_jungle_tiger".
+Error: Could not load image "solid_camo_urban_german".
+Error: Could not load image "solid_camo_urban_warsaw".
+Error: Could not load image "solid_camo_winter_siberia".
+Error: Could not load image "solid_camo_winter_yukon".
+Error: Could not load image "solid_camo_woodland".
+Error: Could not load image "solid_camo_woodland_flora".
+Error: Could not load image "this is a fake camo to reserve the gold weapon".
+Error: Could not load image "cammo_tan_enfield".
+Error: Could not load image "clan_font_dark_c".
+Error: Could not load menufile "ui/hud_zombie_theater.txt".
+WARNING: unknown dvar 'r_bloomTweaks' in file 'vision/infrared.vision'
+WARNING: unknown dvar 'r_reviveFX_contrastEdge' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_brightnessEdge' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_desaturationEdge' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_darkTintEdge' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_lightTintEdge' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_blurRadiusEdge' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_motionblurWeight' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_contrastCenter' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_brightnessCenter' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_desaturationCenter' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_darkTintCenter' in file 'vision/flare.vision'
+WARNING: unknown dvar 'r_reviveFX_lightTintCenter' in file 'vision/flare.vision'
+Error: Could not load rawfile "vision/creek_1_water.vision".
+Error: couldn't open 'vision/creek_1_water.vision'.
+Error: Could not load rawfile "exposure/zombie_theater.xpo".
+Error: couldn't open 'exposure/zombie_theater.xpo'.
+Error: Could not load rawfile "exposure/default.xpo".
+Error: couldn't open 'exposure/default.xpo'. This is a default file that you should have.
+Error: Could not load material "menu_map_zombie_theater".
+Error: Could not load menufile "ui/scriptmenus/briefing.menu".
+Error: Could not load menufile "ui/scriptmenus/loadout_splitscreen.menu".
+Error: Could not load material "headicon_american".
+WARNING: unknown dvar 'r_reviveFX_contrastEdge' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_brightnessEdge' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_desaturationEdge' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_darkTintEdge' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_lightTintEdge' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_blurRadiusEdge' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_motionblurWeight' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_contrastCenter' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_brightnessCenter' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_desaturationCenter' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_darkTintCenter' in file 'vision/zombie_theater.vision'
+WARNING: unknown dvar 'r_reviveFX_lightTintCenter' in file 'vision/zombie_theater.vision'
+Error: Could not load lightdef "mrt".
+Error: Could not load fx "misc/fx_fire_manager1".
+Error: Could not load fx "misc/fx_fire_manager2".
+Error: Could not load fx "misc/fx_fire_manager3".
+Error: Could not load fx "misc/fx_fire_manager1_2sec".
+Error: Could not load fx "misc/fx_fire_manager2_2sec".
+Error: Could not load fx "misc/fx_fire_manager3_2sec".
+Error: Could not load fx "misc/fx_fire_fthrow_vert_short".
+Fake Ents:  Using 34 fake ents from the map and 37 from script at level load.
+Error: Could not load material "terrain_scorch_default".
+Error: Could not load material "terrain_scorch_bark".
+Error: Could not load material "terrain_scorch_brick".
+Error: Could not load material "terrain_scorch_carpet".
+Error: Could not load material "terrain_scorch_cloth".
+Error: Could not load material "terrain_scorch_concrete".
+Error: Could not load material "terrain_scorch_dirt".
+Error: Could not load material "terrain_scorch_flesh".
+Error: Could not load material "terrain_scorch_foliage".
+Error: Could not load material "terrain_scorch_glass".
+Error: Could not load material "terrain_scorch_grass".
+Error: Could not load material "terrain_scorch_gravel".
+Error: Could not load material "terrain_scorch_ice".
+Error: Could not load material "terrain_scorch_metal".
+Error: Could not load material "terrain_scorch_mud".
+Error: Could not load material "terrain_scorch_paper".
+Error: Could not load material "terrain_scorch_plaster".
+Error: Could not load material "terrain_scorch_rock".
+Error: Could not load material "terrain_scorch_sand".
+Error: Could not load material "terrain_scorch_snow".
+Error: Could not load material "terrain_scorch_water".
+Error: Could not load material "terrain_scorch_wood".
+Error: Could not load material "terrain_scorch_asphalt".
+Error: Could not load material "terrain_scorch_ceramic".
+Error: Could not load material "terrain_scorch_plastic".
+Error: Could not load material "terrain_scorch_rubber".
+Error: Could not load material "terrain_scorch_cushion".
+Error: Could not load material "terrain_scorch_fruit".
+Error: Could not load material "terrain_scorch_paintedmetal".
+Error: Could not load material "terrain_scorch_player".
+Error: Could not load material "terrain_scorch_tallgrass".
+[00038428] 0: CA_PRIMED
+CL_InitCGame:  2.03 seconds
+Com_TouchMemory: 0 msec. Using sum: -480606670
+Going from CS_CLIENTLOADING to CS_ACTIVE for Unknown Soldier 0
+[00038470] 0: CA_ACTIVE
+Fade in 38970 1250
+Player 0 no longer burning at time: 0
+Player 0 no longer electrified at time: 0
+Player 0 no longer transporter sick at time: 0
+      dvar set compass 0
+      dvar set hud_showStance 0
+      dvar set ammoCounterHide 1
+      dvar set playerPushAmount 1
+      dvar set aim_lockon_pitch_strength 0
+      dvar set r_exposureValue 0.0617
+      dvar set cl_ingame 1
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+      dvar set r_exposureValue 0.120315
+      dvar set r_exposureValue 0.175999
+      dvar set player_damageMultiplier 0.322581
+      dvar set player_deathInvulnerableTime 1700
+Player 0 no longer burning at time: 0
+Player 0 no longer electrified at time: 0
+Player 0 no longer transporter sick at time: 0
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+      dvar set r_exposureValue 0.228899
+      dvar set r_exposureValue 0.279154
+      dvar set r_exposureValue 0.326897
+      dvar set r_exposureValue 0.372252
+Player 0 transporter sick for 2000 (ms) at time: 1679
+      dvar set r_exposureValue 0.415339
+      dvar set r_exposureValue 0.456272
+      dvar set r_exposureValue 0.495159
+      dvar set r_exposureValue 0.532101
+      dvar set r_exposureValue 0.567196
+      dvar set r_exposureValue 0.600536
+      dvar set r_exposureValue 0.632209
+      dvar set r_exposureValue 0.662299
+      dvar set r_exposureValue 0.690884
+      dvar set r_exposureValue 0.71804
+      dvar set r_exposureValue 0.743838
+      dvar set r_exposureValue 0.768346
+      dvar set r_exposureValue 0.791628
+      dvar set r_exposureValue 0.813747
+      dvar set r_exposureValue 0.83476
+      dvar set r_exposureValue 0.854722
+      dvar set r_exposureValue 0.873686
+      dvar set r_exposureValue 0.891701
+      dvar set r_exposureValue 0.908816
+      dvar set r_exposureValue 0.925075
+      dvar set r_exposureValue 0.940522
+      dvar set r_exposureValue 0.955195
+      dvar set r_exposureValue 0.969136
+      dvar set r_exposureValue 0.982379
+      dvar set r_exposureValue 0.99496
+      dvar set r_exposureValue 1.00691
+      dvar set r_exposureValue 1.01827
+      dvar set r_exposureValue 1.02905
+      dvar set r_exposureValue 1.0393
+      dvar set r_exposureValue 1.04904
+      dvar set r_exposureValue 1.05828
+      dvar set r_exposureValue 1.06707
+      dvar set r_exposureValue 1.07542
+      dvar set r_exposureValue 1.08334
+      dvar set r_exposureValue 1.09088
+      dvar set r_exposureValue 1.09803
+      dvar set r_exposureValue 1.10483
+      dvar set r_exposureValue 1.11129
+      dvar set r_exposureValue 1.11743
+      dvar set r_exposureValue 1.12325
+      dvar set r_exposureValue 1.12879
+      dvar set r_exposureValue 1.13405
+      dvar set r_exposureValue 1.13905
+      dvar set r_exposureValue 1.1438
+      dvar set r_exposureValue 1.14831
+      dvar set r_exposureValue 1.15259
+      dvar set r_exposureValue 1.15666
+      dvar set r_exposureValue 1.16053
+      dvar set r_exposureValue 1.1642
+      dvar set r_exposureValue 1.16769
+      dvar set r_exposureValue 1.17101
+      dvar set r_exposureValue 1.17416
+      dvar set r_exposureValue 1.17715
+      dvar set r_exposureValue 1.17999
+      dvar set r_exposureValue 1.18269
+      dvar set r_exposureValue 1.18526
+      dvar set r_exposureValue 1.18769
+      dvar set r_exposureValue 1.19001
+      dvar set r_exposureValue 1.19221
+      dvar set r_exposureValue 1.1943
+      dvar set r_exposureValue 1.19628
+      dvar set r_exposureValue 1.19817
+      dvar set r_exposureValue 1.19996
+      dvar set r_exposureValue 1.20166
+      dvar set r_exposureValue 1.20328
+      dvar set r_exposureValue 1.20482
+      dvar set r_exposureValue 1.20628
+      dvar set r_exposureValue 1.20766
+      dvar set r_exposureValue 1.20898
+      dvar set r_exposureValue 1.21023
+      dvar set r_exposureValue 1.21142
+      dvar set r_exposureValue 1.21255
+      dvar set r_exposureValue 1.21362
+      dvar set r_exposureValue 1.21464
+      dvar set r_exposureValue 1.21561
+      dvar set r_exposureValue 1.21653
+      dvar set r_exposureValue 1.2174
+      dvar set r_exposureValue 1.21823
+      dvar set r_exposureValue 1.21902
+      dvar set r_exposureValue 1.21977
+      dvar set r_exposureValue 1.22048
+      dvar set r_exposureValue 1.22115
+      dvar set r_exposureValue 1.2218
+      dvar set r_exposureValue 1.22241
+      dvar set r_exposureValue 1.22299
+      dvar set r_exposureValue 1.22354
+      dvar set r_exposureValue 1.22406
+      dvar set r_exposureValue 1.22456
+      dvar set r_exposureValue 1.22503
+      dvar set r_exposureValue 1.22548
+      dvar set r_exposureValue 1.2259
+      dvar set r_exposureValue 1.22631
+      dvar set r_exposureValue 1.22669
+      dvar set r_exposureValue 1.22706
+      dvar set r_exposureValue 1.22741
+      dvar set r_exposureValue 1.22774
+      dvar set r_exposureValue 1.22805
+      dvar set r_exposureValue 1.22835
+      dvar set r_exposureValue 1.22863
+      dvar set r_exposureValue 1.2289
+      dvar set ammoCounterHide 0
+      dvar set miniscoreboardhide 0
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
+      dvar set r_exposureValue 1.22915
+      dvar set r_exposureValue 1.22939
+      dvar set r_exposureValue 1.22962
+      dvar set r_exposureValue 1.22984
+      dvar set r_exposureValue 1.23005
+      dvar set r_exposureValue 1.23025
+      dvar set r_exposureValue 1.23044
+      dvar set r_exposureValue 1.23061
+      dvar set r_exposureValue 1.23078
+      dvar set r_exposureValue 1.23094
+      dvar set r_exposureValue 1.2311
+      dvar set r_exposureValue 1.23124
+      dvar set r_exposureValue 1.23138
+      dvar set r_exposureValue 1.23151
+      dvar set r_exposureValue 1.23164
+      dvar set r_exposureValue 1.23175
+      dvar set r_exposureValue 1.23187
+Player 0 no longer transporter sick at time: 0
+      dvar set r_exposureValue 1.23197
+      dvar set r_exposureValue 1.23207
+      dvar set r_exposureValue 1.23217
+      dvar set r_exposureValue 1.23226
+      dvar set r_exposureValue 1.23235
+      dvar set r_exposureValue 1.23243
+      dvar set r_exposureValue 1.23251
+      dvar set r_exposureValue 1.23258
+      dvar set r_exposureValue 1.23265
+      dvar set r_exposureValue 1.23272
+      dvar set r_exposureValue 1.23279
+      dvar set r_exposureValue 1.23285
+      dvar set r_exposureValue 1.2329
+      dvar set r_exposureValue 1.23296
+      dvar set r_exposureValue 1.23301
+      dvar set r_exposureValue 1.23306
+      dvar set r_exposureValue 1.23311
+      dvar set r_exposureValue 1.23315
+      dvar set r_exposureValue 1.23319
+      dvar set r_exposureValue 1.23323
+      dvar set r_exposureValue 1.23327
+      dvar set r_exposureValue 1.23331
+      dvar set r_exposureValue 1.23334
+      dvar set r_exposureValue 1.23338
+      dvar set r_exposureValue 1.23341
+      dvar set r_exposureValue 1.23344
+      dvar set r_exposureValue 1.23347
+      dvar set r_exposureValue 1.23349
+      dvar set r_exposureValue 1.23352
+      dvar set r_exposureValue 1.23354
+      dvar set r_exposureValue 1.23356
+      dvar set r_exposureValue 1.23359
+      dvar set r_exposureValue 1.23361
+      dvar set r_exposureValue 1.23363
+      dvar set r_exposureValue 1.23364
+      dvar set r_exposureValue 1.23366
+      dvar set r_exposureValue 1.23368
+      dvar set r_exposureValue 1.2337
+      dvar set r_exposureValue 1.23371
+      dvar set r_exposureValue 1.23372
+      dvar set r_exposureValue 1.23374
+      dvar set r_exposureValue 1.23375
+      dvar set r_exposureValue 1.23376
+      dvar set r_exposureValue 1.23378
+      dvar set r_exposureValue 1.23379
+      dvar set r_exposureValue 1.2338
+      dvar set r_exposureValue 1.23381
+      dvar set r_exposureValue 1.23382
+      dvar set r_exposureValue 1.23383
+      dvar set r_exposureValue 1.23383
+      dvar set r_exposureValue 1.23384
+      dvar set r_exposureValue 1.23385
+      dvar set r_exposureValue 1.23386
+      dvar set r_exposureValue 1.23387
+      dvar set r_exposureValue 1.23387
+      dvar set r_exposureValue 1.23388
+      dvar set r_exposureValue 1.23388
+      dvar set r_exposureValue 1.23389
+      dvar set r_exposureValue 1.2339
+      dvar set r_exposureValue 1.2339
+      dvar set r_exposureValue 1.23391
+      dvar set r_exposureValue 1.23391
+      dvar set r_exposureValue 1.23391
+      dvar set r_exposureValue 1.23392
+      dvar set r_exposureValue 1.23392
+      dvar set r_exposureValue 1.23393
+      dvar set r_exposureValue 1.23393
+      dvar set r_exposureValue 1.23393
+      dvar set r_exposureValue 1.23394
+      dvar set r_exposureValue 1.23394
+      dvar set r_exposureValue 1.23394
+      dvar set r_exposureValue 1.23395
+      dvar set r_exposureValue 1.23395
+      dvar set r_exposureValue 1.23395
+      dvar set r_exposureValue 1.23395
+      dvar set r_exposureValue 1.23396
+      dvar set r_exposureValue 1.23396
+      dvar set r_exposureValue 1.23396
+      dvar set r_exposureValue 1.23396
+      dvar set r_exposureValue 1.23396
+      dvar set r_exposureValue 1.23397
+      dvar set r_exposureValue 1.23397
+      dvar set r_exposureValue 1.23397
+      dvar set r_exposureValue 1.23397
+      dvar set r_exposureValue 1.23397
+      dvar set r_exposureValue 1.23397
+      dvar set r_exposureValue 1.23397
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23398
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.23399
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+      dvar set r_exposureValue 1.234
+AI (entity 672, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 672, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 686, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+AI (entity 695, origin 810.0 628.0 -63.9) couldn't find path to goal.
+AI (entity 690, origin -819.0 607.5 -63.9) couldn't find path to goal.
+AI (entity 698, origin 810.0 628.0 -63.9) couldn't find path to goal.
+Dropping redundant reliable command: J "0"
+      dvar set aa_enemy_damage_taken 30
+      dvar set aa_player_damage_dealt 30
+      dvar set aa_ads_damage_dealt 30
+      dvar set aa_enemy_damage_taken 35
+      dvar set aa_player_damage_dealt 35
+      dvar set aa_ads_damage_dealt 35
+      dvar set aa_enemy_damage_taken 49
+      dvar set aa_player_damage_dealt 49
+      dvar set aa_ads_damage_dealt 49
+      dvar set aa_enemy_damage_taken 66
+      dvar set aa_player_damage_dealt 66
+      dvar set aa_ads_damage_dealt 66
+      dvar set aa_enemy_damage_taken 72
+      dvar set aa_player_damage_dealt 72
+      dvar set aa_ads_damage_dealt 72
+      dvar set aa_enemy_damage_taken 85
+      dvar set aa_player_damage_dealt 85
+      dvar set aa_ads_damage_dealt 85
+      dvar set aa_enemy_damage_taken 102
+      dvar set aa_player_damage_dealt 102
+      dvar set aa_ads_damage_dealt 102
+      dvar set aa_enemy_damage_taken 113
+      dvar set aa_player_damage_dealt 113
+      dvar set aa_ads_damage_dealt 113
+      dvar set aa_enemy_damage_taken 122
+      dvar set aa_player_damage_dealt 122
+      dvar set aa_ads_damage_dealt 122
+      dvar set aa_enemy_damage_taken 192
+      dvar set aa_player_damage_dealt 192
+      dvar set aa_ads_damage_dealt 192
+      dvar set aa_enemy_damage_taken 196
+      dvar set aa_player_damage_dealt 196
+      dvar set aa_ads_damage_dealt 196
+      dvar set aa_enemy_damage_taken 248
+      dvar set aa_player_damage_dealt 248
+      dvar set aa_ads_damage_dealt 248
+      dvar set aa_enemy_damage_taken 318
+      dvar set aa_enemy_damage_taken 323
+      dvar set aa_player_damage_dealt 253
+      dvar set aa_ads_damage_dealt 253
+      dvar set aa_enemy_damage_taken 393
+      dvar set aa_player_damage_dealt 323
+      dvar set aa_ads_damage_dealt 323
+      dvar set aa_enemy_damage_taken 404
+      dvar set aa_player_damage_dealt 334
+      dvar set aa_ads_damage_dealt 334
+      dvar set aa_enemy_damage_taken 419
+      dvar set aa_player_damage_dealt 349
+      dvar set aa_ads_damage_dealt 349
+      dvar set aa_enemy_damage_taken 424
+      dvar set aa_player_damage_dealt 354
+      dvar set aa_enemy_damage_taken 435
+      dvar set aa_player_damage_dealt 365
+      dvar set aa_enemy_damage_taken 460
+      dvar set aa_player_damage_dealt 390
+      dvar set aa_enemy_damage_taken 476
+      dvar set aa_player_damage_dealt 406
+      dvar set aa_enemy_damage_taken 490
+      dvar set aa_player_damage_dealt 420
+      dvar set aa_enemy_damage_taken 515
+      dvar set aa_player_damage_dealt 445
+      dvar set aa_enemy_damage_taken 522
+      dvar set aa_player_damage_dealt 452
+      dvar set aa_enemy_damage_taken 533
+      dvar set aa_player_damage_dealt 463
+      dvar set aa_enemy_damage_taken 558
+      dvar set aa_player_damage_dealt 488
+      dvar set aa_enemy_damage_taken 621
+      dvar set aa_player_damage_dealt 551
+      dvar set aa_enemy_damage_taken 691
+      dvar set aa_player_damage_dealt 621
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+      dvar set aa_enemy_damage_taken 694
+      dvar set aa_player_damage_dealt 624
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor

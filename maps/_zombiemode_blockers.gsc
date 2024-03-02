@@ -1611,7 +1611,12 @@ map_wait_to_update_rooms(){
 	level.ZHC_zoneToRoomID["theater_zone"] = map_get_zone_room_id("theater_zone");
 	maps\ZHC_zombiemode_roundflow::deactivate_room(100); //remove mults and stuff.
 	level notify( "room_stop_"+100 );
-	level.ZHC_room_info[4]["zones"] = array_combine( level.ZHC_room_info[4]["zones"],level.ZHC_room_info[100]["zones"] );
+	for(i = 0; i < level.ZHC_room_info[100]["zones"].size; i++){
+		level.ZHC_room_info[4]["zones"][level.ZHC_room_info[4]["zones"].size] = level.ZHC_room_info[100]["zones"][i];
+	}
+	for(i = 0; i < level.ZHC_room_info[100]["chests"].size; i++){
+		level.ZHC_room_info[4]["chests"][level.ZHC_room_info[4]["chests"].size] = level.ZHC_room_info[100]["chests"][i];
+	}
 	level.ZHC_room_info = array_remove_index( level.ZHC_room_info , 100 );
 	level.ZHC_room_info[4]["name"] = map_get_room_name(4);
 	level.ZHC_room_info[4]["doors"] = map_get_doors_accesible_in_room(4);

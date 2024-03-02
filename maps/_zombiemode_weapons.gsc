@@ -2121,6 +2121,8 @@ treasure_chest_think(){
 					}
 				}
 			}else if(maps\_zombiemode_blockers::map_get_room_info(self.roomId)["occupied"]){
+				if(self.roomId == 4 || self.roomId == 100)
+					IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest player is in rom... opening... "  + get_chest_index(self));
 				if(level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK)
 					break;
 				user = self.chest_origin a_player_is_close_to_origin(120);
@@ -2131,6 +2133,8 @@ treasure_chest_think(){
 				}
 			}
 			else{
+				if(self.roomId == 4 || self.roomId == 100)
+					IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest waiting for player to be in room " + get_chest_index(self));
 				wait 0.1;
 			}
 		}
