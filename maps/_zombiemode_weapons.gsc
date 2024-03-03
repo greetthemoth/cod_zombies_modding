@@ -644,44 +644,10 @@ door_barr_weapon(){
 		can_upgrade = !maps\_zombiemode_blockers::one_door_is_unbarred(doorIds);
 	}
 
-	weapon = undefined;
+
+	weapon = door_barr_get_weapon_to_hang(player);
 	weapon_model = undefined;
-	player_cur_weapon = player GetCurrentWeapon();
-	player_primaries = player GetWeaponsListPrimaries();
-	for(i = 0; i < player_primaries.size; i++){
-		if(player_cur_weapon == player_primaries[i]){
-			weapon = player_cur_weapon;
-			break;
-		}
-	}
-	if(!isDefined(weapon)){
-		if(IsDefined( player_primaries[0] )){
-			weapon = player_primaries[0];
-		}else{
-			weapon = "ray_gun_zm";
-		}
-	}
-	wep_class = WeaponClass( weapon );
-	if(weapon == "m1911_zm"){
-	//if(wep_class == "pistol" || wep_class == "smg" || wep_class == "bowie" || wep_class == "sickle" || wep_class == "raygun"){
-		default_weaps = [];
-		//default_weaps[default_weaps.size] = "spas_zm";
-		//default_weaps[default_weaps.size] = "claymore_zm";
-		//default_weaps[default_weaps.size] = "bowie_knife_zm";		// gona be complicated to intergrate.
-		//default_weaps[default_weaps.size] = "frag_grenade_zm";
-		default_weaps[default_weaps.size] = "frag_grenade_zm";
-		//weapon = default_weaps[level.round_number%default_weaps.size];
-		weapon = default_weaps[RandomInt( default_weaps.size )];
-	}else if(wep_class == "bowie" || wep_class == "sickle"){
-		//weapon = "specialty_knifeescape";
-		//none of these models are defined, find the correct models.
-		if(player HasWeapon( "bowie_knife_zm" ))
-			weapon_model = GetWeaponModel("bowie_knife_zm");
-		else if(player HasWeapon( "sickle_knife_zm" ))
-			weapon_model = GetWeaponModel("sickle_knife_zm");
-		else
-			weapon_model = GetWeaponModel("knife_zm");
-	}	
+
 	
 	
 	if(same_side){
@@ -697,6 +663,47 @@ door_barr_weapon(){
 	//self.cur_barr_weapon = weapon;   //set that weapon to self.cur_barr_weapon
 
 	self door_barr_weapon_spawn(weapon, weapon_model, same_side, roomId_barr_appears_from, can_upgrade);		//spawn weapon
+}
+
+door_barr_get_weapon_to_hang(player){
+	player_cur_weapon = player GetCurrentWeapon();
+	player_primaries = player GetWeaponsListPrimaries();
+	for(i = 0; i < player_primaries.size; i++){
+		if(player_cur_weapon == player_primaries[i]){
+			weapon = player_cur_weapon;
+			break;
+		}
+	}
+	if(!isDefined(weapon)){
+		if(IsDefined( player_primaries[0] )){
+			weapon = player_primaries[0];
+		}else{
+			weapon = "ray_gun_zm";
+		}
+	}
+	//wep_class = WeaponClass( weapon );
+	if(weapon == "m1911_zm"){
+	//if(wep_class == "pistol" || wep_class == "smg" || wep_class == "bowie" || wep_class == "sickle" || wep_class == "raygun"){
+		default_weaps = [];
+		//default_weaps[default_weaps.size] = "spas_zm";
+		//default_weaps[default_weaps.size] = "claymore_zm";
+		//default_weaps[default_weaps.size] = "bowie_knife_zm";		// gona be complicated to intergrate.
+		//default_weaps[default_weaps.size] = "frag_grenade_zm";
+		default_weaps[default_weaps.size] = "frag_grenade_zm";
+		//weapon = default_weaps[level.round_number%default_weaps.size];
+		weapon = default_weaps[RandomInt( default_weaps.size )];
+	}
+	/*else if(wep_class == "bowie" || wep_class == "sickle"){
+		//weapon = "specialty_knifeescape";
+		//none of these models are defined, find the correct models.
+		if(player HasWeapon( "bowie_knife_zm" ))
+			weapon_model = GetWeaponModel("bowie_knife_zm");
+		else if(player HasWeapon( "sickle_knife_zm" ))
+			weapon_model = GetWeaponModel("sickle_knife_zm");
+		else
+			weapon_model = GetWeaponModel("knife_zm");
+	}*/
+	return weapon;
 }
 
 door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_from, can_upgrade){
@@ -5679,8 +5686,30 @@ ZHC_wall_buy_drop_power_up(){
 	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_grab();
 	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_timeout(60);
 	self.ZHC_powerup MoveTo( self ZHC_wall_buy_get_power_up_drop_position(),4,0.2,1);
+	powerup = self.ZHC_powerup.powerup_name;
+	powerup_origin = self.ZHC_powerup.orign;
 	self.ZHC_powerup waittill_any( "powerup_grabbed", "powerup_timedout" );
 	self.ZHC_powerup = undefined;
+	if(!isChest){
+		if(powerup == "carpenter"){
+			is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
+			can_init_buy = false;	//always true for now.
+			can_buy_ammo = is_equipment || true; //lets make it always true for now
+			can_upgrade = !is_equipment && can_upgrade;
+			player = get_closest_player( self.origin );
+			if(IsDefined( player )){
+				weapon = door_barr_get_weapon_to_hang(player);
+				self zombie_weapon_upgrade = weapon;
+				self thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon); //swap weapon.
+			}
+		}else if (powerup == "nuke"){
+			
+			//open nearest door.
+		}else if (powerup == "max ammo"){
+			//refill all doors and wall buy ammos.
+		}
+	}
+	
 }
 ZHC_cycle_power_ups(cycle,randomize_at_end_of_cycle){
 	self endon( "stop_zhc_powerup_cycle" );
