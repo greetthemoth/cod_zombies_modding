@@ -666,6 +666,7 @@ door_barr_weapon(){
 }
 
 door_barr_get_weapon_to_hang(player){
+	weapon = undefined;
 	player_cur_weapon = player GetCurrentWeapon();
 	player_primaries = player GetWeaponsListPrimaries();
 	for(i = 0; i < player_primaries.size; i++){
@@ -1903,7 +1904,7 @@ ZHC_treasure_chest_options_init(){
 		level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE = true;
 			level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN = true;
 
-	level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS = true;
+	level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS = false;
 	level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE = true;
 		level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_AMMO = true;
 		//level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN = false;
@@ -2121,6 +2122,11 @@ treasure_chest_think(){
 					zone = user.current_zone;
 					//zone = maps\_zombiemode_blockers::Get_Players_Current_Zone_Patient(user);	//contains waits.
 					self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(user.current_zone);
+
+					IPrintLn("user.current_zone:"+zone);
+					IPrintLn("roomId:"+self.roomId);
+					maps\ZHC_zombiemode_roundflow::debug_room_zones(self.roomId);
+
 					roomInfo  = maps\_zombiemode_blockers::map_get_room_info(self.roomId);
 					roomInfo["chests"][roomInfo["chests"].size] = get_chest_index(self);
 					if(!isDefined(self.roomId)){
@@ -2128,8 +2134,9 @@ treasure_chest_think(){
 					}
 				}
 			}else if(maps\_zombiemode_blockers::map_get_room_info(self.roomId)["occupied"]){
-				if(self.roomId == 4 || self.roomId == 100)
-					IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest player is in rom... opening... "  + get_chest_index(self));
+				if(self.roomId == 4 || self.roomId == 100){
+					IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest player is in room"+self.roomId+"... opening... chest:"  + get_chest_index(self));
+				}
 				if(level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK)
 					break;
 				user = self.chest_origin a_player_is_close_to_origin(120);
@@ -2140,8 +2147,8 @@ treasure_chest_think(){
 				}
 			}
 			else{
-				if(self.roomId == 4 || self.roomId == 100)
-					IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest waiting for player to be in room " + get_chest_index(self));
+				//if(self.roomId == 4 || self.roomId == 100)
+				//	IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest waiting for player to be in room"+self.roomId+" chest:" + get_chest_index(self));
 				wait 0.1;
 			}
 		}
@@ -5636,22 +5643,34 @@ ZHC_wall_buy_manage_power_up_spawn(weapon){
 	self endon ("weapon_stop");
 	if(!level.ZHC_WEAPONS_KILL_NOTIFY)
 		return;
-	round_to_reset_kill_goal = define_or(level.next_dog_round,0);
+	self waittill_any( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought");
+	while(!IsDefined( level.zombie_total_start )){
+		wait_network_frame();	//wait for zomb total to be set properly
+	}
+
+	round_to_reset_kill_goal = undefined;
+	if(IsDefined( level.next_dog_round ))
+		round_to_reset_kill_goal = define_or(level.next_dog_round+1,0);
+
 	starting_kills = define_or(level.ZHC_weapon_total_kills[weapon],0);
-	kill_goal = starting_kills + min(define_or(level.zombie_total_start,6) + 1, 18);
+	kill_goal = starting_kills + min(level.zombie_total_start + 1, 18);
 	IPrintLn("kill_goal " + kill_goal);
 	cycle = maps\ZHC_zombiemode_weapons::GetWeaponPowerupCycle(weapon);
 	randomize_at_end_of_cycle = get_is_wall_buy(weapon);
 	self.power_up_index = 0;
+
 	while(1){
+		excess_kill = 0;
+
 		TESTING = false;
 		if(TESTING){
-			self waittill_any( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought","weapon_stop");	//testo
+			self waittill_any( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought");	//testo
 		}else{
 			while(define_or(level.ZHC_weapon_total_kills[weapon],0) < kill_goal){
 				level waittill("zhc_"+weapon +"_kill");
 				IPrintLn( weapon +" "+(level.ZHC_weapon_total_kills[weapon] - starting_kills) +"/"+ (kill_goal - starting_kills) );
 			}
+			excess_kill = level.ZHC_weapon_total_kills[weapon] - kill_goal; //accounts for collateral kills in the same frame.
 			while(
 				//level.zombie_vars["zombie_drop_item"] != 1 || 
 				IsDefined( self.ZHC_powerup )
@@ -5663,13 +5682,22 @@ ZHC_wall_buy_manage_power_up_spawn(weapon){
 		self thread ZHC_cycle_power_ups(cycle,randomize_at_end_of_cycle);
 		self thread ZHC_wall_buy_drop_power_up();
 		self waittill("stop_zhc_powerup_cycle");
-		starting_kills = level.ZHC_weapon_total_kills[weapon];
-		excess_kill = starting_kills - kill_goal; 
-		if(level.round_number >= round_to_reset_kill_goal)
-			kill_goal = starting_kills + min(define_or(level.zombie_total_start,6) + 1, 18);
-		else
-			kill_goal = starting_kills + int(kill_goal * 1.5);
-		kill_goal -= excess_kill;
+		
+		if(!TESTING){
+			prev_starting_kills = starting_kills;
+			starting_kills = level.ZHC_weapon_total_kills[weapon] - excess_kill;
+
+			if(IsDefined( round_to_reset_kill_goal )){
+				if(level.round_number >= round_to_reset_kill_goal){
+					kill_goal = starting_kills + min(level.zombie_total_start + 1, 18);
+					round_to_reset_kill_goal = level.next_dog_round+1;
+					continue;
+				}
+			}else if( IsDefined( level.next_dog_round ))
+				round_to_reset_kill_goal = level.next_dog_round+1;
+			
+			kill_goal = starting_kills + int((kill_goal - prev_starting_kills) * 1.5);
+		}
 
 	}
 
@@ -5690,16 +5718,17 @@ ZHC_wall_buy_drop_power_up(){
 	powerup_origin = self.ZHC_powerup.orign;
 	self.ZHC_powerup waittill_any( "powerup_grabbed", "powerup_timedout" );
 	self.ZHC_powerup = undefined;
-	if(!isChest){
+	if(true){	//ischest
 		if(powerup == "carpenter"){
 			is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 			can_init_buy = false;	//always true for now.
 			can_buy_ammo = is_equipment || true; //lets make it always true for now
+			can_upgrade = false;
 			can_upgrade = !is_equipment && can_upgrade;
 			player = get_closest_player( self.origin );
 			if(IsDefined( player )){
 				weapon = door_barr_get_weapon_to_hang(player);
-				self zombie_weapon_upgrade = weapon;
+				self.zombie_weapon_upgrade = weapon;
 				self thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon); //swap weapon.
 			}
 		}else if (powerup == "nuke"){

@@ -3376,7 +3376,10 @@ round_spawning()
 		// MM Mix in dog spawns...
 		if ( IsDefined( level.mixed_rounds_enabled ) && level.mixed_rounds_enabled == 1 )
 		{
-			spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount);				//Added for mod
+			spawn_dog = 0;
+			if(!level.ZHC_ROOMFLOW)
+				spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount);				//Added for mod
+
 			if(!IsDefined( spawn_dog )){												//Added for mod
 				spawn_dog = false;
 				if ( level.round_number > 30 )
@@ -3409,8 +3412,9 @@ round_spawning()
 				}
 			}
 			
-			if ( spawn_dog )
+			if (level.ZHC_ROOMFLOW || spawn_dog )
 			{
+				dog_spawned = false;
 				keys = GetArrayKeys( level.zones );
 				for ( i=0; i<keys.size; i++ )
 				{
@@ -3424,29 +3428,42 @@ round_spawning()
 								 !level.zones[ akeys[k] ].is_occupied &&
 								 level.zones[ akeys[k] ].dog_locations.size > 0 )
 							{
+								if(level.ZHC_ROOMFLOW){
+									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, maps\_zombiemode_blockers::Get_Zone_Room_ID(akeys[k]) );		//Added for mod
+									if(spawn_dog == 0)
+										continue;
+								}
 								maps\_zombiemode_ai_dogs::special_dog_spawn( undefined, spawn_dog );	//changed for mod
 								level.zombie_total -= spawn_dog;										//changed for mod
 								enemyCount += spawn_dog ;												//Added for mod
 								level.ZHC_dogs_spawned_this_mixed_round += spawn_dog;							//Added for mod
 								spawn_dog = 0;															//Added for mod
+								dog_spawned = true;
 								wait_network_frame();
+								break;
 							}
 						}
 
-						if(spawn_dog){												//added for mod	  //if no free adjacent zones found, fuck it spanw anywas
+						if(dog_spawned){												//added for mod	  //if no free adjacent zones found, fuck it spanw anywas
 							if(level.zones[ keys[i] ].dog_locations.size > 0 )
 							{
+								if(level.ZHC_ROOMFLOW){
+									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, maps\_zombiemode_blockers::Get_Zone_Room_ID(akeys[k]) );		//Added for mod
+									if(spawn_dog == 0)
+										continue;
+								}
 								maps\_zombiemode_ai_dogs::special_dog_spawn( undefined, spawn_dog );	//changed for mod
 								level.zombie_total -= spawn_dog;										//changed for mod
 								enemyCount += spawn_dog;												//Added for mod
 								level.ZHC_dogs_spawned_this_mixed_round += spawn_dog;							//Added for mod
 								spawn_dog = 0;															//Added for mod
+								dog_spawned = true;
 								wait_network_frame();
 							}
 						}
 					}
 
-					if(!spawn_dog)
+					if(dog_spawned)
 						break;
 				}
 			}

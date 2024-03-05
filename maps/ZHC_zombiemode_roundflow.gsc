@@ -21,7 +21,7 @@ init(){
 	level.ZHC_ROOMFLOW_doors_flow_difficulty_to_close_adj = undefined;
 	
 	level.ZHC_ROOMFLOW = true;
-	level.ZHC_ROOMFLOW_FIRST_ROOM_HARDER = true;//testo
+	level.ZHC_ROOMFLOW_FIRST_ROOM_HARDER = false;//testo
 	level.ZHC_ROUND_FLOW = 1; //0 = default| 1 = alternate| 2 = "harder"
 
 	if(ZHC_ROUND_FLOW_check())
@@ -47,7 +47,13 @@ init(){
 	
 	thread rooms_init();
 }
-
+debug_room_zones(roomId){
+	s_1 = "room"+roomId+" zones are ";
+	for(i = 0; i < level.ZHC_room_info[roomId]["zones"].size; i++){
+		s_1 += level.ZHC_room_info[roomId]["zones"][i] +" ";
+	}
+	IPrintLnBold( s_1 );
+}
 rooms_init(){
 	level waittill( "zone_info_updated" );
 	level.ZHC_room_info = [];
@@ -116,7 +122,7 @@ room_think(roomId){
 	difficulty_change = false;
 	while(1){
 		difficulty = level.ZHC_room_info[roomId]["flow_difficulty"];
-		data = update_room_difficulty(difficulty, roomId, difficulty_change && level.ZHC_room_info[roomId]["active"]);
+		data = update_room_difficulty(difficulty, roomId, false);//difficulty_change && level.ZHC_room_info[roomId]["active"]);
 		active = level.ZHC_room_info[roomId]["active"];
 		if(active){
 			level.ZHC_round_zombie_limit_mult /= level.ZHC_room_info[roomId]["room_zombie_limit_mult"]; //undoes its effect on the global mult;
@@ -127,7 +133,7 @@ room_think(roomId){
 		if(active){
 			level.ZHC_round_zombie_limit_mult *= level.ZHC_room_info[roomId]["room_zombie_limit_mult"]; //applies its effect on the global mult;
 			level.ZHC_round_spawning_speed_mult *= level.ZHC_room_info[roomId]["room_spawning_speed_mult"];
-			//IPrintLn(level.ZHC_room_info[roomId]["name"] + " zombie_limit_mult:"+level.ZHC_round_zombie_limit_mult +"  spawning_speed_mult:" +level.ZHC_round_spawning_speed_mult);
+			IPrintLn(level.ZHC_room_info[roomId]["name"] + "  zombie_limit_mult:"+level.ZHC_round_zombie_limit_mult +"  spawning_speed_mult:" +level.ZHC_round_spawning_speed_mult);
 		}
 
 		level.ZHC_room_info[roomId]["zombie_health"] = int(level.zombie_health * data["room_zombie_health_mult"]);
@@ -138,6 +144,8 @@ room_think(roomId){
 
 		level.ZHC_room_info[roomId]["zombie_move_speed_spike"] = data["zombie_move_speed_spike"];
 		level.ZHC_room_info[roomId]["zombie_move_speed_spike_chance"] = data["zombie_move_speed_spike_chance"];
+
+		level.ZHC_room_info[roomId]["room_dog_spawn_mult"] = data["room_dog_spawn_mult"];
 
 		level thread room_wait_to_increase_difficulty(roomId, difficulty);
 		level waittill("zhc_update_flow_difficulty_roomId_"+roomId, difficulty_adj);
@@ -370,11 +378,14 @@ ZHC_get_dog_wait_mult(enemy_count, num_player_valid){
 	}
 	return 1;
 }
-ZHC_spawn_dog_override(enemy_count){				//note: dogs are only able to spawn in other zones that are not occupied. 
+ZHC_spawn_dog_override(enemy_count, roomId){				//note: dogs are only able to spawn in other zones that are not occupied. 
 	if(ZHC_ROUND_FLOW_check() ){
 		if(level.ZHC_dogs_to_spawn_this_round > level.ZHC_dogs_spawned_this_mixed_round){
 
-			left_to_spawn = level.ZHC_dogs_to_spawn_this_round - level.ZHC_dogs_spawned_this_mixed_round;
+			if(level.ZHC_ROOMFLOW)
+				left_to_spawn = level.ZHC_dogs_to_spawn_this_round - level.ZHC_dogs_spawned_this_mixed_round;
+			else
+				left_to_spawn = int(max(0,(level.ZHC_dogs_to_spawn_this_round * level.ZHC_room_info[roomId]["dog_spawn_mult"]) - level.ZHC_dogs_spawned_this_mixed_round));
 
 			//dogs_spawned_percent = level.ZHC_dogs_spawned_this_mixed_round/level.ZHC_dogs_to_spawn_this_round;	//0-1 as dogs are spawned
 			//cur_round_percent = (level.zombie_total_start - (level.zombie_total + enemy_count) )/level.zombie_total_start;	//0-1 as round continues
@@ -764,8 +775,7 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 
 
 
-	if(DEBUG_FLOW)
-		IPrintLnBold( "room_difficulty: " + difficulty + "  speed_flow_percent: "+speed_flow_percent );
+
 
 	damp5 = abs(min(((fr-1) - 5) , 0)) /5; //fluctuates from 1 - 0 from (r1 to r6)
 	damp10 = abs(min(((fr-1) - 10) , 0)) /10; //fluctuates from 1 - 0 from (r1 to r11)
@@ -776,8 +786,12 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 	//deminishes the slow ness on early rounds 		
 	speed_flow_percent_diminished = speed_flow_percent + (
 															(1-speed_flow_percent) * //dampner applied in reverse. maintains number closer to 1.
-															min(damp15+0.25,1)	// +0.25 makes it so speed mult stays at 1 for first couple rounds.
+															min(damp10+0.25,1)	// +0.25 makes it so speed mult stays at 1 for first couple rounds.
 														 );
+
+
+	if(DEBUG_FLOW)
+		IPrintLnBold( "room_difficulty: " + difficulty + "  speed_flow_percent: "+speed_flow_percent_diminished );
 
 		//zombie total
 	{
@@ -795,7 +809,7 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 		//zombie limit
 	{
 		diminished_dampner = ((damp10 * 0.7)+(1 - 0.7)); //will only dampen down 1 -> 0.3. 0.3 will always remain after 10 rounds.
-		room_zombie_limit_mult = (difficulty * 0.5 * diminished_dampner)+1;
+		room_zombie_limit_mult = (difficulty * 0.23 * diminished_dampner)+0.3;
 		data["room_zombie_limit_mult"] = room_zombie_limit_mult;
 		if(DEBUG_FLOW)
 			IPrintLn( "room_zombie_limit_mult: "+ room_zombie_limit_mult);
@@ -804,7 +818,7 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 
 		//zombie spawning speed
 	{
-		diminished_IFD = (0.5 * (1 - speed_flow_percent_diminished) * damp25) + 1;	//fluctuares between 1 and 1.5. effect deminishes until round 25.
+		diminished_IFD = (0.5 * (1 - speed_flow_percent_diminished) * damp10) + 1;	//fluctuares between 1 and 1.5. effect deminishes until round 10.
 		//diminished_IFD = (0.3 * inverse_flo_wdifficulty_percent * dampner) + (1 - 0.3 * dampner);	// == 1 when dampner is 0. 
 																									// == (ifdp * 0.3)+0.7 when dampener is 1. 
 																										//(ifdp * 0.3)+0.7 fluctuates between 1 - 0.5 as the FLOW_ROUND_LENGTH progresses
@@ -888,6 +902,11 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 		if(DEBUG_FLOW)
 			IPrintLn( "room_zombie_health_mult: "+ room_zombie_health_mult);
 	}
+		//dog_spawn_mult
+	{
+		data["room_dog_spawn_mult"] = (1 - speed_flow_percent);
+	}
+
 	return data;
 	
 }
