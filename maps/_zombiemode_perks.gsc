@@ -1001,7 +1001,11 @@ activate_PackAPunch()
 //
 //	Threads to turn the machines to their ON state.
 //
- 
+
+move_perk_machine(vending_machine, specialty, origin, angles){
+
+}
+
 turn_perk_on(vending_machine, specialty, light_fx, machine_change)
 {
 	machine = getentarray(vending_machine, "targetname");
@@ -1523,7 +1527,7 @@ unlocked_perk_upgrade( perk )
 	return false;
 }
  
-give_perk( perk, bought )
+give_perk( perk, bought)
 {
 
 	lvl = 0;

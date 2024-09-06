@@ -1,5 +1,5 @@
 Build 7.0.152 CL(966072) CODPCAB-V64 CEG Thu Sep 01 16:06:17 2011
-logfile opened on Mon Mar 04 09:47:55 2024
+logfile opened on Tue Aug 13 04:57:59 2024
 
 Current language: english
 Current search path:
@@ -250,10 +250,10 @@ Using 1 GPU(s).
 Initializing render targets...
 Loading fastfile 'en_patch'
 used 0.02 MB memory in DB alloc
-Loading fastfile 'patch'
-used 3.96 MB memory in DB alloc
 Requested frame buffer to be 24-bit color with 8-bit alpha
 DirectX returned a frame buffer that is 24-bit color with 8-bit alpha
+Loading fastfile 'patch'
+used 3.96 MB memory in DB alloc
 INTZ format supported
 Initializing static model cache...
 Initializing dynamic buffers...
@@ -286,15 +286,15 @@ Error: Could not load material "create_lut2d".
 Error: Could not load material "apply_lut2d".
 Error: Could not load material "$ps3_reload_zcull_donotremove".
 Error: Could not load material "water_dynamic_spray".
+      dvar set sd_xa2_num_devices 1
 Loading fastfile 'frontend_patch'
 used 2.31 MB memory in DB alloc
 Loading fastfile 'mod'
 used 0.00 MB memory in DB alloc
-      dvar set sd_xa2_num_devices 1
 --- Initializing Voice ---
       dvar set tu_onlyhostqos 0
 Hostname: LAPTOP-F97P0NQ8
-Binding to 192.168.1.158:3074
+Binding to 192.168.1.165:3074
 --------------
 GamerProfile_ResetSPDvars():
  "mis_01" = "0".
@@ -324,7 +324,7 @@ execing buttons_default.cfg from fastfile
 execing otherkeysdefaults.cfg from fastfile
 execing thumbstick_default.cfg from fastfile
 Unknown command "updatevehiclebindings"
-end $init 4788 ms
+end $init 6880 ms
 --- Common Initialization Complete ---
 =============================== DVAR DUMP ========================================
 
@@ -334,7 +334,7 @@ end $init 4788 ms
       dvar set zombieStopSplitScreen 1
       dvar set zombiemode 1
       dvar set sv_cheats 1
-Timestamp: SV_SpawnServer 1709563679
+Timestamp: SV_SpawnServer 1723539485
 g_gametype cmp is not a valid gametype, defaulting to cmp
 Redundant asset: 'localize','MENU_TESTINGBANDWIDTH'
 Redundant asset: 'localize','MENU_DOWNLOADING_GAME_SETTINGS_CAPS'
@@ -563,12 +563,12 @@ Redundant asset: 'stringtable','maps/mapstable.csv'
 Redundant asset: 'rawfile','coopmaps.arena'
 Redundant asset: 'rawfile','mod'
       dvar set com_maxclients 1
-[00005022] 0: CA_DISCONNECTED
+[00007466] 0: CA_DISCONNECTED
       dvar set mapname zombie_theater
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 1659039138, challengeNum 179336860 to server
+CHALLENGERESPONSE: Sending nonce 3098931038, challengeNum 2958923673 to server
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 1659039138, challengeNum 179336860 to server
+CHALLENGERESPONSE: Sending nonce 3098931038, challengeNum 2958923673 to server
 Huffman Took 2 Milliseconds
 ------ Server Initialization ------
 Server: zombie_theater
@@ -595,7 +595,7 @@ FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'LongerGas
 FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'usermaps'
 Customized arena file not found: mod.arena
       dvar set ui_netGametypeName zom
-Save Message First Frame Shown: 5118
+Save Message First Frame Shown: 7753
 BinkOpen failed on C:\Steam\steamapps\common\Call of Duty Black Ops\mods/cod_zombies_modding\video\zombie_theater_load.bik because: Error opening file.
 Adding fastfile 'common_zombie_patch' to queue
 Adding fastfile 'en_common_zombie' to queue
@@ -957,12 +957,11 @@ Adding fastfile 'zombie_theater_patch_override' to queue
 Loading fastfile 'zombie_theater_patch'
 used 0.74 MB memory in DB alloc
       dvar set nextmap map_restart
-      dvar set gpad_present 1
 Loading fastfile 'en_zombie_theater'
 used 1.61 MB memory in DB alloc
 Loading fastfile 'zombie_theater'
 used 103.04 MB memory in DB alloc
-Waited 3487 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
+Waited 5787 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
       dvar set player_damageMultiplier 1
       dvar set player_damageMultiplier 0.363636
 ----------------------
@@ -1127,11 +1126,11 @@ maps/_callbacksetup
 ++++++++++++++++maps/_zombiemode_user
 ++++++++++++++++maps/_zombiemode_weap_cymbal_monkey
 ++++++++++++++++maps/_zombiemode_weap_freezegun
+WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\zombie_theater_patch_override.ff'
 ++++++++++++++++maps/_zombiemode_weap_tesla
 ++++++++++++++++maps/_zombiemode_weap_thundergun
 ++++++++++++++++maps/_zombiemode_weap_crossbow
 ++++++++++++++++maps/_zombiemode_bowie
-WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\zombie_theater_patch_override.ff'
 ++++++++++++++++maps/_zombiemode_traps
 ++++++++++++++++maps/_zombiemode_weapon_box
 ++++++++++++++++maps/_zombiemode_ai_dogs
@@ -2485,16 +2484,16 @@ Unknown command "readStats"
 Connecting to Demonware...
       dvar set dw_popup popup_connecting_dw
 Hostname: LAPTOP-F97P0NQ8
-Binding to 192.168.1.158:3074
+Binding to 192.168.1.165:3074
 DW_DNS_RESOLVING
       dvar set dw_popup popup_dw_dns_lookup
 Initialized Messaging for controller 0.
-.DW_REQUESTED_STEAM_TICKET
+..............DW_REQUESTED_STEAM_TICKET
 STEAM: Wrote cached auth ticket
 STEAM: Retrieved auth ticket from Steam, sending to DemonWare
 DW_AUTHORIZING
       dvar set dw_popup popup_dw_authorize_account
-DW_AUTHORIZED (262 msecs)
+DW_AUTHORIZED (517 msecs)
 Got license type 0
 DW_LOBBY_CONNECTING
       dvar set dw_popup popup_dw_downloading_account_data
@@ -2507,7 +2506,7 @@ DW_LOGON_COMPLETE
       dvar set dw_popup Logged in OK
       dvar set dw_popup MENU_LOGIN_SUCCEED
 Hostname: LAPTOP-F97P0NQ8
-Binding to 192.168.1.158:3074
+Binding to 192.168.1.165:3074
       dvar set dw_loggedin 1
 Controller #0 signed in to live
       dvar set xblive_loggedin 1
@@ -2517,19 +2516,20 @@ Cmd_AddCommand: incrementcounter already defined
 Cmd_AddCommand: dumpLiveCounters already defined
 Error: Global counter string table 'mp/globalcounters.csv' has an invalid value: a0.
 Error '101' trying to measure upload bandwidth
-Read 41 bytes of file spstatsCompressed. (178ms)
+Read 41 bytes of file spstatsCompressed. (185ms)
 Stats blob received from Demonware for controller 0.
-Read 80 bytes of file CompressedMetPlayer3.info. (181ms)
-Read 3493 bytes of file online_tu14_sp_english.wad. (181ms)
+Read 80 bytes of file CompressedMetPlayer3.info. (215ms)
+Read 3493 bytes of file online_tu14_sp_english.wad. (217ms)
 WAD: Big-endian WAD on Small-endian machine
 Got Online WAD. 3 entries, generated: Mon Oct 10 20:50:22 2011
       dvar set motd Zombies! Play back to back with friends in co-op to survive endless waves of the undead. Good luck.
 Warning: Invalid category ID found, returning first category.
+      dvar set gpad_present 1
       dvar set cl_paused 0
 PC ONLY: No menu has focus and 5, what should I do?Unknown command "fade"
 Not connected to a server.
 SV_DirectConnect()
-CHALLENGE RESPONSE: Read userID 0, clientChallenge 179336860, nonce 1659039138
+CHALLENGE RESPONSE: Read userID 0, clientChallenge 2958923673, nonce 3098931038
 Failed to parse userId!
 Connecting player #0 has a zero GUID
 Going from CS_FREE to CS_CONNECTED for  (num 0 guid 0)
@@ -2540,14 +2540,14 @@ Going from CS_CONNECTED to CS_CLIENTLOADING for Unknown Soldier 0
 --
 DynEnt_WriteGameState wrote 2 bytes
 --
-Sending 31471 bytes in gamestate to client: 0
-      dvar set com_voip_resume_time 15768
+Sending 31462 bytes in gamestate to client: 0
+      dvar set com_voip_resume_time 35713
 Setting state to CA_LOADING in CL_DownloadsComplete
       dvar set cl_paused 1
-[00016050] 0: CA_LOADING
+[00035986] 0: CA_LOADING
 Setting state to CA_LOADING in CL_InitCGame
       dvar set cl_paused 0
-Fade in 17050 1750
+Fade in 36986 1750
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
@@ -3175,13 +3175,13 @@ Error: Could not load material "terrain_scorch_fruit".
 Error: Could not load material "terrain_scorch_paintedmetal".
 Error: Could not load material "terrain_scorch_player".
 Error: Could not load material "terrain_scorch_tallgrass".
-[00018334] 0: CA_PRIMED
-CL_InitCGame:  2.28 seconds
-Com_TouchMemory: 0 msec. Using sum: -483751566
+[00038812] 0: CA_PRIMED
+CL_InitCGame:  2.83 seconds
+Com_TouchMemory: 0 msec. Using sum: -491091598
 [CLIENT COMMAND]: 0 fade
 Going from CS_CLIENTLOADING to CS_ACTIVE for Unknown Soldier 0
-[00018438] 0: CA_ACTIVE
-Fade in 18938 1250
+[00038877] 0: CA_ACTIVE
+Fade in 39378 1250
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
@@ -3197,6 +3197,8 @@ execing otherkeysdefaults.cfg from fastfile
 execing thumbstick_default.cfg from fastfile
       dvar set r_exposureValue 0.120315
       dvar set r_exposureValue 0.175999
+      dvar set player_damageMultiplier 0.322581
+      dvar set player_deathInvulnerableTime 1700
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
@@ -3204,15 +3206,13 @@ execing buttons_default.cfg from fastfile
 execing otherkeysdefaults.cfg from fastfile
 execing thumbstick_default.cfg from fastfile
       dvar set r_exposureValue 0.228899
-      dvar set player_damageMultiplier 0.322581
-      dvar set player_deathInvulnerableTime 1700
       dvar set r_exposureValue 0.279154
       dvar set r_exposureValue 0.326897
+Player 0 transporter sick for 2000 (ms) at time: 1802
       dvar set r_exposureValue 0.372252
       dvar set r_exposureValue 0.415339
       dvar set r_exposureValue 0.456272
       dvar set r_exposureValue 0.495159
-Player 0 transporter sick for 2000 (ms) at time: 1868
       dvar set r_exposureValue 0.532101
       dvar set r_exposureValue 0.567196
       dvar set r_exposureValue 0.600536
@@ -3295,6 +3295,10 @@ Player 0 transporter sick for 2000 (ms) at time: 1868
       dvar set r_exposureValue 1.2218
       dvar set r_exposureValue 1.22241
       dvar set r_exposureValue 1.22299
+      dvar set ammoCounterHide 0
+      dvar set miniscoreboardhide 0
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
       dvar set r_exposureValue 1.22354
       dvar set r_exposureValue 1.22406
       dvar set r_exposureValue 1.22456
@@ -3302,10 +3306,6 @@ Player 0 transporter sick for 2000 (ms) at time: 1868
       dvar set r_exposureValue 1.22548
       dvar set r_exposureValue 1.2259
       dvar set r_exposureValue 1.22631
-      dvar set ammoCounterHide 0
-      dvar set miniscoreboardhide 0
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 27
       dvar set r_exposureValue 1.22669
       dvar set r_exposureValue 1.22706
       dvar set r_exposureValue 1.22741
@@ -3320,6 +3320,7 @@ Player 0 transporter sick for 2000 (ms) at time: 1868
       dvar set r_exposureValue 1.22984
       dvar set r_exposureValue 1.23005
       dvar set r_exposureValue 1.23025
+Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.23044
       dvar set r_exposureValue 1.23061
       dvar set r_exposureValue 1.23078
@@ -3328,7 +3329,6 @@ Player 0 transporter sick for 2000 (ms) at time: 1868
       dvar set r_exposureValue 1.23124
       dvar set r_exposureValue 1.23138
       dvar set r_exposureValue 1.23151
-Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.23164
       dvar set r_exposureValue 1.23175
       dvar set r_exposureValue 1.23187
@@ -3471,153 +3471,580 @@ Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.234
       dvar set r_exposureValue 1.234
       dvar set r_exposureValue 1.234
-AI (entity 663, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 663, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 666, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 140
-      dvar set aa_player_damage_dealt 140
-      dvar set aa_ads_damage_dealt 140
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-      dvar set aa_enemy_damage_taken 147
-      dvar set aa_player_damage_dealt 147
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-      dvar set aa_enemy_damage_taken 213
-      dvar set aa_enemy_damage_taken 283
-      dvar set aa_player_damage_dealt 217
-      dvar set aa_ads_damage_dealt 210
-      dvar set aa_enemy_damage_taken 353
-      dvar set aa_player_damage_dealt 287
-      dvar set aa_ads_damage_dealt 280
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(c_ger_honorguard_body2)
-      dvar set aa_enemy_damage_taken 423
+      dvar set cl_paused 1
+SaveExists(""): returning false, !savename[0]
+unknown UI script ; in block:
+activateBlur ;
+      dvar set invite_visible 1
+unknown UI script ; in block:
+deactivateBlur ; execNow "updategamerprofile" ;
+--------------
+GamerProfile_UpdateProfileFromDvars(0):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+Updating profile 0 from dvars.
+
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+--------------
+GamerProfile_CreateExeBindingsConfig( 0 ):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+      dvar set invite_visible 0
+      dvar set invite_visible 1
+--------------
+GamerProfile_UpdateProfileFromDvars(0):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+Updating profile 0 from dvars.
+
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+      dvar set ui_hint_text @NULL_EMPTY
+      dvar set ui_show_arrow 0
+      dvar set ui_hint_text @MENU_THUMBSTICK_LAYOUT_DESC
+      dvar set ui_show_arrow 1
+      dvar set ui_hint_text @NULL_EMPTY
+      dvar set ui_show_arrow 0
+      dvar set ui_hint_text @MENU_LOOK_INVERSION_DESC
+      dvar set ui_show_arrow 1
+      dvar set ui_hint_text @NULL_EMPTY
+      dvar set ui_show_arrow 0
+      dvar set ui_hint_text @MENU_THUMBSTICK_LAYOUT_DESC
+      dvar set ui_show_arrow 1
+      dvar set ui_hint_text @NULL_EMPTY
+      dvar set ui_show_arrow 0
+      dvar set ui_hint_text @MENU_BUTTON_LAYOUT_DESC
+      dvar set ui_show_arrow 1
+      dvar set ui_hint_text @NULL_EMPTY
+      dvar set ui_show_arrow 0
+      dvar set ui_hint_text @MENU_LOOK_SENSITIVITY_DESC
+      dvar set ui_show_arrow 1
+      dvar set input_viewSensitivity 2.6
+      dvar set input_viewSensitivity 3
+      dvar set input_viewSensitivity 3.5
+      dvar set input_viewSensitivity 4
+      dvar set input_viewSensitivity 0.6
+      dvar set input_viewSensitivity 1
+      dvar set input_viewSensitivity 1.4
+      dvar set input_viewSensitivity 1.8
+      dvar set ui_hint_text @NULL_EMPTY
+      dvar set ui_show_arrow 0
+      dvar set invite_visible 0
+--------------
+GamerProfile_UpdateProfileFromDvars(0):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+Updating profile 0 from dvars.
+
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+--------------
+GamerProfile_CreateExeBindingsConfig( 0 ):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+--------------
+GamerProfile_UpdateProfileFromDvars(0):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+Updating profile 0 from dvars.
+
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+      dvar set ui_showOnlineOfflineButton 1
+      dvar set invite_visible 1
+--------------
+GamerProfile_UpdateProfileFromDvars(0):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+Updating profile 0 from dvars.
+
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+SaveExists(""): returning false, !savename[0]
+PC ONLY: No menu has focus and == CA_ACTIVE, so forcing UIMENU_NONE      dvar set cl_paused 0
+      dvar set aa_enemy_damage_taken 169
+      dvar set aa_enemy_damage_taken 194
+      dvar set aa_player_damage_dealt 42
+      dvar set aa_ads_damage_dealt 42
+      dvar set aa_enemy_damage_taken 219
+      dvar set aa_player_damage_dealt 67
+      dvar set aa_ads_damage_dealt 67
+      dvar set aa_enemy_damage_taken 289
+      dvar set aa_player_damage_dealt 137
+      dvar set aa_ads_damage_dealt 137
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+      dvar set aa_enemy_damage_taken 296
+      dvar set aa_player_damage_dealt 144
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_larmoff_1)
+      dvar set aa_enemy_damage_taken 303
       dvar set aa_enemy_deaths 2
       dvar set aa_player_kills 2
-      dvar set aa_enemy_damage_taken 448
-      dvar set aa_player_damage_dealt 312
-      dvar set aa_ads_damage_dealt 305
-      dvar set aa_enemy_damage_taken 465
-      dvar set aa_player_damage_dealt 329
-      dvar set aa_ads_damage_dealt 322
-      dvar set aa_enemy_damage_taken 490
-      dvar set aa_player_damage_dealt 354
-      dvar set aa_ads_damage_dealt 347
-      dvar set aa_enemy_damage_taken 560
-      dvar set aa_player_damage_dealt 424
-      dvar set aa_ads_damage_dealt 417
-      dvar set aa_enemy_damage_taken 713
+      dvar set aa_enemy_damage_taken 454
       dvar set aa_enemy_deaths 3
       dvar set aa_player_kills 3
-      dvar set aa_enemy_damage_taken 864
+      dvar set aa_enemy_damage_taken 604
       dvar set aa_enemy_deaths 4
       dvar set aa_player_kills 4
-      dvar set aa_enemy_damage_taken 1014
+      dvar set aa_enemy_damage_taken 621
+      dvar set aa_player_damage_dealt 161
+      dvar set aa_ads_damage_dealt 154
+      dvar set aa_enemy_damage_taken 638
+      dvar set aa_player_damage_dealt 178
+      dvar set aa_ads_damage_dealt 171
+      dvar set aa_enemy_damage_taken 641
+      dvar set aa_player_damage_dealt 181
+      dvar set aa_ads_damage_dealt 174
+      dvar set aa_enemy_damage_taken 658
+      dvar set aa_player_damage_dealt 198
+      dvar set aa_ads_damage_dealt 191
+      dvar set aa_enemy_damage_taken 665
+      dvar set aa_player_damage_dealt 205
+      dvar set aa_ads_damage_dealt 198
+      dvar set aa_enemy_damage_taken 682
+      dvar set aa_player_damage_dealt 222
+      dvar set aa_ads_damage_dealt 215
+      dvar set aa_enemy_damage_taken 689
+      dvar set aa_player_damage_dealt 229
+      dvar set aa_ads_damage_dealt 222
+      dvar set aa_enemy_damage_taken 706
+      dvar set aa_player_damage_dealt 246
+      dvar set aa_ads_damage_dealt 239
+      dvar set aa_enemy_damage_taken 856
       dvar set aa_enemy_deaths 5
       dvar set aa_player_kills 5
-      dvar set ui_ammo_stock_width 17
-      dvar set aa_enemy_damage_taken 1164
+      dvar set aa_enemy_damage_taken 1009
       dvar set aa_enemy_deaths 6
       dvar set aa_player_kills 6
-AI (entity 667, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 667, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 671, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 1182
-      dvar set aa_player_damage_dealt 442
-      dvar set aa_ads_damage_dealt 435
-      dvar set aa_enemy_damage_taken 1207
-      dvar set aa_player_damage_dealt 467
-      dvar set aa_ads_damage_dealt 460
-      dvar set aa_enemy_damage_taken 1249
-      dvar set aa_player_damage_dealt 509
-      dvar set aa_ads_damage_dealt 502
-      dvar set aa_enemy_damage_taken 1294
-      dvar set aa_player_damage_dealt 554
-      dvar set aa_ads_damage_dealt 547
-      dvar set aa_enemy_damage_taken 1364
-      dvar set aa_player_damage_dealt 624
-      dvar set aa_ads_damage_dealt 617
-      dvar set aa_enemy_damage_taken 1380
-      dvar set aa_player_damage_dealt 640
-      dvar set aa_ads_damage_dealt 633
-      dvar set aa_enemy_damage_taken 1405
-      dvar set aa_player_damage_dealt 665
-      dvar set aa_ads_damage_dealt 658
-      dvar set aa_enemy_damage_taken 1419
-      dvar set aa_player_damage_dealt 679
-      dvar set aa_ads_damage_dealt 672
-      dvar set aa_enemy_damage_taken 1444
-      dvar set aa_player_damage_dealt 704
-      dvar set aa_ads_damage_dealt 697
-      dvar set aa_enemy_damage_taken 1496
-      dvar set aa_player_damage_dealt 756
-      dvar set aa_ads_damage_dealt 749
-      dvar set aa_enemy_damage_taken 1566
-      dvar set aa_player_damage_dealt 826
-      dvar set aa_ads_damage_dealt 819
-      dvar set aa_enemy_damage_taken 1636
+AI (entity 678, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 678, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 674, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 674, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 1022
+      dvar set aa_player_damage_dealt 259
+      dvar set aa_ads_damage_dealt 252
+      dvar set aa_enemy_damage_taken 1039
+      dvar set aa_player_damage_dealt 276
+      dvar set aa_ads_damage_dealt 269
+      dvar set aa_enemy_damage_taken 1109
+      dvar set aa_player_damage_dealt 346
+      dvar set aa_ads_damage_dealt 339
+      dvar set aa_enemy_damage_taken 1175
+      dvar set aa_player_damage_dealt 412
+      dvar set aa_ads_damage_dealt 405
+      dvar set aa_enemy_damage_taken 1200
+      dvar set aa_player_damage_dealt 437
+      dvar set aa_enemy_damage_taken 1217
+      dvar set aa_player_damage_dealt 454
+      dvar set aa_enemy_damage_taken 1368
       dvar set aa_enemy_deaths 7
       dvar set aa_player_kills 7
-      dvar set aa_enemy_damage_taken 1661
-      dvar set aa_player_damage_dealt 851
-      dvar set aa_ads_damage_dealt 844
-      dvar set aa_enemy_damage_taken 1683
-      dvar set aa_player_damage_dealt 873
-      dvar set aa_ads_damage_dealt 866
-      dvar set aa_enemy_damage_taken 1708
+      dvar set aa_enemy_damage_taken 1438
       dvar set aa_enemy_deaths 8
       dvar set aa_player_kills 8
-      dvar set aa_enemy_damage_taken 1778
-      dvar set aa_player_damage_dealt 943
-      dvar set aa_ads_damage_dealt 936
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
-Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
-      dvar set aa_enemy_damage_taken 1803
+      dvar set aa_enemy_damage_taken 1455
+      dvar set aa_player_damage_dealt 471
+      dvar set aa_ads_damage_dealt 422
+      dvar set aa_enemy_damage_taken 1480
+      dvar set aa_player_damage_dealt 496
+      dvar set aa_ads_damage_dealt 447
+      dvar set aa_enemy_damage_taken 1550
+      dvar set aa_player_damage_dealt 566
+      dvar set aa_ads_damage_dealt 517
+      dvar set aa_enemy_damage_taken 1702
       dvar set aa_enemy_deaths 9
       dvar set aa_player_kills 9
-      dvar set aa_enemy_damage_taken 1955
-      dvar set aa_player_damage_dealt 1095
-      dvar set aa_enemy_damage_taken 2106
+      dvar set aa_enemy_damage_taken 1724
+      dvar set aa_player_damage_dealt 588
+      dvar set aa_ads_damage_dealt 539
+      dvar set aa_enemy_damage_taken 1749
+      dvar set aa_player_damage_dealt 613
+      dvar set aa_ads_damage_dealt 564
+      dvar set aa_enemy_damage_taken 1901
+      dvar set aa_player_damage_dealt 765
+      dvar set aa_enemy_damage_taken 2054
       dvar set aa_enemy_deaths 10
       dvar set aa_player_kills 10
-      dvar set aa_enemy_damage_taken 2256
-      dvar set aa_player_damage_dealt 1245
-      dvar set aa_enemy_damage_taken 2410
+      dvar set aa_enemy_damage_taken 2208
+      dvar set aa_player_damage_dealt 919
+      dvar set ui_ammo_stock_width 17
+      dvar set aa_enemy_damage_taken 2358
       dvar set aa_enemy_deaths 11
       dvar set aa_player_kills 11
-      dvar set aa_enemy_damage_taken 2564
-      dvar set aa_player_damage_dealt 1399
-      dvar set aa_enemy_damage_taken 2714
+      dvar set aa_enemy_damage_taken 2428
+      dvar set aa_player_damage_dealt 989
+      dvar set aa_ads_damage_dealt 634
+      dvar set aa_enemy_damage_taken 2580
       dvar set aa_enemy_deaths 12
       dvar set aa_player_kills 12
+      dvar set aa_enemy_damage_taken 2650
+      dvar set aa_player_damage_dealt 1059
+      dvar set aa_ads_damage_dealt 704
+      dvar set aa_enemy_damage_taken 2801
+      dvar set aa_enemy_deaths 13
+      dvar set aa_player_kills 13
+      dvar set aa_enemy_damage_taken 2871
+      dvar set aa_player_damage_dealt 1129
+      dvar set aa_ads_damage_dealt 774
+      dvar set aa_enemy_damage_taken 3021
+      dvar set aa_enemy_deaths 14
+      dvar set aa_player_kills 14
+AI (entity 675, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 675, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 665, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 665, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 3091
+      dvar set aa_player_damage_dealt 1199
+      dvar set aa_ads_damage_dealt 844
+      dvar set aa_enemy_damage_taken 3161
+      dvar set aa_player_damage_dealt 1269
+      dvar set aa_ads_damage_dealt 914
+      dvar set aa_enemy_damage_taken 3231
+      dvar set aa_player_damage_dealt 1339
+      dvar set aa_ads_damage_dealt 984
+AI (entity 683, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 683, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 3383
+      dvar set aa_enemy_deaths 15
+      dvar set aa_player_kills 15
+      dvar set aa_enemy_damage_taken 3533
+      dvar set aa_player_damage_dealt 1489
+      dvar set aa_enemy_damage_taken 3685
+      dvar set aa_enemy_deaths 16
+      dvar set aa_player_kills 16
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 27
+      dvar set aa_enemy_damage_taken 4419
+      dvar set aa_enemy_deaths 17
+      dvar set aa_player_kills 17
+      dvar set aa_enemy_damage_taken 6969
+      dvar set aa_enemy_deaths 18
+      dvar set aa_player_kills 18
+      dvar set aa_enemy_damage_taken 12069
+      dvar set aa_enemy_deaths 19
+      dvar set aa_player_kills 19
+      dvar set aa_enemy_damage_taken 12759
+      dvar set aa_enemy_deaths 20
+      dvar set aa_player_kills 20
+      dvar set aa_enemy_damage_taken 13473
+      dvar set aa_enemy_deaths 21
+      dvar set aa_player_kills 21
+      dvar set aa_enemy_damage_taken 14238
+      dvar set aa_enemy_deaths 22
+      dvar set aa_player_kills 22
+      dvar set aa_enemy_damage_taken 14902
+      dvar set aa_enemy_deaths 23
+      dvar set aa_player_kills 23
+      dvar set aa_enemy_damage_taken 16432
+      dvar set aa_enemy_deaths 24
+      dvar set aa_player_kills 24
+      dvar set aa_enemy_damage_taken 17197
+      dvar set aa_enemy_deaths 25
+      dvar set aa_player_kills 25
+      dvar set ui_ammo_stock_width 17
+      dvar set ui_right_ammo_width 13
+      dvar set ui_right_ammo_width 26
+      dvar set aa_enemy_damage_taken 22297
+      dvar set aa_enemy_deaths 26
+      dvar set aa_player_kills 26
+      dvar set aa_enemy_damage_taken 23062
+      dvar set aa_enemy_deaths 27
+      dvar set aa_player_kills 27
+      dvar set ui_right_ammo_width 13
+      dvar set ui_right_ammo_width 26
+      dvar set ui_right_ammo_width 13
+AI (entity 688, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 688, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 674, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 674, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 695, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 695, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+      dvar set ui_right_ammo_width 26
+      dvar set ui_ammo_stock_width 27
+AI (entity 678, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 678, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 23462
+      dvar set aa_enemy_deaths 28
+      dvar set aa_player_kills 28
+      dvar set aa_enemy_damage_taken 23562
+      dvar set aa_player_damage_dealt 1589
+      dvar set aa_ads_damage_dealt 1084
+      dvar set aa_enemy_damage_taken 23662
+      dvar set aa_player_damage_dealt 1689
+      dvar set aa_ads_damage_dealt 1184
+AI (entity 683, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 23762
+      dvar set aa_player_damage_dealt 1789
+      dvar set aa_enemy_damage_taken 23862
+      dvar set aa_enemy_deaths 29
+      dvar set aa_player_kills 29
+AI (entity 683, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 669, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set ui_ammo_stock_width 17
+AI (entity 686, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 698, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 24627
+      dvar set aa_enemy_deaths 30
+      dvar set aa_player_kills 30
+      dvar set aa_enemy_damage_taken 25266
+      dvar set aa_enemy_deaths 31
+      dvar set aa_player_kills 31
+      dvar set aa_enemy_damage_taken 25974
+      dvar set aa_enemy_deaths 32
+      dvar set aa_player_kills 32
+      dvar set aa_enemy_damage_taken 26739
+      dvar set aa_enemy_deaths 33
+      dvar set aa_player_kills 33
+      dvar set aa_enemy_damage_taken 27238
+      dvar set aa_enemy_deaths 34
+      dvar set aa_player_kills 34
+      dvar set aa_enemy_damage_taken 28003
+      dvar set aa_enemy_deaths 35
+      dvar set aa_player_kills 35
+      dvar set aa_enemy_damage_taken 28666
+      dvar set aa_enemy_deaths 36
+      dvar set aa_player_kills 36
+      dvar set aa_enemy_damage_taken 29380
+      dvar set aa_enemy_deaths 37
+      dvar set aa_player_kills 37
+      dvar set aa_enemy_damage_taken 30145
+      dvar set aa_enemy_deaths 38
+      dvar set aa_player_kills 38
+      dvar set aa_enemy_damage_taken 30860
+      dvar set aa_enemy_deaths 39
+      dvar set aa_player_kills 39
+      dvar set aa_enemy_damage_taken 31614
+      dvar set aa_enemy_deaths 40
+      dvar set aa_player_kills 40
+      dvar set aa_enemy_damage_taken 32379
+      dvar set aa_enemy_deaths 41
+      dvar set aa_player_kills 41
+      dvar set aa_enemy_damage_taken 33094
+      dvar set aa_enemy_deaths 42
+      dvar set aa_player_kills 42
+      dvar set aa_enemy_damage_taken 33859
+      dvar set aa_enemy_deaths 43
+      dvar set aa_player_kills 43
+R_MarkFragments: Too many triangles to mark, max 255 radius 29.45 at -906.96 -636.27 72.74
+      dvar set ui_ammo_stock_width 27
+      dvar set aa_enemy_damage_taken 35389
+      dvar set aa_enemy_deaths 44
+      dvar set aa_player_kills 44
+      dvar set aa_enemy_damage_taken 35789
+      dvar set aa_enemy_deaths 45
+      dvar set aa_player_kills 45
+      dvar set ui_ammo_stock_width 17
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_ammo_stock_width 17
+      dvar set ui_ammo_stock_width 27
+      dvar set ui_ammo_stock_width 17
+AI (entity 669, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 686, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+AI (entity 684, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 670, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 670, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 686, origin -436.0 -1374.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 36149
+      dvar set aa_enemy_deaths 46
+AI (entity 691, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set ui_ammo_stock_width 27
+AI (entity 689, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 696, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 696, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 41249
+      dvar set aa_enemy_deaths 47
+      dvar set aa_player_kills 46
+AI (entity 701, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 679, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 43799
+      dvar set aa_enemy_deaths 48
+      dvar set aa_player_kills 47
+AI (entity 679, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 690, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 45329
+      dvar set aa_enemy_deaths 49
+      dvar set aa_player_kills 48
+AI (entity 694, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 694, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 46094
+      dvar set aa_enemy_deaths 50
+      dvar set aa_player_kills 49
+R_MarkFragments: Too many triangles to mark, max 255 radius 24.27 at -923.78 -608.83 73.51
+R_MarkFragments: Too many triangles to mark, max 255 radius 29.33 at -949.51 -572.19 72.74
+      dvar set aa_enemy_damage_taken 48644
+      dvar set aa_enemy_deaths 51
+      dvar set aa_player_kills 50
+R_MarkFragments: Too many triangles to mark, max 255 radius 29.28 at -919.04 -624.93 70.18
+AI (entity 688, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 688, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 680, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 674, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 674, origin -665.8 -1279.8 80.1) couldn't find path to goal.
+AI (entity 695, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set ui_ammo_stock_width 17
+      dvar set ui_ammo_stock_width 27
+AI (entity 687, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 48721
+      dvar set aa_player_damage_dealt 1866
+      dvar set aa_enemy_damage_taken 49121
+      dvar set aa_player_damage_dealt 2266
+      dvar set aa_enemy_damage_taken 49129
+      dvar set aa_player_damage_dealt 2274
+      dvar set aa_enemy_damage_taken 49229
+      dvar set aa_player_damage_dealt 2374
+      dvar set aa_enemy_damage_taken 49629
+      dvar set aa_player_damage_dealt 2774
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+      dvar set aa_enemy_damage_taken 49729
+      dvar set aa_enemy_deaths 52
+      dvar set aa_player_kills 51
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+AI (entity 696, origin -848.0 0.0 80.1) couldn't find path to goal.
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+      dvar set aa_enemy_damage_taken 49745
+      dvar set aa_player_damage_dealt 2790
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+AI (entity 671, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_2)
+      dvar set aa_enemy_damage_taken 49761
+      dvar set aa_enemy_deaths 53
+      dvar set aa_player_kills 52
+      dvar set ui_ammo_stock_width 17
+AI (entity 671, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 668, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 668, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 706, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 706, origin -654.9 -1285.5 80.1) couldn't find path to goal.
+Dropping redundant reliable command: J "0"
+Dropping redundant reliable command: J "0"
+      dvar set ui_ammo_stock_width 27
       dvar set player0downs 1
 WARNING: unknown dvar 'r_reviveFX_contrastEdge' in file 'vision/zombie_last_stand.vision'
 WARNING: unknown dvar 'r_reviveFX_brightnessEdge' in file 'vision/zombie_last_stand.vision'
@@ -3631,7 +4058,7 @@ WARNING: unknown dvar 'r_reviveFX_brightnessCenter' in file 'vision/zombie_last_
 WARNING: unknown dvar 'r_reviveFX_desaturationCenter' in file 'vision/zombie_last_stand.vision'
 WARNING: unknown dvar 'r_reviveFX_darkTintCenter' in file 'vision/zombie_last_stand.vision'
 WARNING: unknown dvar 'r_reviveFX_lightTintCenter' in file 'vision/zombie_last_stand.vision'
-      dvar set ui_ammo_stock_width 27
+      dvar set ui_right_ammo_width 13
 Could not load xanim "".
 Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (m1911_upgraded_zm)
 Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (m1911_upgraded_zm)
@@ -3639,564 +4066,286 @@ Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weap
 Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (m1911lh_upgraded_zm)
 Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (m1911lh_upgraded_zm)
 Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (m1911lh_upgraded_zm)
-      dvar set aa_enemy_damage_taken 3442
-      dvar set aa_enemy_deaths 13
-      dvar set aa_player_kills 13
-      dvar set aa_enemy_damage_taken 4194
-      dvar set aa_enemy_deaths 14
-      dvar set aa_player_kills 14
-      dvar set ui_ammo_stock_width 17
-AI (entity 682, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 682, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 4345
-      dvar set aa_player_damage_dealt 1550
-      dvar set aa_enemy_damage_taken 4497
-      dvar set aa_enemy_deaths 15
-      dvar set aa_player_kills 15
-AI (entity 686, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 686, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 665, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-AI (entity 681, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 681, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 679, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 4647
-      dvar set aa_player_damage_dealt 1700
-AI (entity 679, origin -400.7 -1949.3 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 4800
-      dvar set aa_enemy_deaths 16
-      dvar set aa_player_kills 16
-      dvar set aa_enemy_damage_taken 4953
-      dvar set aa_player_damage_dealt 1853
-      dvar set aa_enemy_damage_taken 5103
-      dvar set aa_enemy_deaths 17
-      dvar set aa_player_kills 17
-      dvar set aa_enemy_damage_taken 5255
-      dvar set aa_player_damage_dealt 2005
-      dvar set aa_enemy_damage_taken 5407
-      dvar set aa_enemy_deaths 18
-      dvar set aa_player_kills 18
-      dvar set aa_enemy_damage_taken 5561
-      dvar set aa_player_damage_dealt 2159
-      dvar set aa_enemy_damage_taken 5714
-      dvar set aa_enemy_deaths 19
-      dvar set aa_player_kills 19
-      dvar set aa_enemy_damage_taken 5865
-      dvar set aa_player_damage_dealt 2310
-      dvar set aa_enemy_damage_taken 6016
-      dvar set aa_enemy_deaths 20
-      dvar set aa_player_kills 20
-      dvar set aa_enemy_damage_taken 6167
-      dvar set aa_player_damage_dealt 2461
-      dvar set aa_enemy_damage_taken 6318
-      dvar set aa_player_damage_dealt 2612
-      dvar set aa_enemy_damage_taken 6468
-      dvar set aa_enemy_deaths 21
-      dvar set aa_player_kills 21
-      dvar set aa_enemy_damage_taken 6620
-      dvar set aa_enemy_deaths 22
-      dvar set aa_player_kills 22
-      dvar set aa_enemy_damage_taken 6772
-      dvar set aa_player_damage_dealt 2764
-      dvar set aa_enemy_damage_taken 6922
-      dvar set aa_enemy_deaths 23
-      dvar set aa_player_kills 23
-      dvar set aa_enemy_damage_taken 7076
-      dvar set aa_player_damage_dealt 2918
-      dvar set aa_enemy_damage_taken 7230
-      dvar set aa_enemy_deaths 24
-      dvar set aa_player_kills 24
-R_MarkFragments: Too many triangles to mark, max 255 radius 24.68 at -34.23 -1301.53 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 26.78 at -31.31 -1294.64 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 28.98 at -44.55 -1272.53 78.13
-      dvar set aa_enemy_damage_taken 7384
-      dvar set aa_player_damage_dealt 3072
-      dvar set aa_enemy_damage_taken 7534
-      dvar set aa_enemy_deaths 25
-      dvar set aa_player_kills 25
-      dvar set aa_enemy_damage_taken 7684
-      dvar set aa_player_damage_dealt 3222
-      dvar set aa_enemy_damage_taken 7837
-      dvar set aa_enemy_deaths 26
-      dvar set aa_player_kills 26
-      dvar set aa_enemy_damage_taken 7989
-      dvar set aa_player_damage_dealt 3374
-      dvar set aa_enemy_damage_taken 8139
-      dvar set aa_enemy_deaths 27
-      dvar set aa_player_kills 27
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-AI (entity 668, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 8454
-      dvar set aa_enemy_deaths 28
-      dvar set aa_player_kills 28
-AI (entity 666, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-AI (entity 679, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 679, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 8559
-      dvar set aa_player_damage_dealt 3479
-      dvar set aa_ads_damage_dealt 1041
-      dvar set aa_enemy_damage_taken 8690
-      dvar set aa_player_damage_dealt 3610
-      dvar set aa_ads_damage_dealt 1172
-      dvar set aa_enemy_damage_taken 8821
-      dvar set aa_enemy_deaths 29
-      dvar set aa_player_kills 29
-AI (entity 661, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 661, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 8926
-      dvar set aa_player_damage_dealt 3715
-      dvar set aa_enemy_damage_taken 9057
-      dvar set aa_player_damage_dealt 3846
-      dvar set aa_enemy_damage_taken 9179
-      dvar set aa_enemy_deaths 30
-      dvar set aa_player_kills 30
-      dvar set aa_enemy_damage_taken 9310
-      dvar set aa_player_damage_dealt 3977
-AI (entity 685, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 9625
-      dvar set aa_enemy_deaths 31
-      dvar set aa_player_kills 31
-AI (entity 688, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 688, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 9722
-      dvar set aa_player_damage_dealt 4074
-      dvar set aa_enemy_damage_taken 9853
-      dvar set aa_player_damage_dealt 4205
-AI (entity 690, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 9984
-      dvar set aa_player_damage_dealt 4336
-      dvar set aa_enemy_damage_taken 10111
-      dvar set aa_enemy_deaths 32
-      dvar set aa_player_kills 32
-      dvar set aa_enemy_damage_taken 10242
-      dvar set aa_player_damage_dealt 4467
-AI (entity 690, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 10369
-      dvar set aa_player_damage_dealt 4594
-      dvar set aa_enemy_damage_taken 10684
-      dvar set aa_enemy_deaths 33
-      dvar set aa_player_kills 33
-      dvar set aa_enemy_damage_taken 10806
-      dvar set aa_player_damage_dealt 4716
-      dvar set aa_enemy_damage_taken 10937
-      dvar set aa_enemy_deaths 34
-      dvar set aa_player_kills 34
-R_MarkFragments: Too many triangles to mark, max 255 radius 28.09 at 2.99 -1192.00 80.13
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 11068
-      dvar set aa_player_damage_dealt 4847
-      dvar set aa_enemy_damage_taken 11199
-      dvar set aa_player_damage_dealt 4978
-      dvar set aa_ads_damage_dealt 1303
-      dvar set aa_enemy_damage_taken 11330
-      dvar set aa_enemy_deaths 35
-      dvar set aa_player_kills 35
-R_MarkFragments: Too many triangles to mark, max 255 radius 29.29 at 7.30 -1314.68 80.13
-      dvar set aa_enemy_damage_taken 11645
-      dvar set aa_enemy_deaths 36
-      dvar set aa_player_kills 36
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 11776
-      dvar set aa_player_damage_dealt 5109
-      dvar set aa_enemy_damage_taken 11887
-      dvar set aa_player_damage_dealt 5220
-      dvar set aa_enemy_damage_taken 12009
-      dvar set aa_player_damage_dealt 5342
-      dvar set aa_enemy_damage_taken 12140
-      dvar set aa_player_damage_dealt 5473
-      dvar set aa_enemy_damage_taken 12258
-      dvar set aa_player_damage_dealt 5591
-      dvar set aa_enemy_damage_taken 12376
-      dvar set aa_player_damage_dealt 5709
-      dvar set aa_enemy_damage_taken 12507
-      dvar set aa_player_damage_dealt 5840
-      dvar set aa_enemy_damage_taken 12609
-      dvar set aa_player_damage_dealt 5942
-      dvar set aa_enemy_damage_taken 12714
-      dvar set aa_enemy_deaths 37
-      dvar set aa_player_kills 37
-      dvar set aa_enemy_damage_taken 12802
-      dvar set aa_enemy_deaths 38
-      dvar set aa_player_kills 38
-      dvar set aa_enemy_damage_taken 12897
-      dvar set aa_player_damage_dealt 6037
-      dvar set aa_enemy_damage_taken 13028
-      dvar set aa_player_damage_dealt 6168
-      dvar set aa_enemy_damage_taken 13136
-      dvar set aa_player_damage_dealt 6276
-      dvar set aa_enemy_damage_taken 13451
-      dvar set aa_enemy_deaths 39
-      dvar set aa_player_kills 39
-      dvar set ui_ammo_stock_width 17
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 13582
-      dvar set aa_enemy_deaths 40
-      dvar set aa_player_kills 40
-      dvar set aa_enemy_damage_taken 13687
-      dvar set aa_player_damage_dealt 6381
-      dvar set aa_enemy_damage_taken 13792
-      dvar set aa_player_damage_dealt 6486
-R_MarkFragments: Too many triangles to mark, max 255 radius 28.98 at 45.73 -1209.03 80.13
-      dvar set aa_enemy_damage_taken 13897
-      dvar set aa_enemy_deaths 41
-      dvar set aa_player_kills 41
-      dvar set ui_ammo_stock_width 17
-      dvar set aa_enemy_damage_taken 14028
-      dvar set aa_enemy_deaths 42
-      dvar set aa_player_kills 42
-      dvar set aa_enemy_damage_taken 14125
-      dvar set aa_player_damage_dealt 6583
-      dvar set aa_enemy_damage_taken 14256
-      dvar set aa_player_damage_dealt 6714
-      dvar set aa_enemy_damage_taken 14387
-      dvar set aa_enemy_deaths 43
-      dvar set aa_player_kills 43
-      dvar set aa_enemy_damage_taken 14518
-      dvar set aa_enemy_deaths 44
-      dvar set aa_player_kills 44
-      dvar set aa_enemy_damage_taken 14636
-      dvar set aa_player_damage_dealt 6832
-      dvar set aa_enemy_damage_taken 14787
-      dvar set aa_player_damage_dealt 6983
-      dvar set aa_enemy_damage_taken 14940
-      dvar set aa_enemy_deaths 45
-      dvar set aa_player_kills 45
-      dvar set ai_meleeRange 120
-      dvar set ai_meleeWidth 0
-      dvar set ai_meleeHeight 0
-      dvar set aa_enemy_damage_taken 15045
-      dvar set aa_player_damage_dealt 7088
-      dvar set aa_enemy_damage_taken 15199
-      dvar set aa_player_damage_dealt 7242
-      dvar set aa_enemy_damage_taken 15349
-      dvar set aa_enemy_deaths 46
-      dvar set aa_player_kills 46
-      dvar set aa_enemy_damage_taken 15500
-      dvar set aa_player_damage_dealt 7393
-      dvar set aa_enemy_damage_taken 15654
-      dvar set aa_player_damage_dealt 7547
-      dvar set aa_enemy_damage_taken 15805
-      dvar set aa_enemy_deaths 47
-      dvar set aa_player_kills 47
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 15910
-      dvar set aa_player_damage_dealt 7652
-      dvar set aa_enemy_damage_taken 16015
-      dvar set aa_player_damage_dealt 7757
-      dvar set aa_enemy_damage_taken 16166
-      dvar set aa_player_damage_dealt 7908
-      dvar set aa_enemy_damage_taken 16305
-      dvar set aa_enemy_deaths 48
-      dvar set aa_enemy_damage_taken 16545
-      dvar set aa_enemy_deaths 49
-      dvar set aa_player_kills 48
-      dvar set aa_enemy_damage_taken 16785
-      dvar set aa_enemy_deaths 50
-      dvar set aa_player_kills 49
-      dvar set aa_enemy_damage_taken 17025
-      dvar set aa_enemy_deaths 51
-      dvar set aa_player_kills 50
-      dvar set aa_enemy_damage_taken 17265
-      dvar set aa_enemy_deaths 52
-      dvar set aa_player_kills 51
-R_MarkFragments: Too many triangles to mark, max 255 radius 56.93 at -31.45 -1167.60 80.13
-      dvar set ai_meleeRange 100
-AI (entity 713, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 713, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 17505
-      dvar set aa_player_damage_dealt 8148
-      dvar set aa_ads_damage_dealt 1543
-      dvar set aa_enemy_damage_taken 17727
-      dvar set aa_enemy_deaths 53
-      dvar set aa_player_kills 52
-      dvar set aa_enemy_damage_taken 17967
+      dvar set aa_enemy_damage_taken 49885
+      dvar set aa_player_damage_dealt 2914
+      dvar set aa_enemy_damage_taken 50291
+      dvar set aa_player_damage_dealt 3320
+      dvar set aa_enemy_damage_taken 51211
       dvar set aa_enemy_deaths 54
       dvar set aa_player_kills 53
-AI (entity 691, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 691, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 18201
+      dvar set aa_enemy_damage_taken 51300
+      dvar set aa_player_damage_dealt 3409
+      dvar set aa_enemy_damage_taken 51657
+      dvar set aa_player_damage_dealt 3766
+      dvar set aa_enemy_damage_taken 51988
+      dvar set aa_player_damage_dealt 4097
+      dvar set aa_enemy_damage_taken 53032
       dvar set aa_enemy_deaths 55
       dvar set aa_player_kills 54
-AI (entity 706, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 18225
+      dvar set aa_enemy_damage_taken 53704
       dvar set aa_enemy_deaths 56
       dvar set aa_player_kills 55
-      dvar set aa_enemy_damage_taken 18360
+      dvar set aa_enemy_damage_taken 54110
+      dvar set aa_player_damage_dealt 4503
+      dvar set aa_enemy_damage_taken 54574
+      dvar set aa_player_damage_dealt 4967
+      dvar set ui_right_ammo_width 26
+      dvar set aa_enemy_damage_taken 54674
+      dvar set aa_player_damage_dealt 5067
+      dvar set aa_enemy_damage_taken 55074
+      dvar set aa_player_damage_dealt 5467
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_torso_1)
+      dvar set aa_enemy_damage_taken 55338
       dvar set aa_enemy_deaths 57
       dvar set aa_player_kills 56
-      dvar set aa_enemy_damage_taken 18600
+      dvar set aa_enemy_damage_taken 55738
+      dvar set aa_player_damage_dealt 5867
+      dvar set aa_enemy_damage_taken 56138
       dvar set aa_enemy_deaths 58
       dvar set aa_player_kills 57
-      dvar set aa_enemy_damage_taken 18840
+      dvar set aa_enemy_damage_taken 56204
+      dvar set aa_player_damage_dealt 5933
+      dvar set aa_enemy_damage_taken 56304
+      dvar set aa_player_damage_dealt 6033
+      dvar set aa_enemy_damage_taken 56704
+      dvar set aa_player_damage_dealt 6433
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_1)
+Actor_UpdateEyeInformation: Actor dobj doesn't have TAG_EYE.(char_ger_honorgd_body1_g_rarmoff_1)
+      dvar set aa_enemy_damage_taken 57104
       dvar set aa_enemy_deaths 59
       dvar set aa_player_kills 58
-AI (entity 705, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-AI (entity 675, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 19080
+      dvar set aa_enemy_damage_taken 57170
+      dvar set aa_player_damage_dealt 6499
+      dvar set aa_enemy_damage_taken 57270
+      dvar set aa_player_damage_dealt 6599
+      dvar set aa_enemy_damage_taken 57347
+      dvar set aa_player_damage_dealt 6676
+      dvar set aa_enemy_damage_taken 57395
+      dvar set aa_player_damage_dealt 6724
+      dvar set aa_ads_damage_dealt 1232
+      dvar set aa_enemy_damage_taken 57495
+      dvar set aa_player_damage_dealt 6824
+      dvar set aa_ads_damage_dealt 1332
+      dvar set aa_enemy_damage_taken 57582
+      dvar set aa_player_damage_dealt 6911
+      dvar set aa_ads_damage_dealt 1419
+      dvar set aa_enemy_damage_taken 57682
+      dvar set aa_player_damage_dealt 7011
+      dvar set aa_ads_damage_dealt 1519
+      dvar set aa_enemy_damage_taken 57737
+      dvar set aa_player_damage_dealt 7066
+      dvar set aa_ads_damage_dealt 1574
+      dvar set aa_enemy_damage_taken 57993
+      dvar set aa_player_damage_dealt 7322
+      dvar set aa_ads_damage_dealt 1830
+      dvar set aa_enemy_damage_taken 58393
       dvar set aa_enemy_deaths 60
       dvar set aa_player_kills 59
-      dvar set aa_enemy_damage_taken 19320
+      dvar set aa_enemy_damage_taken 58449
+      dvar set aa_player_damage_dealt 7378
+      dvar set aa_ads_damage_dealt 1886
+      dvar set aa_enemy_damage_taken 58805
       dvar set aa_enemy_deaths 61
       dvar set aa_player_kills 60
-R_MarkFragments: Too many triangles to mark, max 255 radius 26.02 at -3.20 -1204.72 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 28.99 at 2.69 -1237.58 64.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 25.95 at 4.88 -1208.21 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 29.36 at 5.03 -1212.00 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 24.62 at -35.73 -1235.88 78.13
-AI (entity 679, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 679, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 687, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 19560
+      dvar set aa_enemy_damage_taken 58905
       dvar set aa_enemy_deaths 62
       dvar set aa_player_kills 61
-AI (entity 671, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 671, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 19800
-      dvar set aa_player_damage_dealt 8388
-      dvar set aa_enemy_damage_taken 20040
+      dvar set aa_enemy_damage_taken 59005
+      dvar set aa_player_damage_dealt 7478
+      dvar set aa_ads_damage_dealt 1986
+      dvar set aa_enemy_damage_taken 59105
+      dvar set aa_player_damage_dealt 7578
+      dvar set aa_ads_damage_dealt 2086
+      dvar set aa_enemy_damage_taken 59505
       dvar set aa_enemy_deaths 63
       dvar set aa_player_kills 62
-      dvar set aa_enemy_damage_taken 20196
-      dvar set aa_player_damage_dealt 8544
-      dvar set aa_enemy_damage_taken 20397
+      dvar set aa_enemy_damage_taken 59905
       dvar set aa_enemy_deaths 64
       dvar set aa_player_kills 63
-      dvar set aa_enemy_damage_taken 20637
+      dvar set ui_ammo_stock_width 17
+AI (entity 693, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 708, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 708, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 688, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 62455
       dvar set aa_enemy_deaths 65
       dvar set aa_player_kills 64
-      dvar set aa_enemy_damage_taken 20664
-      dvar set aa_player_damage_dealt 8571
-      dvar set aa_enemy_damage_taken 20883
+AI (entity 704, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 63170
+      dvar set aa_player_damage_dealt 8293
+      dvar set aa_ads_damage_dealt 2801
+      dvar set aa_enemy_damage_taken 68270
       dvar set aa_enemy_deaths 66
       dvar set aa_player_kills 65
-      dvar set aa_enemy_damage_taken 21037
-      dvar set aa_player_damage_dealt 8725
-      dvar set aa_enemy_damage_taken 21220
-      dvar set aa_player_damage_dealt 8908
-      dvar set aa_enemy_damage_taken 21460
+AI (entity 709, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 69035
       dvar set aa_enemy_deaths 67
       dvar set aa_player_kills 66
-      dvar set aa_enemy_damage_taken 21700
+AI (entity 661, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 69728
+      dvar set aa_player_damage_dealt 8986
+      dvar set aa_ads_damage_dealt 3494
+      dvar set aa_enemy_damage_taken 70421
+      dvar set aa_player_damage_dealt 9679
+      dvar set aa_ads_damage_dealt 4187
+      dvar set aa_enemy_damage_taken 71951
       dvar set aa_enemy_deaths 68
       dvar set aa_player_kills 67
-      dvar set aa_enemy_damage_taken 21916
-      dvar set aa_player_damage_dealt 9124
-      dvar set aa_enemy_damage_taken 22078
+      dvar set aa_enemy_damage_taken 72716
+      dvar set aa_player_damage_dealt 10444
+      dvar set aa_ads_damage_dealt 4952
+      dvar set aa_enemy_damage_taken 73481
       dvar set aa_enemy_deaths 69
       dvar set aa_player_kills 68
-      dvar set aa_enemy_damage_taken 22285
+AI (entity 678, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 678, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 670, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 670, origin -653.1 -1288.6 80.1) couldn't find path to goal.
+AI (entity 683, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 75011
       dvar set aa_enemy_deaths 70
       dvar set aa_player_kills 69
-      dvar set aa_enemy_damage_taken 22525
+      dvar set aa_enemy_damage_taken 75492
       dvar set aa_enemy_deaths 71
       dvar set aa_player_kills 70
-      dvar set aa_enemy_damage_taken 22765
-      dvar set aa_enemy_deaths 72
-      dvar set aa_player_kills 71
-      dvar set aa_enemy_damage_taken 22912
-      dvar set aa_enemy_deaths 73
-      dvar set aa_player_kills 72
-      dvar set aa_enemy_damage_taken 23152
-      dvar set aa_enemy_deaths 74
-      dvar set aa_player_kills 73
-      dvar set aa_enemy_damage_taken 23392
-      dvar set aa_enemy_deaths 75
-      dvar set aa_player_kills 74
-      dvar set aa_enemy_damage_taken 23632
-      dvar set aa_player_damage_dealt 9364
-      dvar set aa_enemy_damage_taken 23815
-      dvar set aa_player_damage_dealt 9547
-      dvar set aa_enemy_damage_taken 24055
-      dvar set aa_enemy_deaths 76
-      dvar set aa_player_kills 75
-      dvar set aa_enemy_damage_taken 24295
-      dvar set aa_enemy_deaths 77
-      dvar set aa_player_kills 76
-      dvar set aa_enemy_damage_taken 24535
-      dvar set aa_enemy_deaths 78
-      dvar set aa_player_kills 77
-      dvar set aa_enemy_damage_taken 24775
-      dvar set aa_enemy_deaths 79
-      dvar set aa_player_kills 78
-      dvar set aa_enemy_damage_taken 25015
-      dvar set aa_enemy_deaths 80
-      dvar set aa_player_kills 79
-AI (entity 681, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 25154
-      dvar set aa_enemy_deaths 81
-AI (entity 713, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 713, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 25394
-      dvar set aa_player_damage_dealt 9787
-      dvar set aa_enemy_damage_taken 25634
-      dvar set aa_enemy_deaths 82
-      dvar set aa_player_kills 80
-      dvar set aa_enemy_damage_taken 25656
-      dvar set aa_player_damage_dealt 9809
-AI (entity 694, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 694, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 25810
-      dvar set aa_player_damage_dealt 9963
-      dvar set aa_enemy_damage_taken 25964
-      dvar set aa_player_damage_dealt 10117
-AI (entity 664, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 26116
-      dvar set aa_player_damage_dealt 10269
-AI (entity 682, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 26133
-      dvar set aa_player_damage_dealt 10286
-      dvar set aa_enemy_damage_taken 26155
-      dvar set aa_player_damage_dealt 10308
-      dvar set aa_enemy_damage_taken 26180
-      dvar set aa_player_damage_dealt 10333
-AI (entity 697, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 26205
-      dvar set aa_player_damage_dealt 10358
-      dvar set aa_ads_damage_dealt 1568
-      dvar set aa_enemy_damage_taken 26230
-      dvar set aa_player_damage_dealt 10383
-      dvar set aa_ads_damage_dealt 1593
-      dvar set aa_enemy_damage_taken 26300
-      dvar set aa_player_damage_dealt 10453
-      dvar set aa_ads_damage_dealt 1663
-      dvar set aa_enemy_damage_taken 26322
-      dvar set aa_player_damage_dealt 10475
-      dvar set aa_ads_damage_dealt 1685
-      dvar set aa_enemy_damage_taken 26476
-      dvar set aa_player_damage_dealt 10629
-      dvar set aa_enemy_damage_taken 26524
-      dvar set aa_player_damage_dealt 10677
-      dvar set aa_enemy_damage_taken 26698
-      dvar set aa_player_damage_dealt 10851
-      dvar set aa_enemy_damage_taken 26773
-      dvar set aa_player_damage_dealt 10926
-      dvar set aa_enemy_damage_taken 26935
-      dvar set aa_player_damage_dealt 11088
-      dvar set aa_enemy_damage_taken 27127
-      dvar set aa_enemy_deaths 83
-      dvar set aa_player_kills 81
-      dvar set aa_enemy_damage_taken 27367
-      dvar set aa_enemy_deaths 84
-      dvar set aa_player_kills 82
-      dvar set aa_enemy_damage_taken 27544
-      dvar set aa_enemy_deaths 85
-      dvar set aa_player_kills 83
-      dvar set aa_enemy_damage_taken 27745
-      dvar set aa_enemy_deaths 86
-      dvar set aa_player_kills 84
-      dvar set aa_enemy_damage_taken 27985
-      dvar set aa_enemy_deaths 87
-      dvar set aa_player_kills 85
-R_MarkFragments: Too many triangles to mark, max 255 radius 23.15 at 45.58 -1264.89 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 25.50 at 45.80 -1264.83 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 23.38 at -37.21 -1297.58 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 26.46 at 38.04 -1268.73 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 29.21 at 5.16 -1287.36 64.13
-      dvar set aa_enemy_damage_taken 28225
-      dvar set aa_enemy_deaths 88
-      dvar set aa_player_kills 86
-R_MarkFragments: Too many triangles to mark, max 255 radius 27.60 at 52.98 -1261.27 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 28.08 at 71.68 -1248.11 80.13
-      dvar set aa_enemy_damage_taken 28261
-      dvar set aa_player_damage_dealt 11124
-      dvar set aa_enemy_damage_taken 28411
-      dvar set aa_enemy_deaths 89
-      dvar set aa_player_kills 87
-      dvar set aa_enemy_damage_taken 28651
-      dvar set aa_enemy_deaths 90
-      dvar set aa_player_kills 88
-      dvar set aa_enemy_damage_taken 28891
-      dvar set aa_enemy_deaths 91
-      dvar set aa_player_kills 89
-AI (entity 670, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 670, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 726, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 726, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 707, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 707, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 29131
-      dvar set aa_enemy_deaths 92
-      dvar set aa_player_kills 90
-      dvar set aa_enemy_damage_taken 29371
-      dvar set aa_enemy_deaths 93
-      dvar set aa_player_kills 91
-AI (entity 701, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 701, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 727, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 29422
-      dvar set aa_player_damage_dealt 11175
-      dvar set aa_enemy_damage_taken 29578
-      dvar set aa_player_damage_dealt 11331
-      dvar set aa_enemy_damage_taken 29791
-      dvar set aa_player_damage_dealt 11544
-      dvar set aa_enemy_damage_taken 29881
-      dvar set aa_player_damage_dealt 11634
-      dvar set aa_enemy_damage_taken 30007
-      dvar set aa_player_damage_dealt 11760
-      dvar set aa_enemy_damage_taken 30247
-      dvar set aa_enemy_deaths 94
-      dvar set aa_player_kills 92
-      dvar set aa_enemy_damage_taken 30364
-      dvar set aa_player_damage_dealt 11877
-      dvar set aa_enemy_damage_taken 30511
-      dvar set aa_player_damage_dealt 12024
-      dvar set aa_enemy_damage_taken 30751
-      dvar set aa_enemy_deaths 95
-      dvar set aa_player_kills 93
-      dvar set aa_enemy_damage_taken 30991
-      dvar set aa_enemy_deaths 96
-      dvar set aa_player_kills 94
-      dvar set aa_enemy_damage_taken 31156
-      dvar set aa_player_damage_dealt 12189
-      dvar set aa_enemy_damage_taken 31396
-      dvar set aa_enemy_deaths 97
-      dvar set aa_player_kills 95
-AI (entity 663, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 663, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 678, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 31636
-      dvar set aa_player_damage_dealt 12429
-      dvar set aa_enemy_damage_taken 31876
-      dvar set aa_player_damage_dealt 12669
-      dvar set aa_enemy_damage_taken 32116
-      dvar set aa_player_damage_dealt 12909
-      dvar set aa_enemy_damage_taken 32239
-      dvar set aa_player_damage_dealt 13032
-      dvar set aa_enemy_damage_taken 32440
-      dvar set aa_player_damage_dealt 13233
-      dvar set aa_enemy_damage_taken 32680
-      dvar set aa_enemy_deaths 98
-      dvar set aa_player_kills 96
-AI (entity 704, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 32767
-      dvar set aa_player_damage_dealt 13320
-      dvar set aa_enemy_damage_taken 32953
-      dvar set aa_player_damage_dealt 13506
-      dvar set aa_enemy_damage_taken 33193
-      dvar set aa_enemy_deaths 99
-      dvar set aa_player_kills 97
-      dvar set aa_enemy_damage_taken 33433
-      dvar set aa_enemy_deaths 100
-      dvar set aa_player_kills 98
+AI (entity 695, origin -848.0 0.0 80.1) couldn't find path to goal.
+AI (entity 694, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 694, origin -666.0 -1280.0 80.1) couldn't find path to goal.
+AI (entity 666, origin -848.0 0.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 75995
+      dvar set aa_player_damage_dealt 10947
+      dvar set aa_ads_damage_dealt 5455
+AI (entity 699, origin -848.0 0.0 80.1) couldn't find path to goal.
       dvar set player0downs 2
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (m1911_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (m1911_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (m1911_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_ext_clip) for weapon (m1911lh_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_suppressor) for weapon (m1911lh_upgraded_zm)
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_upgraded_sights) for weapon (m1911lh_upgraded_zm)
+      dvar set ammoCounterHide 1
+      dvar set miniscoreboardhide 1
+AI (entity 688, origin -848.0 0.0 80.1) couldn't find path to goal.
       dvar set cl_paused 1
 SaveExists(""): returning false, !savename[0]
-      dvar set cl_paused 2
- - R_Ci
+--------------
+GamerProfile_UpdateProfileFromDvars(0):
+ "mis_01" = "0".
+ "mis_difficulty" = "0000000000000000000000000".
+ "takeCoverWarnings" = "0".
+ "r_gamma" = "1".
+ "snd_menu_voice" = "1".
+ "snd_menu_music" = "1".
+ "snd_menu_sfx" = "1".
+ "snd_menu_master" = "0".
+ "snd_menu_cinematic" = "1".
+Updating profile 0 from dvars.
+
+execing buttons_default.cfg from fastfile
+execing otherkeysdefaults.cfg from fastfile
+execing thumbstick_default.cfg from fastfile
+      dvar set ui_skipMainLockout 1
+PC ONLY: No menu has focus and == CA_ACTIVE, so forcing UIMENU_NONE      dvar set cl_paused 0
+
+====================================================
+Com_ERROR: PLATFORM_DISCONNECTED_FROM_SERVER
+====================================================
+
+      dvar set ui_menuLvlNotify 0
+********************
+Disconnecting: Disconnected from server
+********************
+PMem_Free( ExtraCamHeap, Low )
+PMem_Free( ExtraCamHeap, High )
+----- Server Shutdown -----
+ShutdownGame:
+------------------------------------------------------------
+Going to CS_ZOMBIE from 4 for Unknown Soldier 0
+0:Unknown Soldier 0 EXE_DISCONNECTED
+      dvar set com_voip_resume_time 0
+      dvar set sv_running 0
+      dvar set all_players_are_connected 0
+---------------------------
+PMem_Free( PerLocalClient, Low )
+PMem_Free( PerLocalClient, High )
+      dvar set com_maxclients 4
+----- R_Init -----
+Video memory for device: 128 MB.
+Rounded video memory size: 128 MB.
+DirectX reports 128 MB of video memory and 3954 MB of available texture memory.
+Using video memory size to cap used texture memory at 112 MB.
+Texture detail is set automatically.
+Using picmip 1 on most textures, 1 on normal maps, and 1 on specular maps
+Cmd_AddCommand: setClanName already defined
+Cmd_AddCommand: checkClanName already defined
+Cmd_AddCommand: loadMaps already defined
+Cmd_AddCommand: refresh_filter already defined
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'apartment'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'Büros Der Toten'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'cod_zombies_modding'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'cod_zombies_modding_backup'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'common_zombie_patch_tut'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'LongerGasMod'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'usermaps'
+Customized arena file not found: mod.arena
+      dvar set ui_menuLvlNotify 1
+Unloading assets from fastfile 'zombie_theater' and creating default assets stubs
+Unloading assets from fastfile 'en_zombie_theater' and creating default assets stubs
+Unloading assets from fastfile 'zombie_theater_patch' and creating default assets stubs
+Unloading assets from fastfile 'common_zombie' and creating default assets stubs
+Unloading assets from fastfile 'en_common_zombie' and creating default assets stubs
+Unloading assets from fastfile 'common_zombie_patch' and creating default assets stubs
+Unloaded fastfile 'zombie_theater'
+PMem_Free( zombie_theater, Low )
+PMem_Free( zombie_theater, High )
+Unloaded fastfile 'en_zombie_theater'
+PMem_Free( en_zombie_theater, Low )
+PMem_Free( en_zombie_theater, High )
+Unloaded fastfile 'zombie_theater_patch'
+PMem_Free( zombie_theater_patch, Low )
+PMem_Free( zombie_theater_patch, High )
+Unloaded fastfile 'common_zombie'
+PMem_Free( common_zombie, Low )
+PMem_Free( common_zombie, High )
+Unloaded fastfile 'en_common_zombie'
+PMem_Free( en_common_zombie, Low )
+PMem_Free( en_common_zombie, High )
+Unloaded fastfile 'common_zombie_patch'
+PMem_Free( common_zombie_patch, Low )
+PMem_Free( common_zombie_patch, High )
+      dvar set com_desiredMenu 2
+      dvar set zombiemode 0
+Timestamp: SV_SpawnServer 1723539898
+g_gametype cmp is not a valid gametype, defaulting to cmp
+      dvar set ui_mapname frontend
+[00420448] 0: CA_DISCONNECTED
+      dvar set mapname frontend
+      dvar set nextmap 
+CHALLENGERESPONSE: Sending bdOnlineUserID 76561199067054074 to server
+CHALLENGERESPONSE: Sending nonce 1879682174, challengeNum 2352123132 to server
+CHALLENGERESPONSE: Sending bdOnlineUserID 76561199067054074 to server
+CHALLENGERESPONSE: Sending nonce 1879682174, challengeNum 2352123132 to server
+------ Server Initialization ------
+Server: frontend
+      dvar set sv_running 1
+----- R_Init -----
+Video memory for device: 128 MB.
+Rounded video memory size: 128 MB.
+DirectX reports 128 MB of video memory and 4004 MB of available texture memory.
+Using video memory size to cap used texture memory at 112 MB.
+Texture detail is set automatically.
+Using picmip 1 on most textures, 1 on normal maps, and 1 on specular maps
+Cmd_AddCommand: setClanName already defined
+Cmd_AddCommand: checkClanName already defined
+Cmd_AddCommand: loadMaps already defined
+Cmd_AddCommand: refresh_filter already defined
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'apartment'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'Büros Der Toten'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'cod_zombies_modding'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'cod_zombies_modding_backup'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'common_zombie_patch_tut'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'LongerGasMod'
+FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'usermaps'
+Customized arena file not found: mod.arena
+BinkOpen failed on C:\Steam\steamapps\common\Call of Duty Black Ops\mods/cod_zombies_modding\video\so_narrative1_frontend_load.bik because: Error opening file.
+Error: Could not load material "loadscreen_frontend".
+Adding fastfile 'patch_ui' to queue
+Adding fastfile 'en_fronten

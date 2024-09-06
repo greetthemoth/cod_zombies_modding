@@ -808,8 +808,13 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 
 		//zombie limit
 	{
-		diminished_dampner = ((damp10 * 0.7)+(1 - 0.7)); //will only dampen down 1 -> 0.3. 0.3 will always remain after 10 rounds.
-		room_zombie_limit_mult = (difficulty * 0.23 * diminished_dampner)+0.3;
+		//mult = 0.23; //testo
+		//base = 0.3; //testo
+		dif_mult = 0.15; //testo
+		base = 0.3; //testo
+		damp10_per = 0.7;
+		diminished_dampner = ((damp10 * damp10_per)+(1 - damp10_per)); //will only dampen down 1 -> 0.3. 0.3 will always remain after 10 rounds.
+		room_zombie_limit_mult = (difficulty * dif_mult * diminished_dampner)+base;
 		data["room_zombie_limit_mult"] = room_zombie_limit_mult;
 		if(DEBUG_FLOW)
 			IPrintLn( "room_zombie_limit_mult: "+ room_zombie_limit_mult);
