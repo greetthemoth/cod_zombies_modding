@@ -922,6 +922,26 @@ tear_into_building()
 			return;
 		}
 
+		
+
+
+		{//added for mod . manages a spawner list to barrier node
+			if(!isDefined(self.first_node.ZHC_spawners_that_lead_to_this)){
+				self.first_node.ZHC_spawners_that_lead_to_this = [];
+			}
+			found = false;
+			for( i = 0; i < self.first_node.ZHC_spawners_that_lead_to_this.size; i++){
+				if(self.first_node.ZHC_spawners_that_lead_to_this[i] == self.spawner){
+					found = true;
+					break;
+				}
+			}
+			if(!found){
+				self.first_node.ZHC_spawners_that_lead_to_this[self.first_node.ZHC_spawners_that_lead_to_this.size] = self.spawner;
+			}
+		}
+
+
 		// barrier_chunks is the exterior_goal that has all the bars and boards connected to it.
 		// remember all_chunks_destroyed is in utility script _zombie_utility
 		if( all_chunks_destroyed( self.first_node.barrier_chunks ) ) // If barrier_chunks status says all chunks are destroyed then continue

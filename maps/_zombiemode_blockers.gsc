@@ -1119,7 +1119,7 @@ door_buy_expired(){
 	}
 
 	self roomId_setup();
-	if(true){	//room flow increase difficulty
+	if(false){	//room flow increase difficulty
 		if(level.ZHC_ROOMFLOW){
 			if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 				level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
@@ -1140,6 +1140,8 @@ door_buy_expired(){
 			IPrintLnBold( "ZHC_ROOMFLOW is false" );
 			wait(5);
 		}
+	}else{
+		wait(2);
 	}
 	if(false){			//occupy rooms to expire
 		self check_roomIDs_to_occupy_setup();
@@ -2327,7 +2329,7 @@ door_closed()
 	// get all trigs for the door, we might want a trigger on both sides
 	// of some junk sometimes
 	
-	//level notify "door_close";
+	level notify ("a_door_closed");
 	wait(waittime);
 
 	all_trigs = getentarray( self.target, "target" ); 
@@ -3003,7 +3005,8 @@ blocker_trigger_think()						//changed for mod
 		{
 			// if any piece has the state of not repaired then return false
 			// if the board has been repaired then return true 
-			trigger notify("all_boards_repaired");
+			trigger notify("all_boards_repaired", player);
+			self notify( "all_boards_repaired", player );
 			return;
 		}
 
@@ -3011,7 +3014,8 @@ blocker_trigger_think()						//changed for mod
 		{
 			// if any piece has been destroyed return false
 			// if any piece is not destroyed then return true
-			trigger notify("no valid boards");
+			trigger notify("no valid boards", player);
+			self notify( "no valid boards" , player);
 			return;
 		}
 
@@ -3161,7 +3165,8 @@ blocker_trigger_think()						//changed for mod
 			{
 				// if any piece has the state of not repaired then return false
 				// if the board has been repaired then return true 
-				trigger notify("all_boards_repaired");
+				trigger notify("all_boards_repaired", player);
+				self notify( "all_boards_repaired", player );
 				return;
 			}
 
@@ -3169,7 +3174,8 @@ blocker_trigger_think()						//changed for mod
 			{
 				// if any piece has been destroyed return false
 				// if any piece is not destroyed then return true
-				trigger notify("no valid boards");
+				trigger notify("no valid boards", player);
+				self notify( "no valid boards", player );
 				return;
 			}
 			

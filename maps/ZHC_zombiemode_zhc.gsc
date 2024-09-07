@@ -4,7 +4,7 @@
 #include maps\ZHC_utility;
 
 get_testing_level(){
-	return 0;
+	return 1.5;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
@@ -58,8 +58,10 @@ init(){
 	//maps\_zombiemode::register_player_damage_callback(::player_damaged_func);
 	//maps\_zombiemode_spawner::register_zombie_damage_callback(::zombie_damage); //Bucha perk, knifed zombies turn into crawlers.
 
+	thread blocker_perk_block_init();
 	thread dog_round_counter();
 	thread testing_ground();		//testo
+
 
 	init_quad_zombie_stuff();
 }
@@ -84,7 +86,12 @@ testing_ground(){
 	}
 	
 
+	
 
+	/*wait( 1 );
+	mac = level.ZHC_perk_machines["specialty_quickrevive"][0];
+	mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(mac.origin + (-600,0,0), (0,45,0));
+	*/
 
 
 	/*while(1){
@@ -97,9 +104,124 @@ testing_ground(){
 	//thread haunt_all_players();
 }
 
+blocker_perk_block_init(){
+	flag_wait( "all_players_connected" );//common_scripts\utility.gsc:
+	players = get_players();
+	for ( i = 0; i < players.size; i++ ){
+		players[i] thread manage_perk_history();
+	}
+	for( i = 0; i < level.exterior_goals.size; i++ )
+	{
+		level.exterior_goals[i] thread blocker_wait_to_perk_block();
+	}
+}
+manage_perk_history(){
+	self.perk_history = [];
+	/*while(1){	//now managed on give_perk()
+		self waittill( "perk_bought");
+		self.perk_history = array_remove(self.perk_history, self.perk_purchased);
+		self.perk_history[self.perk_history.size] = self.perk_purchased;
+		IPrintLn( "perk_history_length:"+self.perk_history.size + "  defined_perk:"+isDefined(self.perk_purchased));
+	}*/
+}
+blocker_wait_to_perk_block(){
+	while(1){
+		IPrintLnBold( "waiting to repair" );
+		self waittill( "no valid boards", player);
+		//IPrintLn( ret );
+		if(!IsDefined( player )){
+			IPrintLnBold( "player undefined" );
+			continue;
+		}
+		if(!is_player_valid( player )){
+			IPrintLnBold( "player invalid" );
+			continue;
+		}
+		spawns = level.enemy_spawns.size ;
+		for(i = 0; i < level.enemy_spawns.size; i++){
+			if(level.enemy_spawns[i].script_noteworthy == "quad_zombie_spawner")
+				spawns--;
+		}
+		if(spawns <= 1){
+			IPrintLnBold( "not enough spawns" );
+			continue;;
+		}
+		if(!isDefined(player.perk_history)){
+			IPrintLnBold( "player perk_history undefined");
+			continue;
+		}
+		perk = undefined;
+		mac = undefined;
+		limitQRandJug = true;
+		for( i = player.perk_history.size-1; i >= 0; i-- ){
+			cperk = player.perk_history[i];
+			if(limitQRandJug && (cperk == "specialty_quickrevive" || cperk == "specialty_armorvest")){
+				IPrintLn( "perk:" +cperk + " skipped" );
+				continue;
+			}
+			cmac = level.ZHC_perk_machines[cperk][0];
+			if(cmac.origin != cmac.original_origin){
+				IPrintLn( "perk:" +cperk + " in use" );
+				continue;
+			}
+			else{
+				perk = cperk;
+				mac = cmac;
+				break;
+			}
+		}
+		if(!IsDefined( perk )){
+			IPrintLnBold( "perk undefined" );
+			continue;
+		}else{
+			IPrintLnBold( "perk:" +perk +" moved");
+		}
+		
+		if(isDefined(self.ZHC_spawners_that_lead_to_this)){
+			for( i = 0; i < self.ZHC_spawners_that_lead_to_this.size; i ++){
+				self.ZHC_spawners_that_lead_to_this[i].is_enabled = false;
+			}
+		}else{
+			IPrintLnBold( "spawner list undefined" );
+		}
 
+		enemies = GetAISpeciesArray( "axis", "all" ); 
+		for( i = 0; i < enemies.size; i++ )
+		{
+			if ( is_true( enemies[i].ignore_enemy_count ) || ! isDefined( enemies[i].animname )  || ! IsDefined( enemies[i].first_node ))
+				continue;
 
+			if(enemies[i].first_node == self){
+				thread maps\_zombiemode_ai_dogs::dog_explode_fx (enemies[i].origin);
+				enemies[i] hide();
+				enemies[i] DoDamage(enemies[i].health + 100, enemies[i].origin);
+				//level.zombie_total ++;
+			}
+		}
 
+		mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(groundpos(self.origin + (AnglesToForward( self.angles ) * 15)), self.angles + (0,90,0), true);
+
+		
+
+		mac thread return_perk_mac();
+
+		waittill_any_ents( level,"a_door_closed", mac,"perk_machine_start_move" );
+
+		if(isDefined(self.ZHC_spawners_that_lead_to_this)){
+			for( i = 0; i < self.ZHC_spawners_that_lead_to_this.size; i ++){
+				self.ZHC_spawners_that_lead_to_this[i].is_enabled = true;
+			}
+		}else{
+			IPrintLnBold( "spawner list undefined" );
+		}	
+	}	
+}
+
+return_perk_mac(){
+	level waittill("a_door_closed");
+	wait_network_frame();
+	self thread maps\_zombiemode_perks::ZHC_move_perk_machine(self.original_origin, self.original_angle, true);
+}
 
 //called from maps\_zombiemode.gsc line 5122.
 kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	//damage is nagative based on damage.
@@ -265,8 +387,6 @@ turn_on_nearest_perk(origin, max_distance, wait_time, wait_time_prev){
 
 	if(level.power_on)	// might eventually add to check if perk if off instead. currently no variable exists to see if perk if off.
 		return false;
-
-
 
 	perk_trigger = GetClosest( origin, GetEntArray( "zombie_vending", "targetname" ) );
 	perk = perk_trigger.script_noteworthy;

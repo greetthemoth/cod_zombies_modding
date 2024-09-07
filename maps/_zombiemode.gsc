@@ -3473,6 +3473,7 @@ round_spawning()
 		if( IsDefined( ai ) )
 		{
 			level.zombie_total--;
+			ai.spawner = spawn_point;
 			ai thread round_spawn_failsafe();
 			count++; 
 			enemyCount++;																			//Added for mod

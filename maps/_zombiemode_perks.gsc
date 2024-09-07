@@ -480,15 +480,65 @@ add_perk(vending_machine, specialty, light_fx, machine_change, cost, perk_name, 
 	if (!isdefined(level.perk_total))
 		level.perk_total = 0;
 	//make sure the map uses this perk
-	perk_exists = false;
-	vending_triggers = GetEntArray( "zombie_vending", "targetname" );
-	for ( i = 0; i < vending_triggers.size; i++ )
+	
 	{
-		perk = vending_triggers[i].script_noteworthy;
-		if (perk == specialty)
-			perk_exists = true;
-	}	
-	if (!perk_exists) return;
+		perk_exists = false;
+		
+		trigger = undefined;
+		{
+			vending_triggers = GetEntArray( "zombie_vending", "targetname" );
+			for ( i = 0; i < vending_triggers.size; i++ )
+			{
+				perk = vending_triggers[i].script_noteworthy;
+	 
+				if (perk == specialty){
+					trigger = vending_triggers[i];
+					perk_exists = true;
+				}
+			}
+		}
+		if (!perk_exists) return;
+
+		//Added for mod
+		machines = getentarray(vending_machine, "targetname");
+		machine = undefined;
+		machine_clip = undefined;
+
+		for(v = 0;v < machines.size; v++){
+			if(IsDefined(machines[v].script_noteworthy) && machines[v].script_noteworthy == "clip")
+			{
+				machine_clip = machines[v];
+			}else{
+				machine = machines[v];
+			}
+		}
+		
+		if(IsDefined( machine ) && GetClosest( machine.origin, vending_triggers ) == trigger){
+			//add to list
+			if(!IsDefined( level.ZHC_perk_machines )){
+				level.ZHC_perk_machines = [];
+			}
+			if(!isDefined(level.ZHC_perk_machines[specialty]))
+				level.ZHC_perk_machines[specialty] = [];
+			level.ZHC_perk_machines[specialty][level.ZHC_perk_machines[specialty].size] = machine;
+
+			machine.original_origin = machine.origin;
+			machine.original_angle = machine.angles;
+			
+			machine.trigger = trigger;
+			machine.trigger_height_offset = machine.origin[2] - trigger.origin[2];
+			machine.trigger_dist_2d = Distance2D( machine.origin, trigger.origin );
+			//vending_triggers[i] LinkTo(machines[v]);
+			if(IsDefined( machine_clip )){
+				machine.clip = machine_clip;
+				machine.clip_height_offset = machine.origin[2] - machine_clip.origin[2];
+				machine.clip_dist_2d = Distance2D( machine.origin, machine_clip.origin );
+			}
+		}
+	}
+
+
+	
 	level.perk_total +=1;
 	if(isDefined(machine_change)){
 		PrecacheModel(machine_change);
@@ -1002,8 +1052,29 @@ activate_PackAPunch()
 //	Threads to turn the machines to their ON state.
 //
 
-move_perk_machine(vending_machine, specialty, origin, angles){
+ZHC_move_perk_machine(origin, angles, do_fx){
+	self notify( "perk_machine_start_move" );
+	do_fx = is_true(do_fx);
+	if(do_fx){
+		playfx(level._effect["poltergeist"], self.origin);
+		playfx(level._effect["poltergeist"], origin);
+	}
+	angles_offset = angles - self.angles;
+	self Hide();
+	self MoveTo(origin, 0.1);
+	self RotateTo( angles, 0.1);
+	wait(0.1);
+	self Show();
+	self.trigger.origin = origin - (( AnglesToForward( angles ) * self.trigger_dist_2d ) + ( 0, 0, self.trigger_height_offset ));
+	self.trigger.angles = self.trigger.angles + angles_offset;
 
+	if(IsDefined( self.clip )){
+		self.clip ConnectPaths();
+		self.clip.origin = origin - (( AnglesToForward( angles ) * self.clip_dist_2d ) + ( 0, 0, self.clip_height_offset ));
+		self.clip.angles = self.clip.angles + angles_offset;
+		self.clip DisconnectPaths();
+	}
+	self notify( "perk_machine_moved" );
 }
 
 turn_perk_on(vending_machine, specialty, light_fx, machine_change)
@@ -1534,6 +1605,10 @@ give_perk( perk, bought)
 	if(level.PERK_LEVELS)
 		lvl = GetPerkLevel(perk);
 
+	if(bought && IsDefined( self.perk_history )){
+		self.perk_history = array_remove( self.perk_history,perk );
+		self.perk_history[self.perk_history.size] = perk;
+	}
 
 	if(!level.PERK_LEVELS|| lvl == 0){
 		if(IsCustomPerk(perk))
@@ -3305,4 +3380,72 @@ unsave_additional_weapon_on_bleedout()
 		self waittill("bled_out");
 		self.weapon_taken_by_losing_additionalprimaryweapon = [];
 	}
+}
+
+
+ZHC_wait_to_quickrevive_door_barr(player, barr_perk_origin, barr_perk_angles){
+	self endon ("open_door");
+	self endon ("end_door_cooldown");
+	player notify ("new_qr_door_found");
+	player endon ("new_qr_door_found");
+	testing = false;
+	return_mac_after_buy = false;
+	while(true){
+		has_perk = player.lives > 0;
+		if(!testing){
+			if(has_perk){
+				IPrintLnBold( "waiting to go down " );
+				player waittill( "player_downed" );
+				IPrintLnBold( "went down" );
+				wait(2);
+			}else{
+				IPrintLnBold( "doesnt have perk " );
+			}
+		}else{
+			wait_network_frame(); //wait for weapon stuff to happen first
+		}
+		IPrintLnBold( ""+(player.lives == 1) +" & "+ (player maps\_laststand::player_is_in_laststand()) );
+		if(testing || (player.lives == 1 && player maps\_laststand::player_is_in_laststand())){
+			has_perk = false;
+			mac = level.ZHC_perk_machines["specialty_quickrevive"][0];
+			mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(barr_perk_origin, barr_perk_angles,true);
+			self thread return_machine_to_original_pos_after_door_open(mac);
+			if(IsDefined( self.weapon_trigger ))
+				self.weapon_trigger disable_trigger();
+			if(!return_mac_after_buy){
+				mac waittill( "perk_machine_start_move" );
+				continue;
+			}
+		}else{
+			IPrintLnBold( "didnt have QR " );
+		}
+		//only happens when return_mac_after_buy == true
+		while(!has_perk){
+			//perk = player waittill_any_return( "perk_bought", "perk_gained" ); //if we want perk bottle qr to remove perk
+			player waittill( "perk_bought", perk );
+			if(perk == "specialty_quickrevive"){
+				has_perk = true;
+				break;
+			}
+		}
+		self notify("machine_return");
+	}
+}
+return_machine_to_original_pos_after_door_open(mac){
+	self notify( "end_wait_return_to_original" );
+	self endon(  "end_wait_return_to_original" );
+	self thread cancel_return_when_machine_move(mac);
+	self waittill_any( "open_door","end_door_cooldown","machine_return");
+	mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(mac.original_origin, mac.original_angle,true);
+	if(IsDefined( self.weapon_trigger ))
+		self.weapon_trigger enable_trigger();
+}
+cancel_return_when_machine_move(mac){
+	self endon ("open_door");
+	self endon ("end_door_cooldown");
+	self endon ("end_wait_return_to_original");
+	mac waittill( "perk_machine_start_move" );
+	if(IsDefined( self.weapon_trigger ))
+		self.weapon_trigger enable_trigger();
+	self notify( "end_wait_return_to_original" );
 }
