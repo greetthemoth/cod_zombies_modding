@@ -5225,7 +5225,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 		self thread zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, weapon, "weapon_stop" );//, endon_string );
 		
 	}
-	else if(!isDefined(player_has_weapon) && can_buy_ammo && !is_grenade)
+	else if(!isDefined(player_has_weapon) && ((can_buy_ammo && !is_grenade) || spawns_powerups || !can_upgrade))
 	//checks if any player has weapon if so update hintstring. 
 	//we could potentially turn this into a function and loop it for closest player
 	{	
@@ -5251,7 +5251,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 	{
 		self thread ZHC_wall_buy_manage_power_up_spawn(weapon);
 		if(player_has_weapon){
-			self thread notify_delay("start_powerup_goal" ,0.01 );
+			self thread notify_delay("start_powerup_goal" ,0.05 );
 		}
 	}
 
