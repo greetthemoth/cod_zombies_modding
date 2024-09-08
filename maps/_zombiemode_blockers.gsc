@@ -1119,7 +1119,7 @@ door_buy_expired(){
 	}
 
 	self roomId_setup();
-	if(false){	//room flow increase difficulty
+	if(true){	//room flow increase difficulty
 		if(level.ZHC_ROOMFLOW){
 			if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 				level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;

@@ -5757,7 +5757,7 @@ ZHC_wall_buy_drop_power_up(){
 	self.ZHC_powerup waittill_any( "powerup_grabbed", "powerup_timedout" );
 	self.ZHC_powerup = undefined;
 	if(true){	//ischest
-		if(true || powerup == "carpenter"){
+		if(powerup == "carpenter"){
 			is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 			can_init_buy = false;	//always true for now.
 			can_buy_ammo = is_equipment || true; //lets make it always true for now

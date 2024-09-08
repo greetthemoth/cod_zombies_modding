@@ -34,6 +34,11 @@ weapon,sp/zombie_black_hole_bomb
 weapon,sp/zombie_nesting_dolls
 rawfile,shock/zombie_death.shock
 xmodel,fx
+xmodel,zombie_vending_jugg_off
+xmodel,zombie_vending_sleight_off
+xmodel,zombie_vending_doubletap_off
+xmodel,zombie_vending_revive_off
+xmodel,zombie_vending_three_gun_off
 rawfile,shock/electrocution.shock
 stringtable,credits_pc.csv
 material,net_disconnect

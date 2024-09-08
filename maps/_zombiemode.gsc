@@ -91,10 +91,12 @@ main()
 
 	register_offhand_weapons_for_level_defaults();
 
+
+	maps\ZHC_zombiemode_roundflow::ZHC_set_zombie_ai_limit();	//added for mod
 	//Limit zombie to 24 max, must have for network purposes
 	if ( !isdefined( level.zombie_ai_limit ) )
 	{
-		level.zombie_ai_limit = 32;
+		level.zombie_ai_limit = 24;
 		SetAILimit( level.zombie_ai_limit );
 	}
 
