@@ -429,12 +429,14 @@ ZHC_get_cur_enemy_limit(enemyCount){ // MOD FUNC
 		if(level.ZHC_ROOMFLOW){
 			roomIds = GetArrayKeys( level.ZHC_room_info );
 			spawner_score = 0;
+			active_zones_num = 0;
 			for(r = 0; r <  roomIds.size; r++){
 				roomId = roomIds[r];
-				spawner_score_mult = define_or(level.ZHC_room_info[roomId].spawner_score_mult,1);
+				spawner_score_mult = 1; // = define_or(level.ZHC_room_info[roomId].spawner_score_mult,1);
 				room_zones = level.ZHC_room_info[roomId]["zones"];
 				for(i = 0; i < room_zones.size; i++){
 					if(level.zones[room_zones[i]].is_active){
+						active_zones_num++;
 						spawners = level.zones[room_zones[i]].spawners.size;
 						zom_spawner_num = spawners.size;
 						for(s = 0; s < spawners.size; s++){
@@ -445,9 +447,22 @@ ZHC_get_cur_enemy_limit(enemyCount){ // MOD FUNC
 					}
 				}
 			}
-
+			if(spawner_score = 0)
+				return level.zombie_ai_limit;
+			spawner_score /= (active_zones - 0.5)++;
 			
+			limit = 8 + (spawner_score*0.5) + (level.round_number*0.25) + (spawner_score * level.round_number* 0.125);
+			limit *= get_zombie_limit_mult();
+			zombie_total = level.zombie_total + enemyCount;
 
+			if(zombie_total <= level.zombie_total_start/2){
+				bonus_percent = 1 - ((zombie_total/2)/(level.zombie_total_start/2));
+				limit += 5 * bonus_percent;
+				limit += spawns * 0.5 * bonus_percent;
+			}
+
+			if(limit > level.zombie_ai_limit)
+				limit = level.zombie_ai_limit;
 		}
 	return false;
 		}else{
