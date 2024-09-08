@@ -449,9 +449,9 @@ ZHC_get_cur_enemy_limit(enemyCount){ // MOD FUNC
 			}
 			if(spawner_score = 0)
 				return level.zombie_ai_limit;
-			spawner_score /= (active_zones - 0.5)++;
+			averageish_spawner_score = spawner_score / max(1,(active_zones - 0.5));
 			
-			limit = 8 + (spawner_score*0.5) + (level.round_number*0.25) + (spawner_score * level.round_number* 0.125);
+			limit = 8 + (averageish_spawner_score*0.5) + (level.round_number*0.25) + (averageish_spawner_score * level.round_number* 0.125);
 			limit *= get_zombie_limit_mult();
 			zombie_total = level.zombie_total + enemyCount;
 

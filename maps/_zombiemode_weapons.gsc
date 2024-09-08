@@ -4999,7 +4999,7 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_co
 			}
 			if(a_player_has_weapon){
 				zws = maps\ZHC_zombiemode_weapons::weapon_name_check(weapon_string);
-				zwzid = closest.ZHC_weapons[zws];
+				zwzid = closest maps\ZHC_zws];
 				if(!IsDefined( zwzid )){
 					IPrintLnBold( "player " +zws+ " not supscribed" );
 					return 0.5;
@@ -5021,12 +5021,11 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_co
 
 			a_player_has_weapon = player has_weapon_or_upgrade( weapon_string );
 			if(a_player_has_weapon){
-				zws = maps\ZHC_zombiemode_weapons::weapon_name_check(weapon_string);
-				if(!isDefined(player.ZHC_weapons[zws])){
+				if(!isDefined(player ZHC_get_base_weapon_info(zws)){
 					IPrintLnBold( "player " +zws+ " not supscribed" );
 					return 0.3;
 				}
-				player_level = player.ZHC_weapon_levels[player.ZHC_weapons[zws]];
+				player_level = player.ZHC_weapon_levels[player ZHC_get_base_weapon_info(zws)];
 				self.ZHC_weapon_upgrade_lvl = player_level + 1;
 				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(cost,player_level);
 				closests_can_afford_next_level = self.ZHC_weapon_upgrade_cost <= player.score;
@@ -5304,7 +5303,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 					player set_player_lethal_grenade( weapon );
 				}
 
-				if(is_chest && level.ZHC_MAX_AMMO_SYSTEM && isDefined(player.ZHC_weapons[weapon]))	//if getting weapon from chest && player has gotten weapon before, increase max amm of weapon.
+				if(is_chest && level.ZHC_MAX_AMMO_SYSTEM && isDefined(player ZHC_get_base_weapon_info(weapon)))	//if getting weapon from chest && player has gotten weapon before, increase max amm of weapon.
 					player maps\ZHC_zombiemode_weapons::upgrade_stock_ammo(weapon);
 
 				player weapon_give( weapon );
@@ -5383,20 +5382,16 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 			  )
 			{//added for mod
 
-				zhcweapon = maps\ZHC_zombiemode_weapons::weapon_name_check(weapon);
-
-				if(IsDefined( player.ZHC_weapons[zhcweapon])){
-					zombweap = zhcweapon;
-					if(is_weapon_upgraded(weapon)){
-						zombweap = player.ZHC_weapon_other_weapon[player.ZHC_weapons[zhcweapon]];
-					}
-
+				if(IsDefined( player ZHC_get_base_weapon_info(zhcweapon))){
+					
+					base_weap_id = player ZHC_get_base_weapon_info (zhcweapon);
+					zhcweapon = self.ZHC_weapon_names[base_weap_id];
 					//TODO: check if has gotten upgrade from this weapon in this box
 					
 					//upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(get_weapon_cost(zombweap),pow);
 
 					if(
-						int(player.ZHC_weapon_levels[player.ZHC_weapons[zhcweapon]]) == self.ZHC_weapon_upgrade_lvl - 1 && 
+						int(player.ZHC_weapon_levels[base_weap_id]) == self.ZHC_weapon_upgrade_lvl - 1 && 
 						player.score >= self.ZHC_weapon_upgrade_cost 
 					  )
 					{
@@ -6040,7 +6035,8 @@ ammo_give( weapon , zhc_max_check_override)
 			stockMax = 0;	// scope declaration
 			stockMax = WeaponStartAmmo( weapon ); 
 			if(is_true(zhc_max_check_override) && level.ZHC_MAX_AMMO_SYSTEM){
-				stockMax = self.ZHC_weapon_ammos_max[self.ZHC_weapons[weapon]];
+				zhcweapon = maps\ZHC_zombiemode_weapons::weapon_name_check();
+				stockMax = self.ZHC_weapon_ammos_max[self.ZHC_weapons[zhcweapon]];
 			}
 
 			// Get the current weapon clip count

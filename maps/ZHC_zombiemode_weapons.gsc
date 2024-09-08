@@ -300,28 +300,34 @@ weapon_name_check(weapon_name){
 }
 
 add_weapon_info(weapon_name){
-
-	
+	weapon_name = weapon_name_check(weapon_name);
 	for(i = 0; i < level.ZHC_disqualified_weapon_names.size; i++ ){
 		if(level.ZHC_disqualified_weapon_names[i] == weapon_name)
 			return undefined;
 	}
 
+	is_base_weapon = isDefined(level.zombie_weapons[weapon_name]);
+	is_upgraded_weapon = false;
+	//search if is an upgraded weapon
 	other_id = undefined;
-	ziw_keys = GetArrayKeys( level.zombie_weapons );
-	for ( i=0; i<level.zombie_weapons.size; i++ )
-	{
-		if ( IsDefined(level.zombie_weapons[ ziw_keys[i] ].upgrade_name) && 
-		level.zombie_weapons[ ziw_keys[i] ].upgrade_name == weapon_name )
+
+	if(!is_base_weapon){
+		ziw_keys = GetArrayKeys( level.zombie_weapons );
+		for ( i=0; i<level.zombie_weapons.size; i++ )
 		{
-			other_id = check_has_id(ziw_keys[i]);
+			if ( IsDefined(level.zombie_weapons[ ziw_keys[i] ].upgrade_name) && 
+			level.zombie_weapons[ ziw_keys[i] ].upgrade_name == weapon_name )
+			{
+				other_id = check_has_id(ziw_keys[i]);//gets/creates base weapon id
+				is_upgraded_weapon = true;
+			}
 		}
 	}
-
-	if(!isdefined(other_id) && !isdefined (level.zombie_weapons[weapon_name]) ){
+	//is not a base or upgrade weapon
+	if(!is_upgraded_weapon && !is_base_weapon ){
 		IprintLnBold("weapon " +weapon_name+  " disqualified");
 		level.ZHC_disqualified_weapon_names[level.ZHC_disqualified_weapon_names.size] = weapon_name;
-		return undefined;
+		return undefined; //leave
 	}
 
 	id = self.ZHC_weapons.size;
@@ -331,6 +337,7 @@ add_weapon_info(weapon_name){
 
 	self.ZHC_weapon_is_equipment_or_grenade[id] = (is_placeable_mine( weapon_name ) || is_equipment( weapon_name ) || (WeaponType( weapon_name ) == "grenade"));
 
+	//ammo stuff
 	if(level.ZHC_MAX_AMMO_SYSTEM && (!self.ZHC_weapon_is_equipment_or_grenade[id] || level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)){
 		self update_max_ammo(weapon_name, id);
 	}
@@ -344,15 +351,25 @@ add_weapon_info(weapon_name){
 	//self.ZHC_weapon_damage_mult_headshot[id] = 1;
 	//self.ZHC_weapon_damage_add[id] = 0;
 	//self.ZHC_weapon_damage_percent[id] = 0;
-	if (IsDefined( other_id ) ){
-		self.ZHC_weapon_other_weapon[id] = self.ZHC_weapon_names[other_id];
-	}else if(IsDefined( level.zombie_weapons[weapon_name] ) && isDefined(level.zombie_weapons[weapon_name].upgrade_name) ){
-		other_id = check_has_id(level.zombie_weapons[weapon_name].upgrade_name );
-		if(IsDefined( id ))
-			self.ZHC_weapon_other_weapon[id] =  self.ZHC_weapon_names[other_id];
+	if (is_upgraded_weapon ){ //is an upgraded weapon
+		self.ZHC_weapon_other_weapon[id] = self.ZHC_weapon_names[other_id]; //set "other weapon" to be the unupgraded weapon id
+	}else if(is_base_weapon && isDefined(level.zombie_weapons[weapon_name].upgrade_name) ){ //if is unpgraded weapon and has upgraded version
+		other_id = check_has_id(level.zombie_weapons[weapon_name].upgrade_name ); //get/create upgraded version
+		if(IsDefined( other_id ))
+			self.ZHC_weapon_other_weapon[id] =  self.ZHC_weapon_names[other_id]; //set "other weapon" to be upgraded version
 	}
 
 	return id;
+}
+
+ZHC_get_base_weapon_info(weapon_name){
+	weapon_name = weapon_name_check(weapon_name);
+	is_base_weapon = isDefined(self.ZHC_weapons[weapon_name]);
+	if(is_base_weapon)
+		return check_has_id(weapon_name);
+	else
+		return self.ZHC_weapon_other_weapon[self.ZHC_weapons[check_has_id(weapon_name)]];
+
 }
 
 update_max_ammo(weapon_name, id){
@@ -667,7 +684,7 @@ upgrade_weapon(weapon_name, dont_upgrade_other){
 
 	return id;
 }
-upgrade_stock_ammo(weapon_name){
+upgrade_stock_ammo(weapon_name, dont_upgrade_other){
 	if(!level.ZHC_MAX_AMMO_SYSTEM)
 		return;
 	og_weapon_name = weapon_name;
@@ -691,8 +708,14 @@ upgrade_stock_ammo(weapon_name){
 
 	self.ZHC_weapon_level_stock_ammos[id]++;
 	update_max_ammo(weapon_name, id);
+
+	if(!is_true(dont_upgrade_other)){
+		other = self.ZHC_weapon_other_weapon[id];
+		if(IsDefined( other ))
+			upgrade_stock_ammo(other, true);
+	}
 }
-upgrade_clip_size(weapon_name){
+upgrade_clip_size(weapon_name, dont_upgrade_other){
 	if(level.DOUBLETAP_INCREASE_CLIP_SIZE)
 		return;
 	if(!level.ZHC_MAX_AMMO_SYSTEM)
@@ -715,6 +738,12 @@ upgrade_clip_size(weapon_name){
 
 	self.ZHC_weapon_level_clip_ammos[id]++;
 	update_max_ammo(weapon_name, id);
+
+	if(!is_true(dont_upgrade_other)){
+		other = self.ZHC_weapon_other_weapon[id];
+		if(IsDefined( other ))
+			upgrade_clip_size(other, true);
+	}
 }
 
 check_primary_ids(){
