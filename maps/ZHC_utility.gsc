@@ -17,3 +17,25 @@ define_or(s,or){
 		return s;
 	return or;
 }
+zhcp(msg, id){
+	if(IsArray( id ) && !IsString( id )){
+		for( i = 0; i < id.size; i++ ){
+			if(!isDefined(id[i]) || maps\ZHC_zombiemode_zhc::can_send_msg_level(id[i])){
+				IPrintLn( msg );
+				return;
+			}
+		}
+	}else if(!isDefined(id) || maps\ZHC_zombiemode_zhc::can_send_msg_level(id))
+		IPrintLn( msg );
+}
+zhcpb(msg, id){
+	if(IsArray( id ) && !IsString( id )){
+		for( i = 0; i < id.size; i++ ){
+			if(!isDefined(id[i]) || maps\ZHC_zombiemode_zhc::can_send_msg_level(id[i])){
+				IPrintLnBold( msg );
+				return;
+			}
+		}
+	}else if(!isDefined(id) || maps\ZHC_zombiemode_zhc::can_send_msg_level(id))
+		IPrintLnBold( msg );
+}

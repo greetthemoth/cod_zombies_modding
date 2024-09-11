@@ -1,6 +1,7 @@
 #include maps\_utility; 
 #include common_scripts\utility; 
 #include maps\_zombiemode_utility; 
+#include maps\ZHC_utility;
 #using_animtree( "generic_human" );
 
 //
@@ -885,7 +886,7 @@ door_think()
 		self.zombie_cost = 1000;
 
 
-	self.zombie_cost = 2500;
+	self.zombie_cost *= 2;
 	//self.zombie_cost = int(self.zombie_cost*maps\ZHC_zombiemode_zhc::zombie_door_cost_mult());		//if we want to multiply the door cost.
 	//self normalize_door_cost();
 		
@@ -940,7 +941,7 @@ door_is_waiting_to_buy_phase(){
 	{
 		if ( self.script_noteworthy == "electric_door" || self.script_noteworthy == "electric_buyable_door" )
 		{	
-			IPrintLnBold( "electric door id is" + get_door_id() );
+			zhcpb( "electric door id is" + get_door_id() ,444);
 			self sethintstring(&"ZOMBIE_NEED_POWER");
 			//			self set_door_unusable();
 			if( isDefined( level.door_dialog_function ) )
@@ -1036,7 +1037,7 @@ door_is_open_stage(){
 	//self._in_cooldown = false;
 	//self._door_open = true;
 	
-	//IPrintLnBold( "door"+ self get_door_id()+"opened" ); // debug door ids
+	zhcpb( "door "+ self get_door_id()+" opened" ,444); // debug door ids
 
 	if(!is_true(self.is_submissive)){
 
@@ -1090,7 +1091,7 @@ door_is_open_stage(){
 		self waittill("close_door");
 		self notify_sister_door("close_door");
 	}
-	//Iprintln("doorClosed");
+	zhcpb( "door "+ self get_door_id()+" closed" ,444);
 
 }
 
@@ -1119,25 +1120,37 @@ door_buy_expired(){
 	}
 
 	self roomId_setup();
-	if(true){	//room flow increase difficulty
+	if(false){	//room flow increase difficulty //testo
 		if(level.ZHC_ROOMFLOW){
-			if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
-				level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
+			//if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
+			//	level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
+			difficulty_on_buy = map_get_room_info(self.roomId_bought_from)["flow_difficulty"];
+			dif_on_buy_goal_mult = 0.75;
+			dif_goal = (difficulty_on_buy * dif_on_buy_goal_mult) + (3+((level.round_number)/5));
+			zhcp("diffgoal: " +difficulty_on_buy + "/"+ dif_goal ,444);
 			while(1){
-				if(!flag("dog_round") && map_get_room_info(self.roomId_bought_from)["flow_difficulty"] < 4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
-					level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
+				difficulty = map_get_room_info(self.roomId_bought_from)["flow_difficulty"];
+				if(!flag("dog_round") && difficulty < dif_goal){ //4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
+					last_difficulty = difficulty;
+					//level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
 					wait_network_frame( );
 					wait_network_frame( );
-				}else 		//simply waiting to not be occupied
+					if(last_difficulty != difficulty)
+						zhcp("diffgoal: " +difficulty + "/"+ dif_goal ,444);
+				}else{ 		//simply waiting to not be occupied
 					wait(0.15);
+					zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" ... leave room to close" ,444);
+				}
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
-				if(!map_get_room_info(self.roomId_bought_from)["occupied"] && (flag("dog_round") || map_get_room_info(self.roomId_bought_from)["flow_difficulty"] >= level.ZHC_ROOMFLOW_difficulty_to_close_door))
+				if(!map_get_room_info(self.roomId_bought_from)["occupied"] 
+				&& (!IsDefined( self.last_user ) || map_get_zone_room_id(self.last_user.current_zone) != self.roomId_bought_from )
+				&& (flag("dog_round") || difficulty >= dif_goal) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
 			}
-			level.ZHC_ROOMFLOW_difficulty_to_close_door += 1;
+			//level.ZHC_ROOMFLOW_difficulty_to_close_door += 1;
 		}
 		else{
-			IPrintLnBold( "ZHC_ROOMFLOW is false" );
+			zhcpb( "!ZHC_ROOMFLOW, closing door in 5 sec" ,444);
 			wait(5);
 		}
 	}else{
@@ -1149,7 +1162,7 @@ door_buy_expired(){
 			self thread check_roomIDs_to_occupy();
 			self waittill( "found_all_roomIDs_to_occupy" );
 		}else{
-			IPrintLnBold( "ROOMS NOT SET UP" );
+			zhcpb( "ROOMS NOT SET UP", 444);
 			wait(5);
 		}
 	}
@@ -1179,7 +1192,7 @@ check_roomIDs_to_occupy(){
 			}else{
 				zones_with_id = roomIDToZones(self.roomIDs_to_occupy[i]);
 				if(zones_with_id.size == 0){
-					IPrintLnBold( "ROOM ID "+ self.roomIDs_to_occupy[i]+" DOESNT APPLY TO ANY ZONE" );
+					zhcpb( "ROOM ID "+ self.roomIDs_to_occupy[i]+" DOESNT APPLY TO ANY ZONE", 444 );
 					continue;
 				}
 				//"finding zone " + self.roomIDs_to_occupy[i]
@@ -1207,11 +1220,11 @@ check_roomIDs_to_occupy(){
 																		// dont count first room if the player just barely crossed the room to door
 								if(self a_player_is_close_to_door(150)) { 	// disallows for occu to count if too close to door.
 									//wait(0.5);							// this is checked before door opens
-									//IPrintLn( "22 "+ i +" is occu but too close to door"  );	
+									zhcp( "last room is occu but too close to door" ,444 );	
 									break;
 								}
 							}
-							//IPrintLnBold( "22 " + i + " is occupied ");
+							zhcpb("last room is occu",444 );
 							is_occu = true;
 							break;
 						}
@@ -1274,7 +1287,7 @@ waittill_roomID_is_occupied_return_player(roomID){
 				if(IsDefined( player )){
 					return player;	
 				}else{
-					IPrintLnBold( "FOR SOME REASON OCCUPIED ZONE HAS NO PLAYER." );
+					zhcpb( "FOR SOME REASON OCCUPIED ZONE HAS NO PLAYER.",444 );
 				}
 			}
 		}
@@ -1298,7 +1311,7 @@ roomId_setup(player){
 			player = get_closest_player( self.origin );
 		}
 		if(!isDefined(player)){
-			IPrintLnBold("DOOR EXPIRE PLAYER NOT FOUND");
+			zhcpb("DOOR EXPIRE PLAYER NOT FOUND", 444);
 			return;
 		}
 	}
@@ -1307,7 +1320,7 @@ roomId_setup(player){
 	
 
 	if(!IsDefined( zone_name )){
-		IPrintLnBold("DOOR EXPIRE PLAYER ZONE NOT FOUND");
+		zhcpb("DOOR EXPIRE PLAYER ZONE NOT FOUND",444);
 		return;
 	}
 	
@@ -1327,7 +1340,7 @@ check_roomIDs_to_occupy_setup(){
 	//	return;										//not needed because this func now runs within the door_buy_expire func (which doesnt run in electric doors)
 
 	if(!isDefined(level.number_of_rooms)){		//map myust have room ids defined.
-		IPrintLnBold( "ROOMS NUMBER NOT SET" );
+		zhcpb( "ROOMS NUMBER NOT SET",444);
 		return;
 	}
 
@@ -1497,7 +1510,7 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	//	s+=" "+self.roomIDs_to_occupy[i];
 	//}
 
-	////IPrintLnBold("r:" + reverse+" "+  s  );// + " for round "+ r );
+	//zhcpb("r:" + reverse+" "+  s  ,444);// + " for round "+ r );
 }
 
 print_door_id(door){
@@ -1506,7 +1519,7 @@ print_door_id(door){
 	for( i = 0; i < zombie_doors.size; i++ )
 	{
 		if(zombie_doors[i] == door){
-			IPrintLnBold("DOOR ID:" +i );
+			zhcpb("DOOR ID:" +i, 444);
 			return;
 		}
 	}
@@ -1592,7 +1605,7 @@ Get_Other_Zone(opened_from, door){
 	else if(opened_from == b)
 		return a;
 	else{
-		IPrintLnBold( "OPENED FROM WEIRD ZONE. neither was" + opened_from );
+		zhcpb( "OPENED FROM WEIRD ZONE. neither was" + opened_from ,444);
 		return a;
 	}
 }
@@ -1606,7 +1619,14 @@ Get_Zone_Room_ID(zone_name){
 	}
 	return level.ZHC_zoneToRoomID[zone_name];
 }
-
+room_id_can_be_stopped(room_id){
+	switch(room_id){
+		case 100:
+			return true;
+		default:
+			return false;
+	}
+}
 map_wait_to_update_rooms(){
 	flag_wait("all_players_connected");
 	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
@@ -1620,6 +1640,7 @@ map_wait_to_update_rooms(){
 	}
 	for(i = 0; i < level.ZHC_room_info[100]["chests"].size; i++){
 		level.ZHC_room_info[4]["chests"][level.ZHC_room_info[4]["chests"].size] = level.ZHC_room_info[100]["chests"][i];
+		level.chests[level.ZHC_room_info[100]["chests"][i]].roomId = 4;
 	}
 	maps\ZHC_zombiemode_roundflow::debug_room_zones(4);
 	level.ZHC_room_info[100] = undefined; //dont remive or it will fuck with the room indexing.
@@ -1652,7 +1673,7 @@ map_get_zone_room_id(zone_name){
 		case "crematorium_zone":
 			return 7;
 		default:
-			IPrintLnBold( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" );
+			zhcpb( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" ,444);
 			return 100;
 	}
 }
@@ -1749,7 +1770,7 @@ map_get_room_name(room_id){
 		case 100:
 		return "theater room";
 		default:
-		IPrintLnBold( "ROOM ID "+ room_id + "NOT DESIGNATED TO ROOM" );
+		zhcpb( "ROOM ID "+ room_id + "NOT DESIGNATED TO ROOM"  ,444);
 		return 100;
 	}
 }
@@ -1873,7 +1894,7 @@ can_close_door(){	//run after "zone_info_updated"
 			players = get_players();
 			for(i = 0; i < players.size; i++){
 				player = players[i];
-				IPrintLn(int( player.origin[0]) +","+ int(player.origin[1]) +","+ int(player.origin[2]) );
+				//zhcp(int( player.origin[0]) +","+ int(player.origin[1]) +","+ int(player.origin[2]) ,444);
 				if(player.current_zone == "theater_zone" && player.origin[1] < -185)
 				//if(o && player_is_touching(level.zones["theater_zone"].volumes[1]))
 					return false;
@@ -2074,7 +2095,7 @@ door_cooldown(){
 		doorIds = Get_Doors_Accesible_in_room(roomId); //doors in room accessed
 		doorIds = array_remove( doorIds,self get_door_id() );
 		wait_for_one_door_to_be_open_or_barred(doorIds);
-		IPrintLnBold( Get_Room_Name(roomId) +" one door opened now weapon barr cooldown can start" );
+		zhcpb( Get_Room_Name(roomId) +" one door opened now weapon barr cooldown can start" ,444);
 	}
 	
 
@@ -2109,7 +2130,7 @@ door_cooldown(){
 		level.zhc_last_door_cooldown_round_goal_set = additional_rounds_to_wait + level.round_number;
 	}
 	//IPrintLnBold( "DOOR COOLDOWN adk: "+ additional_kills_wanted +" adr: "+ additional_rounds_to_wait);
-	self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, additional_kills_wanted, additional_rounds_to_wait, undefined);
+	self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(3, undefined, additional_kills_wanted, additional_rounds_to_wait, 1);
 
 	if(is_true(self.dont_reset_cooldown_once) && self._door_open){	//for endg-case when cooldown ends while door is temp open. it wait for door to be closed (back to the cooldwon state) before ending the cooldown.
 		self waittill( "door_closed" );

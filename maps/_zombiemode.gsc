@@ -4,6 +4,7 @@
 #include maps\_music; 
 #include maps\_zombiemode_utility; 
 #include maps\_busing;
+#include maps\ZHC_utility;
 
 #using_animtree( "generic_human" ); 
 
@@ -91,8 +92,6 @@ main()
 
 	register_offhand_weapons_for_level_defaults();
 
-
-	maps\ZHC_zombiemode_roundflow::ZHC_set_zombie_ai_limit();	//added for mod
 	//Limit zombie to 24 max, must have for network purposes
 	if ( !isdefined( level.zombie_ai_limit ) )
 	{
@@ -1914,6 +1913,7 @@ player_too_many_weapons_monitor_takeaway_simultaneous( primary_weapons_to_take )
 
 	for ( i = 0; i < primary_weapons_to_take.size; i++ )
 	{
+		self maps\ZHC_zombiemode_weapons::take_weapon(primary_weapons_to_take[i] );
 		self TakeWeapon( primary_weapons_to_take[i] );
 	}
 
@@ -1955,7 +1955,7 @@ player_too_many_weapons_monitor_takeaway_sequence( primary_weapons_to_take )
 		self SwitchToWeapon( primary_weapons_to_take[i] );
 		self maps\_zombiemode_score::minus_to_player_score( score_decrement );
 		wait( 3 );
-
+		self maps\ZHC_zombiemode_weapons::take_weapon(primary_weapons_to_take[i]);
 		self TakeWeapon( primary_weapons_to_take[i] );
 	}
 
@@ -3348,7 +3348,7 @@ round_spawning()
 			if(level.zombie_total <= 0 && enemyCount <= 0)
 				return;
 			cur_enemy_limit = maps\ZHC_zombiemode_roundflow::ZHC_get_cur_enemy_limit(enemyCount);
-			//IPrintLn( "left-"+level.zombie_total + "| cur-"+enemyCount + " | lim-"+ cur_enemy_limit);
+			zhcp( "left-"+level.zombie_total + "| cur-"+enemyCount + " | lim-"+ cur_enemy_limit, 999);
 			if(enemyCount < cur_enemy_limit && level.zombie_total > 0)
 				break;
 			wait( 0.1 );

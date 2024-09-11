@@ -1,5 +1,7 @@
 #include common_scripts\utility; 
 #include maps\_utility; 
+#include maps\ZHC_utility;
+
 
 //
 //	This manages which spawners are valid for the game.  The round_spawn function
@@ -889,7 +891,7 @@ manage_zones( initial_zone )
 		// MM - Special logic for empty spawner list, this is just a failsafe
 		if ( !a_zone_is_active )
 		{
-			IPrintLnBold( "NO ZONE IS ACTIVE" );
+			zhcpb( "NO ZONE IS ACTIVE" );
 			//s+= "no zone is active!!! using starting zone." ;		//ADDED FOR MOD
 
 			if ( IsArray( initial_zone ) )

@@ -1,6 +1,7 @@
 #include common_scripts\utility; 
 #include maps\_utility;
 #include maps\_zombiemode_utility;
+#include maps\ZHC_utility;
 
 init(){
 	level.ZHC_MAX_AMMO_SYSTEM = true;
@@ -63,6 +64,13 @@ get_weapon_upgrade_damage_mult(weapon_name){
 }
 //weapon balancing vvv
 GetWeaponBalancingDamageMult(weapon_name,mod, headshot){
+	//IPrintLn(GetSubStr(weapon_name, weapon_name.size - 11) == "upgraded_zm");
+	if(GetSubStr(weapon_name, weapon_name.size - 11) == "upgraded_zm"){
+		weapon_name = GetSubStr(weapon_name,0, weapon_name.size - 11) +"zm";
+		IPrintLn("base name:"+ weapon_name );
+	}
+	//if(!isdefined(level.zombie_weapons[weapon_name]) && isDefined(self.ZHC_weapon_other_weapon[self.ZHC_weapons[weapon_name]])) //is upgrade weapon
+		//weapon_name = self.ZHC_weapon_other_weapon[self.ZHC_weapons[weapon_name]]; //will use unupgraded name,
 	switch(weapon_name){
 		case"dragunov_zm":
 			return 1.7;
@@ -117,6 +125,9 @@ GetWeaponBalancingDamageMult(weapon_name,mod, headshot){
 	}
 }
 GetWeaponBalancingAmmoStockMult(weapon_name){
+	if(GetSubStr(weapon_name, weapon_name.size - 11) == "upgraded_zm")
+	//if(!isdefined(level.zombie_weapons[weapon_name]) && isDefined(self.ZHC_weapon_other_weapon[self.ZHC_weapons[weapon_name]])) //is upgrade weapon
+		return 10;
 	switch(weapon_name){
 		case"hk21_zm":
 			return 1.65;
@@ -154,6 +165,9 @@ GetWeaponBalancingAmmoStockMult(weapon_name){
 	}
 }
 GetWeaponBalancingAmmoClipMult(weapon_name){
+	if(GetSubStr(weapon_name, weapon_name.size - 11) == "upgraded_zm")
+	//if(!isdefined(level.zombie_weapons[weapon_name]) && isDefined(self.ZHC_weapon_other_weapon[self.ZHC_weapons[weapon_name]])) //is upgrade weapon
+		return 10;
 	switch(weapon_name){
 		case"dragunov_zm":
 			return 0.85;
@@ -306,11 +320,12 @@ add_weapon_info(weapon_name){
 			return undefined;
 	}
 
-	is_base_weapon = isDefined(level.zombie_weapons[weapon_name]);
+	
 	is_upgraded_weapon = false;
 	//search if is an upgraded weapon
 	other_id = undefined;
-
+	is_upgraded_weapon = false;
+	is_base_weapon = isDefined(level.zombie_weapons[weapon_name]);
 	if(!is_base_weapon){
 		ziw_keys = GetArrayKeys( level.zombie_weapons );
 		for ( i=0; i<level.zombie_weapons.size; i++ )
@@ -364,7 +379,7 @@ add_weapon_info(weapon_name){
 
 ZHC_get_base_weapon_info(weapon_name){
 	weapon_name = weapon_name_check(weapon_name);
-	is_base_weapon = isDefined(self.ZHC_weapons[weapon_name]);
+	is_base_weapon = isDefined(self.zombie_weapons[weapon_name]);
 	if(is_base_weapon)
 		return check_has_id(weapon_name);
 	else
@@ -426,7 +441,7 @@ update_max_ammo(weapon_name, id){
 			halfClip++;
 
 		clipAmountpercent = (1+weapon_level_stock_ammo)/4;
-		clipAmountpercent *= GetWeaponBalancingAmmoStockMult(weapon_name);
+		clipAmountpercent *= self GetWeaponBalancingAmmoStockMult(weapon_name);
 		halfclipAmount = int(((clipAmountpercent * ammo) + 3 )/halfClip);
 
 		newAmmo = halfclipAmount * halfClip;
@@ -500,8 +515,10 @@ take_weapon(weapon_name){//lose weapon
 }
 
 update_prev_ammo(og_weapon_name, id){
-	self.ZHC_weapon_prev_ammos[id] = self GetAmmoCount( og_weapon_name );
+
+	self.ZHC_weapon_prev_ammos[id] = self GetWeaponAmmoStock( og_weapon_name );
 	self.ZHC_weapon_prev_ammos_clip[id] = self GetWeaponAmmoClip( og_weapon_name );
+	zhcp(og_weapon_name+"last ammo:"+self.ZHC_weapon_prev_ammos_clip[id]+"-"+self.ZHC_weapon_prev_ammos[id], 777);
 }
 
 give_weapon(weapon_name, set_to_prev_ammo){

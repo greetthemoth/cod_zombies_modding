@@ -1605,10 +1605,10 @@ give_perk( perk, bought)
 	if(level.PERK_LEVELS)
 		lvl = GetPerkLevel(perk);
 
-	if(bought && IsDefined( self.perk_history )){
+	/*if(bought && IsDefined( self.perk_history )){
 		self.perk_history = array_remove( self.perk_history,perk );
 		self.perk_history[self.perk_history.size] = perk;
-	}
+	}*/
 
 	if(!level.PERK_LEVELS|| lvl == 0){
 		if(IsCustomPerk(perk))
@@ -2126,14 +2126,14 @@ perk_think( perk, recall_checked)
 			break;
 	}
 
-	s = ""+result+ ":  "+perk+":  ((retain = "+ is_true(self._retain_perks_once)+"))   lvl:"+lvl+"-"+new_lvl;
+	s = ""+result+ ":  "+perk+":  (retain = "+ is_true(self._retain_perks_once)+")   lvl:"+lvl+"->"+new_lvl+"";
 	if(remove_perk)	
-		s = ("REMOVED" + s );
+		s = ("REMOVED " + s);
 	else
-		s = ("REDUCED" + s);
+		s = ("REDUCED " + s);
 
 	//if(perk != "specialty_quickrevive")
-		//IPrintLn( s );
+	zhcp( s , 222);
 
  	if(level.PERK_LEVELS){
  		//( "nl = "+new_lvl+" oldlvl "+ lvl );
@@ -3393,31 +3393,45 @@ ZHC_wait_to_quickrevive_door_barr(player, barr_perk_origin, barr_perk_angles){
 	while(true){
 		has_perk = player.lives > 0;
 		if(!testing){
-			if(has_perk){
-				IPrintLnBold( "waiting to go down " );
-				player waittill( "player_downed" );
-				IPrintLnBold( "went down" );
-				wait(2);
-			}else{
-				IPrintLnBold( "doesnt have perk " );
+			zhcpb( "waiting to go down " ,5555);
+			player waittill( "player_downed" );
+			zhcpb( "went down..." , 5555);
+			if(!has_perk){
+				zhcpb( "doesnt have perk " ,5555);
+				continue;
 			}
+			wait(2);
 		}else{
 			wait_network_frame(); //wait for weapon stuff to happen first
 		}
-		IPrintLnBold( ""+(player.lives == 1) +" & "+ (player maps\_laststand::player_is_in_laststand()) );
+		zhcpb( ""+(player.lives == 1) +" & "+ (player maps\_laststand::player_is_in_laststand()) ,5555);
 		if(testing || (player.lives == 1 && player maps\_laststand::player_is_in_laststand())){
 			has_perk = false;
 			mac = level.ZHC_perk_machines["specialty_quickrevive"][0];
-			mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(barr_perk_origin, barr_perk_angles,true);
+			teleport_effect = true;
+			if(IsDefined( self.weapon_trigger )){
+				if(return_mac_after_buy){
+					self.weapon_trigger disable_trigger();
+				}else{
+					self.weapon_trigger notify("force_drop_powerup"); //brings down power up if there was one
+					self.weapon_trigger notify("delete"); //removes weapon
+					wait_network_frame( );
+					players = get_players();
+					for(i = 0; i < players.size; i++){
+						self SetInvisibletoPlayer( players[i] );
+					}
+					teleport_effect = false;
+				}
+			}
+
+			mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(barr_perk_origin, barr_perk_angles,teleport_effect);
 			self thread return_machine_to_original_pos_after_door_open(mac);
-			if(IsDefined( self.weapon_trigger ))
-				self.weapon_trigger disable_trigger();
 			if(!return_mac_after_buy){
 				mac waittill( "perk_machine_start_move" );
 				continue;
 			}
 		}else{
-			IPrintLnBold( "didnt have QR " );
+			zhcpb( "didnt have QR " ,5555);
 		}
 		//only happens when return_mac_after_buy == true
 		while(!has_perk){
@@ -3437,15 +3451,27 @@ return_machine_to_original_pos_after_door_open(mac){
 	self thread cancel_return_when_machine_move(mac);
 	self waittill_any( "open_door","end_door_cooldown","machine_return");
 	mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(mac.original_origin, mac.original_angle,true);
-	if(IsDefined( self.weapon_trigger ))
+	if(IsDefined( self.weapon_trigger )){
 		self.weapon_trigger enable_trigger();
+	}else{
+		players = get_players();
+		for(i = 0; i < players.size; i++){
+			self SetVisibleToPlayer( players[i] );
+		}
+	}
 }
 cancel_return_when_machine_move(mac){
 	self endon ("open_door");
 	self endon ("end_door_cooldown");
 	self endon ("end_wait_return_to_original");
 	mac waittill( "perk_machine_start_move" );
-	if(IsDefined( self.weapon_trigger ))
+	if(IsDefined( self.weapon_trigger )){
 		self.weapon_trigger enable_trigger();
+	}else{
+		players = get_players();
+		for(i = 0; i < players.size; i++){
+			self SetVisibleToPlayer( players[i] );
+		}
+	}
 	self notify( "end_wait_return_to_original" );
 }

@@ -4,12 +4,33 @@
 #include maps\ZHC_utility;
 
 get_testing_level(){
-	return 0;
+	return 0.5;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
 	//level 7 : common powerups
 	//level 8 : only firesales
+}
+can_send_msg_level(msg_id){
+	switch(msg_id){
+		case 4: //down forgiveness
+		//case 1000: //difficulty testing
+		case 1001: //difficulty testing
+		case 555: //perk teleportation testing
+		//case 5555: //QR perk teleportation testing
+		case 50: //mystery box
+		case 100: //wall weapon stuff
+		//case 999://round zombie total viewer
+		//case 666://zombie damage 
+		//case 222://perk loss
+		//case 777: //ZHC_weapon system
+		case 444: //blockers
+		case "m14_zm":
+			return true;
+
+		default:
+			return false;
+	}
 }
 set_perk_levels_info(){
 	level.PERK_LEVELS = true;
@@ -26,6 +47,7 @@ set_perk_levels_info(){
 }
 
 init_many_vars(){
+
 	level.special_chest_wait_mode = undefined;
 	level.special_chest_waiters = undefined;
 
@@ -107,6 +129,12 @@ testing_ground(){
 blocker_perk_block_init(){
 	flag_wait( "all_players_connected" );//common_scripts\utility.gsc:
 	players = get_players();
+
+	JUG_MOVE_SYSTEM = true;
+	if(JUG_MOVE_SYSTEM){
+		level.jug_move_score = 0;
+	}
+
 	for ( i = 0; i < players.size; i++ ){
 		players[i] thread manage_perk_history();
 	}
@@ -117,25 +145,179 @@ blocker_perk_block_init(){
 }
 manage_perk_history(){
 	self.perk_history = [];
-	/*while(1){	//now managed on give_perk()
-		self waittill( "perk_bought");
-		self.perk_history = array_remove(self.perk_history, self.perk_purchased);
-		self.perk_history[self.perk_history.size] = self.perk_purchased;
-		IPrintLn( "perk_history_length:"+self.perk_history.size + "  defined_perk:"+isDefined(self.perk_purchased));
-	}*/
+	while(1){	//now managed on give_perk()
+		self waittill( "perk_bought", perk);
+		self.perk_history = array_remove(self.perk_history, perk);
+		self.perk_history[self.perk_history.size] = perk;
+		if(IsDefined( level.jug_move_score ) && perk == "specialty_armorvest"){
+			score_to_add = 1;
+			if(level.PERK_LEVELS)
+				score_to_add = self maps\_zombiemode_perks::GetPerkLevel(perk) * 4;
+			level.jug_move_score += score_to_add;
+			if(score_to_add > get_players().size){
+				level.jug_move_score = 0;
+				level thread move_perk_to_random_barricade("specialty_armorvest");
+			}
+		}
+		//IPrintLn( "perk_history_length:"+perk.size + "  defined_perk:"+isDefined(perk));
+	}
+}
+move_perk_to_random_barricade(perk){
+	if(!level.power_on && maps\ZHC_zombiemode_zhc::get_testing_level() <= 1){		
+		return;
+	}
+	if(!IsDefined( perk )){
+		zhcpb( "perk undefined"  ,555);
+		return;;
+	}
+	mac = level.ZHC_perk_machines[perk][0];
+	mac thread maps\_zombiemode_perks::ZHC_move_perk_machine((0,0,-1000), mac.angles, true);
+	mac endon( "perk_machine_start_move" );
+
+	goal = undefined;
+	//set goal....
+	{
+		while(1){
+			goal = level.exterior_goals[RandomInt( level.exterior_goals.size )];
+			while(!isDefined(goal.ZHC_spawners_that_lead_to_this)){
+				zhcp( "waiting to set spawner "+perk+"..." ,555 );
+				wait(3); // adds some randomness to when it arrives
+			}
+			//if(true)
+			//	break; //testo no further checks
+			is_enabled = false;
+			for( i = 0; i < goal.ZHC_spawners_that_lead_to_this.size; i ++){
+				if(goal.ZHC_spawners_that_lead_to_this[i].is_enabled)		//prevents using position thats already been occupied
+				{
+					is_enabled = true;
+					break;
+				}
+			}
+			if(!is_enabled){
+				zhcp( "waiting to be enabled "+perk+"..." ,555 );
+				continue;
+			}
+			active_spawns = 0;
+			for(i = 0; i < level.enemy_spawns.size; i++){
+				if(!level.enemy_spawns[i].script_noteworthy == "quad_zombie_spawner")//maps\_utility.gsc:
+					active_spawns++;
+			}
+			if(active_spawns <= 1){
+				zhcp( "too few spawns "+perk+"..."  ,555);
+				continue;
+			}else{
+				break;
+			}
+		}
+		/*
+		unassigned_goals = [];
+		active_goals= [];
+		inactive_goals= [];
+		for( i = 0; i < level.exterior_goals.size; i++ )
+		{
+			goal = level.exterior_goals[i];
+			if(!IsDefined(goal.ZHC_spawners_that_lead_to_this))
+				array_add( unassigned_goals, goal );
+			else{
+				if(goal.ZHC_spawners_that_lead_to_this.is_active){
+					array_add( active_goals, goal );
+				}else{
+					array_add( inactive_goals, goal );
+				}
+			}
+		}
+		
+		active_spawns = 0;
+		for(i = 0; i < level.enemy_spawns.size; i++){
+			if(!level.enemy_spawns[i].script_noteworthy == "quad_zombie_spawner" && is_in_array(goal.ZHC_spawners_that_lead_to_this,level.enemy_spawns[i]))//maps\_utility.gsc:
+				active_spawns++;
+		}	
+		if(active_spawns <= 1){
+			active_goals = [];
+		}
+
+		available_goals = array_combine( active_goals , inactive_goals );
+		total_goals = available_goals.size + unassigned_goals.size;
+
+		if(total_goals == 0){
+			IPrintLnBold( "no goals" );
+			return;
+		}
+	
+		chosen_goal = RandomInt(total_goals);
+		if(chosen_goal < available_goals.size){
+			goal = available_goals[chosen_goal];
+		}else{
+			goal = unassigned_goals[chosen_goal - available_goals.size];
+		}*/
+	}
+	zhcpb( "teleporting "+perk ,555);
+
+	for( i = 0; i < goal.ZHC_spawners_that_lead_to_this.size; i ++){
+		goal.ZHC_spawners_that_lead_to_this[i].is_enabled = false;
+	}
+
+	
+	enemies = GetAISpeciesArray( "axis", "all" ); 
+	for( i = 0; i < enemies.size; i++ )
+	{
+		if ( is_true( enemies[i].ignore_enemy_count ) || ! isDefined( enemies[i].animname )  || ! IsDefined( enemies[i].first_node ))
+			continue;
+
+		if(enemies[i].first_node == goal){
+			thread maps\_zombiemode_ai_dogs::dog_explode_fx (enemies[i].origin);
+			enemies[i] hide();
+			enemies[i] DoDamage(enemies[i].health + 100, enemies[i].origin);
+			//level.zombie_total ++;
+		}
+	}
+
+	
+	mac thread maps\_zombiemode_perks::ZHC_move_perk_machine(groundpos(goal.origin + (AnglesToForward( goal.angles ) * 15)), goal.angles + (0,90,0), true);
+
+	//mac thread return_perk_mac(); //uses "a door closed"
+
+	mac waittill("perk_machine_start_move" );
+
+	for( i = 0; i < goal.ZHC_spawners_that_lead_to_this.size; i ++){
+		goal.ZHC_spawners_that_lead_to_this[i].is_enabled = true;
+	}
 }
 blocker_wait_to_perk_block(){
 	while(1){
-		IPrintLnBold( "waiting to repair" );
+		//IPrintLnBold( "waiting to repair" );
 		self waittill( "no valid boards", player);
-		//IPrintLn( ret );
+
+
+		if(!level.power_on && maps\ZHC_zombiemode_zhc::get_testing_level() <= 1){
+			zhcpb( "power off" ,555);	
+			continue;
+		}
 		if(!IsDefined( player )){
-			IPrintLnBold( "player undefined" );
+			zhcpb( "player undefined" ,555);
 			continue;
 		}
 		if(!is_player_valid( player )){
-			IPrintLnBold( "player invalid" );
+			zhcpb( "player invalid" ,555);
 			continue;
+		}
+
+		if(!isDefined(self.ZHC_spawners_that_lead_to_this)){
+			zhcpb( "spawner list undefined" ,555);
+			continue;
+		}
+		{//check is not already disabled by anouther perk
+			isDisabled = false;
+			for( i = 0; i < self.ZHC_spawners_that_lead_to_this.size; i ++){
+				if(!self.ZHC_spawners_that_lead_to_this[i].is_enabled){		//prevents using position thats already been occupied		
+					isDisabled = true;
+					break;
+				}
+			}
+			if(isDisabled){
+				zhcpb( "spawner is already disabled" ,555);
+				continue;
+			}
 		}
 		spawns = level.enemy_spawns.size ;
 		for(i = 0; i < level.enemy_spawns.size; i++){
@@ -143,11 +325,11 @@ blocker_wait_to_perk_block(){
 				spawns--;
 		}
 		if(spawns <= 1){
-			IPrintLnBold( "not enough spawns" );
+			zhcpb( "not enough spawns" ,555);
 			continue;;
 		}
 		if(!isDefined(player.perk_history)){
-			IPrintLnBold( "player perk_history undefined");
+			zhcpb( "player perk_history undefined",555);
 			continue;
 		}
 		perk = undefined;
@@ -156,12 +338,12 @@ blocker_wait_to_perk_block(){
 		for( i = player.perk_history.size-1; i >= 0; i-- ){
 			cperk = player.perk_history[i];
 			if(limitQRandJug && (cperk == "specialty_quickrevive" || cperk == "specialty_armorvest")){
-				IPrintLn( "perk:" +cperk + " skipped" );
+				zhcp( "perk:" +cperk + " skipped" ,555);
 				continue;
 			}
 			cmac = level.ZHC_perk_machines[cperk][0];
 			if(cmac.origin != cmac.original_origin){
-				IPrintLn( "perk:" +cperk + " in use" );
+				zhcp( "perk:" +cperk + " in use" ,555);
 				continue;
 			}
 			else{
@@ -171,10 +353,10 @@ blocker_wait_to_perk_block(){
 			}
 		}
 		if(!IsDefined( perk )){
-			IPrintLnBold( "perk undefined" );
+			zhcpb( "perk undefined" ,555);
 			continue;
 		}else{
-			IPrintLnBold( "perk:" +perk +" moved");
+			zhcpb( "perk:" +perk +" moved",555);
 		}
 		
 		if(isDefined(self.ZHC_spawners_that_lead_to_this)){
@@ -182,7 +364,7 @@ blocker_wait_to_perk_block(){
 				self.ZHC_spawners_that_lead_to_this[i].is_enabled = false;
 			}
 		}else{
-			IPrintLnBold( "spawner list undefined" );
+			zhcpb( "spawner list undefined",555 );
 		}
 
 		enemies = GetAISpeciesArray( "axis", "all" ); 
@@ -212,7 +394,7 @@ blocker_wait_to_perk_block(){
 				self.ZHC_spawners_that_lead_to_this[i].is_enabled = true;
 			}
 		}else{
-			IPrintLnBold( "spawner list undefined" );
+			zhcpb( "spawner list undefined" ,555);
 		}	
 	}	
 }
@@ -253,7 +435,7 @@ damage( inflictor, attacker, damage, flags, mod, weapon, vpoint, vdir, sHitLoc, 
 zombie_damage( mod, hit_location, hit_origin, player, amount, weapon ){
 	additional_amount = self maps\ZHC_zombiemode_weapons::GetDamageOverride(mod, hit_location, player, amount, weapon);   //zhc_ damage bonus
 	new_amount = additional_amount + amount;
-	//IPrintLn( "D:"+ amount+ "AD: " + additional_amount ); //+" hp:"+ self.health +"|"+self.maxhealth ); 		//health and maxhealth values always clamped to 100 for some reason?
+	zhcp( "D:"+ amount+ "AD: " + additional_amount +" hp:"+ self.health +"|"+self.maxhealth ,666); 		//health and maxhealth values always clamped to 100 for some reason?
 	if(
 		self maps\_zombiemode_perks::bucha_func(player,mod,new_amount,player GetCurrentWeapon(),hit_location,false)
 		)
@@ -309,13 +491,14 @@ dog_round_counter(){
 		if(GAIN_PERK_SLOTS_AFTER_DOG_ROUND)
 			gain_perk_slot_all_players();
 
-		if(IsDefined( level.ZHC_ROOMFLOW_doors_flow_difficulty_to_close_adj ))
+		/*if(IsDefined( level.ZHC_ROOMFLOW_doors_flow_difficulty_to_close_adj ))
 			level.ZHC_ROOMFLOW_difficulty_to_close_door = 
 				4 +
 				clamp(level.dog_round_count/2, 0, 1) + 	//after 2 dog rounds add 1.
 				clamp((level.dog_round_count-2)/3, 0, 1) + //after 3 more dog rounds add 1
 				clamp((level.dog_round_count-5)/4, 0, 1) + //after 4 more dog rounds add 1
 				clamp((level.dog_round_count-9)/5, 0, 1);	//after 5 more dog rounds add 1
+		*/
 
 		/*if(IsDefined( level.ZHC_quickrevive_cost_forgiveness ))
 			IPrintLnBold( "QR forgiveness "+level.ZHC_quickrevive_cost_forgiveness );
@@ -346,7 +529,7 @@ dog_round_counter(){
 					level.zombie_perks["specialty_quickrevive"] notify ("update_perk_hintstrings");
 					GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS++; //forgivness become rarer as rounds progress. //only happens after the player benefits from forgivenes
 					dog_rounds_till_cost_forgiveness = GAIN_QUICKREVIVE_COST_FORGIVENESS_AFTER_X_DOG_ROUNDS;
-					IPrintLnBold( "Down Forgiveness. Quickrevive has been made cheaper." );
+					zhcpb( "Down Forgiveness. Quickrevive has been made cheaper." ,4);
 				}else{
 					dog_rounds_till_cost_forgiveness = 1;	//if the player didnt benefit from forgiveness, forgive the next round
 				}
@@ -963,7 +1146,7 @@ giveCollateralKillBonus(waitFirst){
 		//reward = min(self.curCollateralKills * self.curCollateralMostPointsForKill, reward);
 		//reward = (self.curCollateralKills*self.curCollateralKills*10);
 
-		IPrintLnBold("x"+self.curCollateralKills+ " kills +"+reward );
+		zhcpb("x"+self.curCollateralKills+ " kills +"+reward );
 		//IPrintLnBold("curScore"+self.score+  "+"+  reward );
 
 		//self maps\_zombiemode_score::player_add_points( "collateral", reward);

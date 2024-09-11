@@ -237,23 +237,51 @@ include_zombie_weapon( weapon_name, in_box, collector, weighting_func )
 //
 //Z2 add_zombie_weapon will call PrecacheItem on the weapon name.  So this means we're loading 
 //		the model even if we're not using it?  This could save some memory if we change this.
-
+ZHC_get_max_amount_weapon(weapon, default_amount){
+	switch( weapon ){
+		case "g11_lps_zm": 
+			return max(Int((default_amount * 0.15)+0.5),1);
+		case "m16_zm":
+			return max(Int((default_amount * 0.35)+0.5),1);
+		case "ballistic_knife": 
+			return max(Int((default_amount * 0.5)+0.5),1);
+		case "m1911_zm": 
+			return 1;
+		case "zombie_cymbal_monkey":
+			return max(Int((default_amount * 3)+0.5),1);
+		case "china_lake_zm": 
+		case "mp5k_zm":
+			return max(Int((default_amount * 0.8)+0.5),1);
+		case "m14_zm":
+		case "rottweil72_zm":
+			return max(Int((default_amount * 0.25)+0.5),1);
+		case "pm63_zm":
+		case "mpl_zm":
+		case "mp40_zm":
+			return max(Int((default_amount * 0.5)+0.5),1);
+		default:
+			return default_amount;
+	}
+}
 ZHC_get_ordered_weapon_keys(){
 	k = [];
 
 	k[k.size] = "zombie_cymbal_monkey"; //1
 	
 
-	k[k.size] = "m1911_zm";
+	//k[k.size] = "m1911_zm";
 	k[k.size] = "knife_ballistic_zm";
 	k[k.size] = "cz75_zm";
 	k[k.size] = "pm63_zm";
+	
 
 	k[k.size] = "zombie_cymbal_monkey"; //2
 
 	k[k.size] = "m14_zm";
+	k[k.size] = "mpl_zm";
 	k[k.size] = "rottweil72_zm";
 	k[k.size] = "mp40_zm";
+
 
 	k[k.size] = "g11_lps_zm";
 
@@ -463,7 +491,7 @@ wall_weapon_setup(){
 
 door_barr_set_info_on_buy_door(player){//should happen when the player buys or opens door that will eventually have a barr weapon when the door expires.
 	if(!self.doors.size){
-		IPrintLnBold( "NO DOORS TO BARR. aborting weapon barr" );
+		zhcpb( "NO DOORS TO BARR. aborting weapon barr" , 100);
 		return;
 	}
 
@@ -471,7 +499,7 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		player = self.last_user;
 
 	if(!isDefined(player)){
-		IPrintLnBold( "NO 'self.last_user' ASSIGNED FOR WEAPON BARR aborting weapon barr" );
+		zhcpb( "NO 'self.last_user' ASSIGNED FOR WEAPON BARR aborting weapon barr" , 100);
 		return;
 	}
 
@@ -504,7 +532,7 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		//}
 
 		if(!isDefined(closest)){
-			IPrintLnBold( "NO TRIGGER FOUND FOR DOOR BARR WEAPON. aborting weapon barr" );
+			zhcpb( "NO TRIGGER FOUND FOR DOOR BARR WEAPON. aborting weapon barr" , 100);
 			return;
 		}
 		self.barr_door_middle = closest.origin;
@@ -535,7 +563,7 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 			}*/
 		}
 		if(!isDefined(closest_door)){
-			IPrintLnBold( "NO CLOSEST DOOR FOUND FOR DOOR BARR WEAPON. aborting weapon barr" );
+			zhcpb( "NO CLOSEST DOOR FOUND FOR DOOR BARR WEAPON. aborting weapon barr" , 100);
 			return;
 		}
 		yaw = VectorToAngles( self.barr_door_middle - closest_door.origin )[1];
@@ -601,7 +629,7 @@ door_barr_weapon(){
 		self waittill( "door_closed" );
 
 	if(!isDefined(self.player_yaw)){
-		IPrintLnBold( "DOOR BARR INFO NOT SET"  );
+		zhcpb( "DOOR BARR INFO NOT SET" , 100 );
 		return;
 	}
 
@@ -616,7 +644,7 @@ door_barr_weapon(){
 	
 
 	if(!IsDefined( roomId_barr_appears_from) ){
-		IPrintLnBold( "DOOR BARR ROOMIDS NOT SET"  );
+		zhcpb( "DOOR BARR ROOMIDS NOT SET" , 100 );
 		return;
 	}
 
@@ -633,7 +661,7 @@ door_barr_weapon(){
 		//}
 	}
 	else{
-		IPrintLnBold( "DOOR BARR ROOM NOT DEFINED" );
+		zhcpb( "DOOR BARR ROOM NOT DEFINED" , 100);
 		return;
 	}
 
@@ -647,7 +675,7 @@ door_barr_weapon(){
 	}
 
 
-	weapon = door_barr_get_weapon_to_hang(player);
+	weapon = door_barr_get_weapon_to_hang(player, false, false);//testo
 	weapon_model = undefined;
 	
 	ent = self;
@@ -677,36 +705,70 @@ door_barr_weapon(){
 
 	ent door_barr_weapon_spawn(weapon, weapon_model, same_side, roomId_barr_appears_from, can_upgrade);		//spawn weapon
 }
+accept_weapon_for_door_barr(weapon, exclude_small_weapons, exclude_wall_buys){
+	wep_class = WeaponClass( weapon );
+	return 
+	!(
+		weapon == "m1911_zm" ||
+		(is_true(exclude_wall_buys) && get_is_wall_buy(weapon)) ||
+		(is_true(exclude_small_weapons) && 
+			(
+				wep_class == "pistol" || 
+				(wep_class == "smg" && weapon != "ak74u_zm")
+			)
+		) || 
+		wep_class == "bowie" || 
+		wep_class == "sickle" || 
+		wep_class == "raygun"
+	);
+}
+door_barr_get_weapon_to_hang(player, exclude_small_weapons, exclude_wall_buys){
+	//while(1){
+		weapon = undefined;
+		player_cur_weapon = player GetCurrentWeapon();
+		player_primaries = player GetWeaponsListPrimaries();
+		non_held_primaries = [];
+		for(i = 0; i < player_primaries.size; i++){
+			if(player_cur_weapon == player_primaries[i]){
+				if(accept_weapon_for_door_barr(player_primaries[i], exclude_small_weapons, exclude_wall_buys)){
+					weapon = player_cur_weapon;
+					break;
+				}
+			}else{
+				//if(accept_weapon_for_door_barr(player_primaries[i], exclude_small_weapons, exclude_wall_buys)){
+					non_held_primaries[non_held_primaries.size] = player_primaries[i];
+				//}
+			}
+		}
 
-door_barr_get_weapon_to_hang(player){
-	weapon = undefined;
-	player_cur_weapon = player GetCurrentWeapon();
-	player_primaries = player GetWeaponsListPrimaries();
-	for(i = 0; i < player_primaries.size; i++){
-		if(player_cur_weapon == player_primaries[i]){
-			weapon = player_cur_weapon;
-			break;
+		if(!IsDefined( weapon )){
+			non_held_primaries = array_randomize( non_held_primaries );
+			for(i = 0; i < non_held_primaries.size; i++){
+				if(accept_weapon_for_door_barr(non_held_primaries[i], exclude_small_weapons, exclude_wall_buys)){
+					weapon = non_held_primaries[i];
+					break;
+				}
+			}
 		}
-	}
-	if(!isDefined(weapon)){
-		if(IsDefined( player_primaries[0] )){
-			weapon = player_primaries[0];
-		}else{
-			weapon = "ray_gun_zm";
-		}
-	}
-	//wep_class = WeaponClass( weapon );
-	if(weapon == "m1911_zm"){
-	//if(wep_class == "pistol" || wep_class == "smg" || wep_class == "bowie" || wep_class == "sickle" || wep_class == "raygun"){
-		default_weaps = [];
-		//default_weaps[default_weaps.size] = "spas_zm";
-		//default_weaps[default_weaps.size] = "claymore_zm";
-		//default_weaps[default_weaps.size] = "bowie_knife_zm";		// gona be complicated to intergrate.
-		//default_weaps[default_weaps.size] = "frag_grenade_zm";
-		default_weaps[default_weaps.size] = "frag_grenade_zm";
-		//weapon = default_weaps[level.round_number%default_weaps.size];
-		weapon = default_weaps[RandomInt( default_weaps.size )];
-	}
+
+		/*if(!isDefined(weapon)){
+			if(IsDefined( player_primaries[0] )){
+				weapon = player_primaries[0];
+			}else{
+				weapon = "ray_gun_zm";
+			}
+		}*/
+		/*if(!accept_weapon_for_door_barr(weapon)){
+			default_weaps = [];
+			//default_weaps[default_weaps.size] = "spas_zm";
+			//default_weaps[default_weaps.size] = "claymore_zm";
+			//default_weaps[default_weaps.size] = "bowie_knife_zm";		// gona be complicated to intergrate.
+			//default_weaps[default_weaps.size] = "frag_grenade_zm";
+			default_weaps[default_weaps.size] = "frag_grenade_zm";
+			//weapon = default_weaps[level.round_number%default_weaps.size];
+			weapon = default_weaps[RandomInt( default_weaps.size )];
+		}*/
+	//}
 	/*else if(wep_class == "bowie" || wep_class == "sickle"){
 		//weapon = "specialty_knifeescape";
 		//none of these models are defined, find the correct models.
@@ -717,6 +779,23 @@ door_barr_get_weapon_to_hang(player){
 		else
 			weapon_model = GetWeaponModel("knife_zm");
 	}*/
+	if(!IsDefined( weapon ))
+		return;
+
+	is_base_weapon = isDefined(level.zombie_weapons[weapon]);
+	if(!is_base_weapon){
+		ziw_keys = GetArrayKeys( level.zombie_weapons );
+		for ( i=0; i<level.zombie_weapons.size; i++ )
+		{
+			un = level.zombie_weapons[ ziw_keys[i] ].upgrade_name;
+			if ( IsDefined(un) && un == weapon)
+			{
+				weapon = un;		//gets unupgraded version of weapon
+				break;
+			}
+		}
+	}
+
 	return weapon;
 }
 
@@ -727,18 +806,29 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self.weapon_trigger = door_barr_weapon_setup(weapon_string, weapon_model, same_side, self.barr_door_middle, self.player_yaw, self.player_yaw + 270
 		);
 
+	self thread chest_weapon_swap(roomId_visible_from, can_upgrade); //chest swap system
+
+	self thread weapon_end_on_door_open();
+	self thread weapon_thread_manage_triggers(roomId_visible_from);
+
+	if(!IsDefined( weapon_string )) //no weapon was acucually chosen but we set up the triggers to prepare for a weapon swap
+		return;
+
+	if(!isDefined(level.zombie_weapons[weapon_string])){		//exclude upgraded //shouldent be nessesary as we never choose it but what evs
+		zhcpb( weapon_string +" not in weapons[]" , 100);
+		return;
+	}
+
 	play_sound_at_pos( "weapon_show", self.origin);
 	self.weapon_trigger thread weapon_model_hide();
 	self.weapon_trigger thread show_weapon_model();
 
 	//playfx(level._effect["poltergeist"], barr_weapon_trigger_origin);	//playes electricity effect when barr weapon spawns.
 
-
-	self thread weapon_end_on_door_open();
-	self thread weapon_thread_manage_triggers(roomId_visible_from);
+	
 
 	self.weapon_trigger.zombie_weapon_upgrade = weapon_string; //neaded for swap. but also good info to have generally.
-	self thread chest_weapon_swap(roomId_visible_from, can_upgrade);
+	
 
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 	can_init_buy = false;	//always true for now.
@@ -747,9 +837,31 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	self.weapon_trigger thread weapon_spawn_think(false, true, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
 }
 
+
+
 chest_weapon_swap(roomId_visible_from, can_upgrade){
 	self.weapon_trigger endon("deleted");
-	last_threaded_chestIds_index = 0;
+	while(1){
+		level waittill( "weapon_picked_up_in_room_"+roomId_visible_from, weapon );
+		if(is_offhand_weapon(weapon)){	//not a primary weapon.
+			zhcp(weapon + " not accepted for door barr", 50);
+			continue;
+		}
+		if(isDefined(self.weapon_trigger.zombie_weapon_upgrade) && self.weapon_trigger.zombie_weapon_upgrade == weapon)
+			continue;
+		if(!accept_weapon_for_door_barr(weapon, true, true)){
+			zhcp(weapon + " not accepted for door barr",50);
+			continue;
+		}
+		zhcp("door barr changed to " + weapon, 50);
+		is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
+		can_init_buy = false;	//always true for now.
+		can_buy_ammo = is_equipment || true; //lets make it always true for now
+		can_upgrade = !is_equipment && can_upgrade;
+		self.weapon_trigger.zombie_weapon_upgrade = weapon;
+		self.weapon_trigger thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon);
+	}
+	/*last_threaded_chestIds_index = 0;
 	max_chest_size = 1;
 	while(1){
 		chestIds = maps\_zombiemode_blockers::map_get_room_info(roomId_visible_from)["chests"];
@@ -761,7 +873,7 @@ chest_weapon_swap(roomId_visible_from, can_upgrade){
 			if(last_threaded_chestIds_index >= max_chest_size)
 				return;
 		}
-	}
+	}*/
 	/*for(i = 0; i < chestIds.size; i++){
 		self thread chest_weapon_grab_change_door_weapon(level.chests[chestIds[i]].chest_origin, can_upgrade);
 	}*/
@@ -788,10 +900,6 @@ chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
 door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw, barr_weapon_yaw
 	){
 
-	if(!isDefined(level.zombie_weapons[weapon_string])){
-		IPrintLnBold( weapon_string +" not in weapons[]" );
-		return;
-	}
 	if(same_side)
 		player_yaw = AngleClamp180(player_yaw + 180);
 	barr_weapon_origin = door_barr_middle_origin - ( AnglesToForward( ( 0, player_yaw, 0 ) ) * 8 );
@@ -814,22 +922,23 @@ door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_
 	weapon_trigger.weapon_model.angles = ( 0, barr_weapon_yaw, 0 );
 	weapon_trigger.weapon_model.yaw = player_yaw;
 
-	if(weapon_is_dual_wield(weapon_string)){
-		weapon_trigger.weapon_model_dw = spawn( "script_model", barr_weapon_origin - (0 ,0 ,10)); 
-		weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(barr_weapon_yaw + 180), 0 );
-		weapon_trigger.weapon_model_dw.yaw = player_yaw;
-		weapon_trigger.weapon_model_dw LinkTo( weapon_trigger.weapon_model );
-		
-	}
+	if(isDefined(weapon_string)){
+		if(weapon_is_dual_wield(weapon_string)){
+			weapon_trigger.weapon_model_dw = spawn( "script_model", barr_weapon_origin - (0 ,0 ,10)); 
+			weapon_trigger.weapon_model_dw.angles = ( 0, AngleClamp180(barr_weapon_yaw + 180), 0 );
+			weapon_trigger.weapon_model_dw.yaw = player_yaw;
+			weapon_trigger.weapon_model_dw LinkTo( weapon_trigger.weapon_model );
+		}
 
-	if(!IsDefined( weapon_model ))
-		weapon_trigger set_box_weapon_model_to(weapon_string);
-	else{
-		weapon_trigger.weapon_model show();
-		weapon_trigger.weapon_model setmodel( weapon_model ); 
-	}
+		if(!IsDefined( weapon_model ))
+			weapon_trigger set_box_weapon_model_to(weapon_string, (0 ,0 ,10), 180);
+		else{
+			weapon_trigger.weapon_model show();
+			weapon_trigger.weapon_model setmodel( weapon_model );
+		}
 
-	weapon_trigger SetHintString( get_weapon_hint( weapon_string ), get_weapon_cost( weapon_string ) ); 
+		weapon_trigger ZHC_set_weapon_hint(get_weapon_cost(weapon_string), get_ammo_cost(weapon_string), 4500, weapon_string, undefined, false, true, true);
+	}
 	weapon_trigger setCursorHint( "HINT_NOICON" );
 	weapon_trigger UseTriggerRequireLookAt();
 	return weapon_trigger;
@@ -844,7 +953,7 @@ weapon_thread_manage_triggers(roomId_visible_from){
 	zones = maps\_zombiemode_blockers::roomIDToZones(roomId_visible_from);
 
 	if(!IsDefined( zones )){
-		IPrintLnBold( "NO VOLUMES FOUND" );
+		zhcpb( "NO VOLUMES FOUND" , 100);
 		return;
 	}
 	players = get_players();
@@ -852,12 +961,14 @@ weapon_thread_manage_triggers(roomId_visible_from){
 		//if(!IsDefined( weapon_trigger ))	//checks if weapon_trigger exists
 		//	return;
 		playervis = [];
-		for(zz = 0; zz < zones.size; zz++){
-			if(level.zones[zones[zz]].is_occupied){
-				for(i = 0; i < players.size; i++){
-					if(isDefined(players[i].current_zone) && players[i].current_zone == zones[zz])
-					{
-						playervis[i] = true;
+		if(isDefined(self.weapon_trigger.zombie_weapon_upgrade)){
+			for(zz = 0; zz < zones.size; zz++){
+				if(level.zones[zones[zz]].is_occupied){
+					for(i = 0; i < players.size; i++){
+						if(isDefined(players[i].current_zone) && players[i].current_zone == zones[zz])
+						{
+							playervis[i] = true;
+						}
 					}
 				}
 			}
@@ -878,8 +989,8 @@ weapon_thread_manage_triggers(roomId_visible_from){
 }
 
 weapon_end_on_door_open(){
-	self waittill_either( "door_open", "end_door_cooldown" );
-	playfx(level._effect["poltergeist"], self.barr_door_middle - ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 45 ));
+	self waittill_any_ents(self, "door_open",self, "end_door_cooldown", self.weapon_trigger, "delete" );
+	playfx(level._effect["poltergeist"], self.barr_door_middle + ( AnglesToForward( ( 0, self.player_yaw, 0 ) ) * 45 ));
 
 	self.weapon_trigger delete_weapon_model();
 
@@ -1480,10 +1591,12 @@ ZHC_assign_weapons_to_boxes(){
 
 		progression_index = 0;
 
+		weapons_num = [];
+
 		for(i = chests_num * progression[progression_index]; i < keys.size ; i++){
 			//if(level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && chests[b] == level.chests[level.chest_index])
 			//	b++;
-			if(b == chests_num){
+			if(b == chests_num){	//start of cycle
 				if(progression_index < progression.size){
 					i = chests_num * progression[progression_index];
 					progression_index++;
@@ -1493,15 +1606,25 @@ ZHC_assign_weapons_to_boxes(){
 				//if(level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && chests[b] == level.chests[level.chest_index])
 				//	b++;
 			}
+
+			
+			if(!isDefined(weapons_num[keys[i]])){
+				weapons_num[keys[i]] = 0;
+			}
+			if(weapons_num[keys[i]] >= ZHC_get_max_amount_weapon(keys[i], chests_num)){
+				b++;
+				continue;
+			}
+
 			if(!get_is_in_box(keys[i])
-			 //|| !get_is_wall_buy(keys[i])
+			 && !get_is_wall_buy(keys[i])
 			 )
 				continue;
 			if(level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box(keys[i])){
 				level.chests[level.chest_index].chest_origin.ZHC_chest_owned_weapons[level.chests[level.chest_index].chest_origin.ZHC_chest_owned_weapons.size] = keys[i];
 				continue;
 			}
-
+			weapons_num[keys[i]]++;
 			chests[b].chest_origin.ZHC_chest_owned_weapons[chests[b].chest_origin.ZHC_chest_owned_weapons.size] = keys[i];		//adds weapon to 
 			b++;
 		}
@@ -1894,6 +2017,9 @@ a_player_is_close_to_origin(dist){
 }
 
 ZHC_wall_buy_options_init(){
+
+	level.ZHC_OWNED_WEAPONS_ARE_FREE = true;
+
 	level.ZHC_LOGICAL_WEAPON_SHOW = true;
 
 	level.ZHC_WALL_UPGRADE_WEAPON_ON_CLONE_PICK_UP = false;
@@ -1908,6 +2034,7 @@ ZHC_wall_buy_options_init(){
 }
 
 ZHC_treasure_chest_options_init(){
+
 
 
 	level.ZHC_BOX_EQUIPMENT_REALISTIC = true;
@@ -2013,6 +2140,19 @@ GetNormalChestCost(chest){
 	return 950;
 }
 
+chest_wait_to_change_door_barr(){
+	self endon ("weapon_stop");
+	self.chest_origin waittill("weapon_grabbed", weapon);
+	if(!IsDefined( self.roomId ))
+		return;
+	level notify ("weapon_picked_up_in_room_"+self.roomId, weapon);
+}
+wait_to_update_roomId(zone){
+	if(!maps\_zombiemode_blockers::room_id_can_be_stopped(self.roomId))
+		return;
+	level waittill("room_stop_"+self.roomId);
+	self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(zone);
+}
 
 treasure_chest_think(){
 
@@ -2138,13 +2278,14 @@ treasure_chest_think(){
 					wait 0.5;
 				}
 				else{
-					zone = user.current_zone;
+					//zone = user.current_zone;
 					//zone = maps\_zombiemode_blockers::Get_Players_Current_Zone_Patient(user);	//contains waits.
 					self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(user.current_zone);
+					//self thread wait_to_update_roomId(zone);
+					zhcp("user.current_zone:"+user.current_zone, 50);
+					zhcp("roomId:"+self.roomId, 50);
 
-					IPrintLn("user.current_zone:"+zone);
-					IPrintLn("roomId:"+self.roomId);
-					maps\ZHC_zombiemode_roundflow::debug_room_zones(self.roomId);
+					//maps\ZHC_zombiemode_roundflow::debug_room_zones(self.roomId);
 
 					roomInfo  = maps\_zombiemode_blockers::map_get_room_info(self.roomId);
 					roomInfo["chests"][roomInfo["chests"].size] = get_chest_index(self);
@@ -2153,9 +2294,9 @@ treasure_chest_think(){
 					}
 				}
 			}else if(maps\_zombiemode_blockers::map_get_room_info(self.roomId)["occupied"]){
-				if(self.roomId == 4 || self.roomId == 100){
-					IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest player is in room"+self.roomId+"... opening... chest:"  + get_chest_index(self));
-				}
+				//if(self.roomId == 4 || self.roomId == 100){
+				//	zhcp( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest player is in room"+self.roomId+"... opening... chest:"  + get_chest_index(self), 50);
+				//}
 				if(level.ZHC_BOX_AUTO_OPENED_ROOM_CHECK)
 					break;
 				user = self.chest_origin a_player_is_close_to_origin(120);
@@ -2173,6 +2314,7 @@ treasure_chest_think(){
 		}
 	}
 
+	self thread chest_wait_to_change_door_barr();
 
 	if(!level.ZHC_BOX_AUTO_OPEN)
 		flag_set("chest_has_been_used");
@@ -2331,12 +2473,12 @@ middle_box_logic(costs_money,user_cost,user){
 		if (got_teddy){
 			self disable_trigger();
 			if(!ZHC_should_take_teddy_seriously(self,true)){	//!chest moving serves as fail safe if temp_chest var was changed while randomizing.
-				IPrintLnBold( "not serious teddy" );
+				zhcpb( "not serious teddy", 50);
 				self thread ZHC_firesale_teddy_delete_temp_chest();
 			} 
 			else //if(self.chest_origin ZHC_box_has_teddy())
 			{
-				IPrintLnBold( "serious teddy" );
+				zhcpb( "serious teddy", 50);
 				//var stuff
 				self.ZHC_ALL_CHESTS_chest_active = false;
 
@@ -2562,7 +2704,7 @@ ZHC_firesale_teddy_delete_temp_chest(){		//this function is nessesary because th
 		playfx(level._effect["poltergeist"], self.orig_origin);
 	}
 
-	IPrintLnBold( "line1829 FORCE_CLOSE_LID" );
+	zhcpb( "line1829 FORCE_CLOSE_LID", 50 );
 
 	self.chest_lid notify( "close_lid" );
 	//failsafe
@@ -2658,7 +2800,7 @@ weapon_to_grab_think( user, swap, cycle){
 					bbPrint( "zombie_uses: playername %s playerscore %d teamscore %d round %d cost %d name %s x %f y %f z %f type magic_accept",
 						user.playername, user.score, level.team_pool[ user.team_num ].score, level.round_number, self.zombie_cost, self.chest_origin.weapon_string, self.origin );
 					self notify( "user_grabbed_weapon" );
-					user thread treasure_chest_give_weapon( self.chest_origin.weapon_string ,self, swap);
+					user thread treasure_chest_give_weapon( self.chest_origin.weapon_string ,self, swap, false);
 					break; 
 				}
 				else if( grabber == level )
@@ -2758,14 +2900,16 @@ chest_weapon_expire_wait(strength){
 			wait(5);
 			kills = 5 + int(   
 								max(
-									 	//(get_weapon_cost(self.chest_origin.weapon_string)/100)  ,				//this makes more expensive weapons stay longer, but is this a good thing?
-									 	20,
+									 	(get_weapon_cost(self.chest_origin.weapon_string)/100)  ,				//this makes more expensive weapons stay longer, but is this a good thing?
+									 	//20,
 									 	(  (min(get_or(level.zombie_total_start, 6), 64 )/2) * (strength-1) )
 								    )
 							);
+			zhcpb("kills_need_to_go_down: "+kills, 50);
 			if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE){//here we thread it so we can reuse it later
 				self.zhc_cooldown_waiting = true;
-				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, kills, undefined, undefined, false);
+				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(2, min(get_weapon_cost(self.chest_origin.weapon_string)/100, 50), kills, undefined, undefined, false); //either some num of kills and short timer
+				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(2, get_weapon_cost(self.chest_origin.weapon_string)/40, undefined, 1, undefined, false); //or a longer timer and 1 round
 				self waittill( "zhc_end_of_cooldown" );
 				self.zhc_cooldown_waiting = undefined;
 			}else
@@ -3630,7 +3774,8 @@ clean_up_hacked_box()
 }
 
 
-set_box_weapon_model_to(weapon_name){
+set_box_weapon_model_to(weapon_name, secondary_offset,secondary_angle_offset){
+
 	modelname = GetWeaponModel( weapon_name );
 
 	self.weapon_model show();
@@ -3641,9 +3786,13 @@ set_box_weapon_model_to(weapon_name){
 	{
 		floatHeight = 30;
 		if(!isDefined(self.weapon_model_dw)){
+			if(!IsDefined( secondary_offset ))
+				secondary_offset = ( 3, 3, 3 );
+			if(!IsDefined( secondary_offset ))
+				secondary_angle_offset = 0;
 			//were tryin our best not to use this
-			self.weapon_model_dw = spawn( "script_model", self.weapon_model.origin - ( 3, 3, 3 ) ); // extra model for dualwield weapons
-			self.weapon_model_dw.angles = self.angles +( 0, 90, 0 );
+			self.weapon_model_dw = spawn( "script_model", self.weapon_model.origin - secondary_offset ); // extra model for dualwield weapons
+			self.weapon_model_dw.angles = self.weapon_model.angles + (0,secondary_angle_offset,0);
 			self.weapon_model_dw LinkTo(self.weapon_model);
 		}else{
 			self.weapon_model_dw show();
@@ -3939,7 +4088,7 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 			else
 				s += "UNDEFINED ";
 		}
-		IPrintLnBold( s );
+		zhcpb( s ,50);
 		//^^^^
 	}
 	else if(rand == "teddy"){
@@ -4381,7 +4530,7 @@ ZHC_upgrade_weapon(weapon_string, effect_origin){
 	}
 }
 // self is the player string comes from the randomization function
-treasure_chest_give_weapon( weapon_string, chest, swap)
+treasure_chest_give_weapon( weapon_string, chest, swap, refill_weapon_ammo)
 {
 	//cycle = false;
 
@@ -4396,6 +4545,9 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 	current_weapon = undefined; 
 
 	current_weapon = self getCurrentWeapon(); // ADDED FOR MOD
+
+
+	
 
 	weapon_limit = level.zhc_starting_weapon_slots;
 	if ( self HasPerk( "specialty_additionalprimaryweapon" ) )
@@ -4458,14 +4610,14 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 			}
 
 			self GiveWeapon( weapon_string, 0 );
-
-			//self GiveStartAmmo( weapon_string );
+			if(refill_weapon_ammo)
+				self GiveStartAmmo( weapon_string );
 			self SwitchToWeapon( weapon_string );
 
 			self play_weapon_vo(weapon_string);
 			
 		}
-		self maps\ZHC_zombiemode_weapons::give_weapon(weapon_string, true);
+		self maps\ZHC_zombiemode_weapons::give_weapon(weapon_string, !refill_weapon_ammo);
 		if(is_equipment && level.ZHC_BOX_EQUIPMENT_REALISTIC){
 			self maps\ZHC_zombiemode_weapons::set_weapon_ammo(weapon_string, 1);
 		}
@@ -4480,7 +4632,6 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 		}else{
 			self maps\ZHC_zombiemode_weapons::refill_weapon_ammo(weapon_string);
 		}
-		
 	}
 
 
@@ -4496,7 +4647,7 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 
 		if( isdefined( current_weapon ) )
 		{
-			if( !is_offhand_weapon( weapon_string ) || box_empty)
+			if( !is_offhand_weapon( weapon_string ) || box_empty )
 			{
 				// PI_CHANGE_BEGIN
 				// JMA - player dropped the tesla gun
@@ -4519,8 +4670,7 @@ treasure_chest_give_weapon( weapon_string, chest, swap)
 				{
 					self.last_pistol_swap = GetTime();
 				}
-
-			} 
+			}
 		}
 		if(swap){
 			//( "swapped model to "+current_weapon );
@@ -4807,6 +4957,7 @@ check_collector_achievement( bought_weapon )
 
 ZHC_set_weapon_hint( cost, ammo_cost, upgraded_ammo_cost, weapon_string, weapon_name, can_buy_weapon, can_buy_ammo, can_buy_upgraded_ammo, can_buy_weapon_upgrade, weapon_upgrade_cost, weapon_upgrade_level) //added for mod
 {
+	//zhcp (weapon_string, 100);
 	if(!IsDefined( upgraded_ammo_cost ))
 		upgraded_ammo_cost = 4500;
 	if(!IsDefined( can_buy_weapon ))
@@ -4821,22 +4972,27 @@ ZHC_set_weapon_hint( cost, ammo_cost, upgraded_ammo_cost, weapon_string, weapon_
 	else if(!IsDefined( weapon_upgrade_level ) || !IsDefined( weapon_upgrade_cost ))
 		can_buy_weapon_upgrade = false;
 
-	if(is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade"))
+	if(is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade")){
+		//if(weapon_string == "m14_zm")
+		//	zhcp ("ht1", 100);
 		self SetHintString( get_weapon_hint( weapon_string ), cost );
+	}
 
-	can_use_zombie_weap_hint = false;
+	can_use_zombie_weap_hint = true;
 	if(isDefined(weapon_string) &&isDefined(level.zombie_weapons[weapon_string]) && IsDefined(level.zombie_weapons[weapon_string].weapon_name )){
 		if(!isDefined(weapon_name))
 			weapon_name = level.zombie_weapons[weapon_string].weapon_name;
-		if(weapon_name == level.zombie_weapons[weapon_string].weapon_name && can_buy_weapon && !can_buy_ammo && !can_buy_upgraded_ammo && !can_buy_weapon_upgrade){
-			//IPrintLn( "get_weapon_hint" );
+		if(can_use_zombie_weap_hint && weapon_name == level.zombie_weapons[weapon_string].weapon_name && can_buy_weapon && !can_buy_ammo && !can_buy_upgraded_ammo && !can_buy_weapon_upgrade){
+			//if(weapon_string == "m14_zm")
+			//	zhcp ("ht2", 100);
 			self SetHintString( get_weapon_hint( weapon_string ), cost);	//has more language options
 			return;
 		}
 	}
 	if(!isDefined(weapon_name)){
-		if(upgraded_ammo_cost == 4500 && can_buy_weapon && can_buy_ammo && !can_buy_weapon_upgrade){
-			//IPrintLn( "weapon_set_first_time_hint" );
+		if(can_use_zombie_weap_hint && (upgraded_ammo_cost == 4500 || !can_buy_upgraded_ammo) && can_buy_weapon && can_buy_ammo && !can_buy_weapon_upgrade){
+			//if(weapon_string == "m14_zm")
+			//	zhcp ("ht3", 100);
 			weapon_set_first_time_hint( cost, ammo_cost, can_buy_upgraded_ammo);	//has more language options
 			return;
 		}
@@ -4877,11 +5033,16 @@ ZHC_set_weapon_hint( cost, ammo_cost, upgraded_ammo_cost, weapon_string, weapon_
 		total_num_of_prices++;
 	}
 	if(can_buy_weapon_upgrade){	//buy upgraded ammo price display
-		if(total_num_of_prices > 0)
-			upgraded_ammo_buy_string_1 += ", ";
-		pre_weapon_name_string += " Level "+weapon_upgrade_level;
-		upgraded_ammo_buy_string_1 += "[";
-		upgraded_ammo_buy_string_2 += weapon_upgrade_cost+"]";
+		if(total_num_of_prices > 0){
+			weapon_upgrade_string_1 += ", ";
+			weapon_upgrade_string_1 += "Level Up [";
+			pre_weapon_name_string += " Level "+weapon_upgrade_level;
+		}
+		else{
+			pre_weapon_name_string += " Level "+weapon_upgrade_level;
+			weapon_upgrade_string_1 += "[";
+		}
+		weapon_upgrade_string_2 += weapon_upgrade_cost+"]";
 		total_num_of_prices++;
 	}
 
@@ -4893,14 +5054,18 @@ ZHC_set_weapon_hint( cost, ammo_cost, upgraded_ammo_cost, weapon_string, weapon_
 	text = "Hold &&1"+to_buy_string+pre_weapon_name_string+" "+weapon_name+" "+ 
 		util_connect_strings(weapon_buy_string_1, cost_string, weapon_buy_string_2) +
 		util_connect_strings(ammo_buy_string_1, cost_string, ammo_buy_string_2) +
-		util_connect_strings(upgraded_ammo_buy_string_1, cost_string, upgraded_ammo_buy_string_2);
-	//IPrintLn (text);
-	self SetHintString( text
-		); 
+		util_connect_strings(upgraded_ammo_buy_string_1, cost_string, upgraded_ammo_buy_string_2) +
+		util_connect_strings(weapon_upgrade_string_1, cost_string, weapon_upgrade_string_2);
+	
+	//zhcp ("ht = "+ text, weapon_string);
+	self SetHintString( text ); 
 }
 //returns the combined string only if both the first and last given substrings are not empty.
 //otherwise returns the remaining the non empty string.
 util_connect_strings(str1, connectorStr, str2){	
+	str1 = define_or(str1,"");
+	str2 = define_or(str2,"");
+	connectorStr = define_or(connectorStr,"");
 	if(str1 == "")
 		return str2;
 	if(str2 == "")
@@ -4918,144 +5083,150 @@ weapon_set_first_time_hint( cost, ammo_cost, can_buy_upgraded_ammo)
 		self SetHintString( &"ZOMBIE_WEAPONCOSTAMMO_UPGRADE", cost, ammo_cost ); 
 	}
 }
-zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, weapon_string, endon_string1, endon_string2){
+zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string, endon_string1, endon_string2){
 	if(IsDefined( endon_string1 ))
 		self endon( endon_string1 );
 	if(IsDefined( endon_string2 ))
 		self endon( endon_string2 );
-
 	if (is_placeable_mine( weapon_string ) || is_equipment( weapon_string ) || (WeaponType( weapon_string ) == "grenade")){
 		//wait(0.3);
 		return;
 	}
-	self thread weapon_pick_up_update_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, weapon_string, endon_string1, endon_string2);
+	flag_wait( "all_players_connected" );
+	self thread weapon_pick_up_update_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string, endon_string1, endon_string2);
 	for(;;)
 	{
-		wait(self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, weapon_string));
+		//zhcp( "ddddd" ,100);
+		wait(self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string));
 	}
 }
 
-weapon_pick_up_update_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, weapon_string, endon_string1, endon_string2){
+weapon_pick_up_update_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string, endon_string1, endon_string2){
+	//common_scripts\utility.gsc:
 	if(IsDefined( endon_string1 ))
 		self endon( endon_string1 );
 	if(IsDefined( endon_string2 ))
 		self endon( endon_string2 );
 	for(;;){
 		self waittill( "update_hintstrings" );
-		self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, weapon_string);
+		//zhcp( "ddddd" ,100);
+		self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string);
 	}
 }
 
-update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, weapon_string){
+update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, default_cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string){
 	waitTime = 0.5;
-	if(is_true(self.ZHC_WALL_GUN_can_upgrade)){
-		//weapon_string = self.chest_origin.weapon_string;
-		//check weapon_sting is valid
+
+	cost = default_cost;
+	closest_has_weapon = false;
+	closest_has_papped_weapon = false;
+	closests_can_afford_next_level = false;
+
+	self.ZHC_weapon_upgrade_lvl = 0;
+	self.ZHC_weapon_upgrade_cost = 0;
+
+	closest_player = undefined;
+	closest_player_distance = undefined;
+	diffrence_between_closest_and_second_closest_player_distance = undefined;
+
+	{
 		players = get_players();
-		a_player_has_weapon = false;
-		closest_has_weapon = false;
-		//affordibility_system
-		closests_can_afford_next_level = false;
-
-		if(players.size >= 1){  //testo //changed temp for testing purposes. change to " > 1"
-			closest = players[0];
-			if(!is_player_valid( closest )){
-				//IPrintLnBold( "player not valid :(" );
-				return 0.5;
-			}
-			closest_distance = Distance2DSquared(self.origin, closest.origin);
-			
-			a_player_has_weapon = closest has_weapon_or_upgrade( weapon_string );
-
-			if(!can_buy_ammo)
-				closest_has_weapon = a_player_has_weapon;
-
-			dif = 10000000000;
-
-			for( i = 1; i < players.size; i++ )
+		if(players.size > 1){
+			second_closest_dist = undefined;
+			for( i = 0; i < players.size; i++ )
 			{
-				if(!players[i] has_weapon_or_upgrade( weapon_string )){
-					if(!can_buy_ammo && closest_has_weapon){
-						dist = DistanceSquared(self.origin, players[i].origin);
-						if(dist < closest_distance){
-							closest_has_weapon = false;
-						}
-					}
-					continue;
-				}
-
 				dist = DistanceSquared(self.origin, players[i].origin);
-				if(dist < closest_distance){
-					closest = players[i];
-					closest_distance = dist;
-					dif = closest_distance - dist;
-					if(!can_buy_ammo)
-						closest_has_weapon = true;
-				}else if (!a_player_has_weapon){
-					closest = players[i];
-					closest_distance = dist;
+				if(!isDefined(closest_player_distance) || dist < closest_player_distance){
+					closest_player = players[i];
+					closest_player_distance = dist;
+				}else if (!isDefined(second_closest_dist) || dist < second_closest_dist ){
+					second_closest_dist = dist;
 				}
-				a_player_has_weapon = true;
 			}
-			if(a_player_has_weapon){
-				zws = maps\ZHC_zombiemode_weapons::weapon_name_check(weapon_string);
-				zwzid = closest maps\ZHC_zws];
-				if(!IsDefined( zwzid )){
-					IPrintLnBold( "player " +zws+ " not supscribed" );
-					return 0.5;
+			/*enemies = GetAISpeciesArray( "axis", "all" ); //testo vvvv
+			for( i = 0; i < enemies.size; i++ )
+			{
+				dist = DistanceSquared(self.origin, enemies[i].origin);
+				if (!isDefined(second_closest_dist) || dist < second_closest_dist ){
+					second_closest_dist = dist;
 				}
-				closest_level = closest.ZHC_weapon_levels[zwzid];
-				self.ZHC_weapon_upgrade_lvl = closest_level + 1;
-				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(cost,closest_level);
-				closests_can_afford_next_level = self.ZHC_weapon_upgrade_cost <= closest.score;
-				//if(!can_init_buy || (!can_buy_ammo && closest_has_weapon) || closests_can_afford_next_level)
-				//	cost = self.ZHC_weapon_upgrade_cost;
-				waitTime = min(max(0.3, sqrt(dif)/250),7.1 + RandomInt( 3 ));
+			}*/
+
+			diffrence_between_closest_and_second_closest_player_distance = abs(define_or(second_closest_dist,0)-define_or(closest_player_distance,0));
+			//testo ^^^^
+
+			if(!isDefined(closest_player)){
+				zhcp( "closest player not defined" ,100);
+				return waitTime;
 			}
 		}else{
-			player = players[0];
-			if(!is_player_valid( player )){
-				//IPrintLnBold( "player not valid :(" );
-				return 0.5;
+			closest_player = players[0];
+			if(!is_player_valid( players[0])){
+				zhcp( "player not valid" ,100);
+				return waitTime;
 			}
+			closest_player_distance = DistanceSquared(self.origin, players[0].origin);
+			diffrence_between_closest_and_second_closest_player_distance = closest_player_distance;
+		}
+	}
 
-			a_player_has_weapon = player has_weapon_or_upgrade( weapon_string );
-			if(a_player_has_weapon){
-				if(!isDefined(player ZHC_get_base_weapon_info(zws)){
-					IPrintLnBold( "player " +zws+ " not supscribed" );
-					return 0.3;
-				}
-				player_level = player.ZHC_weapon_levels[player ZHC_get_base_weapon_info(zws)];
-				self.ZHC_weapon_upgrade_lvl = player_level + 1;
-				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(cost,player_level);
-				closests_can_afford_next_level = self.ZHC_weapon_upgrade_cost <= player.score;
-				closest_has_weapon = true;
-				//if(!can_init_buy || !can_buy_ammo || closests_can_afford_next_level)
+	closest_has_weapon = closest_player HasWeapon( weapon_string );
+	closest_has_papped_weapon = closest_player has_upgrade( weapon_string );
+
+	score_distance = closest_player_distance;
+
+	if(closest_has_weapon || closest_has_papped_weapon){
+		if(can_upgrade){
+			if(!IsDefined( closest_player.ZHC_weapons)){
+				zhcpb( "player doesnt have zhc_weapon" ,100);
+				return waitTime;
+			}
+			zwzid =	closest_player.ZHC_weapons[weapon_string];
+			if(!IsDefined(zwzid ))
+				zhcpb( "player " +weapon_string+ " not subscribed" ,100);
+			else{
+				closest_level = closest_player.ZHC_weapon_levels[zwzid];
+				self.ZHC_weapon_upgrade_lvl = closest_level + 1;
+				self.ZHC_weapon_upgrade_cost = maps\ZHC_zombiemode_weapons::get_upgrade_weapon_cost(cost,closest_level);
+				closests_can_afford_next_level = self.ZHC_weapon_upgrade_cost <= closest_player.score;
+				score_distance = (self.ZHC_weapon_upgrade_cost - closest_player.score) * 2;
+				//if(!can_init_buy || (!can_buy_ammo && closest_has_weapon) || closests_can_afford_next_level)
 				//	cost = self.ZHC_weapon_upgrade_cost;
 			}
 		}
-		/*if( can_buy_ammo && (a_player_has_weapon || self.first_time_triggered) && !closests_can_afford_next_level){
-			self weapon_set_first_time_hint( cost, ammo_cost );
-		}else{
-			self SetHintString( get_weapon_hint( weapon_string ), cost);
-		}*/
-		self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon_string, undefined, can_init_buy && !closest_has_weapon, can_buy_ammo && (a_player_has_weapon || self.first_time_triggered), can_buy_ammo && (a_player_has_weapon || self.first_time_triggered), closest_has_weapon, self.ZHC_weapon_upgrade_cost, self.ZHC_weapon_upgrade_lvl);
-	}else{
-		/*if(can_buy_ammo && self.first_time_triggered)
-			self weapon_set_first_time_hint( cost, ammo_cost );
-		else if(can_init_buy){
-			self SetHintString( get_weapon_hint( weapon_string ), cost);
-		}else{
-			self SetHintString( "Upgrade Unavailable." );
-		}*/
-		if(can_init_buy || (can_buy_ammo && self.first_time_triggered))
-			self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon_string, undefined, can_init_buy, can_buy_ammo && self.first_time_triggered, can_buy_ammo && self.first_time_triggered);
-		else
-			self SetHintString( "Upgrade Unavailable." );
-		waitTime = 0.1; 
+	}else if (make_free_if_owned){
+		if(!IsDefined( closest_player.ZHC_weapons))
+			return waitTime;
+		if(IsDefined( closest_player.ZHC_weapons[weapon_string] ))
+			cost = "FREE";
 	}
+
+
+	distance_to_set_wait = min(min(closest_player_distance, (diffrence_between_closest_and_second_closest_player_distance * 0.5) + (closest_player_distance * 0.5)), (score_distance * 0.35) + (closest_player_distance * 0.65));
+	//distance_to_set_wait = (min(diffrence_between_closest_and_second_closest_player_distance, 1000)/200) * (min(closest_player_distance, 5000)/200);
+	distance_to_set_wait =  sqrt(distance_to_set_wait);
+		waitTime = min(7.1, max(0.3, distance_to_set_wait/200)); //this works its fine
+		//zhcp(weapon_string+"_wt:"+distance_to_set_wait/200 ,weapon_string);
+
+	send_cost = cost;
+	send_ammo_cost = ammo_cost;
+	send_upgrade_ammo_cost = 4500;
+	send_weapon_string = weapon_string;
+	send_weapon_override_name = undefined;
+	send_can_init_buy = can_init_buy && !closest_has_weapon && !closest_has_papped_weapon;
+	send_can_buy_ammo = can_buy_ammo && closest_has_weapon && !closests_can_afford_next_level;
+	send_can_buy_upgraded_ammo = can_buy_ammo && closest_has_papped_weapon && !closests_can_afford_next_level;
+	send_can_buy_upgrade = can_upgrade && self.ZHC_weapon_upgrade_lvl > 0;
+	send_up_cost = self.ZHC_weapon_upgrade_lvl;
+	sent_up_level = self.ZHC_weapon_upgrade_cost;
+
+	if(!send_can_buy_upgrade && !send_can_buy_upgraded_ammo && !send_can_buy_ammo && !send_can_init_buy)
+		self SetHintString( "Unavailable" );
+	else
+		self ZHC_set_weapon_hint(send_cost,send_ammo_cost,send_upgrade_ammo_cost,send_weapon_string,send_weapon_override_name,send_can_init_buy,send_can_buy_ammo,send_can_buy_upgraded_ammo,send_can_buy_upgrade,send_up_cost,sent_up_level);
 	
-	return waitTime;
+	if(true)
+		return waitTime;
 }
 
 wall_weapon_wait_to_return(strength){	//this function hs=should only run for wall weapons, real wall weapons, not chests or barr weapons
@@ -5066,7 +5237,7 @@ wall_weapon_wait_to_return(strength){	//this function hs=should only run for wal
 	if(strength > 0){
 		//IPrintLnBold("firing_wall_gun_goals");
 		self.weapon_model maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, 1, undefined, true);
-		iPrintLnBold("zhc_end_of_cooldown_wall_weapon");
+		zhcpb("zhc_end_of_cooldown_wall_weapon", 100);
 	}
 
 	if(level.ZHC_LOGICAL_WEAPON_SHOW){
@@ -5137,11 +5308,14 @@ swap_weapon_buyable(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon){
 		wait(1);
 		self wait_network_frame( );
 	}
+
 	self set_box_weapon_model_to(weapon);
 	self thread show_weapon_model();
 	wait(1);
 	wait_network_frame();
 	self ZHC_set_weapon_hint(get_weapon_cost(weapon), get_ammo_cost(weapon), 4500, weapon, undefined, false, true, true);
+	self setCursorHint( "HINT_NOICON" );
+	self UseTriggerRequireLookAt();
 	self thread weapon_spawn_think(is_chest, undefined, can_init_buy, can_buy_ammo, can_upgrade, weapon);
 }
 
@@ -5215,16 +5389,20 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 		self thread decide_hide_show_hint("weapon_stop");	//should work for all cases.
 
 	//IPrintLn(!can_upgrade +""+ !isDefined(player_has_weapon) +""+can_buy_ammo+""+ !is_grenade);
-	if(can_upgrade){	
+
+	threading_hintstrings = can_upgrade || level.ZHC_OWNED_WEAPONS_ARE_FREE;
+
+	if(threading_hintstrings){	
 		//endon_string = undefined;
 		//if(is_chest)
 		//	endon_string = "box_finished";
 		if(!isDefined(self.ZHC_WALL_GUN_can_upgrade))
 			self.ZHC_WALL_GUN_can_upgrade = true;
-		self thread zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, weapon, "weapon_stop" );//, endon_string );
+		self thread zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, level.ZHC_OWNED_WEAPONS_ARE_FREE, weapon, "weapon_stop" );//, endon_string );
 		
 	}
-	else if(!isDefined(player_has_weapon) && ((can_buy_ammo && !is_grenade) || spawns_powerups || !can_upgrade))
+	
+	if(!isDefined(player_has_weapon) && ((can_buy_ammo && !is_grenade) || spawns_powerups || !threading_hintstrings))
 	//checks if any player has weapon if so update hintstring. 
 	//we could potentially turn this into a function and loop it for closest player
 	{	
@@ -5241,8 +5419,10 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 		//IPrintLn("player_has_weapon" + player_has_weapon);
 	}
 
+	
 	//IPrintLn(!can_upgrade+"" + IsDefined( player_has_weapon ));
-	if(!can_upgrade && IsDefined( player_has_weapon )){
+
+	if(!threading_hintstrings){
 		self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo && player_has_weapon, can_buy_ammo && player_has_weapon); //added for mod
 	}
 
@@ -5282,19 +5462,21 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 		// Allow people to get ammo off the wall for upgraded weapons
 		player_has_weapon = player has_weapon_or_upgrade( weapon ); 
 
+		make_weapon_free_but_no_ammo = level.ZHC_OWNED_WEAPONS_ARE_FREE && !player_has_weapon && isDefined(player.ZHC_weapons[weapon]); 
+
 		if( !player_has_weapon
 		// && !is_grenade
 		)
 		{
 			// else make the weapon show and give it
-			if(can_init_buy && player.score >= cost )
+			if(can_init_buy && (make_weapon_free_but_no_ammo || player.score >= cost) )
 			{
 
-
-				player maps\_zombiemode_score::minus_to_player_score( cost ); 
-
-				bbPrint( "zombie_uses: playername %s playerscore %d teamscore %d round %d cost %d name %s x %f y %f z %f type weapon",
-				player.playername, player.score, level.team_pool[ player.team_num ].score, level.round_number, cost, weapon, self.origin );
+				if(!make_weapon_free_but_no_ammo){
+					player maps\_zombiemode_score::minus_to_player_score( cost );
+					bbPrint( "zombie_uses: playername %s playerscore %d teamscore %d round %d cost %d name %s x %f y %f z %f type weapon",
+					player.playername, player.score, level.team_pool[ player.team_num ].score, level.round_number, cost, weapon, self.origin );
+				}
 
 				if ( is_lethal_grenade( weapon ) )
 				{	
@@ -5303,10 +5485,10 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 					player set_player_lethal_grenade( weapon );
 				}
 
-				if(is_chest && level.ZHC_MAX_AMMO_SYSTEM && isDefined(player ZHC_get_base_weapon_info(weapon)))	//if getting weapon from chest && player has gotten weapon before, increase max amm of weapon.
+				if(!make_weapon_free_but_no_ammo && is_chest && level.ZHC_MAX_AMMO_SYSTEM)	//if getting weapon from chest && player has gotten weapon before, increase max amm of weapon.
 					player maps\ZHC_zombiemode_weapons::upgrade_stock_ammo(weapon);
 
-				player weapon_give( weapon );
+				player weapon_give( weapon , undefined, make_weapon_free_but_no_ammo );
 				player check_collector_achievement( weapon );
 
 				first_time_triggered = self.first_time_triggered;
@@ -5314,7 +5496,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 				{
 					if(can_buy_ammo && !is_grenade)
 					{
-						if(!can_upgrade)
+						if(!threading_hintstrings)
 						//self weapon_set_first_time_hint( cost, ammo_cost );
 							self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo, can_buy_ammo); //added for mod
 					}
@@ -5362,7 +5544,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 						self thread show_weapon_model( player ); 
 					}
 				}
-				if(can_upgrade)
+				if(threading_hintstrings) //can_upgrade && 
 					self notify("update_hintstrings");
 						
 			}
@@ -5381,10 +5563,10 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 			 	&& !(is_grenade || is_placeable_mine( weapon ) || is_equipment( weapon ))
 			  )
 			{//added for mod
-
-				if(IsDefined( player ZHC_get_base_weapon_info(zhcweapon))){
+				base_weap_id = player maps\ZHC_zombiemode_weapons::ZHC_get_base_weapon_info(weapon);
+				if(IsDefined(base_weap_id)){
 					
-					base_weap_id = player ZHC_get_base_weapon_info (zhcweapon);
+					
 					zhcweapon = self.ZHC_weapon_names[base_weap_id];
 					//TODO: check if has gotten upgrade from this weapon in this box
 					
@@ -5399,7 +5581,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 						{
 							if(can_buy_ammo && !is_grenade)
 							{
-								if(!can_upgrade)
+								if(!threading_hintstrings) //will never run anyways but whatever
 								//self weapon_set_first_time_hint( cost, ammo_cost );
 									self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo && player_has_weapon, can_buy_ammo && player_has_weapon); //added for mod
 							}
@@ -5454,8 +5636,8 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 							}
 						}
 						
-						//if(can_upgrade)
-						self notify("update_hintstrings");
+						if(threading_hintstrings)
+							self notify("update_hintstrings");
 
 						continue;
 					}
@@ -5687,10 +5869,11 @@ ZHC_wall_buy_manage_power_up_spawn(weapon){
 
 
 	while(1){
-		IPrintLn( weapon +" "+(define_or(level.ZHC_weapon_total_kills[weapon],0) - starting_kills) +"/"+ (kill_goal - starting_kills) );
+		zhcp( weapon +" "+(define_or(level.ZHC_weapon_total_kills[weapon],0) - starting_kills) +"/"+ (kill_goal - starting_kills), 100);
 		excess_kill = 0;
 
 		TESTING = false;
+		SELF_DROP_POWERUP = true;
 		if(TESTING){
 			self waittill_any( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought", "start_powerup_goal");	//testo
 		}else{
@@ -5698,22 +5881,31 @@ ZHC_wall_buy_manage_power_up_spawn(weapon){
 				level waittill("zhc_"+weapon +"_kill");
 				self.power_up_kills = define_or(level.ZHC_weapon_total_kills[weapon],0) - starting_kills;
 				self.power_up_kill_goal = kill_goal - starting_kills;
-				IPrintLn( weapon +" "+(define_or(level.ZHC_weapon_total_kills[weapon],0) - starting_kills) +"/"+ (kill_goal - starting_kills) );
+				zhcp( weapon +" "+(define_or(level.ZHC_weapon_total_kills[weapon],0) - starting_kills) +"/"+ (kill_goal - starting_kills) , 100);
+			}
+			if(SELF_DROP_POWERUP){
+				if(IsDefined( self.ZHC_powerup )){
+					self notify( "force_drop_powerup" );
+					wait_network_frame();
+				}
+			}else{
+				while(
+					//level.zombie_vars["zombie_drop_item"] != 1 || 
+					IsDefined( self.ZHC_powerup )
+					){
+					wait_network_frame();
+				}
 			}
 			excess_kill = define_or(level.ZHC_weapon_total_kills[weapon],0) - kill_goal; //accounts for collateral kills in the same frame.
-			while(
-				//level.zombie_vars["zombie_drop_item"] != 1 || 
-				IsDefined( self.ZHC_powerup )
-				){
-				wait_network_frame();
-			}
 		}
 		self.power_up_kills = undefined;
 		self.power_up_kill_goal = undefined;
 		level.zombie_vars["zombie_drop_item"] = 0;
+
 		self thread ZHC_cycle_power_ups(cycle,randomize_at_end_of_cycle);
 		self thread ZHC_wall_buy_drop_power_up();
-		self waittill("stop_zhc_powerup_cycle");
+		if(!SELF_DROP_POWERUP)
+			self waittill("stop_zhc_powerup_cycle");
 		
 		if(!TESTING){
 			prev_starting_kills = starting_kills;
@@ -5736,23 +5928,26 @@ ZHC_wall_buy_manage_power_up_spawn(weapon){
 
 }
 ZHC_wall_buy_drop_power_up(){
-	ret = self waittill_any_return( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought","weapon_stop");//common_scripts\utility.gsc: );
-	if(!isDefined(ret))
-		IPrintLnBold( "ret is not defined" );
+	ret = self waittill_any_return( "weapon_grabbed","weapon_ammo_bought","weapon_upgrade_bought","weapon_stop","force_drop_powerup");//common_scripts\utility.gsc: );
+	if(!isDefined(ret))					//lets not delete the powerup
+		zhcpb( "powerup return string is not defined" , 100);
 	if(!isDefined(ret) || ret == "weapon_stop"){
 		self.ZHC_powerup maps\_zombiemode_powerups::powerup_timeout(2.5);
 		return;
 	}
-	self notify ("stop_zhc_powerup_cycle");
+	self notify ("stop_zhc_powerup_cycle");		//lets not stop the cycle
 	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_grab();
 	self.ZHC_powerup thread  maps\_zombiemode_powerups::powerup_timeout(60);
 	self.ZHC_powerup MoveTo( self ZHC_wall_buy_get_power_up_drop_position(),4,0.2,1);
-	powerup = self.ZHC_powerup.powerup_name;
-	powerup_origin = self.ZHC_powerup.orign;
-	self.ZHC_powerup waittill_any( "powerup_grabbed", "powerup_timedout" );
+	self thread barr_weapon_pickup_bonus_effects();
 	self.ZHC_powerup = undefined;
-	if(true){	//ischest
-		if(powerup == "carpenter"){
+}
+
+barr_weapon_pickup_bonus_effects(){
+	powerup = self.ZHC_powerup;
+	ret = self waittill_any_return( "powerup_grabbed", "powerup_timedout" );
+	if(ret == "powerup_grabbed"){	//ischest
+		if(powerup.powerup_name == "carpenter"){
 			is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 			can_init_buy = false;	//always true for now.
 			can_buy_ammo = is_equipment || true; //lets make it always true for now
@@ -5761,20 +5956,27 @@ ZHC_wall_buy_drop_power_up(){
 			player = get_closest_player( self.origin );
 			if(IsDefined( player )){
 				weapon = door_barr_get_weapon_to_hang(player);
-				self.zombie_weapon_upgrade = weapon;
-				self thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon); //swap weapon.
+				if(IsDefined( weapon )){
+					self.zombie_weapon_upgrade = weapon;
+					self thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon); //swap weapon.
+				}
 			}
-		}else if (powerup == "nuke"){
+		}else if (powerup.powerup_name == "nuke"){
 			//open nearest door.
-		}else if (powerup == "max ammo"){
+		}else if (powerup.powerup_name == "max ammo"){
 			//refill all doors and wall buy ammos.
 		}
 	}
-	
 }
+
 ZHC_cycle_power_ups(cycle,randomize_at_end_of_cycle){
 	self endon( "stop_zhc_powerup_cycle" );
 	self endon( "weapon_stop" );
+	if(self.power_up_index >= level.ZHC_wall_buy_powerup_cycle.size){
+		if(randomize_at_end_of_cycle)
+			cycle = array_randomize( cycle );
+		self.power_up_index = 0;
+	}
 	while(1){
 		if(!IsDefined( self.ZHC_powerup) || (self.power_up_index == 0 && cycle[0] != cycle[cycle.size-1]) || (cycle.size > 1 && cycle[self.power_up_index] != cycle[self.power_up_index-1]) ){	
 			if(IsDefined( self.ZHC_powerup) )
@@ -5861,7 +6063,7 @@ get_pack_a_punch_weapon_options( weapon )
 	return self.pack_a_punch_weapon_options[weapon];
 }
 
-weapon_give( weapon, is_upgrade )
+weapon_give( weapon, is_upgrade, dont_fill_ammo_no_purchace_sound )
 {
 	primaryWeapons = self GetWeaponsListPrimaries(); 
 	current_weapon = undefined;
@@ -5926,8 +6128,8 @@ weapon_give( weapon, is_upgrade )
 		self play_weapon_vo( weapon );
 		return;
 	}
-
-	self play_sound_on_ent( "purchase" );
+	if(!is_true(dont_fill_ammo_no_purchace_sound))
+		self play_sound_on_ent( "purchase" );
 
 	if ( !is_weapon_upgraded( weapon ) )
 	{
@@ -5937,10 +6139,12 @@ weapon_give( weapon, is_upgrade )
 	{
 		self GiveWeapon( weapon, 0, self get_pack_a_punch_weapon_options( weapon ) );
 	}
-	self maps\ZHC_zombiemode_weapons::give_weapon(weapon);
+	self maps\ZHC_zombiemode_weapons::give_weapon(weapon, is_true(dont_fill_ammo_no_purchace_sound));
 
 	acquire_weapon_toggle( weapon, self );
-	self GiveStartAmmo( weapon );
+	if(!is_true(dont_fill_ammo_no_purchace_sound)){
+		self GiveStartAmmo( weapon );
+	}
 	self SwitchToWeapon( weapon );
 	 
 	self play_weapon_vo(weapon);
@@ -6035,7 +6239,7 @@ ammo_give( weapon , zhc_max_check_override)
 			stockMax = 0;	// scope declaration
 			stockMax = WeaponStartAmmo( weapon ); 
 			if(is_true(zhc_max_check_override) && level.ZHC_MAX_AMMO_SYSTEM){
-				zhcweapon = maps\ZHC_zombiemode_weapons::weapon_name_check();
+				zhcweapon = self maps\ZHC_zombiemode_weapons::weapon_name_check(weapon);
 				stockMax = self.ZHC_weapon_ammos_max[self.ZHC_weapons[zhcweapon]];
 			}
 
