@@ -1120,7 +1120,7 @@ door_buy_expired(){
 	}
 
 	self roomId_setup();
-	if(false){	//room flow increase difficulty //testo
+	if(true){	//room flow increase difficulty //testo
 		if(level.ZHC_ROOMFLOW){
 			//if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 			//	level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
@@ -1128,23 +1128,33 @@ door_buy_expired(){
 			dif_on_buy_goal_mult = 0.75;
 			dif_goal = (difficulty_on_buy * dif_on_buy_goal_mult) + (3+((level.round_number)/5));
 			zhcp("diffgoal: " +difficulty_on_buy + "/"+ dif_goal ,444);
+
+			last_difficulty = difficulty_on_buy; //used for debug
+			last_dogs_left_to_spawn = define_or(level.ZHC_dogs_to_spawn_this_round,0); //used for debug
 			while(1){
 				difficulty = map_get_room_info(self.roomId_bought_from)["flow_difficulty"];
-				if(!flag("dog_round") && difficulty < dif_goal){ //4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
-					last_difficulty = difficulty;
+				if(!flag("dog_round") && (difficulty < dif_goal || define_or(level.ZHC_dogs_to_spawn_this_round,0) > 0) ){ //4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
+					
 					//level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
 					wait_network_frame( );
 					wait_network_frame( );
-					if(last_difficulty != difficulty)
-						zhcp("diffgoal: " +difficulty + "/"+ dif_goal ,444);
+					if(last_difficulty != difficulty || last_dogs_left_to_spawn != define_or(level.ZHC_dogs_to_spawn_this_round,0)){ //debug
+						zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" dogsleft: "+define_or(level.ZHC_dogs_to_spawn_this_round,0),444);
+						last_dogs_left_to_spawn = define_or(level.ZHC_dogs_to_spawn_this_round,0);
+						last_difficulty = difficulty; 
+					}
+					continue;
 				}else{ 		//simply waiting to not be occupied
 					wait(0.15);
-					zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" ... leave room to close" ,444);
+					if(flag("dog_round"))
+						zhcp("dog round ... leave room to close" ,444);
+					else
+						zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" ... leave room to close" ,444);
 				}
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
 				if(!map_get_room_info(self.roomId_bought_from)["occupied"] 
 				&& (!IsDefined( self.last_user ) || map_get_zone_room_id(self.last_user.current_zone) != self.roomId_bought_from )
-				&& (flag("dog_round") || difficulty >= dif_goal) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
+				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
 			}
 			//level.ZHC_ROOMFLOW_difficulty_to_close_door += 1;
@@ -2139,13 +2149,6 @@ door_cooldown(){
 	//self thread wait_door_cooldown_end();
 	self notify("end_door_cooldown");
 }
-
-/*wait_door_cooldown_end(){
-	self endon("zhc_end_of_cooldown");
-	//self endon("open_door");
-	self waittill_multiple( "zhc_kill_goal_reached","zch_round_goal_reached");//common_scripts\utility.gsc:
-	self notify("zhc_end_of_cooldown");
-}*/
 
 wait_for_one_door_to_be_open(doorIds){
 	zombie_doors =  GetEntArray( "zombie_door", "targetname" );

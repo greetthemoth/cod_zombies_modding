@@ -741,8 +741,8 @@ door_barr_get_weapon_to_hang(player, exclude_small_weapons, exclude_wall_buys){
 			}
 		}
 
-		if(!IsDefined( weapon )){
-			non_held_primaries = array_randomize( non_held_primaries );
+		if(!IsDefined( weapon ) && non_held_primaries.size > 0){
+			weapon = array_randomize( non_held_primaries );
 			for(i = 0; i < non_held_primaries.size; i++){
 				if(accept_weapon_for_door_barr(non_held_primaries[i], exclude_small_weapons, exclude_wall_buys)){
 					weapon = non_held_primaries[i];
@@ -787,10 +787,10 @@ door_barr_get_weapon_to_hang(player, exclude_small_weapons, exclude_wall_buys){
 		ziw_keys = GetArrayKeys( level.zombie_weapons );
 		for ( i=0; i<level.zombie_weapons.size; i++ )
 		{
-			un = level.zombie_weapons[ ziw_keys[i] ].upgrade_name;
-			if ( IsDefined(un) && un == weapon)
+			upgrade_name = level.zombie_weapons[ ziw_keys[i] ].upgrade_name;
+			if ( IsDefined(upgrade_name) && upgrade_name == weapon)
 			{
-				weapon = un;		//gets unupgraded version of weapon
+				weapon = ziw_keys[i];		//gets unupgraded version of weapon
 				break;
 			}
 		}
@@ -2905,10 +2905,15 @@ chest_weapon_expire_wait(strength){
 									 	(  (min(get_or(level.zombie_total_start, 6), 64 )/2) * (strength-1) )
 								    )
 							);
-			zhcpb("kills_need_to_go_down: "+kills, 50);
+			msg_id = [];
+			msg_id[0] = 50;
+			msg_id[1] = "chest"+define_or(self.roomId,"NONE");
+			zhcpb( "i" + get_chest_index(self) +" r"+define_or(self.roomId,"NONE")+ "kills_need_to_go_down: "+kills, 50);
 			if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE){//here we thread it so we can reuse it later
 				self.zhc_cooldown_waiting = true;
-				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(2, min(get_weapon_cost(self.chest_origin.weapon_string)/100, 50), kills, undefined, undefined, false); //either some num of kills and short timer
+															//(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end, additional_dog_kills_wanted ){
+
+				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(2, min(get_weapon_cost(self.chest_origin.weapon_string)/100, 50), kills, 1, undefined, false); //either some num of kills and short timer
 				self thread maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(2, get_weapon_cost(self.chest_origin.weapon_string)/40, undefined, 1, undefined, false); //or a longer timer and 1 round
 				self waittill( "zhc_end_of_cooldown" );
 				self.zhc_cooldown_waiting = undefined;
@@ -5097,7 +5102,8 @@ zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, can
 	for(;;)
 	{
 		//zhcp( "ddddd" ,100);
-		wait(self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string));
+		wait(max(0.05,self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string)));
+		//wait_network_frame();
 	}
 }
 
@@ -5115,7 +5121,7 @@ weapon_pick_up_update_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, c
 }
 
 update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, default_cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string){
-	waitTime = 0.5;
+	
 
 	cost = default_cost;
 	closest_has_weapon = false;
@@ -5157,13 +5163,13 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, default_cost,
 
 			if(!isDefined(closest_player)){
 				zhcp( "closest player not defined" ,100);
-				return waitTime;
+				return 0.5;
 			}
 		}else{
 			closest_player = players[0];
 			if(!is_player_valid( players[0])){
-				zhcp( "player not valid" ,100);
-				return waitTime;
+				//zhcp( "player not valid" ,100);
+				return 0.5;
 			}
 			closest_player_distance = DistanceSquared(self.origin, players[0].origin);
 			diffrence_between_closest_and_second_closest_player_distance = closest_player_distance;
@@ -5179,7 +5185,7 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, default_cost,
 		if(can_upgrade){
 			if(!IsDefined( closest_player.ZHC_weapons)){
 				zhcpb( "player doesnt have zhc_weapon" ,100);
-				return waitTime;
+				return 0.5;
 			}
 			zwzid =	closest_player.ZHC_weapons[weapon_string];
 			if(!IsDefined(zwzid ))
@@ -5196,7 +5202,7 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, default_cost,
 		}
 	}else if (make_free_if_owned){
 		if(!IsDefined( closest_player.ZHC_weapons))
-			return waitTime;
+			return 0.5;
 		if(IsDefined( closest_player.ZHC_weapons[weapon_string] ))
 			cost = "FREE";
 	}
@@ -5205,7 +5211,9 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, default_cost,
 	distance_to_set_wait = min(min(closest_player_distance, (diffrence_between_closest_and_second_closest_player_distance * 0.5) + (closest_player_distance * 0.5)), (score_distance * 0.35) + (closest_player_distance * 0.65));
 	//distance_to_set_wait = (min(diffrence_between_closest_and_second_closest_player_distance, 1000)/200) * (min(closest_player_distance, 5000)/200);
 	distance_to_set_wait =  sqrt(distance_to_set_wait);
-		waitTime = min(7.1, max(0.3, distance_to_set_wait/200)); //this works its fine
+	waitTime = min(7.1, distance_to_set_wait/200); //this works its fin
+	if(waitTime < 0.3)
+		waitTime = 0.3;
 		//zhcp(weapon_string+"_wt:"+distance_to_set_wait/200 ,weapon_string);
 
 	send_cost = cost;
@@ -5225,8 +5233,7 @@ update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, default_cost,
 	else
 		self ZHC_set_weapon_hint(send_cost,send_ammo_cost,send_upgrade_ammo_cost,send_weapon_string,send_weapon_override_name,send_can_init_buy,send_can_buy_ammo,send_can_buy_upgraded_ammo,send_can_buy_upgrade,send_up_cost,sent_up_level);
 	
-	if(true)
-		return waitTime;
+	return waitTime;
 }
 
 wall_weapon_wait_to_return(strength){	//this function hs=should only run for wall weapons, real wall weapons, not chests or barr weapons
@@ -5498,7 +5505,7 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 					{
 						if(!threading_hintstrings)
 						//self weapon_set_first_time_hint( cost, ammo_cost );
-							self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo, can_buy_ammo); //added for mod
+							self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo && player_has_weapon, can_buy_ammo && player_has_weapon); //added for mod
 					}
 					if(!is_chest){
 						if(level.ZHC_LOGICAL_WEAPON_SHOW){
@@ -5676,7 +5683,9 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 				{
 					if(!is_grenade)
 					{
-						self weapon_set_first_time_hint( cost, ammo_cost );
+						if(!threading_hintstrings)
+							//self weapon_set_first_time_hint( cost, ammo_cost );
+							self ZHC_set_weapon_hint( cost, ammo_cost, 4500, weapon, undefined, can_init_buy, can_buy_ammo && player_has_weapon, can_buy_ammo && player_has_weapon); //added for mod
 					}
 					if(!level.ZHC_LOGICAL_WEAPON_SHOW){
 						if(!is_chest){
@@ -5946,7 +5955,7 @@ ZHC_wall_buy_drop_power_up(){
 barr_weapon_pickup_bonus_effects(){
 	powerup = self.ZHC_powerup;
 	ret = self waittill_any_return( "powerup_grabbed", "powerup_timedout" );
-	if(ret == "powerup_grabbed"){	//ischest
+	if(define_or(ret,"") == "powerup_grabbed"){	//ischest
 		if(powerup.powerup_name == "carpenter"){
 			is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
 			can_init_buy = false;	//always true for now.

@@ -4,7 +4,7 @@
 #include maps\ZHC_utility;
 
 get_testing_level(){
-	return 0.5;
+	return 6;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
@@ -19,6 +19,8 @@ can_send_msg_level(msg_id){
 		case 555: //perk teleportation testing
 		//case 5555: //QR perk teleportation testing
 		case 50: //mystery box
+		case "chest100": 
+		case "chest4":
 		case 100: //wall weapon stuff
 		//case 999://round zombie total viewer
 		//case 666://zombie damage 
@@ -143,20 +145,26 @@ blocker_perk_block_init(){
 		level.exterior_goals[i] thread blocker_wait_to_perk_block();
 	}
 }
+can_move_perk_to_repaired_barrier(perk){
+	return!(perk == "specialty_quickrevive" || perk == "specialty_armorvest");
+}
+can_move_perk_to_random_barrier(){
+	return perk ==  "specialty_armorvest";
+}
 manage_perk_history(){
 	self.perk_history = [];
 	while(1){	//now managed on give_perk()
 		self waittill( "perk_bought", perk);
 		self.perk_history = array_remove(self.perk_history, perk);
 		self.perk_history[self.perk_history.size] = perk;
-		if(IsDefined( level.jug_move_score ) && perk == "specialty_armorvest"){
+		if(IsDefined( level.jug_move_score ) && can_move_perk_to_random_barrier(perk) && false){ //disable for now
 			score_to_add = 1;
 			if(level.PERK_LEVELS)
 				score_to_add = self maps\_zombiemode_perks::GetPerkLevel(perk) * 4;
 			level.jug_move_score += score_to_add;
 			if(score_to_add > get_players().size){
 				level.jug_move_score = 0;
-				level thread move_perk_to_random_barricade("specialty_armorvest");
+				level thread move_perk_to_random_barricade(perk);
 			}
 		}
 		//IPrintLn( "perk_history_length:"+perk.size + "  defined_perk:"+isDefined(perk));
@@ -199,7 +207,7 @@ move_perk_to_random_barricade(perk){
 			}
 			active_spawns = 0;
 			for(i = 0; i < level.enemy_spawns.size; i++){
-				if(!level.enemy_spawns[i].script_noteworthy == "quad_zombie_spawner")//maps\_utility.gsc:
+				if(level.enemy_spawns[i].script_noteworthy != "quad_zombie_spawner")//maps\_utility.gsc:
 					active_spawns++;
 			}
 			if(active_spawns <= 1){
@@ -244,12 +252,9 @@ move_perk_to_random_barricade(perk){
 			return;
 		}
 	
-		chosen_goal = RandomInt(total_goals);
-		if(chosen_goal < available_goals.size){
-			goal = available_goals[chosen_goal];
-		}else{
-			goal = unassigned_goals[chosen_goal - available_goals.size];
-		}*/
+		chosen_goal = RandomInt(total_goals); if(chosen_goal <
+		available_goals.size){ goal = available_goals[chosen_goal]; }else{ goal =
+		unassigned_goals[chosen_goal - available_goals.size]; }*/
 	}
 	zhcpb( "teleporting "+perk ,555);
 
@@ -337,7 +342,7 @@ blocker_wait_to_perk_block(){
 		limitQRandJug = true;
 		for( i = player.perk_history.size-1; i >= 0; i-- ){
 			cperk = player.perk_history[i];
-			if(limitQRandJug && (cperk == "specialty_quickrevive" || cperk == "specialty_armorvest")){
+			if(limitQRandJug && !can_move_perk_to_repaired_barrier(cperk)){
 				zhcp( "perk:" +cperk + " skipped" ,555);
 				continue;
 			}
@@ -832,7 +837,6 @@ ZHC_basic_goal_cooldown(goals_required_min_1, wait_time, kill_goal, round_goal, 
 
 //thread maps\ZHC_zombiemode_zhc::ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait);
 ZHC_fire_threads_goal_cooldown_func2(goals_required, wait_time, additional_kills_wanted, additional_rounds_to_wait, dog_rounds_to_wait, round_goals_on_round_end, additional_dog_kills_wanted){
-
 //additional kills wanted
 	zhc_cooldown_kill_goal = undefined;
 	if(isDefined(additional_kills_wanted)){
@@ -861,29 +865,31 @@ ZHC_fire_threads_goal_cooldown(goals_required, wait_goal, kill_goal, round_goal,
 	DOG_ROUND_WAIT_SYSTEM = IsDefined( dog_rounds_to_wait ) && dog_rounds_to_wait > 0;
 	
 	IPrintLnBold( "goals found: " +  (WAIT_GOAL_SYSTEM + KILL_GOAL_SYSTEM + ROUND_WAIT_SYSTEM + DOG_ROUND_WAIT_SYSTEM) + ". goals_required:" + goals_required);*/
-
-
+	if(!isDefined(level.zhc_cooldown_id)){
+		level.zhc_cooldown_id = 0;
+	}
+	level.zhc_cooldown_id++;
 	goal_strings = [];
 
 
 	if(IsDefined( wait_goal )){
-		goal_strings[goal_strings.size] = "zhc_wait_goal_reached";
+		goal_strings[goal_strings.size] = "zhc_wait_goal_reached_"+level.zhc_cooldown_id;
 	}
 
 	if(isDefined(kill_goal)){
-		goal_strings[goal_strings.size] = "zhc_kill_goal_reached";
+		goal_strings[goal_strings.size] = "zhc_kill_goal_reached_"+level.zhc_cooldown_id;
 	}
 
 	if(isDefined(round_goal)){
-		goal_strings[goal_strings.size] = "zch_round_goal_reached";
+		goal_strings[goal_strings.size] = "zch_round_goal_reached_"+level.zhc_cooldown_id;
 	}
 
 	if(IsDefined( dog_rounds_to_wait ) ){
-		goal_strings[goal_strings.size] = "zhc_dog_round_goal_reached";
+		goal_strings[goal_strings.size] = "zhc_dog_round_goal_reached_"+level.zhc_cooldown_id;
 	}
 
 	if(IsDefined( dog_kill_goal ) ){
-		goal_strings[goal_strings.size] = "zhc_dog_kill_goal_reached";
+		goal_strings[goal_strings.size] = "zhc_dog_kill_goal_reached_"+level.zhc_cooldown_id;
 	}
 
 	if(isDefined(goals_required )){
@@ -895,27 +901,27 @@ ZHC_fire_threads_goal_cooldown(goals_required, wait_goal, kill_goal, round_goal,
 
 
 	if(IsDefined( wait_goal )){
-		self thread wait_goal_cooldown(wait_goal);
+		self thread wait_goal_cooldown(wait_goal ,level.zhc_cooldown_id);
 	}
 
 	if(isDefined(kill_goal)){
-		self thread kill_goal_cooldown(kill_goal);
+		self thread kill_goal_cooldown(kill_goal ,level.zhc_cooldown_id);
 	}
 
 	if(isDefined(round_goal)){
-		self thread round_wait_cooldown(round_goal, round_goals_on_round_end);
+		self thread round_wait_cooldown(round_goal, round_goals_on_round_end ,level.zhc_cooldown_id);
 	}
 
 	if(IsDefined( dog_rounds_to_wait ) ){
-		self thread dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end);
+		self thread dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end ,level.zhc_cooldown_id);
 	}
 
 	if(IsDefined( dog_kill_goal ) ){
-		self thread dog_kill_goal_cooldown(dog_kill_goal);
+		self thread dog_kill_goal_cooldown(dog_kill_goal ,level.zhc_cooldown_id);
 	}
 
 }
-ZHC_wait_for_goals(goals_required, goal_strings){
+ZHC_wait_for_goals(goals_required, goal_strings,zhc_cooldown_id){
 	self endon( "zhc_end_of_cooldown" );
 	for(i = 0; i < goals_required; i++){
 		
@@ -940,24 +946,24 @@ zhc_waittill_any(msgs){
 	self waittill(defined_string);
 }
 
-wait_goal_cooldown(wait_time){
+wait_goal_cooldown(wait_time, zhc_cooldown_id){
 	self endon("zhc_end_of_cooldown");
 	if(wait_time > 0)
 		wait(wait_time);
 	//IPrintLnBold( "zhc_wait_goal_reached" );
-	self notify("zhc_wait_goal_reached");
+	self notify("zhc_wait_goal_reached_"+zhc_cooldown_id);
 }
 
-kill_goal_cooldown(total_kill_goal){
+kill_goal_cooldown(total_kill_goal,zhc_cooldown_id){
 	self endon("zhc_end_of_cooldown");
 	while(total_kill_goal > level.total_zombies_killed){
 		level waittill("zom_kill");
 	}
 	//IPrintLnBold( "zhc_kill_goal_reached" );
-	self notify( "zhc_kill_goal_reached" );
+	self notify( "zhc_kill_goal_reached_"+zhc_cooldown_id );
 }
 
-round_wait_cooldown(round_goal, round_goals_on_round_end){
+round_wait_cooldown(round_goal, round_goals_on_round_end,zhc_cooldown_id){
 	self endon("zhc_end_of_cooldown");
 
 	if(!IsDefined( round_goals_on_round_end ))
@@ -976,10 +982,10 @@ round_wait_cooldown(round_goal, round_goals_on_round_end){
 	}
 	//if(round_goals_on_round_end)
 	//	IPrintLnBold( "round "+ round_goal + " zch_round_goal_reached" );
-	self notify ("zch_round_goal_reached");
+	self notify ("zch_round_goal_reached_"+zhc_cooldown_id);
 }
 
-dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end){ //if rore then it wil wait for the end of the dog round.
+dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end,zhc_cooldown_id){ //if rore then it wil wait for the end of the dog round.
 	self endon("zhc_end_of_cooldown");
 	if(!IsDefined( round_goals_on_round_end ))
 		round_goals_on_round_end = false;
@@ -996,17 +1002,17 @@ dog_round_wait_cooldown(dog_rounds_to_wait, round_goals_on_round_end){ //if rore
 		}
 	}
 	//IPrintLnBold( "zhc_dog_round_goal_reached" );
-	self notify ("zhc_dog_round_goal_reached");
+	self notify ("zhc_dog_round_goal_reached_"+zhc_cooldown_id);
 }
 
-dog_kill_goal_cooldown(total_kill_goal){
+dog_kill_goal_cooldown(total_kill_goal,zhc_cooldown_id){
 	self endon("zhc_end_of_cooldown");
 	while(total_kill_goal > level.total_dogs_killed){
 		//IPrintLnBold( total_kill_goal +"  "+level.total_dogs_killed );
 		level waittill("dog_killed");
 	}
 	//IPrintLnBold( "zhc_dog_kill_goal_reached" );
-	self notify( "zhc_dog_kill_goal_reached" );
+	self notify( "zhc_dog_kill_goal_reached_"+zhc_cooldown_id );
 }
 
 //^^^ ZHC_COOLDOWN Stuff
