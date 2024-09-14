@@ -52,7 +52,7 @@ teleporter_init()
 	thread teleport_link_think();
 	thread teleport_pad_think();
 	thread theater_fly_me_to_the_moon_init();
-	thread teleporter_wait_to_turn_off();
+	thread teleporter_wait_to_turn_off();	//ADDED FOR MOD
 
 
 	// init pack clock on client
@@ -79,7 +79,7 @@ teleporter_init()
 // handles turning on the pad
 //-------------------------------------------------------------------------------
 
-teleporter_wait_to_turn_off(index){
+teleporter_wait_to_turn_off(index){ //ADDED FOR MOD
 	while(1){
 		//flag_wait("power_back_off");
 		level waittill( "electricity_off" );
@@ -130,7 +130,7 @@ teleport_core_think( index )
 				thread teleport_core_is_on(trigger, index);
 				//flag_wait( "power_back_off" );
 				wait_network_frame();
-				level waittill("electricity_off");
+				level waittill("electricity_off");	//ADDED FOR MOD
 			}else{
 				//trigger disable_trigger();:
 				//teleport_pad_hide_use();

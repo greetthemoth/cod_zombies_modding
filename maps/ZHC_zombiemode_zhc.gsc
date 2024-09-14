@@ -611,7 +611,32 @@ gain_perk_slot_all_players(){
 		players[i] maps\_zombiemode_perks::give_perk_slot();
 	}
 }
+create_lightning_teleport(origin){
+	thread maps\_zombiemode::dog_despawn_sound_effect(origin);
+	wait(1.5);
+	//fps fx
+	self thread teleport_pad_player_fx(undefined );
+	
+	//AUDIO
+	self thread teleport_2d_audio();
 
+	// Activate the TP zombie kill effect
+	self thread teleport_nuke( undefined, 300);	// Max range 300
+	// wait a bit
+	wait( level.teleport_delay );
+
+	// end fps fx
+	self notify( "fx_done" );
+
+	
+	players = get_players();
+	for(i = 0; i < players.size; i++){
+
+	}
+
+	//playsoundatposition( "evt_beam_fx_2d", (0,0,0) );
+    //playsoundatposition( "evt_pad_cooldown_2d", (0,0,0) );
+}
 turn_on_nearest_perk(origin, max_distance, wait_time, wait_time_prev){
 
 	if(level.power_on)	// might eventually add to check if perk if off instead. currently no variable exists to see if perk if off.
@@ -880,7 +905,7 @@ powerup_fall_down( drop_spot, center_pos){
 	
 	if(false){ //testo
 		max_dist = 200;
-		kill_goal = 5 * max_dist;
+		kill_goal = 24 * max_dist;
 		cur_kills = 0;
 		while (cur_kills < kill_goal){
 			level waittill("zhc_zombie_killed_at_pos", origin);
@@ -924,6 +949,7 @@ wait_to_rotate_down(wait_time){
 	self endon ("powerup_timedout");
 	self endon( "powerup_grabbed" );
 	self endon( "death" );
+	self endon("zhc_stop_wait_to_drop");
 	wait(wait_time);
 	self RotateTo( (90,90,90) , 2.5, 0.5, 1 );
 	return;
@@ -933,17 +959,18 @@ wait_to_drop_powerup(wait_time, center_pos){
 	self endon ("powerup_timedout");
 	self endon( "powerup_grabbed" );
 	self endon( "death" );
-	self endon("zhc_nuke_drop_powerup");
+	self endon("zhc_stop_wait_to_drop");
 	self thread wait_to_dive_under(center_pos);
 	wait(wait_time);
 	self MoveTo( center_pos , 1.5 , 0.6, 0);
-	self notify("zhc_nuke_drop_powerup");
+	wait(1);
+	self notify("zhc_stop_dive_wait");
 }
 wait_to_dive_under(center_pos){
 	self endon ("powerup_timedout");
 	self endon( "powerup_grabbed" );
 	self endon( "death" );
-	self endon("zhc_nuke_drop_powerup");
+	self endon("zhc_stop_dive_wait");
 	players = get_players();
 	while(1){
 		for( i = 0; i < players.size; i++ ){
@@ -957,14 +984,26 @@ wait_to_dive_under(center_pos){
 			&& Distance2D( center_pos, players[i].origin) < 50
 			)
 			{
-				self MoveTo( groundpos(players[i].origin + (0,0,40)), 0.75, 0.5, 0);
-				self RotateTo( (90,90,90) , 0.35, 0, 0 );
-				self notify("zhc_nuke_drop_powerup");
+				self thread move_powerup_to_player(player[i]);
+				self notify("zhc_stop_wait_to_drop");
 				return;
 			}
 		}
 		wait_network_frame( );
 		wait_network_frame( );
+	}
+}
+
+move_powerup_to_player(player){
+	self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+	self RotateTo( (90,90,90) , 0.35, 0, 0 );
+	while(1){
+		target_pos = groundpos(players[i].origin + (0,0,40));
+		direction = target_pos - self.origin;
+		self MoveTo( self.origin + (direction * 0.1 * 35), 0, 0, 0);
+		wait(0.1);
 	}
 }
 
@@ -1041,6 +1080,7 @@ powerup_dig_up(drop_spot, center_pos){
 	wait(0.3);
 	self thread maps\_zombiemode_powerups::powerup_grab();
 }
+
 
 
 
