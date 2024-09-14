@@ -1596,6 +1596,7 @@ powerup_vo( type )
 
 powerup_wobble()
 {
+	self endon("powerup_end_wobble");  // added for mod
 	self endon( "powerup_grabbed" );
 	self endon( "powerup_timedout" );
 

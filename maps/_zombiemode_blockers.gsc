@@ -886,7 +886,7 @@ door_think()
 		self.zombie_cost = 1000;
 
 
-	self.zombie_cost *= 2;
+	self.zombie_cost *= maps\ZHC_zombiemode_zhc::zombie_door_cost_mult();
 	//self.zombie_cost = int(self.zombie_cost*maps\ZHC_zombiemode_zhc::zombie_door_cost_mult());		//if we want to multiply the door cost.
 	//self normalize_door_cost();
 		

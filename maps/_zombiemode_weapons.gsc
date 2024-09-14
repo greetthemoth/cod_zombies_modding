@@ -2905,9 +2905,7 @@ chest_weapon_expire_wait(strength){
 									 	(  (min(get_or(level.zombie_total_start, 6), 64 )/2) * (strength-1) )
 								    )
 							);
-			msg_id = [];
-			msg_id[0] = 50;
-			msg_id[1] = "chest"+define_or(self.roomId,"NONE");
+			//msg_id = [];msg_id[0] = 50;msg_id[1] = "chest"+define_or(self.roomId,"NONE");
 			zhcpb( "i" + get_chest_index(self) +" r"+define_or(self.roomId,"NONE")+ "kills_need_to_go_down: "+kills, 50);
 			if(level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE && level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE){//here we thread it so we can reuse it later
 				self.zhc_cooldown_waiting = true;

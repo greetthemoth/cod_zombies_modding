@@ -4,7 +4,7 @@
 #include maps\ZHC_utility;
 
 get_testing_level(){
-	return 6;
+	return 1;
 	//
 	//level 0.5: extra points
 	//level 6 : power on
@@ -19,9 +19,8 @@ can_send_msg_level(msg_id){
 		case 555: //perk teleportation testing
 		//case 5555: //QR perk teleportation testing
 		case 50: //mystery box
-		case "chest100": 
-		case "chest4":
 		case 100: //wall weapon stuff
+		case 200: //powerup stuff
 		//case 999://round zombie total viewer
 		//case 666://zombie damage 
 		//case 222://perk loss
@@ -108,8 +107,36 @@ testing_ground(){
 			players[i] maps\_zombiemode_score::add_to_player_score(1500 - 500);
 		}
 	}
-	
+	if(level.ZHC_TESTING_LEVEL >= 0.5){
+		while(1){
+			spawned = false;
+			for ( i = 0; i < players.size; i++ ){
+				//zhc_try_spawn_powerup_fall_down("nuke", players[i].origin);
+				//spawned = zhc_try_spawn_powerup_dig_up("insta_kill", players[i].origin);
+				if(spawned)
+					break;
+				
+			}
+			if(true){
+				if(!IsDefined( level.enemy_dog_locations )){
+					zhcp("no dog locations");
+					continue;
+				}
+				ds = array_randomize(level.enemy_dog_locations);
+				for(s = 0; s < ds.size && !spawned; s++){
+					spawned = zhc_try_spawn_powerup_fall_down("nuke",ds[s].origin);
+					if(spawned)
+						break;
+				}
+			}
 
+			if(spawned)
+				wait(10);
+			else
+				wait(0.5);
+		}
+		
+	}
 	
 
 	/*wait( 1 );
@@ -148,8 +175,8 @@ blocker_perk_block_init(){
 can_move_perk_to_repaired_barrier(perk){
 	return!(perk == "specialty_quickrevive" || perk == "specialty_armorvest");
 }
-can_move_perk_to_random_barrier(){
-	return perk ==  "specialty_armorvest";
+can_move_perk_to_random_barrier(perk){
+	return perk == "specialty_armorvest";
 }
 manage_perk_history(){
 	self.perk_history = [];
@@ -416,6 +443,20 @@ kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	/
 	if(IsPlayer( attacker ) && IsDefined( attacker ) && IsAlive( attacker )){
 		oneShot1Kill = attacker give1ShotKillBonusPoints(self, mod, damage, sHitLoc);
 		attacker addToCollateralPointBonus(mod, weapon, oneShot1Kill);
+
+		//testo
+		if(define_or(level.ZHC_POWERUP_KILL_NOTIFEES,0) < 2 && !is_true(self.no_powerups)){
+			if(define_or(level.ZHC_POWERUP_KILL_NOTIFEES,0) == 1){
+				zhc_try_spawn_powerup_dig_up("insta_kill", self.origin);
+			}else{
+				zhc_try_spawn_powerup_fall_down("nuke", self.origin);
+			}
+		}
+
+		if(define_or(level.ZHC_POWERUP_KILL_NOTIFEES,0) > 0){
+			level notify("zhc_zombie_killed_at_pos", self.origin, attacker.origin, (sHitLoc != "head" && sHitLoc != "helmet") );
+		}
+
 		if(level.ZHC_WEAPONS_KILL_NOTIFY){
 			if(!IsDefined( level.ZHC_weapon_total_kills[weapon] ))
 				level.ZHC_weapon_total_kills[weapon] = 0;
@@ -767,7 +808,239 @@ Instakill_upgrade(){
 	//Headshots instakill.
 }
 
+//ZHC_powerup stuff
+zhc_try_spawn_powerup_fall_down(powerup_name, drop_spot){
+	zhcpb(powerup_name + "fall down", 200);
+	//starting_depth = 15;
+	//max_depth_builduip = 10;
+	
 
+	center_pos = drop_spot + (0,0,40);
+	ground_pos = groundpos( center_pos );
+	{
+		
+		spawn_point =  ground_pos + (0,0, 330);
+		if(DistanceSquared( groundpos(spawn_point), ground_pos ) > 5 )
+		{
+			zhcpb(powerup_name + "fall down didnt spawn, ceiling too low", 200);
+			return false;
+		}
+		powerup = maps\_zombiemode_net::network_safe_spawn( "powerup", 1, "script_model", spawn_point );
+	}
+
+	level notify("powerup_dropped", powerup);
+
+	if (! IsDefined(powerup) )	{
+		zhcpb(powerup_name + "fall down didnt spawn", 200);
+		return false;
+	}
+	powerup maps\_zombiemode_powerups::powerup_setup( powerup_name );
+	powerup thread powerup_fall_down ( drop_spot, ground_pos + (0,0,25));
+	return true;
+}
+powerup_timeout_after_inactive(){
+	self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+	while(1){
+		powerup_timedout_no_flash();
+		self waittill ("powerup_reset_inactive");
+	}
+}
+powerup_timedout_no_flash(){
+	self endon("stop_powerup_reseting_inactive");
+	self endon ("powerup_reset_inactive");
+	//self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+	wait(26.5);
+	zhcp("powerup deleted from inactivity", 200);
+	self notify( "powerup_timedout" );
+	level.ZHC_POWERUP_KILL_NOTIFEES--;
+	if ( isdefined( self.worldgundw ) )
+	{
+		self.worldgundw delete();
+	}
+	self delete();
+	
+	
+}
+powerup_fall_down( drop_spot, center_pos){
+	
+	self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+
+	self thread powerup_timeout_after_inactive();
+	self thread maps\_zombiemode_powerups::powerup_wobble();
+
+	if(!isDefined(level.ZHC_POWERUP_KILL_NOTIFEES))
+		level.ZHC_POWERUP_KILL_NOTIFEES = 0;
+	level.ZHC_POWERUP_KILL_NOTIFEES++;
+	
+	if(false){ //testo
+		max_dist = 200;
+		kill_goal = 5 * max_dist;
+		cur_kills = 0;
+		while (cur_kills < kill_goal){
+			level waittill("zhc_zombie_killed_at_pos", origin);
+
+			//wait(1);//testo
+			//origin = ground_pos;//testo
+
+			dist  = Distance2D( center_pos, origin );
+			if(dist < max_dist){
+				self notify ("powerup_reset_inactive");
+				progress = (max_dist - dist);
+				cur_kills = min(kill_goal,progress + cur_kills);
+				zhcpb("fall down %"+ ((cur_kills/kill_goal) * 100), 200);
+				//targetZ = (ground_pos[2] - starting_depth) + (max_depth_builduip * (cur_kills/kill_goal));
+				//powerup MoveZ( targetZ  , abs(targetZ - powerup.origin[2])/100);
+			}
+		}
+	}else{
+		wait(5);
+	}
+	level.ZHC_POWERUP_KILL_NOTIFEES--;
+	self notify("stop_powerup_reseting_inactive");
+	self notify("powerup_end_wobble");
+	
+
+	zhcpb("fall down ready...", 200);
+
+	self thread maps\_zombiemode_powerups::powerup_timeout(10);
+
+	
+
+	//rise_time = abs(targetZ - powerup.origin[2])/100
+	self thread wait_to_rotate_down(10-1.5-2);
+	self wait_to_drop_powerup(10-1.5, center_pos);
+	
+	wait(0.3);
+	self thread maps\_zombiemode_powerups::powerup_grab();
+}
+
+wait_to_rotate_down(wait_time){
+	self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+	wait(wait_time);
+	self RotateTo( (90,90,90) , 2.5, 0.5, 1 );
+	return;
+}
+
+wait_to_drop_powerup(wait_time, center_pos){
+	self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+	self endon("zhc_nuke_drop_powerup");
+	self thread wait_to_dive_under(center_pos);
+	wait(wait_time);
+	self MoveTo( center_pos , 1.5 , 0.6, 0);
+	self notify("zhc_nuke_drop_powerup");
+}
+wait_to_dive_under(center_pos){
+	self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+	self endon("zhc_nuke_drop_powerup");
+	players = get_players();
+	while(1){
+		for( i = 0; i < players.size; i++ ){
+			is_diving = define_or(players[i].divetoprone,0) == 1;
+			if(is_diving)
+				zhcp("player is diving");
+
+			if(
+			//player maps\_laststand::player_is_in_laststand() || 
+			is_diving 
+			&& Distance2D( center_pos, players[i].origin) < 50
+			)
+			{
+				self MoveTo( groundpos(players[i].origin + (0,0,40)), 0.75, 0.5, 0);
+				self RotateTo( (90,90,90) , 0.35, 0, 0 );
+				self notify("zhc_nuke_drop_powerup");
+				return;
+			}
+		}
+		wait_network_frame( );
+		wait_network_frame( );
+	}
+}
+
+
+zhc_try_spawn_powerup_dig_up(powerup_name, drop_spot){
+	zhcpb(powerup_name + " dig up", 200);
+	//starting_depth = 15;
+	//max_depth_builduip = 10;
+	
+
+	center_pos = drop_spot + (0,0,40);
+	//ground_pos = groundpos( center_pos );
+
+	powerup = maps\_zombiemode_net::network_safe_spawn( "powerup", 1, "script_model",groundpos( center_pos ) - (0,0, 15) );
+
+	level notify("powerup_dropped", powerup);
+
+	if (! IsDefined(powerup) )	{
+		zhcpb(powerup_name + "dig up didnt spawn", 200);
+		return false;
+	}
+	powerup maps\_zombiemode_powerups::powerup_setup( powerup_name );
+	powerup powerup_dig_up(drop_spot, center_pos);
+	return true;
+}
+
+powerup_dig_up(drop_spot, center_pos){
+	
+	self endon ("powerup_timedout");
+	self endon( "powerup_grabbed" );
+	self endon( "death" );
+
+	
+	self thread powerup_timeout_after_inactive();
+	self thread maps\_zombiemode_powerups::powerup_wobble();
+
+	if(!isDefined(level.ZHC_POWERUP_KILL_NOTIFEES))
+		level.ZHC_POWERUP_KILL_NOTIFEES = 0;
+	level.ZHC_POWERUP_KILL_NOTIFEES++;
+	
+	if(false){ //testo
+		max_dist = 200;
+		kill_goal = 5 * max_dist;
+		cur_kills = 0;
+
+		while (cur_kills < kill_goal){
+			level waittill("zhc_zombie_killed_at_pos", origin, player_origin, headshot);
+
+			//wait(1);//testo
+			//origin = ground_pos;//testo
+
+			dist  = Distance( center_pos, origin);
+			progress = max(0, max_dist - dist);
+
+			player_dist = Distance( player_origin, origin);
+			player_progress = max(0, max_dist - max(dist, max_dist/4)); //wont give more than quarter the progress
+			if(headshot)
+				player_progress *= 2;
+
+			progress = max(player_progress, progress);
+			if(progress > 0){
+				self notify ("powerup_reset_inactive");
+				cur_kills = min(kill_goal,progress + cur_kills);
+				zhcpb("dig up %"+ ((cur_kills/kill_goal) * 100), 200);
+			}
+		}
+	}
+	zhcpb("dig up ready...", 200);
+	self notify("stop_powerup_reseting_inactive");
+	self thread maps\_zombiemode_powerups::powerup_timeout(26.5);
+	//rise_time = abs(targetZ - powerup.origin[2])/100
+	self MoveTo( center_pos  , 1.5 , 0.5, 0.5);
+	level.ZHC_POWERUP_KILL_NOTIFEES--;
+	wait(0.3);
+	self thread maps\_zombiemode_powerups::powerup_grab();
+}
 
 
 
@@ -1017,8 +1290,20 @@ dog_kill_goal_cooldown(total_kill_goal,zhc_cooldown_id){
 
 //^^^ ZHC_COOLDOWN Stuff
 
+
+
+
+
+
+
+
+
+
+
+
+
 zombie_door_cost_mult(){
-	return 10/3;
+	return 2;
 }
 normalize_cost(cost){ //added for mod , this function is designed for weapon costs. might move later.
 
