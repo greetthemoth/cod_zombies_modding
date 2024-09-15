@@ -735,6 +735,16 @@ door_kill_counter()
 	}
 }
 
+is_closeable_door(){
+	return  all_doors_are_rotatable();
+}
+all_doors_are_rotatable(){
+	for( i = 0; i < self.doors.size; i++ ){
+		if(!isDefined(self.script_angles))
+			return false;
+	}
+	return true;
+}
 
 //
 //	Make the door do its thing
@@ -802,13 +812,21 @@ door_activate(i, time, open  )
 	case "rotate":
 		if(isDefined(self.script_angles))
 		{
-			if(!IsDefined( i ))
+			if(open && !isDefined(self.start_angles))
+				self.start_angles = self.angles;
+
+			if(open)
+				self RotateTo( self.script_angles, time, 0, 0 ); 
+			else
+				self RotateTo(self.start_angles, time, 0, 0);
+
+			/*if(!IsDefined( i ))
 				self RotateTo( self.script_angles, time, 0, 0 ); 
 			else{
 				if(i % 2 == 0)
 					scale *= -1;
 				self RotateYaw( 180 * scale,  time, 0, 0 );
-			}
+			}*/
 			self thread door_solid_thread();
 			if(!open)
 				self thread disconnect_paths_when_done();
@@ -890,7 +908,6 @@ door_think()
 	//self.zombie_cost = int(self.zombie_cost*maps\ZHC_zombiemode_zhc::zombie_door_cost_mult());		//if we want to multiply the door cost.
 	//self normalize_door_cost();
 		
-	level.ZHC_DOOR_COOLDOWN = true;
 	level.ZHC_DOOR_COST_INCREASE_AFTER_BUY = true;
 
 	
@@ -899,16 +916,22 @@ door_think()
 	if(level.ZHC_TESTING_LEVEL > 4)
 		level.ZHC_DOOR_COOLDOWN = false;
 
-	level.ZHC_DOORS_OPEN_AFTER_COOLDOWN = false;
+	level.ZHC_DOORS_OPEN_AFTER_COOLDOWN = false; //you dont pay for door twice.. too chaotic.
 
-	level.door_reclose_system_on = true;
+	level.DOOR_RECLOSE = true; // door reclose system
 
 	self.skip_cooldown_once = true;	//doors dont start barred
+
+	if(level.DOOR_RECLOSE)
+		self.ZHC_is_closeable = self is_closeable_door();
+
 	while(1){
 		self door_is_closed_stage();
 
-		self door_is_open_stage();
-		
+		if(level.DOOR_RECLOSE && self.ZHC_is_closeable )
+			self door_is_open_stage();
+		else
+			return;	
 	}
 }
 
@@ -1060,26 +1083,23 @@ door_is_open_stage(){
 			break;
 
 		case "electric_buyable_door":
-			if(level.door_reclose_system_on)
+			//if(level.door_reclose_system_on)
 				self thread door_buy_expired();
 			self thread electricity_door_off();
 			self waittill("close_door");
 			break;
 
 		case "delay_door":	// set timer and explode
-			if(level.door_reclose_system_on)
 				self thread door_buy_expired();
 			self waittill("close_door");
 			break;
 
 		case "kill_counter_door":
-			if(level.door_reclose_system_on)
 				self thread door_buy_expired();
 			self waittill("close_door");
 			break;
 
 		default:
-			if(level.door_reclose_system_on)
 				self thread door_buy_expired();
 			self waittill("close_door");
 			break;
@@ -1157,6 +1177,7 @@ door_buy_expired(){
 				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
 			}
+			self thread ensure_close_door_with_room_not_occupied();
 			//level.ZHC_ROOMFLOW_difficulty_to_close_door += 1;
 		}
 		else{
@@ -1181,8 +1202,18 @@ door_buy_expired(){
 	if(CANT_CLOSE_DOOR_IN_DOG_ROUNDS && flag("dog_round")){
 		level waittill( "end_of_round" );	//we dont want doors to close durring dog rounds because dogs can get stuck through walls.//fixed.
 	}
-
 	self notify( "close_door" );
+}
+ensure_close_door_with_room_not_occupied(){
+	self endon ("open_door");
+	self waittill("door_closed");
+	if(!map_get_room_info(self.roomId_bought_from)["occupied"] && (!IsDefined( self.last_user ) || map_get_zone_room_id(self.last_user.current_zone) != self.roomId_bought_from ))
+		self notify ("ensured_door_close");
+	else{
+		//door close not ensured
+		wait_network_frame( );
+		self notify ("open_door");
+	}
 }
 
 check_roomIDs_to_occupy(){

@@ -625,8 +625,9 @@ door_barr_weapon(){
 	self endon ("open_door");
 	self endon ("end_door_cooldown");
 
-	if(self._door_open || isDefined(self.transitioning_t_open_f_close))			//wait for door to be accully closed first.
-		self waittill( "door_closed" );
+	self waittill ("ensured_door_close");
+	//if(self._door_open || isDefined(self.transitioning_t_open_f_close))			//wait for door to be accully closed first.
+	//	self waittill( "door_closed" );
 
 	if(!isDefined(self.player_yaw)){
 		zhcpb( "DOOR BARR INFO NOT SET" , 100 );
