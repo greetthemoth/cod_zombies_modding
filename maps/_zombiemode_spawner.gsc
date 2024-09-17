@@ -281,7 +281,7 @@ zombie_spawn_init( animname_set )
 }
 
 ZHC_get_roomId(){
-	return maps\ZHC_zombiemode_roundflow::::Get_Zone_Room_ID(self.zone_name);
+	return maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(self.zone_name);
 }
 
 /*manageKillNow(){
@@ -352,7 +352,7 @@ ZHC_zombie_catchup_to_player(){
 		zombie_same_room_as_player = false;
 		if (
 			isDefined(self.zone_name ) && IsDefined( closest_player_zone ) &&  
-			maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(self.zone_name) ==
+			self ZHC_get_roomId() ==
 			maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(closest_player_zone)
 		   )
 			zombie_same_room_as_player = true;

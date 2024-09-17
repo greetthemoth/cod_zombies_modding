@@ -615,7 +615,7 @@ gain_perk_slot_all_players(){
 create_lightning_teleport(origin){
 	thread maps\_zombiemode::dog_despawn_sound_effect(origin);
 	wait(1.5);
-	trigger Spawn( "trigger_radius", origin, 0, 120, 12 );
+	trigger  = Spawn( "trigger_radius", origin, 0, 120, 12 );
 	trigger teleport_players(origin);
 	trigger delete();
 
