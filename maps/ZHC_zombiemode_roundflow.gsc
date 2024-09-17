@@ -112,16 +112,16 @@ Get_Room_Info(room_id, info_string){
 }
 Merge_RoomsId(roomId_1, roomId_2, new_room_id){
 	room_ids_to_erase = [];
-	if(roomId1 != new_room_id)
+	if(roomId_1 != new_room_id)
 		room_ids_to_erase [room_ids_to_erase.size] = roomId_1;
-	if(roomId2 != new_room_id)
+	if(roomId_2 != new_room_id)
 		room_ids_to_erase [room_ids_to_erase.size] = roomId_2;
 
 	start_room_think = false;
 	if(!isDefined(level.ZHC_room_info[new_room_id])){
 		level.ZHC_room_info[new_room_id] = [];
 		level.ZHC_room_info[new_room_id] = [];
-		level.ZHC_room_info[new_room_id]["name"] = [[level.map_get_room_name]](roomId);
+		level.ZHC_room_info[new_room_id]["name"] = [[level.map_get_room_name]](new_room_id);
 		level.ZHC_room_info[new_room_id]["doors"] = [[level.map_get_doors_accesible_in_room]](new_room_id);
 		level.ZHC_room_info[new_room_id]["occupied"] = false;
 		level.ZHC_room_info[new_room_id]["chests"] = [];
@@ -155,7 +155,7 @@ Merge_RoomsId(roomId_1, roomId_2, new_room_id){
 		}
 		maps\ZHC_zombiemode_roundflow::debug_room_zones(new_room_id);
 		level.ZHC_room_info[room_ids_to_erase[i]] = undefined; //dont remove or it will fuck with the room indexing.
-		level.ZHC_room_info[new_room_id]["name"] = [[evel.map_get_room_name]](new_room_id);
+		level.ZHC_room_info[new_room_id]["name"] = [[level.map_get_room_name]](new_room_id);
 		
 		
 	}
@@ -167,7 +167,7 @@ Merge_RoomsId(roomId_1, roomId_2, new_room_id){
 
 
 room_think(roomId){
-	if(maps\[[level.room_id_can_be_stopped]](roomId))
+	if([[level.room_id_can_be_stopped]](roomId))
 		level endon ("room_stop_"+roomId);
 	level.ZHC_room_info[roomId]["flow_difficulty"] = 0;
 	level.ZHC_room_info[roomId]["active"] = false;

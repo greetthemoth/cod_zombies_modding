@@ -736,13 +736,14 @@ door_kill_counter()
 	}
 }
 
-is_closeable_door(){
-	return  all_sub_doors_are_openable();
+is_recloseable_door(){
+	return  all_sub_doors_are_recloseable();
 }
-all_sub_doors_are_openable(){
+all_sub_doors_are_recloseable(){
 	for( i = 0; i < self.doors.size; i++ ){
 		str = define_or(self.script_string,"");
-		if(str != "rotate" && str != "slide_apart" && str != "physics")
+		//if(str == "anim")
+		if(str != "" && str != "rotate" && str != "slide_apart"  && str != "move" && str != "physics")
 			return false;
 	}
 	return true;
@@ -770,13 +771,14 @@ door_activate(i, time, open, can_close, user  )
 
 	if(self.classname == "script_brushmodel")
 	{
-		if ( open )
+		//if ( open ) //if this proves to be bad idea we may need to renable this contion
 		{
-			self ConnectPaths();
-		}else{
+			self ConnectPaths();	//door is about to move so connect path regarldess of where this is.
+		}
+		/*else if (define_or(self.script_string,"") != "physics"){
 			Println("disconnected paths at brushes");
 			self DisconnectPaths();
-		}
+		}*/
 	}
 	//println("IsDefined(self.door_moving): "+ IsDefined(self.door_moving));
 	 //Prevent multiple triggers from making doors move more than once
@@ -829,9 +831,9 @@ door_activate(i, time, open, can_close, user  )
 					scale *= -1;
 				self RotateYaw( 180 * scale,  time, 0, 0 );
 			}*/
-			self thread door_solid_thread();
-			if(!open)
-				self thread disconnect_paths_when_done();
+			self thread door_solid_thread(); //makes door solid once no player is touching
+			//if(!open) //if testing proves this is a bad idea, we may renable this condition
+			self thread disconnect_paths_when_done();	  //door is still physical (regardless of open or close) disconnect paths if anything has been blocked (if open will probably not disconnect anything not)
 		}
 		wait(randomfloat(.15));						
 		break;
@@ -851,8 +853,8 @@ door_activate(i, time, open, can_close, user  )
 				else
 					self MoveTo( self.origin - vector, time ); 
 			}
-			self thread door_solid_thread();
-			self thread disconnect_paths_when_done();
+			self thread door_solid_thread();	//makes door solid once no player is touching
+			self thread disconnect_paths_when_done(); //door is still physical disconnect paths if anything has been blocked
 		}
 		wait(randomfloat(.15));
 		break;
@@ -872,14 +874,17 @@ door_activate(i, time, open, can_close, user  )
 		}
 
 		if(open){
-			self thread physics_launch_door( self , can_close, self.origin - user.origin  );
-			wait(0.10);	
+
+			self thread physics_launch_door( self , can_close, self.origin - user.origin  ); //door becomes non physical no need to disconnect paths
+			wait(0.10);
+			self.classname = ""; //makes sure it not "script brushmodel", next activation wont connect paths (as seen above).
 		}else{
+			self.classname = "script_brushmodel"; //next activation will connect paths (as seen above).
 			playfx(level._effect["poltergeist"], self.close_origin);
 			self Hide();
 			self MoveTo(self.close_origin, 0.1);
 			self RotateTo( self.close_angles, 0.1);
-			self thread disconnect_paths_when_done();
+			self thread disconnect_paths_when_done(); //door becomes physical then disconnect paths
 			wait(0.1);
 			self Show();
 		}			
@@ -943,15 +948,25 @@ door_think()
 	self.skip_cooldown_once = true;	//doors dont start barred
 
 	if(level.DOOR_RECLOSE)
-		self.ZHC_is_closeable = self is_closeable_door();
+		self.ZHC_is_recloseable = self is_recloseable_door();
 
 	while(1){
 		self door_is_closed_stage();
 
-		if(level.DOOR_RECLOSE && self.ZHC_is_closeable )
+		if(level.DOOR_RECLOSE && self.ZHC_is_recloseable )
 			self door_is_open_stage();
-		else
+		else{
+			if(level.DOOR_RECLOSE)
+				zhcpb( "door "+ self get_door_id()+" opened; is not reclosable" ,444);
+			else
+				zhcpb( "door "+ self get_door_id()+" opened" ,444);
+			if(!isDefined(self.is_submissive)) //important condition to make sure submissive sister doenst override and become the dominant sister.
+										//condition could potentially go inside function. might be more ligical.
+				self notify_sister_door("open_door", true);
+			self.door_stage = "open";
+			self thread door_opened();
 			return;	
+		}
 	}
 }
 
@@ -1192,7 +1207,7 @@ door_buy_expired(){
 						zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" ... leave room to close" ,444);
 				}
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
-				if(!map_get_room_info(self.roomId_bought_from)["occupied"] 
+				if(![[level.map_get_room_info]](self.roomId_bought_from)["occupied"] 
 				&& (!IsDefined( self.last_user ) || [[level.map_get_room_info]](self.last_user.current_zone) != self.roomId_bought_from )
 				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
@@ -1903,7 +1918,7 @@ door_opened()
 		if(time > waittime)
 			waittime = time;
 		// Don't thread this so the doors don't move at once
-		self.doors[i] door_activate(i,time, true, self.ZHC_is_closeable, self.last_user);
+		self.doors[i] door_activate(i,time, true, self.ZHC_is_recloseable, self.last_user);
 	}
 	// Just play purchase sound on the first door
 	if( self.doors.size )
@@ -1992,7 +2007,7 @@ door_closed()
 		if(time > waittime)
 			waittime = time;
 		// Don't thread this so the doors don't move at once
-		self.doors[i] door_activate(i,time,false, self.ZHC_is_closeable, self.last_user);
+		self.doors[i] door_activate(i,time,false, self.ZHC_is_recloseable, self.last_user);
 	}
 	// Just play purchase sound on the first door
 	if( self.doors.size )
@@ -2038,7 +2053,7 @@ physics_launch_door( door_trig , keep, launch_vector)
 	self MoveTo( self.origin + vec, 0.1 );
 	self waittill( "movedone" );
 
-	self PhysicsLaunch( self.origin, vec_nom * 10 );
+	self PhysicsLaunch( self.origin, vec_norm * 10 );
 	wait(0.1);
 	PhysicsExplosionSphere( vector_scale( vec, -1 ), 120, 1, 100 );
 

@@ -120,7 +120,7 @@ main()
 
 	level thread maps\zombie_theater_ffotd::main_end();
 
-	level ZHC_zombie_theater::init();
+	level maps\ZHC_zombie_theater::init();
 }
 
 

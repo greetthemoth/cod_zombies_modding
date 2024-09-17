@@ -59,7 +59,7 @@ Get_Other_Zone(opened_from, door){
 
 	a = undefined;
 	b = undefined;
-	i = door get_door_id();
+	i = door  maps\_zombiemode_blockers::get_door_id();
 
 	if(i == 2){
 		a = "foyer2_zone";
@@ -237,7 +237,7 @@ map_get_room_name(room_id){
 
 Get_Zone_Room_ID_Special(zone_name, door_id, power_on){
 	if(!power_on)
-		return Get_Zone_Room_ID(zone_name);
+		return map_get_zone_room_id(zone_name);
 
 
 	right = true;
@@ -335,23 +335,23 @@ player_is_in_dead_zone(player, door_id){	//run after "zone_info_updated"
 }
 
 can_close_door(){	//run after "zone_info_updated"
-	door_id = self get_door_id();
+	door_id = self maps\_zombiemode_blockers::get_door_id();
 	if(door_id == 4 || door_id == 3){
-		o = zone_is_occupied_rn("dining_zone");
+		o = maps\_zombiemode_blockers::zone_is_occupied_rn("dining_zone");
 		//if(o && a_player_is_close_to_door_id(3,380)){ //replace for a trigger check fucntion
 		if(o && player_is_touching(level.zones["dining_zone"].volumes[2]))
 			return false;
 		else 
-			return !a_player_is_close_to_door_id(3, 230) && !a_player_is_close_to_door_id(4, 230);
+			return !maps\_zombiemode_blockers::a_player_is_close_to_door_id(3, 230) && !maps\_zombiemode_blockers::a_player_is_close_to_door_id(4, 230);
 	} else if(door_id == 1 || door_id == 0){
-		o = zone_is_occupied_rn("stage_zone");
+		o = maps\_zombiemode_blockers::zone_is_occupied_rn("stage_zone");
 		//if(o && a_player_is_close_to_door_id(1,360))
 		if(o && player_is_touching(level.zones["stage_zone"].volumes[0]))
 			return false;
 		else 
-			return !a_player_is_close_to_door_id(1, 280) && !a_player_is_close_to_door_id(0, 280);
+			return !maps\_zombiemode_blockers::a_player_is_close_to_door_id(1, 280) && !maps\_zombiemode_blockers::a_player_is_close_to_door_id(0, 280);
 	}else if(door_id == 6 || door_id == 9){
-		o = zone_is_occupied_rn("theater_zone");
+		o = maps\_zombiemode_blockers::zone_is_occupied_rn("theater_zone");
 		//if(o && a_player_is_close_to_door_id(1,360))
 		if(o){
 			players = get_players();
@@ -364,14 +364,14 @@ can_close_door(){	//run after "zone_info_updated"
 			}
 		}
 		//else 
-			return !a_player_is_close_to_door_id(6, 230) && !a_player_is_close_to_door_id(9, 230);
+			return !maps\_zombiemode_blockers::a_player_is_close_to_door_id(6, 230) && !maps\_zombiemode_blockers::a_player_is_close_to_door_id(9, 230);
 	}else{
-		return !self a_player_is_close_to_door(100);
+		return !self maps\_zombiemode_blockers::a_player_is_close_to_door(100);
 	}
 }
 set_sister_door(){
 	zombie_doors = GetEntArray( "zombie_door", "targetname" ); 
-	switch(self get_door_id())
+	switch(self maps\_zombiemode_blockers::get_door_id())
 	{
 		case 3:
 			self.sister_door = zombie_doors[4];
