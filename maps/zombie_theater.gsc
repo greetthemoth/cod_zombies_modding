@@ -119,6 +119,8 @@ main()
 	level thread maps\zombie_theater_teleporter::teleport_pad_hide_use();
 
 	level thread maps\zombie_theater_ffotd::main_end();
+
+	level ZHC_zombie_theater::init();
 }
 
 
@@ -361,16 +363,16 @@ electric_switch()
 	trig = getent("use_elec_switch","targetname");
 	trig setcursorhint( "HINT_NOICON" );
 
-	power_able_to_turn_back_off = true;
-	first_time = true;
+	power_able_to_turn_back_off = true; //added for mod
+	first_time = true;	//added for mod
 	//level.power_on = false;
-	while(1){
+	while(1){	//while added for mod
 		//IPrintLn( "power on: "+ level.power_on );
 		//if(!flag("power_on")){
 		if(!level.power_on){
 			trig sethintstring(&"ZOMBIE_ELECTRIC_SWITCH");
 			
-			level thread wait_for_power(first_time);
+			level thread wait_for_power(first_time); //added for mod "first_time" param
 			
 
 			if(level.ZHC_TESTING_LEVEL >= 6 && first_time)
@@ -388,7 +390,7 @@ electric_switch()
 
 			Objective_State(8,"done");
 
-		}else{
+		}else{ 	//added for mod
 			trig sethintstring("");
 
 			level thread wait_for_power_back_off();
@@ -417,7 +419,7 @@ electric_switch()
 //	Wait for the power_on flag to be set.  This is needed to work in conjunction with
 //		the devgui cheat.
 //
-wait_for_power(first_time)
+wait_for_power(first_time) //added var for mod
 {
 	//level endon("electricity_off");
 	master_switch = getent("elec_switch","targetname");	
@@ -437,7 +439,7 @@ wait_for_power(first_time)
 	master_switch playsound("zmb_turn_on");
 
 	//get the teleporter ready
-	if(first_time)
+	if(first_time)	//condition added for mod
 		maps\zombie_theater_teleporter::teleporter_init();
 
 	wait_network_frame();
@@ -459,7 +461,7 @@ wait_for_power(first_time)
 	level notify("electricity_on");
 
 	//									//	^^^^^^^^^
-
+	//condition added for mod
 	if(first_time){
 		// start quad round
 		// Set number of quads per round
@@ -556,53 +558,27 @@ theater_zone_init()
 	flag_init( "always_on" );
 	flag_set( "always_on" );
 
-	// foyer_zone
-	Set_Zone_Room_ID("foyer_zone", 0);
-	Set_Zone_Room_ID("foyer2_zone", 0);
-
 	add_adjacent_zone( "foyer_zone", "foyer2_zone", "always_on" );
 	
 	add_adjacent_zone( "foyer_zone", "vip_zone", "magic_box_foyer1" );
 	add_adjacent_zone( "foyer2_zone", "crematorium_zone", "magic_box_crematorium1" );
 	add_adjacent_zone( "foyer_zone", "crematorium_zone", "magic_box_crematorium1" );
 
-	// vip_zone
-	Set_Zone_Room_ID("vip_zone", 1);
 	add_adjacent_zone( "vip_zone", "dining_zone", "vip_to_dining" );
 	
-	// crematorium_zone
-	Set_Zone_Room_ID("crematorium_zone", 7);
 	add_adjacent_zone( "crematorium_zone", "alleyway_zone", "magic_box_alleyway1" );
 	
-	// dining_zone
-	Set_Zone_Room_ID("dining_zone", 2);
 	add_adjacent_zone( "dining_zone", "dressing_zone", "dining_to_dressing" );
 	
-	// dressing_zone
-	Set_Zone_Room_ID("dressing_zone", 3);
 	add_adjacent_zone( "dressing_zone", "stage_zone", "magic_box_dressing1" );
 	
-	// stage_zone
-	Set_Zone_Room_ID("stage_zone", 4);
 	add_adjacent_zone( "stage_zone", "west_balcony_zone", "magic_box_west_balcony2" );
 	
-	// theater_zone
-	Set_Zone_Room_ID("theater_zone", 4);
 	add_adjacent_zone( "theater_zone", "foyer2_zone", "power_on" );
 	add_adjacent_zone( "theater_zone", "stage_zone", "power_on" );
 	
-	// west_balcony_zone
-	Set_Zone_Room_ID("west_balcony_zone", 5);
 	add_adjacent_zone( "west_balcony_zone", "alleyway_zone", "magic_box_west_balcony1" );
-
-	// alleyway_zone
-	Set_Zone_Room_ID("alleyway_zone", 6);
 }	
-
-//ADDED FOR MOD DZ SYSTEM
-Set_Zone_Room_ID(zone_name, id){
-	//level.zones["west_balcony_zone"].room_id = id;
-}
 
 
 theater_ignore_spawner( spawner )

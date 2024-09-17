@@ -76,7 +76,7 @@ init(){
 
 
 	//maps\ZHC_zombiemode_weapons::init();	//runs in zombiemode_weapons::init()
-	maps\ZHC_zombiemode_roundflow::init();
+	maps\ZHC_zombiemode_roundflow::init_roundflow();
 
 
 	//maps\_zombiemode::register_player_damage_callback(::player_damaged_func);

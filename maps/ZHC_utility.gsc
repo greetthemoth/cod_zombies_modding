@@ -17,6 +17,7 @@ define_or(s,or){
 		return s;
 	return or;
 }
+
 zhcp(msg, id){
 	if(level.ZHC_TESTING_LEVEL < 0)
 		return;
@@ -42,4 +43,19 @@ zhcpb(msg, id){
 		}
 	}else if(!isDefined(id) || maps\ZHC_zombiemode_zhc::can_send_msg_level(id))
 		IPrintLnBold( msg );
+}
+
+player_is_touching(trigger, player){
+	if(!isDefined(player)){
+		players = get_players();
+		for( i = 0; i < players.size; i++ )
+		{
+			player = players[i];
+			if(player IsTouching(trigger))
+				return true;
+		}
+		return false;
+	}
+
+	return player IsTouching(trigger);
 }

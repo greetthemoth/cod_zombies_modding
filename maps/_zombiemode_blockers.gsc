@@ -2,6 +2,7 @@
 #include common_scripts\utility; 
 #include maps\_zombiemode_utility; 
 #include maps\ZHC_utility;
+#include maps\ZHC_zombiemode_roundflow;
 #using_animtree( "generic_human" );
 
 //
@@ -736,11 +737,12 @@ door_kill_counter()
 }
 
 is_closeable_door(){
-	return  all_doors_are_rotatable();
+	return  all_sub_doors_are_openable();
 }
-all_doors_are_rotatable(){
+all_sub_doors_are_openable(){
 	for( i = 0; i < self.doors.size; i++ ){
-		if(!isDefined(self.script_angles))
+		str = define_or(self.script_string,"");
+		if(str != "rotate" && str != "slide_apart" && str != "physics")
 			return false;
 	}
 	return true;
@@ -752,9 +754,9 @@ all_doors_are_rotatable(){
 //	open: true makes the door open, false makes it close (reverse operation).  Defaults to TRUE
 //		NOTE: open is currently ONLY supported for  "move" type doors
 //	time is a time override
-door_activate(i, time, open  )
+door_activate(i, time, open, can_close, user  )
 {
-
+	can_close = is_true(can_close);
 
 	if ( !IsDefined( open ) )
 	{
@@ -812,13 +814,13 @@ door_activate(i, time, open  )
 	case "rotate":
 		if(isDefined(self.script_angles))
 		{
-			if(open && !isDefined(self.start_angles))
-				self.start_angles = self.angles;
+			if(can_close && open && !isDefined(self.close_angles))
+				self.close_angles = self.angles;
 
 			if(open)
 				self RotateTo( self.script_angles, time, 0, 0 ); 
 			else
-				self RotateTo(self.start_angles, time, 0, 0);
+				self RotateTo(self.close_angles, time, 0, 0);
 
 			/*if(!IsDefined( i ))
 				self RotateTo( self.script_angles, time, 0, 0 ); 
@@ -838,13 +840,16 @@ door_activate(i, time, open  )
 		if(isDefined(self.script_vector))
 		{
 			vector = vector_scale( self.script_vector, scale );
-			if ( time >= 0.5 )
-			{
-				self MoveTo( self.origin + vector, time, time * 0.25, time * 0.25 ); 
-			}
-			else
-			{
-				self MoveTo( self.origin + vector, time ); 
+			if(open){
+				if ( time >= 0.5 )
+					self MoveTo( self.origin + vector, time, time * 0.25, time * 0.25 ); 
+				else
+					self MoveTo( self.origin + vector, time ); 
+			}else{
+				if ( time >= 0.5 )
+					self MoveTo( self.origin - vector, time, time * 0.25, time * 0.25 ); 
+				else
+					self MoveTo( self.origin - vector, time ); 
 			}
 			self thread door_solid_thread();
 			self thread disconnect_paths_when_done();
@@ -861,8 +866,23 @@ door_activate(i, time, open  )
 		break;
 
 	case "physics":
-		self thread physics_launch_door( self );
-		wait(0.10);						
+		if(can_close && open && !isDefined(self.close_origin)){
+			self.close_origin = self.origin;
+			self.close_angles = self.angles;
+		}
+
+		if(open){
+			self thread physics_launch_door( self , can_close, self.origin - user.origin  );
+			wait(0.10);	
+		}else{
+			playfx(level._effect["poltergeist"], self.close_origin);
+			self Hide();
+			self MoveTo(self.close_origin, 0.1);
+			self RotateTo( self.close_angles, 0.1);
+			self thread disconnect_paths_when_done();
+			wait(0.1);
+			self Show();
+		}			
 		break;
 	}
 
@@ -1144,7 +1164,7 @@ door_buy_expired(){
 		if(level.ZHC_ROOMFLOW){
 			//if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 			//	level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
-			difficulty_on_buy = map_get_room_info(self.roomId_bought_from)["flow_difficulty"];
+			difficulty_on_buy = [[level.map_get_room_info]](self.roomId_bought_from)["flow_difficulty"];
 			dif_on_buy_goal_mult = 0.75;
 			dif_goal = (difficulty_on_buy * dif_on_buy_goal_mult) + (3+((level.round_number)/5));
 			zhcp("diffgoal: " +difficulty_on_buy + "/"+ dif_goal ,444);
@@ -1152,7 +1172,7 @@ door_buy_expired(){
 			last_difficulty = difficulty_on_buy; //used for debug
 			last_dogs_left_to_spawn = define_or(level.ZHC_dogs_to_spawn_this_round,0); //used for debug
 			while(1){
-				difficulty = map_get_room_info(self.roomId_bought_from)["flow_difficulty"];
+				difficulty = [[level.map_get_room_info]](self.roomId_bought_from)["flow_difficulty"];
 				if(!flag("dog_round") && (difficulty < dif_goal || define_or(level.ZHC_dogs_to_spawn_this_round,0) > 0) ){ //4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
 					
 					//level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
@@ -1173,7 +1193,7 @@ door_buy_expired(){
 				}
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
 				if(!map_get_room_info(self.roomId_bought_from)["occupied"] 
-				&& (!IsDefined( self.last_user ) || map_get_zone_room_id(self.last_user.current_zone) != self.roomId_bought_from )
+				&& (!IsDefined( self.last_user ) || [[level.map_get_room_info]](self.last_user.current_zone) != self.roomId_bought_from )
 				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
 			}
@@ -1207,7 +1227,7 @@ door_buy_expired(){
 ensure_close_door_with_room_not_occupied(){
 	self endon ("open_door");
 	self waittill("door_closed");
-	if(!map_get_room_info(self.roomId_bought_from)["occupied"] && (!IsDefined( self.last_user ) || map_get_zone_room_id(self.last_user.current_zone) != self.roomId_bought_from ))
+	if(![[level.map_get_room_info]](self.roomId_bought_from)["occupied"] && (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ))
 		self notify ("ensured_door_close");
 	else{
 		//door close not ensured
@@ -1231,7 +1251,7 @@ check_roomIDs_to_occupy(){
 				//zones_checked++;							
 				continue;							//ignores null rooms
 			}else{
-				zones_with_id = roomIDToZones(self.roomIDs_to_occupy[i]);
+				zones_with_id = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(self.roomIDs_to_occupy[i]);
 				if(zones_with_id.size == 0){
 					zhcpb( "ROOM ID "+ self.roomIDs_to_occupy[i]+" DOESNT APPLY TO ANY ZONE", 444 );
 					continue;
@@ -1286,23 +1306,8 @@ check_roomIDs_to_occupy(){
 	//}
 }
 
-roomIDToZones(roomID){
-	zkeys = GetArrayKeys( level.zones );
-	zones_with_id = [];
-	for(z = 0; z < level.zones.size; z++){
-		//zone = level.zones[zkeys[z]];
-		room_id = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), false);
-		if(IsDefined( room_id )){
-			if(room_id == roomID){					//there are multple zone names per "room" that we care about
-				zones_with_id[zones_with_id.size] = zkeys[z];		//this adds the zone names for the zone we want to the list
-			}
-		}
-	}
-	return zones_with_id;
-}
-
 waittill_roomID_is_occupied(roomID){
-	zones_with_id = roomIDToZones(roomID);
+	zones_with_id = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID);
 	//"finding zone " + self.roomIDs_to_occupy[i]
 	while(1){											//now we check the zone we've added
 		//given how roomIDs_to_occupy is organized if this si undefined then that means the list was changed.
@@ -1317,7 +1322,7 @@ waittill_roomID_is_occupied(roomID){
 }
 
 waittill_roomID_is_occupied_return_player(roomID){
-	zones_with_id = roomIDToZones(roomID);
+	zones_with_id = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID);
 	//"finding zone " + self.roomIDs_to_occupy[i]
 	while(1){											//now we check the zone we've added
 		//given how roomIDs_to_occupy is organized if this si undefined then that means the list was changed.
@@ -1365,12 +1370,12 @@ roomId_setup(player){
 		return;
 	}
 	
-	zone_door_connects_to = Get_Other_Zone(zone_name, self);
+	zone_door_connects_to = [[level.Get_Other_Zone]](zone_name, self);
 
 
 	
 
-	roomid = self Get_Zone_Room_ID(zone_name);
+	roomid =  Get_Zone_Room_ID(zone_name);
 	roomid2 = Get_Zone_Room_ID(zone_door_connects_to);
 
 	self.roomId_bought_from = roomid;
@@ -1484,8 +1489,8 @@ add_roomIDs_to_occupy_to_list(roomid, reverse){									//defined scope_data pre
 	////s = "";
 	zkeys = GetArrayKeys( level.zones );
 	for(z = 0; z < level.zones.size; z++){
-		//n = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), level.power_on);
-		roomId_to_measure = Get_Zone_Room_ID_Special(zkeys[z], self get_door_id(), false);
+		//n = [[level.Get_Zone_Room_ID_Special]](zkeys[z], self get_door_id(), level.power_on);
+		roomId_to_measure = [[level.Get_Zone_Room_ID_Special]](zkeys[z], self get_door_id(), false); //currently undefined
 		if(!IsDefined( roomId_to_measure ) || roomId_to_measure >= 100)
 			continue;
 		/*nn = n;			//nn turns
@@ -1604,401 +1609,14 @@ close_off_room(room_id){
 }
 
 
-//Kino Der Toten theater specific fuctions
-
-Get_Other_Zone(opened_from, door){
-
-	a = undefined;
-	b = undefined;
-	i = door get_door_id();
-
-	if(i == 2){
-		a = "foyer2_zone";
-		b = "vip_zone";
-	} else if(i == 4 || i == 3){
-		a = "vip_zone";
-		b = "dining_zone";
-	} else if(i == 7){
-		a = "dining_zone";
-		b = "dressing_zone";
-	} else if(i == 5){
-		a = "dressing_zone";
-		b = "stage_zone";
-	} else if(i == 1 || i == 0){
-		a = "stage_zone";
-		b = "west_balcony_zone";
-	} else if(i == 8){
-		a = "west_balcony_zone";
-		b = "alleyway_zone";
-	} else if(i == 10){
-		a = "alleyway_zone";
-		b = "crematorium_zone";
-	} else if(i == 11){
-		a = "crematorium_zone";
-		b = "foyer2_zone";
-	}else if(i == 6 || i == 9){
-		a = "theater_zone";
-		b = "foyer2_zone";
-	}
-
-	if(opened_from == a)
-		return b;
-	else if(opened_from == b)
-		return a;
-	else{
-		zhcpb( "OPENED FROM WEIRD ZONE. neither was" + opened_from ,444);
-		return a;
-	}
-}
-
-Get_Zone_Room_ID(zone_name){
-	if(!IsDefined( level.ZHC_zoneToRoomID )){
-		level.ZHC_zoneToRoomID = [];
-	}
-	if(!IsDefined( level.ZHC_zoneToRoomID[zone_name] )) {
-		level.ZHC_zoneToRoomID[zone_name] = map_get_zone_room_id(zone_name);
-	}
-	return level.ZHC_zoneToRoomID[zone_name];
-}
-room_id_can_be_stopped(room_id){
-	switch(room_id){
-		case 100:
-			return true;
-		default:
-			return false;
-	}
-}
-map_wait_to_update_rooms(){
-	flag_wait("all_players_connected");
-	flag_wait( "curtains_done" );//common_scripts\utility.gsc:
-	level.ZHC_zoneToRoomID["theater_zone"] = map_get_zone_room_id("theater_zone");
-	maps\ZHC_zombiemode_roundflow::deactivate_room(100); //remove mults and stuff.
-	level notify( "room_stop_"+100 );
-	//maps\ZHC_zombiemode_roundflow::debug_room_zones(4);
-	//maps\ZHC_zombiemode_roundflow::debug_room_zones(100);
-	for(i = 0; i < level.ZHC_room_info[100]["zones"].size; i++){
-		level.ZHC_room_info[4]["zones"][level.ZHC_room_info[4]["zones"].size] = level.ZHC_room_info[100]["zones"][i];
-	}
-	for(i = 0; i < level.ZHC_room_info[100]["chests"].size; i++){
-		level.ZHC_room_info[4]["chests"][level.ZHC_room_info[4]["chests"].size] = level.ZHC_room_info[100]["chests"][i];
-		level.chests[level.ZHC_room_info[100]["chests"][i]].roomId = 4;
-	}
-	maps\ZHC_zombiemode_roundflow::debug_room_zones(4);
-	level.ZHC_room_info[100] = undefined; //dont remive or it will fuck with the room indexing.
-	level.ZHC_room_info[4]["name"] = map_get_room_name(4);
-	level.ZHC_room_info[4]["doors"] = map_get_doors_accesible_in_room(4);
-	
-}
-map_get_zone_room_id(zone_name){
-	switch( zone_name){
-		case "foyer_zone":
-		case "foyer2_zone":
-			return 0;
-		case "vip_zone":
-			return 1;
-		case "dining_zone":
-			return 2;
-		case "dressing_zone":
-			return 3;
-		case "stage_zone":
-			return 4;
-		case "theater_zone":
-			if(flag("curtains_done"))
-				return 4;
-			else
-				return 100;
-		case "west_balcony_zone":
-			return 5;
-		case "alleyway_zone":
-			return 6;
-		case "crematorium_zone":
-			return 7;
-		default:
-			zhcpb( "ZONE NAME" + zone_name +" DOESNT APPLY TO A ZONE" ,444);
-			return 100;
-	}
-}
-Get_Doors_Accesible_in_room(room_id){
-	return map_get_room_info(room_id)["doors"];
-}
-map_get_doors_accesible_in_room(room_id){
-	doors = [];
-	switch(room_id) 
-	{
-		case 0: //foyer
-			doors[doors.size] = 2;
-			doors[doors.size] = 11;
-			doors[doors.size] = 6;
-			doors[doors.size] = 9;
-			break;
-	    case 1: // vip_zone
-	        doors[doors.size] = 2;
-	        doors[doors.size] = 3;
-	        doors[doors.size] = 4;
-	        break;
-	    case 2: // dining_zone
-	        doors[doors.size] = 3;
-	        doors[doors.size] = 4;
-	        doors[doors.size] = 7;
-	        break;
-	    case 3: // dressing_zone
-	        doors[doors.size] = 7;
-	        doors[doors.size] = 5;
-	        break;
-	    case 4: // stage_zone
-	        doors[doors.size] = 5;
-	        doors[doors.size] = 1;
-	        doors[doors.size] = 0;
-	        if(flag("curtains_done")){
-	           	doors[doors.size] = 6;
-	    		doors[doors.size] = 9;
-	    	}
-	        break;
-	    case 5: // west_balcony_zone
-	        doors[doors.size] = 1;
-	        doors[doors.size] = 0;
-	        doors[doors.size] = 8;
-	        break;
-	    case 6: // alleyway_zone
-	        doors[doors.size] = 8;
-	        doors[doors.size] = 10;
-	        break;
-	    case 7: // crematorium_zone
-	        doors[doors.size] = 10;
-	        doors[doors.size] = 11;
-	        break;
-	    case 100:
-	    	doors[doors.size] = 6;
-	    	doors[doors.size] = 9;
-	    	if(flag("curtains_done")){
-	    	 	doors[doors.size] = 0;
-				doors[doors.size] = 1;
-				doors[doors.size] = 5;
-	        }
-	        break;
-	}
-	return doors;
-}
-Get_Room_Name(room_id){
-	return map_get_room_info(room_id)["name"];
-}
-map_get_room_info(roomId){
-	if(roomId == 100 && flag("curtains_done"))
-		return level.ZHC_room_info[4];
-	else
-		return level.ZHC_room_info[roomId];
-}
-map_get_room_name(room_id){
-	switch(room_id){
-		case 0:
-			return "foyer room";
-		case 1:
-			return "vip room";
-		case 2:
-		return "dining room";
-		case 3:
-		return "dressing room";
-		case 4:
-		if(flag("curtains_done"))
-			return "stage & theater room";
-		return "stage room";
-		case 5:
-		return "west balcony room";
-		case 6:
-		return "alleyway room";
-		case 7:
-		return "crematorium room";
-		case 100:
-		return "theater room";
-		default:
-		zhcpb( "ROOM ID "+ room_id + "NOT DESIGNATED TO ROOM"  ,444);
-		return 100;
-	}
-}
-Get_Zone_Room_ID_Special(zone_name, door_id, power_on){
-	if(!power_on)
-		return Get_Zone_Room_ID(zone_name);
-
-
-	right = true;
-	left = false;
-	switch (door_id){
-		case 2:
-		case 4:
-		case 3:
-		case 7:
-		case 5:
-			break;
-		default:
-			right = false;
-			left = true;
-	}
-
-
-	if(zone_name == "foyer_zone" || zone_name == "foyer2_zone")
-			return 0;
-	//-----
-	else if(zone_name == "vip_zone"){
-			if(left)
-				return undefined;
-			return 1;
-		}
-	else if(zone_name == "dining_zone"){
-			if(left)
-				return undefined;
-			return 2;
-		}
-	else if(zone_name == "dressing_zone"){
-			if(left)
-				return undefined;
-			return 3;
-		}
-	//-----
-	else if(zone_name == "stage_zone"){
-			if(left)
-				return 2;
-			return 4;
-		}
-	else if(zone_name == "theater_zone"){
-			if(left)
-				return 1;
-			return 5;
-		}
-	//-----
-	else if(zone_name == "west_balcony_zone"){
-			if(right)
-				return undefined;
-			return 3;
-		}
-	else if(zone_name == "alleyway_zone"){
-			if(right)
-				return undefined;
-			return 4;
-		}
-	else if(zone_name == "crematorium_zone"){
-			if(right)
-				return undefined;
-			return 5;
-		}
-	return 100;
-}
-player_is_in_dead_zone(player, door_id){	//run after "zone_info_updated"
-	/*if(!IsDefined( player )){
-		players = get_players();
-		for( i = 0; i < players.size; i++ )
-		{
-			player = players[i];
-			 if(
-				(player.current_zone == "dining_zone" && player IsTouching( level.zones["dining_zone"].volumes[2] )) ||
-				(player.current_zone == "stage_zone"  && player IsTouching( level.zones["stage_zone"].volumes[0] ))
-				)
-			 	return true;
-		}
-		return false;
-	}*/
-	//IPrintLn( player.origin[0], player.origin[1], player.origin[2] );
-	if(!isDefined(player.current_zone))
-		return false;
-	o = (!IsDefined( door_id ) || door_id == 4 || door_id == 3 ) && player.current_zone == "dining_zone";
-	if(o)
-		return player IsTouching( level.zones["dining_zone"].volumes[2] );
-	o = (!IsDefined( door_id ) || door_id == 1 || door_id == 0 ) && player.current_zone == "stage_zone";
-	if(o)
-		return player IsTouching( level.zones["stage_zone"].volumes[0] );
-	o = (!IsDefined( door_id ) || door_id == 6 || door_id == 9 ) && player.current_zone == "theater_zone";
-	if(o)
-		//return player IsTouching( level.zones["theater_zone"].volumes[1] ); doesnt really work the way i want it to.
-		return player IsTouching( level.zones["theater_zone"].volumes[1] && player.origin[1] < -185 );
-
-	return false;
-}
-can_close_door(){	//run after "zone_info_updated"
-	door_id = self get_door_id();
-	if(door_id == 4 || door_id == 3){
-		o = zone_is_occupied_rn("dining_zone");
-		//if(o && a_player_is_close_to_door_id(3,380)){ //replace for a trigger check fucntion
-		if(o && player_is_touching(level.zones["dining_zone"].volumes[2]))
-			return false;
-		else 
-			return !a_player_is_close_to_door_id(3, 230) && !a_player_is_close_to_door_id(4, 230);
-	} else if(door_id == 1 || door_id == 0){
-		o = zone_is_occupied_rn("stage_zone");
-		//if(o && a_player_is_close_to_door_id(1,360))
-		if(o && player_is_touching(level.zones["stage_zone"].volumes[0]))
-			return false;
-		else 
-			return !a_player_is_close_to_door_id(1, 280) && !a_player_is_close_to_door_id(0, 280);
-	}else if(door_id == 6 || door_id == 9){
-		o = zone_is_occupied_rn("theater_zone");
-		//if(o && a_player_is_close_to_door_id(1,360))
-		if(o){
-			players = get_players();
-			for(i = 0; i < players.size; i++){
-				player = players[i];
-				//zhcp(int( player.origin[0]) +","+ int(player.origin[1]) +","+ int(player.origin[2]) ,444);
-				if(player.current_zone == "theater_zone" && player.origin[1] < -185)
-				//if(o && player_is_touching(level.zones["theater_zone"].volumes[1]))
-					return false;
-			}
-		}
-		//else 
-			return !a_player_is_close_to_door_id(6, 230) && !a_player_is_close_to_door_id(9, 230);
-	}else{
-		return !self a_player_is_close_to_door(100);
-	}
-}
-
-
-player_is_touching(trigger, player){
-	if(!isDefined(player)){
-		players = get_players();
-		for( i = 0; i < players.size; i++ )
-		{
-			player = players[i];
-			if(player IsTouching(trigger))
-				return true;
-		}
-		return false;
-	}
-
-	return player IsTouching(trigger);
-}
-
 get_sister_door(){									//applies to doors that have 2 sets of doors. 
-
 	if(!isDefined (self.sister_door)){
-		zombie_doors = GetEntArray( "zombie_door", "targetname" ); 
-		switch(self get_door_id())
-		{
-			case 3:
-				self.sister_door = zombie_doors[4];
-				break;
-			case 4:
-				self.sister_door = zombie_doors[3];
-				break;
-			case 1:
-				self.sister_door = zombie_doors[0];
-				break;
-			case 0:
-				self.sister_door = zombie_doors[1];
-				break;
-			case 6:
-				self.sister_door = zombie_doors[9];
-				break;
-			case 9:
-				self.sister_door = zombie_doors[6];
-				break;
-			default:
-				self.sister_door = self;
-				break;
-		}
+		self [[level.set_sister_door]]();
 	}
 	if(self.sister_door == self)
 		return self;
 	return self.sister_door;
 }
-
-
 
 notify_sister_door(msg, make_submissive){
 	sis = self get_sister_door();
@@ -2285,7 +1903,7 @@ door_opened()
 		if(time > waittime)
 			waittime = time;
 		// Don't thread this so the doors don't move at once
-		self.doors[i] door_activate(i,time);
+		self.doors[i] door_activate(i,time, true, self.ZHC_is_closeable, self.last_user);
 	}
 	// Just play purchase sound on the first door
 	if( self.doors.size )
@@ -2309,6 +1927,7 @@ door_opened()
 	self notify("door_opened");
 	self notify_sister_door("door_opened");
 }
+
 
 door_closed()
 {
@@ -2343,7 +1962,7 @@ door_closed()
 				///
 
 	level waittill("zone_info_updated");
-	while(!self can_close_door()){
+	while(!self [[level.can_close_door]]()){
 		//IPrintLnBold( "cant_close_door >;(" );
 		level waittill("zone_info_updated");
 	}
@@ -2373,7 +1992,7 @@ door_closed()
 		if(time > waittime)
 			waittime = time;
 		// Don't thread this so the doors don't move at once
-		self.doors[i] door_activate(i,time,false);
+		self.doors[i] door_activate(i,time,false, self.ZHC_is_closeable, self.last_user);
 	}
 	// Just play purchase sound on the first door
 	if( self.doors.size )
@@ -2404,7 +2023,7 @@ door_closed()
 //	Launch the door!
 //	self = door entity
 //	door_trig = door trigger
-physics_launch_door( door_trig )
+physics_launch_door( door_trig , keep, launch_vector)
 {
 // 	origin = self.origin;
 // 	if ( IsDefined(door_trig.explosives) )
@@ -2412,17 +2031,23 @@ physics_launch_door( door_trig )
 // 		origin = door_trig.explosives[0].origin;
 // 	}
 // 
-	vec = vector_scale( VectorNormalize( self.script_vector ), 5 );
+	launch_vector = define_or(launch_vector, self.script_vector);
+
+	vec_norm = VectorNormalize( launch_vector );
+	vec = vector_scale( vec_norm, 5 );
 	self MoveTo( self.origin + vec, 0.1 );
 	self waittill( "movedone" );
 
-	self PhysicsLaunch( self.origin, self.script_vector *10 );
+	self PhysicsLaunch( self.origin, vec_nom * 10 );
 	wait(0.1);
 	PhysicsExplosionSphere( vector_scale( vec, -1 ), 120, 1, 100 );
 
 	wait(60);
-
-	self delete();
+	if(!keep){
+		self delete();
+	}else{
+		self hide();
+	}
 }
 
 

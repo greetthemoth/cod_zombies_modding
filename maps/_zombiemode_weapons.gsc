@@ -636,7 +636,7 @@ door_barr_weapon(){
 
 	same_side = true;
 
-	//roomId_barr_appears_from = maps\_zombiemode_blockers::Get_Zone_Room_ID(maps\_zombiemode_blockers::Get_Players_Current_Zone(player));	//room id of the player that bought the door
+	//roomId_barr_appears_from = maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(maps\_zombiemode_blockers::Get_Players_Current_Zone(player));	//room id of the player that bought the door
 	if(same_side)
 		roomId_barr_appears_from = self.roomId_bought_to;
 	else
@@ -655,7 +655,7 @@ door_barr_weapon(){
 		wait_network_frame( );
 		//while(1){
 		player = self maps\_zombiemode_blockers::waittill_roomID_is_occupied_return_player(roomId_barr_appears_from);
-		//	if(!maps\_zombiemode_blockers::player_is_in_dead_zone(player, self maps\_zombiemode_blockers::get_door_id()))
+		//	if(![[level.player_is_in_dead_zone]](player, self maps\_zombiemode_blockers::get_door_id()))
 		//		break;
 		//	else
 		//		wait 0.25;
@@ -669,7 +669,7 @@ door_barr_weapon(){
 	can_upgrade = true;
 	CAN_ONLY_UPGRADE_IF_ROOM_LOCKED = true;
 	if(CAN_ONLY_UPGRADE_IF_ROOM_LOCKED){
-		doorIds = maps\_zombiemode_blockers::Get_Doors_Accesible_in_room(roomId_barr_appears_from); //doors in room accessed
+		doorIds = maps\ZHC_zombiemode_roundflow::Get_Doors_Accesible_in_room(roomId_barr_appears_from); //doors in room accessed
 		doorIds = array_remove( doorIds,self maps\_zombiemode_blockers::get_door_id());
 		doorIds = array_remove(doorIds, 6);doorIds = array_remove(doorIds, 9);	//remove electrical doors
 		can_upgrade = !maps\_zombiemode_blockers::one_door_is_unbarred(doorIds);
@@ -862,22 +862,6 @@ chest_weapon_swap(roomId_visible_from, can_upgrade){
 		self.weapon_trigger.zombie_weapon_upgrade = weapon;
 		self.weapon_trigger thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon);
 	}
-	/*last_threaded_chestIds_index = 0;
-	max_chest_size = 1;
-	while(1){
-		chestIds = maps\_zombiemode_blockers::map_get_room_info(roomId_visible_from)["chests"];
-		if(chestIds.size <= last_threaded_chestIds_index)	//sees if new chest was added
-			wait(0.5);
-		else{
-			self thread chest_weapon_grab_change_door_weapon(level.chests[chestIds[last_threaded_chestIds_index]].chest_origin, can_upgrade);
-			last_threaded_chestIds_index++;
-			if(last_threaded_chestIds_index >= max_chest_size)
-				return;
-		}
-	}*/
-	/*for(i = 0; i < chestIds.size; i++){
-		self thread chest_weapon_grab_change_door_weapon(level.chests[chestIds[i]].chest_origin, can_upgrade);
-	}*/
 }
 
 chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
@@ -951,7 +935,7 @@ weapon_thread_manage_triggers(roomId_visible_from){
 	//self.weapon_trigger endon("weapon_stop");	//instead checks if weapon_trigger exists
 	self.weapon_trigger endon("deleted");	//should end when weapon trigger gets destroyed by thread weapon_stop_on_door_open()
 
-	zones = maps\_zombiemode_blockers::roomIDToZones(roomId_visible_from);
+	zones = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomId_visible_from);
 
 	if(!IsDefined( zones )){
 		zhcpb( "NO VOLUMES FOUND" , 100);
@@ -2149,10 +2133,10 @@ chest_wait_to_change_door_barr(){
 	level notify ("weapon_picked_up_in_room_"+self.roomId, weapon);
 }
 wait_to_update_roomId(zone){
-	if(!maps\_zombiemode_blockers::room_id_can_be_stopped(self.roomId))
+	if(![[level.room_id_can_be_stopped]](self.roomId))
 		return;
 	level waittill("room_stop_"+self.roomId);
-	self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(zone);
+	self.roomId = maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(zone);
 }
 
 treasure_chest_think(){
@@ -2281,20 +2265,19 @@ treasure_chest_think(){
 				else{
 					//zone = user.current_zone;
 					//zone = maps\_zombiemode_blockers::Get_Players_Current_Zone_Patient(user);	//contains waits.
-					self.roomId = maps\_zombiemode_blockers::Get_Zone_Room_ID(user.current_zone);
+					self.roomId = maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(user.current_zone);
 					//self thread wait_to_update_roomId(zone);
 					zhcp("user.current_zone:"+user.current_zone, 50);
 					zhcp("roomId:"+self.roomId, 50);
 
 					//maps\ZHC_zombiemode_roundflow::debug_room_zones(self.roomId);
 
-					roomInfo  = maps\_zombiemode_blockers::map_get_room_info(self.roomId);
-					roomInfo["chests"][roomInfo["chests"].size] = get_chest_index(self);
+					array_add(maps\ZHC_zombiemode_roundflow::Get_Room_Info(self.roomId, "chests"), get_chest_index(self));
 					if(!isDefined(self.roomId)){
 						wait(1);
 					}
 				}
-			}else if(maps\_zombiemode_blockers::map_get_room_info(self.roomId)["occupied"]){
+			}else if([[level.map_get_room_info]](self.roomId)["occupied"]){
 				//if(self.roomId == 4 || self.roomId == 100){
 				//	zhcp( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest player is in room"+self.roomId+"... opening... chest:"  + get_chest_index(self), 50);
 				//}
@@ -2309,7 +2292,7 @@ treasure_chest_think(){
 			}
 			else{
 				//if(self.roomId == 4 || self.roomId == 100)
-				//	IPrintLn( maps\_zombiemode_blockers::map_get_room_info(self.roomId)["name"] +" chest waiting for player to be in room"+self.roomId+" chest:" + get_chest_index(self));
+				//	IPrintLn( [[level.map_get_room_info]](self.roomId)["name"] +" chest waiting for player to be in room"+self.roomId+" chest:" + get_chest_index(self));
 				wait 0.1;
 			}
 		}
