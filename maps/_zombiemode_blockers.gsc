@@ -1179,7 +1179,7 @@ door_buy_expired(){
 		if(level.ZHC_ROOMFLOW){
 			//if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 			//	level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
-			difficulty_on_buy = [[level.map_get_room_info]](self.roomId_bought_from)["flow_difficulty"];
+			difficulty_on_buy = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
 			dif_on_buy_goal_mult = 0.75;
 			dif_goal = (difficulty_on_buy * dif_on_buy_goal_mult) + (3+((level.round_number)/5));
 			zhcp("diffgoal: " +difficulty_on_buy + "/"+ dif_goal ,444);
@@ -1187,7 +1187,7 @@ door_buy_expired(){
 			last_difficulty = difficulty_on_buy; //used for debug
 			last_dogs_left_to_spawn = define_or(level.ZHC_dogs_to_spawn_this_round,0); //used for debug
 			while(1){
-				difficulty = [[level.map_get_room_info]](self.roomId_bought_from)["flow_difficulty"];
+				difficulty = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
 				if(!flag("dog_round") && (difficulty < dif_goal || define_or(level.ZHC_dogs_to_spawn_this_round,0) > 0) ){ //4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
 					
 					//level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
@@ -1207,8 +1207,8 @@ door_buy_expired(){
 						zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" ... leave room to close" ,444);
 				}
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
-				if(![[level.map_get_room_info]](self.roomId_bought_from)["occupied"] 
-				&& (!IsDefined( self.last_user ) || [[level.map_get_room_info]](self.last_user.current_zone) != self.roomId_bought_from )
+				if(!Get_Room_Info(self.roomId_bought_from,"occupied") 
+				&& (!IsDefined( self.last_user ) || [[level.map_get_zone_room_id]](self.last_user.current_zone) != self.roomId_bought_from )
 				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
 			}
@@ -1242,7 +1242,7 @@ door_buy_expired(){
 ensure_close_door_with_room_not_occupied(){
 	self endon ("open_door");
 	self waittill("door_closed");
-	if(![[level.map_get_room_info]](self.roomId_bought_from)["occupied"] && (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ))
+	if(!Get_Room_Info(self.roomId_bought_from,"occupied") && (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ))
 		self notify ("ensured_door_close");
 	else{
 		//door close not ensured

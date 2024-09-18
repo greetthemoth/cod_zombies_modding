@@ -191,6 +191,8 @@ update_player_zones(player){
 
 	for (j = 0; j < players.size; j++)
 	{
+		if(IsDefined( players_ignore[j] ))													//players that already have a zone assigned
+			continue;
 		players[j].current_zone = undefined;
 	}
 }
@@ -200,6 +202,8 @@ player_in_zone_check(player, zone_name){
 	for (i = 0; i < zone.volumes.size; i++)
 	{
 		if ( player IsTouching(zone.volumes[i])){
+			zone.is_enabled = true;
+			zone.is_active = true;
 			player.current_zone = zone_name;
 			return true;
 		}

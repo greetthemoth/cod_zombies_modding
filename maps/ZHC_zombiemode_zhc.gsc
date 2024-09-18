@@ -4,7 +4,7 @@
 #include maps\ZHC_utility;
 
 get_testing_level(){
-	return 1;
+	return 6;
 	//level <0: no debugs
 	//level 0.5: extra points
 	//level 6 : power on
@@ -119,7 +119,7 @@ testing_ground(){
 				}
 
 				if(true){ //spawn nuke drop down at random dog spawn
-					spawned = zhc_try_spawn_powerup_fall_down("nuke",get_random_dog_spawn_pos());
+					spawned = zhc_try_spawn_powerup_fall_down("nuke",get_random_active_dog_spawn_pos());
 				}
 
 				if(spawned)
@@ -128,15 +128,17 @@ testing_ground(){
 					wait(0.5);
 			}
 		}
-		maps\zombie_theater_teleporter::teleporter_init();
-		while(true){
-			dp = get_random_dog_spawn_pos();
-			if(isDefined(dp)){
-				spawn_lightning_teleport(dp);
-				wait(2);
+		if(false){
+			maps\zombie_theater_teleporter::teleporter_init();
+			while(true){
+				dp = get_random_active_dog_spawn_pos();
+				if(isDefined(dp)){
+					maps\ZHC_zombie_theater::spawn_lightning_teleport(dp);
+					wait(2);
+				}
+				else
+					wait(0.5);
 			}
-			else
-				wait(0.5);
 		}
 		
 	}
@@ -158,7 +160,7 @@ testing_ground(){
 	//thread haunt_all_players();
 }
 
-get_random_dog_spawn_pos(){
+get_random_active_dog_spawn_pos(){
 	if(!IsDefined( level.enemy_dog_locations )){
 		zhcp("no dog locations");
 		return;
@@ -167,7 +169,114 @@ get_random_dog_spawn_pos(){
 		zhcp("no dog locations");
 		return;
 	}
+	return level.enemy_dog_locations[randomint(level.enemy_dog_locations.size-1)].origin;
+}
+get_active_dog_spawn_positions(){ //player is close enough to spawn from
+	if(!IsDefined( level.enemy_dog_locations )){
+		zhcp("no dog locations");
+		return;
+	}
+	if(level.enemy_dog_locations.size == 0 ){
+		zhcp("no dog locations");
+		return;
+	}
+	pos = [];
+	for( i = 0 ; i<level.enemy_dog_locations.size; i++ ){
+		pos[pos.size] = level.enemy_dog_locations[i].origin;
+	}
 	return array_randomize(level.enemy_dog_locations)[0].origin;
+}
+
+get_inactive_dog_spawn_positions(){ //players are too far to spawn from
+	pos = [];
+	roomKeys = GetArrayKeys(  level.ZHC_room_info);
+	for(z = 0; z < roomKeys.size; z++){
+		zones =  maps\ZHC_zombiemode_roundflow::Get_Room_Info(roomKeys[z], "zones");
+		for(i = 0; i < zones.size; i++){
+			zone = level.zones[zones[i]];
+			if(zone.is_active)
+				continue;
+			for(x=0; x<zone.dog_locations.size; x++)
+			{
+				pos[pos.size] = zone.dog_locations[x].origin;
+			}
+		}
+	}
+	return pos;	
+}
+
+get_enabled_dog_spawn_positions(){ //spawners have EVER been activated
+	pos = [];
+	roomKeys = GetArrayKeys(  level.ZHC_room_info);
+	for(z = 0; z < roomKeys.size; z++){
+		zones =  maps\ZHC_zombiemode_roundflow::Get_Room_Info(roomKeys[z], "zones");
+		for(i = 0; i < zones.size; i++){
+			zone = level.zones[zones[i]];
+			if(!zone.is_enabled)
+				continue;
+			for(x=0; x<zone.dog_locations.size; x++)
+			{
+				pos[pos.size] = zone.dog_locations[x].origin;
+			}
+		}
+	}
+	return pos;	
+}
+
+
+get_disabled_dog_spawn_positions(){ //spawners have NEVER been activated
+	pos = [];
+	roomKeys = GetArrayKeys(  level.ZHC_room_info);
+	for(z = 0; z < roomKeys.size; z++){
+		zones =  maps\ZHC_zombiemode_roundflow::Get_Room_Info(roomKeys[z], "zones");
+		for(i = 0; i < zones.size; i++){
+			zone = level.zones[zones[i]];
+			if(zone.is_enabled)
+				continue;
+			for(x=0; x<zone.dog_locations.size; x++)
+			{
+				pos[pos.size] = zone.dog_locations[x].origin;
+			}
+		}
+	}
+	return pos;	
+}
+
+
+get_random_dog_spawn_pos_in_room(roomId){
+	pos = get_dog_spawn_positions_in_room(roomId);
+	return pos[randomint(pos.size-1)];
+}
+get_dog_spawn_positions_in_room(roomId){
+	pos = [];
+	zones =  maps\ZHC_zombiemode_roundflow::Get_Room_Info(roomId, "zones");
+	for(i = 0; i < zones.size; i++){
+		zone = level.zones[zones[i]];
+		for(x=0; x<zone.dog_locations.size; x++)
+		{
+			pos[pos.size] = zone.dog_locations[x].origin;
+		}
+	}
+	return pos;
+}
+get_random_dog_spawn_pos(){
+	pos = get_dog_spawn_positions();
+	return pos[randomint(pos.size-1)];
+}
+get_dog_spawn_positions(){
+	pos = [];
+	roomKeys = GetArrayKeys(  level.ZHC_room_info);
+	for(z = 0; z < roomKeys.size; z++){
+		zones =  maps\ZHC_zombiemode_roundflow::Get_Room_Info(roomKeys[z], "zones");
+		for(i = 0; i < zones.size; i++){
+			zone = level.zones[zones[i]];
+			for(x=0; x<zone.dog_locations.size; x++)
+			{
+				pos[pos.size] = zone.dog_locations[x].origin;
+			}
+		}
+	}
+	return pos;	
 }
 get_random_player_pos(){
 	players= get_players();
@@ -465,13 +574,13 @@ kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	/
 		attacker addToCollateralPointBonus(mod, weapon, oneShot1Kill);
 
 		//testo
-		if(define_or(level.ZHC_POWERUP_KILL_NOTIFEES,0) < 2 && !is_true(self.no_powerups)){
+		/*if(define_or(level.ZHC_POWERUP_KILL_NOTIFEES,0) < 2 && !is_true(self.no_powerups)){
 			if(define_or(level.ZHC_POWERUP_KILL_NOTIFEES,0) == 1){
 				zhc_try_spawn_powerup_dig_up("insta_kill", self.origin);
 			}else{
 				zhc_try_spawn_powerup_fall_down("nuke", self.origin);
 			}
-		}
+		}*/
 
 		if(define_or(level.ZHC_POWERUP_KILL_NOTIFEES,0) > 0){
 			level notify("zhc_zombie_killed_at_pos", self.origin, attacker.origin, (sHitLoc != "head" && sHitLoc != "helmet") );
@@ -632,298 +741,7 @@ gain_perk_slot_all_players(){
 	}
 }
 
-get_lightning_teleport_destinations(){
-	dest_room_origins = []; // set the origins we want
-	//dest_room_angles = []; // set the angles we want
-	{ //testo temp
-		doors = GetEntArray( "zombie_door", "targetname" );
-		for( i =0; i < doors.size; i++	 ){
-			if(!doors[i]._door_open)
-				continue;
-			all_trigs = getentarray( doors[i].target, "target" ); 
-			for( t = 0; t < all_trigs.size; t++ )
-			{
-				dest_room_origins[dest_room_origins.size] = all_trigs[t].origin;
-			}
-		}
-	}
-	////////dest_room_origins = array_add( dest_room_origins, get_random_dog_spawn_pos() );
-	//dest_room_angles = array_add( dest_room_origins, undefined );
-}
 
-spawn_lightning_teleport(origin){
-	thread maps\_zombiemode::dog_despawn_sound_effect(origin);
-	playfx(level._effect["lightning_dog_spawn"], origin);
-	//wait(0.5);
-
-	effect_trigger  = Spawn( "trigger_radius", origin, 0, 200, 12 );
-	effect_trigger thread zhc_teleport_fps_effect();
-	
-	
-	trigger  = Spawn( "trigger_radius", origin, 0, 150, 12 );
-	//AUDIO
-	trigger thread maps\zombie_theater_teleporter::teleport_2d_audio();
-	trigger thread zhc_teleport_players();
-	wait(1.75); //wait for audio stuff to end.
-	trigger delete();
-
-	//playsoundatposition( "evt_beam_fx_2d", (0,0,0) );
-    //playsoundatposition( "evt_pad_cooldown_2d", (0,0,0) );
-}
-
-zhc_teleport_fps_effect(){
-	
-	//fps fx
-	self thread  maps\zombie_theater_teleporter::teleport_pad_player_fx(undefined );
-
-	wait(1.5);
-	// end fps fx
-	self notify( "fx_done" );
-	self delete();
-}
-
-zhc_teleport_players()
-{
-	
-	
-
-	// wait a bit
-	wait( 1.5 ); //no delay we already wait for effect
-
-	// Activate the TP zombie kill effect
-	thread teleport_nuke( undefined, self.origin, 150);	// Max range 300
-
-	//moved for test
-	dest_room_origins = get_lightning_teleport_destinations();
-	
-
-	//moved for test
-
-	if(dest_room_origins.size == 0)
-		return;
-
-
-
-	player_radius = 16;
-	all_players = get_players();
-	slot = undefined;
-	start = undefined;
-
-	prone_offset = (0, 0, 49);
-	crouch_offset = (0, 0, 20);
-	stand_offset = (0, 0, 0);
-	
-	players = get_players( );
-	dest_room = [];
-	dest_room =  maps\zombie_theater_teleporter::get_array_spots("teleport_room_", dest_room);
-	maps\zombie_theater_teleporter::initialize_occupied_flag(dest_room); // the original ver of fuction not our modified vrsion
-	maps\zombie_theater_teleporter::check_for_occupied_spots(dest_room, players, player_radius); // the original ver of fuction not our modified vrsion
-
-	players_teleporting = [];
-	// send players to a black room to flash images for a few seconds
-	for ( i = 0; i < players.size; i++ )
-	{	
-		if ( isdefined( players[i] ) )
-		{			
-			if ( self maps\zombie_theater_teleporter::player_is_near_pad( players[i]) == false){
-				zhcpb("not touching teleporter", 300);
-				continue;
-			}
-			
-			// find a free space at the projection room
-			slot = i;
-			start = 0;
-			while ( dest_room[slot].occupied && start < dest_room.size ) //4
-			{
-				start++;
-				slot++;
-				if ( slot >= dest_room.size ) //4
-				{
-					slot = 0;
-				}
-			}
-			
-			players_teleporting [players_teleporting.size] = players[i];
-
-			dest_room[slot].occupied = true;
-			players[i].inteleportation = true;	//shouldn't matter if we set this to true multiple times
-			
-			// DCS: commenting out for integration of code function.
-			//players[i] settransported( 0 );		// turn off the fps fx in case it was still playing
-			
-			players[i] disableOffhandWeapons();
-			players[i] disableweapons();
-			
-			if( players[i] getstance() == "prone" )
-			{
-				desired_origin = dest_room[slot].origin + prone_offset;
-			}
-			else if( players[i] getstance() == "crouch" )
-			{
-				desired_origin = dest_room[slot].origin + crouch_offset;
-			}
-			else
-			{
-				desired_origin = dest_room[slot].origin + stand_offset;
-			}			
-			
-			players[i].pre_teleport_angles  = players[i].angles;
-			players[i].teleport_origin = spawn( "script_origin", players[i].origin );
-			players[i].teleport_origin.angles = players[i].angles;
-			players[i] linkto( players[i].teleport_origin );
-			players[i].teleport_origin.origin = desired_origin;
-			
-			players[i] FreezeControls( true );
-			wait_network_frame();
-			setClientSysState( "levelNotify", "black_box_start", players[i] );			
-			players[i].teleport_origin.angles = dest_room[slot].angles;
-		}
-	}
-		
-	// everybody left the pad before they actually teleported
-	if (!IsDefined(players_teleporting) || (IsDefined(players_teleporting) && players_teleporting.size < 1))
-		return;
-		
-	wait(2);
-	
-	players_teleporting = array_removeUndefined(players_teleporting);
-
-	//dest_room_origins = []; // set the origins we want
-	//dest_room_angles = []; // set the angles we want
-	
-	
-	dest_room_dice = [];
-	for(i = 0; i < dest_room_origins.size; i++){
-		dest_room_dice[dest_room_dice.size] = i;
-	}
-	dest_room_dice = array_randomize( dest_room_dice );
-	//dest_room_origins = array_randomize( dest_room_origins );
-
-	dest_room_occupied = initialize_occupied_flag(dest_room_origins);
-	dest_room_occupied = check_for_occupied_spots(dest_room_occupied,dest_room_origins, all_players, player_radius);
-
-
-	 
-
-	for ( i = 0; i < players_teleporting.size; i++ )
-	{	
-		if(!isDefined(players_teleporting[i]))
-		{
-			continue;
-		}
-		slot = 0;
-		start = 0;
-		while ( dest_room[dest_room_dice[slot]].occupied && start < dest_room_origins.size )
-		{
-			start++;
-			slot++;
-			if ( slot >= dest_room_origins.size )
-			{
-				slot = 0;
-			}
-		}
-		
-		
-		
-		dest_room_occupied[dest_room_dice[slot]] = true;
-		setClientSysState( "levelNotify", "black_box_end", players_teleporting[i] );
-			
-		// remove script orgin we used in teleporting to black room
-		assert( IsDefined( players_teleporting[i].teleport_origin ) );
-		players_teleporting[i].teleport_origin delete();
-		players_teleporting[i].teleport_origin = undefined;
-
-		players_teleporting[i] setorigin( dest_room_origins[dest_room_dice[slot]] );
-		players_teleporting[i] setplayerangles (players_teleporting[i].pre_teleport_angles);
-		players_teleporting[i].pre_teleport_angles = undefined;
-		//if(IsDefined( Object ))
-		//players_teleporting[i] setplayerangles( define_or(dest_room_angles[dest_room_dice[slot]] , old_player_angles[i] ));
-		
-		//if (loc != "eerooms")
-		{
-			players_teleporting[i] enableweapons();
-			players_teleporting[i] enableoffhandweapons();
-			players_teleporting[i] FreezeControls( false );	
-		}
-		/*else // in special rooms can now move. 
-		{
-			players_teleporting[i] FreezeControls( false );
-		}*/
-			
-		setClientSysState("levelNotify", "t2bfx", players_teleporting[i]);
-		players_teleporting[i] maps\zombie_theater_teleporter::teleport_aftereffects();
-			
-		//thread extra_cam_startup();
-		players_teleporting[i].inteleportation = false;	
-		teleport_nuke( 8, dest_room_origins[dest_room_dice[slot]], 20); //max 8 zombies
-	}
-
-	////level.eeroomsinuse = undefined;
-}
-initialize_occupied_flag(dests)
-{
-	dest_is_occupied = [];
-	for ( i = 0; i < dests.size; i++ )
-	{
-		dest_is_occupied[i] = false;					
-	}
-	return dest_is_occupied;
-}
-check_for_occupied_spots(dest_is_occupied, dests, players, player_radius)
-{	
-	for ( i = 0; i < players.size; i++ )
-	{
-		if ( isdefined( players[i] ) )
-		{
-			for ( j = 0; j < dests.size; j++ )
-			{
-				if ( !dest_is_occupied[j] )
-				{
-					dist = Distance2D( dests[j], players[i].origin );
-					if ( dist < player_radius )
-					{
-						dest_is_occupied[j] = true;
-					}
-				}
-			}
-		}
-	}
-	return dest_is_occupied;
-}
-//	Kill anything near the teleport
-teleport_nuke( max_zombies, origin, range )
-{
-	zombies = getaispeciesarray("axis");
-
-	zombies = get_array_of_closest( origin, zombies, undefined, max_zombies, range );
-
-	for (i = 0; i < zombies.size; i++)
-	{
-		wait (randomfloatrange(0.2, 0.3));
-		if( !IsDefined( zombies[i] ) )
-		{
-			continue;
-		}
-		
-// 		if( is_magic_bullet_shield_enabled( zombies[i] ) )
-// 		{
-// 			continue;
-// 		}
-
-		if(zombies[i].animname == "zombie_dog")	//my version doesnt kill dogs
-			continue;
-
-		if( isDefined( zombies[i].animname ) && 
-			( zombies[i].animname != "boss_zombie" && zombies[i].animname != "ape_zombie" ) &&
-			zombies[i].health < 5000)
-		{
-			zombies[i] maps\_zombiemode_spawner::zombie_head_gib();
-		}
-
-		zombies[i] dodamage( zombies[i].health + 100, zombies[i].origin );
-		playsoundatposition( "nuked", zombies[i].origin );
-	}
-}
 
 
 

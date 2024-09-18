@@ -132,29 +132,29 @@ Merge_RoomsId(roomId_1, roomId_2, new_room_id){
 		start_room_think = true;
 	}
 
-	for(i = 0; i < room_ids_to_erase.size; i++){
+	for(r = 0; r < room_ids_to_erase.size; r++){
 
-		level notify( "room_stop_"+room_ids_to_erase[i] );
+		level notify( "room_stop_"+room_ids_to_erase[r] );
 
-		maps\ZHC_zombiemode_roundflow::deactivate_room(room_ids_to_erase[i]); //remove mults and stuff.
+		maps\ZHC_zombiemode_roundflow::deactivate_room(room_ids_to_erase[r]); //remove mults and stuff.
 		//maps\ZHC_zombiemode_roundflow::debug_room_zones(4);
 		//maps\ZHC_zombiemode_roundflow::debug_room_zones(100);
-		level.ZHC_room_info[new_room_id]["occupied"] = level.ZHC_room_info[room_ids_to_erase[i]]["occupied"];
+		level.ZHC_room_info[new_room_id]["occupied"] = level.ZHC_room_info[room_ids_to_erase[r]]["occupied"];
 		
-		level.ZHC_room_info[new_room_id]["doors"] = array_merge( level.ZHC_room_info[new_room_id]["doors"],level.ZHC_room_info[room_ids_to_erase[i]]["doors"] );
+		level.ZHC_room_info[new_room_id]["doors"] = array_merge( level.ZHC_room_info[new_room_id]["doors"],level.ZHC_room_info[room_ids_to_erase[r]]["doors"] );
 		//level.ZHC_room_info[new_room_id]["doors"] = [[level.map_get_doors_accesible_in_room]](new_room_id); //if already accounds for update changes
 		level.ZHC_room_info[new_room_id]["enemy_count"] = level.ZHC_room_info[new_room_id]["enemy_count"] + level.ZHC_room_info[new_room_id]["enemy_count"];
 
-		for(i = 0; i < level.ZHC_room_info[room_ids_to_erase[i]]["zones"].size; i++){
-			level.ZHC_room_info[new_room_id]["zones"][level.ZHC_room_info[new_room_id]["zones"].size] = level.ZHC_room_info[room_ids_to_erase[i]]["zones"][i];
-			level.ZHC_zoneToRoomID[level.ZHC_room_info[room_ids_to_erase[i]]["zones"][i]] = new_room_id;
+		for(i = 0; i < level.ZHC_room_info[room_ids_to_erase[r]]["zones"].size; i++){
+			level.ZHC_room_info[new_room_id]["zones"][level.ZHC_room_info[new_room_id]["zones"].size] = level.ZHC_room_info[room_ids_to_erase[r]]["zones"][i];
+			level.ZHC_zoneToRoomID[level.ZHC_room_info[room_ids_to_erase[r]]["zones"][i]] = new_room_id;
 		}
-		for(i = 0; i < level.ZHC_room_info[room_ids_to_erase[i]]["chests"].size; i++){
-			level.ZHC_room_info[new_room_id]["chests"][level.ZHC_room_info[new_room_id]["chests"].size] = level.ZHC_room_info[room_ids_to_erase[i]]["chests"][i];
-			level.chests[level.ZHC_room_info[room_ids_to_erase[i]]["chests"][i]].roomId = new_room_id;
+		for(i = 0; i < level.ZHC_room_info[room_ids_to_erase[r]]["chests"].size; i++){
+			level.ZHC_room_info[new_room_id]["chests"][level.ZHC_room_info[new_room_id]["chests"].size] = level.ZHC_room_info[room_ids_to_erase[r]]["chests"][i];
+			level.chests[level.ZHC_room_info[room_ids_to_erase[r]]["chests"][i]].roomId = new_room_id;
 		}
 		maps\ZHC_zombiemode_roundflow::debug_room_zones(new_room_id);
-		level.ZHC_room_info[room_ids_to_erase[i]] = undefined; //dont remove or it will fuck with the room indexing.
+		level.ZHC_room_info[room_ids_to_erase[r]] = undefined; //dont remove or it will fuck with the room indexing.
 		level.ZHC_room_info[new_room_id]["name"] = [[level.map_get_room_name]](new_room_id);
 		
 		

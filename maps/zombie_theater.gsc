@@ -440,7 +440,10 @@ wait_for_power(first_time) //added var for mod
 
 	//get the teleporter ready
 	if(first_time)	//condition added for mod
+	{
 		maps\zombie_theater_teleporter::teleporter_init();
+		thread maps\ZHC_zombie_theater::ZHC_manage_lightning();
+	}
 
 	wait_network_frame();
 	// Set Perk Machine Notifys
