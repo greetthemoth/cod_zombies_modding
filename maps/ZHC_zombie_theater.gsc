@@ -6,6 +6,9 @@
 
 
 init(){
+	//for curtain reset
+	PrecacheModel( "zombie_theater_curtain" );
+
 	level.map_get_room_info = ::map_get_room_info;
 	level.Get_Other_Zone = ::Get_Other_Zone ;
 	level.room_id_can_be_stopped = ::room_id_can_be_stopped ;
@@ -14,7 +17,7 @@ init(){
 	level.map_get_doors_accesible_in_room = ::map_get_doors_accesible_in_room ;
 	level.map_get_room_name = ::map_get_room_name ;
 	//level.Get_Zone_Room_ID_Special = ::Get_Zone_Room_ID_Special ;
-	//level.player_is_in_dead_zone = ::player_is_in_dead_zone ;
+	level.player_is_in_dead_zone = ::player_is_in_dead_zone ;
 	level.can_close_door = ::can_close_door ;
 	level.set_sister_door = ::set_sister_door ;
 
@@ -334,6 +337,7 @@ player_is_in_dead_zone(player, door_id){	//run after "zone_info_updated"
 	return false;
 }
 
+
 can_close_door(){	//run after "zone_info_updated"
 	door_id = self maps\_zombiemode_blockers::get_door_id();
 	if(door_id == 4 || door_id == 3){
@@ -480,10 +484,10 @@ start_spawning_lightning(delay){
 	}
 	level.ZHC_theater_spawning_lightning = true;
 	level endon( "zhc_stop_spawning_lightning" );
-	thread stop_spawning_lightning();
-	// add 3rd person fx
+	
 
 	pad = getent( "trigger_teleport_pad_0", "targetname" );
+	pad thread stop_electric_sound();
 
 	dps = get_lighnting_spots();
 	while(true){
@@ -494,12 +498,15 @@ start_spawning_lightning(delay){
 		}
 		dp = dps[RandomInt( dps.size - 1 )];
 		if(isDefined(dp)){
+			// add 3rd person fx
 			maps\zombie_theater_teleporter::teleport_pad_start_exploder( 0 );
 			//zhcpb("dp defined spawning lightning...", 300);
 
 			//pad thread maps\zombie_theater_teleporter::teleport_2d_audio();
+			pad thread electric_sound();
+
 			pad thread zhc_teleport_fps_effect(false);
-			pad thread zhc_teleport_players();
+			pad thread zhc_teleport_players(true);
 
 			thread spawn_lightning_teleport(dp);
 			wait(delay);
@@ -511,10 +518,22 @@ start_spawning_lightning(delay){
 	}
 }
 
-stop_spawning_lightning(){
+electric_sound(){
+	self notify("zhc_reset_audio_timer");
+	self endon("zhc_reset_audio_timer");
+	if(!is_true(self._zhc_playing_electric_sound)){
+		self._zhc_playing_electric_sound = true;
+		self playsound( "zmb_elec_start" );
+	    self playloopsound( "zmb_elec_loop" );
+	}
+	wait(1.8);
+	self stoploopsound();
+	self._zhc_playing_electric_sound = false;
+}
+
+stop_electric_sound(){
 	level waittill( "zhc_stop_spawning_lightning" );
-	// add 3rd person beam fx - threading this now so it plays the return fx
-	maps\zombie_theater_teleporter::teleport_pad_end_exploder(0);
+	self stoploopsound();
 }
 
 spawn_lightning_teleport(origin){
@@ -551,7 +570,7 @@ zhc_teleport_fps_effect(do_delete){
 		self delete();
 }
 
-zhc_teleport_players()
+zhc_teleport_players(pad_effect_if_teleport)
 {
 	// wait a bit
 	wait( 1.5 );
@@ -597,12 +616,16 @@ zhc_teleport_players()
 		}else
 			return;
 	}
-		
+
+	if(players_teleporting.size == 0)
+		return;
+
+	if(is_true(pad_effect_if_teleport)) //this will cause the teleport effect on the pad.
+		// add 3rd person beam fx - threading this now so it plays the return fx
+		thread maps\zombie_theater_teleporter::teleport_pad_end_exploder(0);
 	
 
-
 	player_radius = 16;
-	all_players = get_players();
 	slot = undefined;
 	start = undefined;
 
@@ -668,7 +691,8 @@ zhc_teleport_players()
 		setClientSysState( "levelNotify", "black_box_start", players_teleporting[i] );			
 		players_teleporting[i].teleport_origin.angles = dest_room[slot].angles;
 	}
-		
+
+
 	// everybody left the pad before they actually teleported
 	if (!IsDefined(players_teleporting) || (IsDefined(players_teleporting) && players_teleporting.size < 1))
 		return;
@@ -689,7 +713,7 @@ zhc_teleport_players()
 	//dest_room_origins = array_randomize( dest_room_origins );
 
 	dest_room_occupied = initialize_occupied_flag(dest_room_origins);
-	dest_room_occupied = check_for_occupied_spots(dest_room_occupied,dest_room_origins, all_players, player_radius);
+	dest_room_occupied = check_for_occupied_spots(dest_room_occupied,dest_room_origins, players, player_radius);
 
 
 	 

@@ -543,7 +543,7 @@ add_perk(vending_machine, specialty, light_fx, machine_change, cost, perk_name, 
 	if(isDefined(machine_change)){
 		PrecacheModel(machine_change);
 		if(level.MUST_POWER_PERKS){
-			og_machine = GetSubStr( machine_change, 0 , machine_change.size-2 ) + "off";
+			og_machine = GetSubStr( machine_change, 0 , machine_change.size-3 );// + "_off";
 			//og_machine = GetSubStr( machine_change, 0 , machine_change.size-3 );
 			/*model = getmodel( og_machine );
 			if(!IsDefined( model ))
@@ -1080,7 +1080,7 @@ ZHC_move_perk_machine(origin, angles, do_fx){
 turn_perk_on(vending_machine, specialty, light_fx, machine_change)
 {
 	machine = getentarray(vending_machine, "targetname");
-	og_machine = GetSubStr( machine_change, 0 , machine_change.size-2 ) + "off";
+	og_machine = GetSubStr( machine_change, 0 , machine_change.size-3 );// + "off";
 	//og_machine = GetSubStr( machine_change, 0 , machine_change.size-3 );
 	
 	must_be_powered = level.MUST_POWER_PERKS;

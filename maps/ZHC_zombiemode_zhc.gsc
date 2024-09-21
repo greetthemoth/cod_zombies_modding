@@ -4,7 +4,7 @@
 #include maps\ZHC_utility;
 
 get_testing_level(){
-	return 6;
+	return 0.5;
 	//level <0: no debugs
 	//level 0.5: extra points
 	//level 6 : power on
@@ -313,7 +313,7 @@ manage_perk_history(){
 		self waittill( "perk_bought", perk);
 		self.perk_history = array_remove(self.perk_history, perk);
 		self.perk_history[self.perk_history.size] = perk;
-		if(IsDefined( level.jug_move_score ) && can_move_perk_to_random_barrier(perk) && false){ //disable for now
+		if(IsDefined( level.jug_move_score ) && can_move_perk_to_random_barrier(perk)){
 			score_to_add = 1;
 			if(level.PERK_LEVELS)
 				score_to_add = self maps\_zombiemode_perks::GetPerkLevel(perk) * 4;

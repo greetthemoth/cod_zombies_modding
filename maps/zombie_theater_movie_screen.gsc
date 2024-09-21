@@ -82,7 +82,7 @@ append(left, right)
 setupCurtains()
 {
 
-	CAN_CLOSE_CURTAINS = false;
+	CAN_CLOSE_CURTAINS = true;
 
 	self endon( "death" );
 
@@ -94,16 +94,17 @@ setupCurtains()
 			//flag_wait( "power_on" );
 			self waittill( "electricity_on" ); //testo
 			wait_network_frame( );
-			theater_zone = level.zones["theater_zone"];
-			theater_zone.adjacent_zones["stage_zone"].is_connected = false;
+			level.zones["theater_zone"].adjacent_zones["stage_zone"].is_connected = false;
 			level.zones["stage_zone"].adjacent_zones["theater_zone"].is_connected = false;
-			while(!theater_zone.is_occupied){
+			while(!level.zones["theater_zone"].is_occupied){
 				//IPrintLn("theater&stage_connected:"+theater_zone.adjacent_zones["stage_zone"].is_connected);
 				wait_network_frame();
 			}
+			if(!level.power_on)
+				continue;
 
 			wait(2);
-			theater_zone.adjacent_zones["stage_zone"].is_connected = true;
+			level.zones["theater_zone"].adjacent_zones["stage_zone"].is_connected = true;
 			level.zones["stage_zone"].adjacent_zones["theater_zone"].is_connected = true;
 			//wait(2);
 
@@ -123,14 +124,21 @@ setupCurtains()
 
 			if(!CAN_CLOSE_CURTAINS)
 				break;
+		
 		}else{
-			self waittill("power_back_off");
+			level waittill( "electricity_off" );
+
+
 			wait(2);
-			level thread moveCurtains("left_curtain",false);			//doesnt work 
-			level thread moveCurtains("right_curtain",false);
-			
-			
-			wait(1.5);
+
+			//level thread moveCurtains("left_curtain",false);			//doesnt work 
+			//level thread moveCurtains("right_curtain",false);
+			//wait(1.5);
+
+			curtains = reset_curtains(curtains);
+
+			level.zones["theater_zone"].adjacent_zones["stage_zone"].is_connected = false;
+			level.zones["stage_zone"].adjacent_zones["theater_zone"].is_connected = false;
 			
 			curtains_clip solid();
 			curtains_clip disconnectpaths();
@@ -144,6 +152,13 @@ setupCurtains()
 		}
 	}
 	
+}
+
+reset_curtains(curtains){ //added for mod
+	new_curt = Spawn( "script_model", curtains.origin);
+	new_curt SetModel( "zombie_theater_curtain" );
+	curtains delete();
+	return new_curt;
 }
 
 moveCurtains(curtent, open)

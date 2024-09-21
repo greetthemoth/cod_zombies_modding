@@ -737,13 +737,15 @@ door_kill_counter()
 }
 
 is_recloseable_door(){
-	return  all_sub_doors_are_recloseable();
+	return  all_sub_doors_are_recloseable(false);
 }
-all_sub_doors_are_recloseable(){
+all_sub_doors_are_recloseable(debug){
 	for( i = 0; i < self.doors.size; i++ ){
 		str = define_or(self.script_string,"");
+		if(debug)
+			zhcp("script_string: "+str);
 		//if(str == "anim")
-		if(str != "" && str != "rotate" && str != "slide_apart"  && str != "move" && str != "physics")
+		if(str != "" && str != "rotate" && str != "slide_apart"  && str != "move" && str != "physics" && str != "clip")
 			return false;
 	}
 	return true;
@@ -956,8 +958,10 @@ door_think()
 		if(level.DOOR_RECLOSE && self.ZHC_is_recloseable )
 			self door_is_open_stage();
 		else{
-			if(level.DOOR_RECLOSE)
+			if(level.DOOR_RECLOSE){
 				zhcpb( "door "+ self get_door_id()+" opened; is not reclosable" ,444);
+				self all_sub_doors_are_recloseable(true);
+			}
 			else
 				zhcpb( "door "+ self get_door_id()+" opened" ,444);
 			if(!isDefined(self.is_submissive)) //important condition to make sure submissive sister doenst override and become the dominant sister.
@@ -1175,7 +1179,7 @@ door_buy_expired(){
 	}
 
 	self roomId_setup();
-	if(true){	//room flow increase difficulty //testo
+	if(false){	//room flow increase difficulty //testo
 		if(level.ZHC_ROOMFLOW){
 			//if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 			//	level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
@@ -1208,11 +1212,17 @@ door_buy_expired(){
 				}
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
 				if(!Get_Room_Info(self.roomId_bought_from,"occupied") 
-				&& (!IsDefined( self.last_user ) || [[level.map_get_zone_room_id]](self.last_user.current_zone) != self.roomId_bought_from )
-				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) )//level.ZHC_ROOMFLOW_difficulty_to_close_door))
+				&& (!IsDefined( self.last_user ) ||  
+						(isDefined(self.last_user.current_zone) && 
+						[[level.map_get_zone_room_id]](self.last_user.current_zone) != self.roomId_bought_from
+						)
+				   )
+				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) 
+				&& !a_player_is_in_dead_zone(self get_door_id())
+				)//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
 			}
-			self thread ensure_close_door_with_room_not_occupied();
+			
 			//level.ZHC_ROOMFLOW_difficulty_to_close_door += 1;
 		}
 		else{
@@ -1222,6 +1232,7 @@ door_buy_expired(){
 	}else{
 		wait(2);
 	}
+	self thread ensure_close_door_with_room_not_occupied();
 	if(false){			//occupy rooms to expire
 		self check_roomIDs_to_occupy_setup();
 		if(IsDefined( level.number_of_rooms ) && IsDefined( self.roomIDs_to_occupy )){
@@ -1242,7 +1253,12 @@ door_buy_expired(){
 ensure_close_door_with_room_not_occupied(){
 	self endon ("open_door");
 	self waittill("door_closed");
-	if(!Get_Room_Info(self.roomId_bought_from,"occupied") && (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ))
+
+	zhcpb( (!Get_Room_Info(self.roomId_bought_from,"occupied"))+ ""+
+	 ""+ (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ) 
+ 	+ ""+ (!a_player_is_in_dead_zone(self get_door_id())) );
+
+	if(!Get_Room_Info(self.roomId_bought_from,"occupied") && (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ) && !a_player_is_in_dead_zone(self get_door_id()))
 		self notify ("ensured_door_close");
 	else{
 		//door close not ensured
@@ -1250,6 +1266,16 @@ ensure_close_door_with_room_not_occupied(){
 		self notify ("open_door");
 	}
 }
+
+a_player_is_in_dead_zone(door_id){
+	players = get_players();
+	for(i = 0; i < players.size; i++){
+		if([[level.player_is_in_dead_zone]](players[i], door_id))
+			return true;
+	}
+	return false;
+}
+
 
 check_roomIDs_to_occupy(){
 	self endon( "close_door" );
@@ -1674,7 +1700,7 @@ zone_is_occupied_rn(zone_name){			//use this right after waiting for "zone_info_
 	}
 	return false;*/
 }
-a_player_is_close_to_door_id(id, dist){
+a_player_is_close_to_door_id(id, dist, check_sister){
 	zombie_doors = GetEntArray( "zombie_door", "targetname" ); 
 	playertooclosetodoor = false;
 	players = get_players();
@@ -1688,6 +1714,24 @@ a_player_is_close_to_door_id(id, dist){
 			if(Distance2DSquared(zombie_doors[id].origin , players[i].origin) < dist*dist){
 				playertooclosetodoor = true;
 				break;
+			}
+		}
+	}
+	if(!playertooclosetodoor && is_true(check_sister) ){
+		sisterId = zombie_doors[id] get_sister_door() get_door_id();
+		if(sisterId != id){
+			id = sisterId;
+			for( i = 0; i < players.size; i++ )
+			{
+				//iprintln("player "+i +"/"+players.size+ " is valid:" + (is_player_valid( players[i])) );
+				if( is_player_valid( players[i]) ) 
+				{
+					//IPrintLn( "sqrdistace from door: "+ Distance2DSquared(self.origin , players[i].origin ));
+					if(Distance2DSquared(zombie_doors[id].origin , players[i].origin) < dist*dist){
+						playertooclosetodoor = true;
+						break;
+					}
+				}
 			}
 		}
 	}
@@ -1977,7 +2021,10 @@ door_closed()
 				///
 
 	level waittill("zone_info_updated");
-	while(!self [[level.can_close_door]]()){
+	while(
+		//!self [[level.can_close_door]]()
+		a_player_is_in_dead_zone(self get_door_id()) || a_player_is_close_to_door_id(self get_door_id(), 100, true) 
+		){
 		//IPrintLnBold( "cant_close_door >;(" );
 		level waittill("zone_info_updated");
 	}

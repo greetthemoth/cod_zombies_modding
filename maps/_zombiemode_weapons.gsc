@@ -263,6 +263,7 @@ ZHC_get_max_amount_weapon(weapon, default_amount){
 			return default_amount;
 	}
 }
+
 ZHC_get_ordered_weapon_keys(){
 	k = [];
 
@@ -587,7 +588,13 @@ door_barr_set_info_on_buy_door(player){//should happen when the player buys or o
 		self.player_yaw = get_player_yaw_from_relative_position(player.origin, self.barr_weapon_yaw, self.barr_door_middle);
 		if(set_middle_height){
 			height = 55;
-			self.barr_door_middle = (self.barr_door_middle[0],self.barr_door_middle[1],groundpos((AnglesToForward((0, self.player_yaw, 0)) * 15) + self.barr_door_middle)[2] + height);
+			self.barr_door_middle = (self.barr_door_middle[0],self.barr_door_middle[1],
+				groundpos(
+					(AnglesToForward((0, self.player_yaw, 0)) * 15
+						)
+						 + self.barr_door_middle)[2]
+						  + height
+						 );
 		}
 	}
 	/*self.weapon_model = spawn( "script_model",self.barr_weapon_origin);
@@ -625,7 +632,9 @@ door_barr_weapon(){
 	self endon ("open_door");
 	self endon ("end_door_cooldown");
 
+	zhcp("waiting to ensure door");
 	self waittill ("ensured_door_close");
+	zhcp("door ensured");
 	//if(self._door_open || isDefined(self.transitioning_t_open_f_close))			//wait for door to be accully closed first.
 	//	self waittill( "door_closed" );
 
@@ -675,8 +684,27 @@ door_barr_weapon(){
 		can_upgrade = !maps\_zombiemode_blockers::one_door_is_unbarred(doorIds);
 	}
 
+	if(!isDefined(self.ZHC_assinged_door_barr_weapons))
+		assigned_door_barr_weapons_to_doors();
 
-	weapon = door_barr_get_weapon_to_hang(player, false, false);//testo
+	if(isDefined(self.ZHC_assinged_door_barr_weapons)){
+		if(self.roomId_bought_to > self.roomId_bought_from)
+			weapon = self.ZHC_assinged_door_barr_weapons[1];
+		else
+			weapon = self.ZHC_assinged_door_barr_weapons[0];
+		if(IsDefined( weapon ))
+			zhcpb("assigned weapon: " +weapon , 100);
+		else
+			zhcpb("assigned weapon is undefined", 100);
+	}
+	else{
+		weapon = door_barr_get_players_weapon_to_hang(player, false, false);
+		if(IsDefined( weapon ))
+			zhcpb("chosen weapon: " +weapon, 100);
+		else
+			zhcpb("chosen weapon is undefined", 100);
+	}
+
 	weapon_model = undefined;
 	
 	ent = self;
@@ -706,7 +734,29 @@ door_barr_weapon(){
 
 	ent door_barr_weapon_spawn(weapon, weapon_model, same_side, roomId_barr_appears_from, can_upgrade);		//spawn weapon
 }
-accept_weapon_for_door_barr(weapon, exclude_small_weapons, exclude_wall_buys){
+
+assigned_door_barr_weapons_to_doors(){
+	weaps = GetArrayKeys( level.zombie_weapons );
+	for(i = 0; i < weaps.size; i++){
+		if( !accept_weapon_for_door_barr(weaps[i],true,true, true, true, true)){
+			weaps = array_remove_index( weaps, i );
+			i--;
+		}
+	}
+	weaps = array_randomize( weaps );
+	weap_index = 0;
+	zombie_doors = GetEntArray( "zombie_door", "targetname" );	//level.ZHC_zombie_doors = zombie_doors;
+	for(i =0 ; i < zombie_doors.size; i++){
+		zombie_doors[i].ZHC_assinged_door_barr_weapons = [];
+		for(w=0; w < 2 && weap_index < weaps.size; w++){ //one weapon for each side of door
+			if(is_true(zombie_doors[i].is_submissive))
+				continue;
+			zombie_doors[i].ZHC_assinged_door_barr_weapons[w] = weaps[weap_index];
+			weap_index++;
+		}
+	}
+}
+accept_weapon_for_door_barr(weapon, exclude_small_weapons, exclude_wall_buys, exclude_special_weapon, exclude_crossbow, exclude_non_primaries){
 	wep_class = WeaponClass( weapon );
 	return 
 	!(
@@ -720,10 +770,13 @@ accept_weapon_for_door_barr(weapon, exclude_small_weapons, exclude_wall_buys){
 		) || 
 		wep_class == "bowie" || 
 		wep_class == "sickle" || 
-		wep_class == "raygun"
+		wep_class == "raygun" ||
+		(is_true(exclude_special_weapon) && ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box(weapon)) ||
+		(is_true(exclude_crossbow) && wep_class == "crossbow") ||
+		(is_true(exclude_non_primaries) && !IsDefined( level.zombie_weapons[weapon].upgrade_name ))
 	);
 }
-door_barr_get_weapon_to_hang(player, exclude_small_weapons, exclude_wall_buys){
+door_barr_get_players_weapon_to_hang(player, exclude_small_weapons, exclude_wall_buys){
 	//while(1){
 		weapon = undefined;
 		player_cur_weapon = player GetCurrentWeapon();
@@ -832,7 +885,7 @@ door_barr_weapon_spawn(weapon_string, weapon_model, same_side, roomId_visible_fr
 	
 
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
-	can_init_buy = false;	//always true for now.
+	can_init_buy = true;	//always true for now.
 	can_buy_ammo = is_equipment || true; //lets make it always true for now
 	can_upgrade = !is_equipment && can_upgrade;
 	self.weapon_trigger thread weapon_spawn_think(false, true, can_init_buy, can_buy_ammo ,can_upgrade, weapon_string);	//can buy and upgrade, cant buy ammo
@@ -856,7 +909,7 @@ chest_weapon_swap(roomId_visible_from, can_upgrade){
 		}
 		zhcp("door barr changed to " + weapon, 50);
 		is_equipment = false;//is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade");
-		can_init_buy = false;	//always true for now.
+		can_init_buy = true;	//always true for now.
 		can_buy_ammo = is_equipment || true; //lets make it always true for now
 		can_upgrade = !is_equipment && can_upgrade;
 		self.weapon_trigger.zombie_weapon_upgrade = weapon;
@@ -864,7 +917,7 @@ chest_weapon_swap(roomId_visible_from, can_upgrade){
 	}
 }
 
-chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
+/*chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
 	self.weapon_trigger endon("deleted");
 	while(1){
 		chest_origin waittill("weapon_grabbed", weapon);
@@ -879,7 +932,7 @@ chest_weapon_grab_change_door_weapon(chest_origin, can_upgrade){
 		self.weapon_trigger.zombie_weapon_upgrade = weapon;
 		self.weapon_trigger thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon);
 	}
-}
+}*/
 
 
 door_barr_weapon_setup(weapon_string, weapon_model, same_side, door_barr_middle_origin, player_yaw, barr_weapon_yaw
@@ -1504,38 +1557,45 @@ treasure_chest_init()
 }
 
 ZHC_assign_weapons_to_boxes(){
-	//keys = GetArrayKeys( level.zombie_weapons );
-	keys = ZHC_get_ordered_weapon_keys();
-
-	times_to_randomize = 2;
-	chance_to_swap = 30;
-	for(t = 0; t < times_to_randomize; t++){
-		for(i = 0; i < keys.size-1; i++){
-			//keepInPlace
-			if(RandomInt( 100 )< chance_to_swap)  //% chance to swap up
-			{	//swap up
-				skip = int(min(RandomInt( 3 ), keys.size - i));
-				if(i+skip >= keys.size)
-					continue;
-				y = keys[i];
-				z = keys[i+skip];
-				keys[i] = z;
-				keys[i+skip] = y;
-			}
-		}
-	}
-
-	/*wait 10;
-	for(i = 0; i < keys.size-1; i++){
-		IPrintLn( keys[i] );
-	}*/
-//keys = array_randomize( keys );
 
 	chests_num = level.chests.size;
 	if(chests_num == 0)
 		return;
+	
+	//keys = GetArrayKeys( level.zombie_weapons );
+	keys = ZHC_get_ordered_weapon_keys();
+
+	add_teddies = true; //if we want to manually add teddies to box, only used for one_order_box for now
+
+	if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX) { 
+		if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_SMALL_WEAPONS || level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_EQUIPMENT)
+		{
+		//	//add pistols
+			for(i = 0; i < keys.size-1; i++){
+				if(level.ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL && ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box(keys[i])){
+					continue; // this will added to the chest later
+				}
+				class = define_or(WeaponClass( keys[i]) ,"");
+				if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_SMALL_WEAPONS && !get_is_wall_buy(keys[i]) && (class == "pistol" || class == "smg" || class == "crossbow")) {
+					continue;
+				}else if(!level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_EQUIPMENT || keys[i] != "zombie_cymbal_monkey" || keys[i] != "knife_ballistic_zm"){
+					keys = array_remove_index( keys, i);
+					i--;
+				}
+			}
+			add_teddies = false;
+		}else{
+			return; //dont add anything to chests
+		}
+	}
+
+	//keys = array_randomize( keys );
+	keys = zhc_shuffle_weapon_array(keys, 2, 30);	
+
 
 	if(level.ZHC_ORDERED_BOX_ONE_ORDER){
+		
+
 		level.ZHC_chest_owned_weapons = [];
 		level.ZHC_chest_owned_weapon_index = -1; //becomes 0 at iterator
 		for(i = 0; i < keys.size ; i++){
@@ -1545,7 +1605,7 @@ ZHC_assign_weapons_to_boxes(){
 			//continue;
 
 			level.ZHC_chest_owned_weapons[level.ZHC_chest_owned_weapons.size] = keys[i];		//adds weapon to 
-			if(RandomInt( 3 ) == 0)
+			if(add_teddies && RandomInt( 3 ) == 0)
 				level.ZHC_chest_owned_weapons[level.ZHC_chest_owned_weapons.size] = "teddy";
 		}
 
@@ -1638,6 +1698,29 @@ ZHC_assign_weapons_to_boxes(){
 		ZHC_add_teddy();
 	}
 }
+zhc_shuffle_weapon_array(keys, times_to_randomize,chance_to_swap){
+	for(t = 0; t < times_to_randomize; t++){
+		for(i = 0; i < keys.size-1; i++){
+			//keepInPlace
+			if(RandomInt( 100 )< chance_to_swap)  //% chance to swap up
+			{	//swap up
+				skip = int(min(RandomInt( 3 ), keys.size - i));
+				if(i+skip >= keys.size)
+					continue;
+				y = keys[i];
+				z = keys[i+skip];
+				keys[i] = z;
+				keys[i+skip] = y;
+			}
+		}
+	}
+	/*wait 10;
+	for(i = 0; i < keys.size-1; i++){
+		IPrintLn( keys[i] );
+	}*/
+	return keys;
+}
+
 
 ZHC_ALL_CHESTS_EXEPT_STARTING_ROOM_SPECIAL_save_for_special_box(weapon_name){
 
@@ -2020,7 +2103,9 @@ ZHC_wall_buy_options_init(){
 
 ZHC_treasure_chest_options_init(){
 
-
+	level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX = true;
+	level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_EQUIPMENT = true;
+	level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_SMALL_WEAPONS = true;
 
 	level.ZHC_BOX_EQUIPMENT_REALISTIC = true;
 	level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = true;
@@ -2035,9 +2120,9 @@ ZHC_treasure_chest_options_init(){
 		level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE = true;
 			level.ZHC_BOX_GUN_UPGRADE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN = true;
 
-	level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS = false;
-	level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE = true;
-		level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_AMMO = true;
+	level.ZHC_BOX_GUN_BUYABLE_SPAWN_POWERUPS = false && !level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX;
+	level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE = true && !level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX;
+		level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_AMMO = true && !level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX;
 		//level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE_WAIT_TO_RETURN = false;
 
 
@@ -2070,11 +2155,11 @@ ZHC_treasure_chest_options_init(){
 	level.ZHC_FIRESALE_GRABBED_OPEN_WHEN_CLOSED = false;				//no function
 
 
-	level.ZHC_BOX_GUN_STAYS_WAIT = true;   //if false doesnt expire. if true does a cooldwon wait to become expired.
+	level.ZHC_BOX_GUN_STAYS_WAIT = true && !level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX;   //if false doesnt expire. if true does a cooldwon wait to become expired.
 	level.ZHC_BOX_GUN_STAYS_WAIT_GUN_BUYABLE_RESET_EXPIRE_TIMER = false; //if the chest is buyable gun, ammo, or upgrade will reset the timer.
-	level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE = true;	//if the chest is buyable gun, ammo, or upgrade will expire after buying. weapon will drop.
-	
-
+	level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE = true  && !level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX;	//if the chest is buyable gun, ammo, or upgrade will expire after buying. weapon will drop.
+		//level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE_IF_NOT_OWNED = true;
+		//level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE_IF_NOT_OWNED__EXPIRE_AFTER_AMMO = true;
 	//bugs
 	//ZHC_FIRESALE_TEDDY_PREMATURE_END makes firesale only apply once.
 	//
@@ -2091,9 +2176,9 @@ ZHC_treasure_chest_options_init(){
 ZHC_init_chest_options(){
 	ZHC_treasure_chest_options_init();
 	self.ZHC_GUN_STAYS = true;
-	self.ZHC_GUN_BUYABLE = true;
+	self.ZHC_GUN_BUYABLE = false;
 	self.ZHC_GUN_SWAP = false;	
-	self.ZHC_GUN_CYCLE = false;
+	self.ZHC_GUN_CYCLE = false || level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX;
 	self.ZHC_FREE_TO_OPEN = false;
 	if(level.ZHC_ORDERED_BOX && level.ZHC_ORDERED_BOX_CYCLE_UNLOCK && is_true(self.chest_origin.ZHC_ORDERED_BOX_CYCLE_UNLOCK_cycle_unlocked)){
 		//self.ZHC_GUN_CYCLE = true;
@@ -2103,20 +2188,29 @@ ZHC_init_chest_options(){
 }
 ZHC_weapon_specific_box_changes(weapon_string){
 	self endon ("box_finished");
-	if(self.ZHC_GUN_BUYABLE){
+	//if(self.ZHC_GUN_BUYABLE){
 		if(level.ZHC_BOX_EQUIPMENT_REALISTIC && weapon_string == "zombie_cymbal_monkey"){
 			//self.ZHC_GUN_STAYS = false;
 			self.ZHC_GUN_BUYABLE = false;
+			//self.ZHC_GUN_CYCLE = false;
 			level.ZHC_BOX_GUN_STAYS_WAIT = false;
 			level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = true;
 			self playsound( "zmb_monkey_song" );
 			//self playsound( "zmb_vox_monkey_scream" );
 		}else if(weapon_string == "knife_ballistic_zm" || weapon_string == "thundergun_zm"){
-			self.ZHC_GUN_BUYABLE = false;
-			//level.ZHC_BOX_GUN_STAYS_WAIT = false;
+			if(!level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX || !self.chest_origin ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons()) {
+				zhcpb("not currently cycling");
+				self.ZHC_GUN_BUYABLE = false;
+				//self.ZHC_GUN_CYCLE = false;
+				//level.ZHC_BOX_GUN_STAYS_WAIT = false;
+				level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = true;
+			}
+		}else if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX && !self.chest_origin ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons()) {
+			self.ZHC_GUN_BUYABLE = true;
+			level.ZHC_BOX_GUN_STAYS_WAIT = true;
 			level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = true;
 		}
-	}
+	//}
 	self waittill( "zhc_box_weapon_set" );
 	ZHC_init_chest_options();
 }
@@ -2298,6 +2392,22 @@ treasure_chest_think(){
 		}
 	}
 
+	if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX){
+		self.chest_user = user;
+		if(!IsDefined( self.chest_user ))
+			self.chest_user = get_closest_player( self.origin );
+		level notify("close_player_owned_weapon_cycle", self.chest_user);
+		if(self.chest_origin ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons())
+		{
+			if (( !IsDefined( level.ZHC_player_owned_weapon_index ) ||  !IsDefined(level.ZHC_player_owned_weapon_index[get_player_index(self.chest_user)]) )	//if there is no weapon in box, just stay close
+				&& ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_get_players_stored_weapons(self.chest_user).size == 0){
+				wait(1);
+				self thread treasure_chest_think();
+				return;
+			}
+		}
+	}
+
 	self thread chest_wait_to_change_door_barr();
 
 	if(!level.ZHC_BOX_AUTO_OPEN)
@@ -2328,7 +2438,7 @@ treasure_chest_think(){
 
 	// the glowfx	
 	if(!self.ZHC_GUN_CYCLE && !self.ZHC_GUN_SWAP && !self.ZHC_GUN_BUYABLE)						//light lasts until weapon isnt on box
-		self.chest_origin thread treasure_chest_glowfx(self, "weapon_grabbed");		//leght delets when weapon is grabbed
+		self.chest_origin thread treasure_chest_glowfx(self, "weapon_grabbed");		//leght delets when weapon is grabbed . is this even nessesary. box finished should play regardless. no i thnk box finished only happnes when lid closes nvm
 	else
 		self.chest_origin thread treasure_chest_glowfx(self);		//light doesnt delete when swapped
 
@@ -2503,9 +2613,12 @@ middle_box_logic(costs_money,user_cost,user){
 			if (first_time)
 			{
 				self.grab_weapon_hint = true;
-				self.chest_user = user;
+				//self.chest_userchest_user = user;
+				if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX && self.chest_origin ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons())
+					self thread expire_box_after_anouther_box_is_opened_by_player();
 
 				self thread chest_weapon_expire_wait();
+
 
 				if(!self.ZHC_GUN_BUYABLE){
 					// Let the player grab the weapon and re-enable the box //
@@ -2535,16 +2648,35 @@ middle_box_logic(costs_money,user_cost,user){
 					// SRS 9/3/2008: ...or item goes back into the box if we time out
 					self thread weapon_to_grab_think(user,self.ZHC_GUN_SWAP, self.ZHC_GUN_CYCLE);
 				}else{
+
+					if(self.ZHC_GUN_CYCLE)
+						self thread ZHC_GUN_CYCLE_cycle_weapons(user, true);
+
 					hint_string = get_weapon_hint( self.chest_origin.weapon_string ); 
 					cost = get_weapon_cost( self.chest_origin.weapon_string );
 
 					self SetHintString( hint_string, cost ); 
 					self setCursorHint( "HINT_NOICON" ); 
 					//self UseTriggerRequireLookAt();				//its making it hard to interact with.
-					if(level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE)
-						self.chest_origin thread wait_to_grabbed_to_end(self);
-					self thread weapon_spawn_think(true,undefined, true, true, level.ZHC_BOX_UPGRADE_WEAPON_ON_CLONE_PICK_UP);
+					//if(level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE)	//now we do this with within the weapon spawn code in order to better integrate with free weapon system.
+					//	self.chest_origin thread wait_to_grabbed_to_end(self);
 					
+					//if(!first_time)
+					//	self notify( "weapon_stop" ); //done by cycle
+
+					self thread weapon_spawn_think(true,undefined, true, true, level.ZHC_BOX_UPGRADE_WEAPON_ON_CLONE_PICK_UP);
+					//else
+					//	self thread swap_weapon_buyable(true, true, true, level.ZHC_BOX_UPGRADE_WEAPON_ON_CLONE_PICK_UP, self.chest_origin.weapon_string);
+					
+				}
+			}else{
+				if(self.ZHC_GUN_BUYABLE){
+					hint_string = get_weapon_hint( self.chest_origin.weapon_string ); 
+					cost = get_weapon_cost( self.chest_origin.weapon_string );
+
+					self SetHintString( hint_string, cost ); 
+					self setCursorHint( "HINT_NOICON" ); 
+					self thread swap_weapon_buyable(true, true, true, level.ZHC_BOX_UPGRADE_WEAPON_ON_CLONE_PICK_UP, self.chest_origin.weapon_string);
 				}
 			}
 		}
@@ -2746,6 +2878,7 @@ wait_to_grabbed_to_end(chest){
 weapon_to_grab_think( user, swap, cycle){
 	self.chest_origin endon ("teddy_appear");
 	self endon( "box_finished" );
+	self endon("weapon_stop");
 	firstTimeActivated = true;
 	while( 1 ) {
 		while( 1 )
@@ -2767,6 +2900,11 @@ weapon_to_grab_think( user, swap, cycle){
 			if(grabber != level && ((IsDefined(self.box_rerespun) && self.box_rerespun) || !IsDefined( user ) ))
 			{
 				user = grabber;
+			}
+
+			if(!isDefined(self.chest_origin.weapon_string)){
+				zhcpb("weapon_string not defined");
+				break;
 			}
 			
 			if( grabber == user || grabber == level )			
@@ -2812,22 +2950,67 @@ weapon_to_grab_think( user, swap, cycle){
 	}
 }
 
-ZHC_GUN_CYCLE_cycle_weapons(player){
+ZHC_GUN_CYCLE_cycle_weapons(player, cycling_buyable){
 	self.chest_origin endon ("teddy_appear");
 	self endon("box_finished");
+	if(!is_true(cycling_buyable))
+		self endon("weapon_stop");
+
+	if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX)
+		self thread ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_cycle_if_chest_weapon_is_given(cycling_buyable);
+
 	while(1){
 		self.chest_origin waittill( "weapon_grabbed" );
+
+
+		if(is_true(cycling_buyable))
+			self notify("weapon_stop");
 
 		if(level.ZHC_FIRESALE_CLOSE_AFTER_USE && self box_currently_affect_by_firesale())
 			//self waittill ("box_finished");
 			return;
+//		if(self.origin ZHC_teddy_is_here())			//teddy_appear endon should do the job
+//			return;
+		/*if(ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_get_players_stored_weapons(player).size == 0){
+			self.chest_origin.weapon_string = undefined;
+			self notify("weapon_expired");
+			return;
+		}*/
+		self.chest_origin hide_weapon_model(true, true);
+		self disable_trigger();
+		//wait_network_frame( ); //wait for "weapon_grabbed" to delete models
+		self.chest_origin thread treasure_chest_weapon_spawn(self, player ); 	//must be threaded in order for it to not be interupted by endon
+	}
+}
 
+ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_cycle_if_chest_weapon_is_given(cycling_buyable){
+	self.chest_origin endon ("teddy_appear");
+	self endon("box_finished");
+	if(!is_true(cycling_buyable))
+		self endon("weapon_stop");
+
+	while(1){
+
+		self.chest_user  waittill ("zhc_weapon_given", weapon_name);
+
+		if(!IsDefined( self.chest_origin.weapon_string ) || weapon_name != self.chest_origin.weapon_string)
+			continue;
+
+		//if(!self.chest_origin ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons())
+		//	continue;
+
+		if(is_true(cycling_buyable))
+			self notify("weapon_stop");
+
+		if(level.ZHC_FIRESALE_CLOSE_AFTER_USE && self box_currently_affect_by_firesale())
+			//self waittill ("box_finished");
+			return;
 //		if(self.origin ZHC_teddy_is_here())			//teddy_appear endon should do the job
 //			return;
 		self.chest_origin hide_weapon_model(true, true);
 		self disable_trigger();
 		//wait_network_frame( ); //wait for "weapon_grabbed" to delete models
-		self.chest_origin thread treasure_chest_weapon_spawn(self, player); 	//must be threaded in order for it to not be interupted by endon
+		self.chest_origin thread treasure_chest_weapon_spawn(self, self.chest_user);	//must be threaded in order for it to not be interupted by endon
 	}
 }
 
@@ -2853,6 +3036,18 @@ chest_weapon_grabbed(affect_counters, weapon_name){
 			level.pulls_since_last_tesla_gun += 1;
 		}
 	}
+}
+expire_box_after_anouther_box_is_opened_by_player(){
+	self endon("box_finished" );
+	self endon("box_hacked_respin");
+	self endon("weapon_expired");
+	while(1){
+		level waittill("close_player_owned_weapon_cycle", player);
+		if(player == self.chest_user)
+			break;
+	}
+	self.chest_origin.weapon_string = undefined;
+	self notify( "weapon_expired" );
 }
 
 chest_weapon_expire_wait(strength){
@@ -3833,7 +4028,98 @@ swap_box_weapon_model_to(weapon_name){
 	}
 }
 
-ZHC_ORDERED_BOX_get_next_weapon(init_open){
+ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons(){
+	return (
+			(!level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_EQUIPMENT && !level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_SMALL_WEAPONS) || 
+			(!level.ZHC_ORDERED_BOX ||
+			(
+				(level.ZHC_ORDERED_BOX_ONE_ORDER && (level.ZHC_chest_owned_weapon_index+1 >= level.ZHC_chest_owned_weapons.size))
+				||
+				(!level.ZHC_ORDERED_BOX_ONE_ORDER && (!IsDefined( self.ZHC_chest_owned_weapons ) || self.ZHC_chest_owned_weapon_index+1 >= self.ZHC_chest_owned_weapons.size))
+			)
+			)
+		);
+}
+
+ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_get_players_stored_weapons(chest_user){
+	primaries = chest_user  GetWeaponsListPrimaries();
+	keys = GetArrayKeys(chest_user.ZHC_weapons);
+	for(i = 0; i < keys.size; i++){
+		if(
+			!isDefined(level.zombie_weapons[keys[i]]) //is upgraded weapon
+		){
+			//array_remove( keys, chest_user.ZHC_weapon_other_weapon[chest_user.zombie_weapons[keys[i]]]) ; //removes base weapon -- if we want to show upgraded versions, system not ready for that yet.
+			keys = array_remove_index( keys, i);
+			i--;
+		}
+		else if (is_in_array( primaries, keys[i] )){
+			keys = array_remove_index( keys, i);
+			i--;
+		}else if (chest_user.ZHC_weapon_is_equipment_or_grenade[chest_user.ZHC_weapons[keys[i]]]) {
+			keys = array_remove_index( keys, i);
+			i--;
+		}
+	}
+	return keys;
+}
+
+ZHC_ORDERED_BOX_get_next_weapon(init_open, chest_user){
+	if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX){
+		//if at end of box or there is nothing pre assigned to the box
+		if(self ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons()){
+			
+			if(!isDefined(chest_user)){
+				zhcpb ("chest_user not defined");
+				return undefined;
+			}
+			//keys = ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_get_players_stored_weapons(chest_user);
+			//if(keys.size == 0){
+			//	return undefined;
+			//}
+
+			player_index = get_player_index(chest_user);
+			if(!IsDefined(level.ZHC_player_owned_weapon_index ))
+				level.ZHC_player_owned_weapon_index = [];
+
+			if(!IsDefined(level.ZHC_player_owned_weapon_index[player_index] ))
+				level.ZHC_player_owned_weapon_index[player_index] = 0;
+
+			if(!init_open)
+				level.ZHC_player_owned_weapon_index[player_index]++;
+
+
+			primaries = chest_user  GetWeaponsListPrimaries();
+			keys = GetArrayKeys(chest_user.ZHC_weapons);
+
+			found_weapon = undefined;
+			weapons_checked = 0;
+			for(; weapons_checked < keys.size; level.ZHC_player_owned_weapon_index[player_index]++){
+				weapons_checked++;
+				if(level.ZHC_player_owned_weapon_index[player_index] >= keys.size){
+					level.ZHC_player_owned_weapon_index[player_index] = 0;
+				}
+				weapon = keys[level.ZHC_player_owned_weapon_index[player_index]];
+				if(
+					!isDefined(level.zombie_weapons[weapon]) //is upgraded weapon
+				){
+					continue;
+				}
+				else if (is_in_array( primaries, weapon )){
+					continue;
+				}else if (chest_user.ZHC_weapon_is_equipment_or_grenade[chest_user.ZHC_weapons[weapon]] )  {
+					continue;
+				}
+				found_weapon = weapon;
+				break;
+			}
+			if(!IsDefined( found_weapon ))
+				return "zhc expire box";
+
+			zhcp("stored weapon index:"+level.ZHC_player_owned_weapon_index[player_index]+"="+keys.size);
+
+			return found_weapon;
+		}
+	}
 
 	if(level.ZHC_ORDERED_BOX_ONE_ORDER){
 		level.ZHC_chest_owned_weapon_index++;
@@ -3895,7 +4181,7 @@ ZHC_ORDERED_BOX_ZHC_ALL_CHESTS_get_next_weapon_any_box(chest, init_open){
 		if(i >= chests_num)
 			i = 0;
 		other = chests[i].chest_origin;
-		rand = other ZHC_ORDERED_BOX_get_next_weapon(init_open);
+		rand = other ZHC_ORDERED_BOX_get_next_weapon(init_open, chest.chest_user);
 
 		if(!IsDefined( rand ))	//box is empty
 			continue;
@@ -3943,7 +4229,7 @@ box_weapon_model_rise_start(floatHeight){
 treasure_chest_weapon_init_spawn( chest, player, respin)
 {
 
-	if(chest.ZHC_GUN_CYCLE && level.ZHC_ORDERED_BOX && (!chest this_spin_is_firesale(true) && level.ZHC_FIRESALE_CLOSE_AFTER_USE)) {		//when bx is reopned goes back to first weapon. works nicer for teddy mechanic, maybe not.
+	if(!level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX && chest.ZHC_GUN_CYCLE && level.ZHC_ORDERED_BOX && (!chest this_spin_is_firesale(true) && level.ZHC_FIRESALE_CLOSE_AFTER_USE)) {		//when bx is reopned goes back to first weapon. works nicer for teddy mechanic, maybe not.
 		self.ZHC_chest_owned_weapon_index = -1;
 	}
 
@@ -3980,6 +4266,7 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 
 	//	ZHC
 	guarenteed_teddy = false;
+	expire_box = false;
 
 		
 
@@ -4053,11 +4340,11 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 
 		}
 		else
-			rand = self ZHC_ORDERED_BOX_get_next_weapon(is_true(init_open));
+			rand = self ZHC_ORDERED_BOX_get_next_weapon(is_true(init_open),chest.chest_user);
 			//if(rand == "teddy")
 			//	treasure_chest_ChooseWeightedRandomWeapon( player )
 		
-	}else{
+	}else if (!mariocycle || !IsDefined( rand )){
 		rand = treasure_chest_ChooseWeightedRandomWeapon( player );		//might change to something else
 	}
 	//IPrintLn( s );
@@ -4080,6 +4367,10 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 	}
 	else if(rand == "teddy"){
 		guarenteed_teddy = true;
+	}else if(rand == "zhc expire box"){
+		self.weapon_string = undefined;
+		expire_box = true;
+		return;
 	}
 
 	if(!guarenteed_teddy){
@@ -4108,6 +4399,11 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 
 	wait_network_frame();
 
+
+	if(expire_box){
+		chest notify ("weapon_expired");
+		return;
+	}
 
 	// Increase the chance of joker appearing from 0-100 based on amount of the time chest has been opened.
 	//zhc could use firesale var simplicity but ill refrain just for some specific case senarios.
@@ -4567,6 +4863,7 @@ treasure_chest_give_weapon( weapon_string, chest, swap, refill_weapon_ammo)
 
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade"); //
 	if(can_take_weapon && !box_empty) {
+		//zhcp("taking chest weapon"+weapon_string);
 		self play_sound_on_ent( "purchase" );
 		
 		if( IsDefined( level.zombiemode_offhand_weapon_give_override ) )
@@ -5084,8 +5381,10 @@ zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, can
 	for(;;)
 	{
 		//zhcp( "ddddd" ,100);
-		wait(max(0.05,self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string)));
-		//wait_network_frame();
+		wait_time = self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string);	
+		wait(wait_time);
+		wait_network_frame(); //prevent infinite loop bug
+		//wait(0.1);
 	}
 }
 
@@ -5272,12 +5571,16 @@ swap_weapon_buyable(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon){
 	self endon ("deleted");
 
 	last_weapon = undefined;
+	weapon_model_holder = self;
 	if(is_chest){
+		weapon_model_holder = self.chest_origin;
 		last_weapon = self.chest_origin.weapon_string;
 	}
 	else{
 		last_weapon = self.zombie_weapon_upgrade;
 	}
+
+
 
 	if(IsDefined( last_weapon ) ){
 		if(!isDefined(self.original_weapon))
@@ -5292,19 +5595,22 @@ swap_weapon_buyable(is_chest, can_init_buy, can_buy_ammo, can_upgrade, weapon){
 		self.ZHC_weapon_upgrade_cost = undefined;
 	}
 
-	if(!IsDefined( last_weapon ) || weapon != last_weapon){
-		self thread weapon_model_hide(undefined, true);
+	if(!is_chest && (!IsDefined( last_weapon ) || weapon != last_weapon) ){
+		weapon_model_holder thread weapon_model_hide(undefined, true);
 		wait(1);
-		self wait_network_frame( );
+		wait_network_frame( );
 	}
 
-	self set_box_weapon_model_to(weapon);
-	self thread show_weapon_model();
-	wait(1);
-	wait_network_frame();
+	weapon_model_holder set_box_weapon_model_to(weapon);
+	if(!is_chest){
+		weapon_model_holder thread show_weapon_model();
+		wait(1);
+		wait_network_frame();
+	}
 	self ZHC_set_weapon_hint(get_weapon_cost(weapon), get_ammo_cost(weapon), 4500, weapon, undefined, false, true, true);
 	self setCursorHint( "HINT_NOICON" );
-	self UseTriggerRequireLookAt();
+	if(!is_chest)
+		self UseTriggerRequireLookAt();
 	self thread weapon_spawn_think(is_chest, undefined, can_init_buy, can_buy_ammo, can_upgrade, weapon);
 }
 
@@ -5500,8 +5806,13 @@ weapon_spawn_think(is_chest, player_has_weapon, can_init_buy, can_buy_ammo, can_
 				}
 
 				if(is_chest){
-					if(level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE)
+					if(level.ZHC_BOX_GUN_BUYABLE_CAN_ONLY_BUY_ONCE && !make_weapon_free_but_no_ammo){
+						self.chest_origin.weapon_string = undefined; //this will delete the weapon upon expiration. 
 						self notify("weapon_expired");
+					}
+					else if(level.ZHC_BOX_GUN_BUYABLE_EXPIRE_AFTER_USE){
+						self notify("weapon_expired");
+					}
 					else if(self.ZHC_GUN_STAYS && level.ZHC_BOX_GUN_STAYS_WAIT_GUN_BUYABLE_RESET_EXPIRE_TIMER)
 						self notify ("reset_expire_timer", 1);
 
@@ -5946,7 +6257,7 @@ barr_weapon_pickup_bonus_effects(){
 			can_upgrade = !is_equipment && can_upgrade;
 			player = get_closest_player( self.origin );
 			if(IsDefined( player )){
-				weapon = door_barr_get_weapon_to_hang(player);
+				weapon = door_barr_get_players_weapon_to_hang(player);
 				if(IsDefined( weapon )){
 					self.zombie_weapon_upgrade = weapon;
 					self thread swap_weapon_buyable(false, can_init_buy, can_buy_ammo ,can_upgrade, weapon); //swap weapon.
@@ -6102,7 +6413,7 @@ weapon_give( weapon, is_upgrade, dont_fill_ammo_no_purchace_sound )
 					self.last_pistol_swap = GetTime();
 				}
 			}
-		} 
+		}
 	}
 	
 	if( IsDefined( level.zombiemode_offhand_weapon_give_override ) )
@@ -6136,10 +6447,13 @@ weapon_give( weapon, is_upgrade, dont_fill_ammo_no_purchace_sound )
 	if(!is_true(dont_fill_ammo_no_purchace_sound)){
 		self GiveStartAmmo( weapon );
 	}
+
+	//zhcp("attempting to switch to: " + weapon + "   no purchase: " + is_true(dont_fill_ammo_no_purchace_sound));
 	self SwitchToWeapon( weapon );
 	 
 	self play_weapon_vo(weapon);
 }
+
 
 play_weapon_vo(weapon)
 {
@@ -6266,6 +6580,7 @@ ammo_give( weapon , zhc_max_check_override)
 
 	if( give_ammo )
 	{
+		//zhcp("buying ammo for"+weapon);
 		self play_sound_on_ent( "purchase" ); 
 		self GiveStartAmmo( weapon );
 // 		if( also_has_upgrade )

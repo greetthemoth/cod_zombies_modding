@@ -224,7 +224,7 @@ room_wait_to_increase_difficulty(roomId, difficulty){
 		wait_network_frame( );
 		//waits for level.zombie_total to be set to the new round
 	}
-	kill_goal = level.total_zombies_killed + 24;//(18 * (1 + difficulty) ) ;
+	kill_goal = level.total_zombies_killed + (18 * (1 + difficulty) ) ;
 	//if(roomId == 0)iprintln("level.total_zombies_killed: "+level.total_zombies_killed+"->" +  kill_goal+"  active:" + level.ZHC_room_info[roomId]["active"]);
 	while(!level.ZHC_room_info[roomId]["active"] || level.total_zombies_killed < kill_goal){
 		level waittill( "zom_kill" );

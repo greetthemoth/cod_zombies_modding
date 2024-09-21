@@ -196,8 +196,3 @@ material,terrain_scorch_fruit
 material,terrain_scorch_paintedmetal
 material,terrain_scorch_player
 material,terrain_scorch_tallgrass
-xanim,void_loop
-rawfile,vision/cheat_bw_invert_contrast.vision
-rawfile,vision/cheat_bw_contrast.vision
-rawfile,vision/cheat_invert_contrast.vision
-rawfile,vision/cheat_contrast.vision

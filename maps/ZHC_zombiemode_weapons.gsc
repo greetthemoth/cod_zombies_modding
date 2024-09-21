@@ -512,6 +512,7 @@ take_weapon(weapon_name){//lose weapon
 		IPrintLnBold( weapon_name +" not ID'ed into ZHC weapon system" );
 	else
 		self update_prev_ammo(og_weapon_name, id);
+	self notify ("zhc_weapon_taken", weapon_name);
 }
 
 update_prev_ammo(og_weapon_name, id){
@@ -541,6 +542,7 @@ give_weapon(weapon_name, set_to_prev_ammo){
 
 	
 	self check_weapon_ammo(og_weapon_name,weapon_name);	//weapon ammo is only for primary weapons.
+	self notify ("zhc_weapon_given", weapon_name);
 }
 
 refill_weapon_ammo(weapon_name){
