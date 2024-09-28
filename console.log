@@ -1,5 +1,5 @@
 Build 7.0.152 CL(966072) CODPCAB-V64 CEG Thu Sep 01 16:06:17 2011
-logfile opened on Fri Sep 20 11:30:52 2024
+logfile opened on Sat Sep 28 08:38:31 2024
 
 Current language: english
 Current search path:
@@ -205,6 +205,13 @@ Unknown command "updategamerprofile"
 Exec From Disk failed to open autoexec_dev.cfg
 Error: couldn't exec autoexec_dev.cfg
 64-bit OS detected
+      dvar set sys_configureGHz 0.0651951
+      dvar set sys_configSum 0
+========= autoconfigure
+configure.csv: using CPU configuration 0 GHz 640 MB
+execing configure.cfg from disk
+configure.csv: using GPU configuration "GeForce"
+      dvar set sys_configSum 266827972
       dvar set version Call of Duty Singleplayer - Ship COD_T5_S SP build 7.0.152 CL(966072) CODPCAB-V64 CEG Thu Sep 01 16:06:17 2011 win-x86
 Game_Mod - Production - Thu Apr 26 19:58:10 2018
 CPU vendor is "GenuineIntel"
@@ -212,7 +219,7 @@ CPU name is "Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz"
 8 logical CPUs reported
 8 physical CPUs detected
 Measured CPU speed is 0.01 GHz
-Total CPU performance is estimated as 0.09 GHz
+Total CPU performance is estimated as 0.07 GHz
 System memory is 1024 MB (capped at 1 GB)
 Video card is "NVIDIA GeForce MX250"
 Streaming SIMD Extensions (SSE) supported
@@ -252,11 +259,11 @@ Loading fastfile 'en_patch'
 used 0.02 MB memory in DB alloc
 Requested frame buffer to be 24-bit color with 8-bit alpha
 DirectX returned a frame buffer that is 24-bit color with 8-bit alpha
+Loading fastfile 'patch'
+used 3.96 MB memory in DB alloc
 INTZ format supported
 Initializing static model cache...
 Initializing dynamic buffers...
-Loading fastfile 'patch'
-used 3.96 MB memory in DB alloc
 Initializing particle cloud buffer...
 Creating Direct3D queries...
 Setting initial state...
@@ -287,11 +294,11 @@ Error: Could not load material "apply_lut2d".
 Error: Could not load material "$ps3_reload_zcull_donotremove".
 Error: Could not load material "water_dynamic_spray".
       dvar set sd_xa2_num_devices 1
---- Initializing Voice ---
 Loading fastfile 'frontend_patch'
 used 2.31 MB memory in DB alloc
 Loading fastfile 'mod'
 used 0.00 MB memory in DB alloc
+--- Initializing Voice ---
       dvar set tu_onlyhostqos 0
 Hostname: LAPTOP-F97P0NQ8
 Binding to 192.168.1.165:3074
@@ -324,17 +331,237 @@ execing buttons_default.cfg from fastfile
 execing otherkeysdefaults.cfg from fastfile
 execing thumbstick_default.cfg from fastfile
 Unknown command "updatevehiclebindings"
-end $init 9732 ms
+end $init 6424 ms
 --- Common Initialization Complete ---
 =============================== DVAR DUMP ========================================
+      cg_chatHeight "5"
+      cg_chatTime "12000"
+      cg_crosshairDynamic "0"
+      cg_drawBreathHint "1"
+      cg_drawCrosshairNames "1"
+      cg_drawFPS "Off"
+      cg_drawFPSLabels "1"
+      cg_drawFPSScale "0"
+      cg_drawFriendlyNames "1"
+      cg_drawMantleHint "1"
+      cg_drawSnapshotTime "1"
+      cg_drawTurretCrosshair "1"
+      cg_flareVisionSetFadeDuration "2000"
+      cg_fov_default "65"
+      cg_fov_default_thirdperson "40"
+      cg_gameBoldMessageWidth "390"
+      cg_gameMessageWidth "455"
+      cg_headIconMinScreenRadius "0.02"
+      cg_hintFadeTime "100"
+      cg_hudDamageIconHeight "64"
+      cg_hudDamageIconInScope "0"
+      cg_hudDamageIconOffset "128"
+      cg_hudDamageIconTime "2000"
+      cg_hudDamageIconWidth "128"
+      cg_hudGrenadeIconEnabledFlash "0"
+      cg_hudGrenadeIconHeight "25"
+      cg_hudGrenadeIconInScope "1"
+      cg_hudGrenadeIconMaxHeight "104"
+      cg_hudGrenadeIconOffset "50"
+      cg_hudGrenadeIconWidth "25"
+      cg_hudGrenadePointerHeight "12"
+      cg_hudGrenadePointerPivot "12 27"
+      cg_hudGrenadePointerWidth "25"
+      cg_hudMapBorderWidth "2"
+      cg_hudMapFriendlyHeight "15"
+      cg_hudMapFriendlyWidth "15"
+      cg_hudMapPlayerHeight "20"
+      cg_hudMapPlayerWidth "20"
+      cg_hudStanceHintPrints "0"
+      cg_overheadIconSize "0.9"
+      cg_overheadNamesFont "2"
+      cg_overheadNamesSize "0.8"
+      cg_overheadRankSize "0.7"
+      cg_teamChatsOnly "0"
+      cg_voiceIconSize "0"
+      cg_weaponCycleDelay "0"
+      cg_youInKillCamSize "6"
+      cl_allowDownload "0"
+      cl_freelook "1"
+      cl_maxpackets "30"
+      cl_maxPing "800"
+      cl_mouseAccel "0"
+      cl_packetdup "1"
+      cl_paused "0"
+      cl_pitchspeed "140"
+      cl_voice "1"
+      cl_yawspeed "140"
+      com_maxfps "85"
+      con_minicon "0"
+      con_miniconlines "5"
+      con_minicontime "4"
+      con_outputBarColor "1 1 0.95 0.6"
+      con_outputSliderColor "0.15 0.15 0.1 0.6"
+      con_outputWindowColor "0.35 0.35 0.3 0.75"
+      fx_marks "1"
+      fx_marks_ents "1"
+      fx_marks_smodels "1"
+      g_allowvote "1"
+      g_banIPs ""
+      g_deadChat "0"
+      g_dropForwardSpeed "10"
+      g_dropHorzSpeedRand "100"
+      g_dropUpSpeedBase "10"
+      g_dropUpSpeedRand "5"
+      g_log "games_mp.log"
+      g_logSync "0"
+      g_oldVoting "1"
+      g_playerCollisionEjectSpeed "25"
+      g_useGear "0"
+      g_useholdspawndelay "1"
+      g_voiceChatTalkingDuration "500"
+      g_voteAbstainWeight "0.5"
+      gpad_buttonsConfig "buttons_default"
+      gpad_enabled "1"
+      gpad_sticksConfig "thumbstick_default"
+      in_mouse "1"
+      input_invertPitch "0"
+      input_viewSensitivity "1.8"
+      log_append "0"
+      logfile "1"
+      m_filter "0"
+      m_forward "0.25"
+      m_pitch "0.022"
+      m_side "0.25"
+      m_yaw "0.022"
+      monkeytoy "1"
+      net_noudp "0"
+      net_socksEnabled "0"
+      net_socksPassword ""
+      net_socksPort "1080"
+      net_socksServer ""
+      net_socksUsername ""
+      r_aaAlpha "dither (fast)"
+      r_aaSamples "4"
+      r_allow_intz "1"
+      r_allow_null_rt "1"
+      r_aspectRatio "auto"
+      r_autopriority "0"
+      r_backBufferSize "960"
+      r_backBufferSizeY "544"
+      r_blur_allowed "1"
+      r_clipCodec "MJPEG"
+      r_clipFPS "24"
+      r_clipSize "360"
+      r_customMode ""
+      r_depthPrepass "0"
+      r_displayRefresh "60 Hz"
+      r_distortion "1"
+      r_dof_enable "1"
+      r_fastSkin "0"
+      r_filmLut "-1"
+      r_flame_allowed "1"
+      r_flameFX_distortionScaleFactor "0 1 1 0.511918"
+      r_flameFX_enable "0"
+      r_flameFX_fadeDuration "0.5"
+      r_flameFX_FPS "15"
+      r_flameFX_magnitude "0.0215147"
+      r_fovScaleThresholdRigid "2.4"
+      r_fovScaleThresholdSkinned "2.4"
+      r_fullscreen "1"
+      r_gamma "1"
+      r_gfxopt_dynamic_foliage "1"
+      r_gfxopt_water_simulation "1"
+      r_glow_allowed "1"
+      r_ignorehwgamma "0"
+      r_inGameVideo "1"
+      r_lodBiasRigid "0"
+      r_lodBiasSkinned "0"
+      r_lodScaleRigid "1"
+      r_lodScaleSkinned "1"
+      r_mode "1024x768"
+      r_monitor "0"
+      r_motionblur_directionFactor "0.001"
+      r_motionblur_enable "0"
+      r_motionblur_frameBased_enable "0"
+      r_motionblur_maxblur "30"
+      r_motionblur_numberOfSamples "1"
+      r_motionblur_positionFactor "0.01"
+      r_multiGpu "1"
+      r_multithreaded_device "0"
+      r_picmip "1"
+      r_picmip_bump "1"
+      r_picmip_manual "0"
+      r_picmip_spec "1"
+      r_picmip_water "1"
+      r_polygonOffsetBias "-1"
+      r_polygonOffsetScale "-1"
+      r_portalBevels "0.7"
+      r_rendererPreference "Default"
+      r_reviveFX_debug "0"
+      r_reviveFX_fadeDuration "5"
+      r_shaderWarming "0"
+      r_specular "1"
+      r_texFilterAnisoMax "16"
+      r_texFilterAnisoMin "1"
+      r_texFilterMipMode "Unchanged"
+      r_use_driver_convergence "0"
+      r_vsync "1"
+      r_waterSheetingFX_allowed "1"
+      r_waterSheetingFX_distortionScaleFactor "0.021961 1 0 0"
+      r_waterSheetingFX_enable "0"
+      r_waterSheetingFX_fadeDuration "2"
+      r_waterSheetingFX_magnitude "0.0655388"
+      r_waterSheetingFX_radius "4.44051"
+      ragdoll_enable "1"
+      ragdoll_max_simulating "16"
+      rate "25000"
+      sd_xa2_device_guid "{119d4635-f88e-4d4f-ae88-d9f4a17e23ba}"
+      sensitivity "5"
+      sm_enable "1"
+      sm_maxLights "4"
+      snaps "20"
+      snd_enableEq "0"
+      snd_khz "44"
+      snd_losOcclusion "1"
+      snd_menu_center_channel "1"
+      snd_menu_cinematic "1"
+      snd_menu_left_channel "1"
+      snd_menu_left_surround "1"
+      snd_menu_lfe "1"
+      snd_menu_listen_level "0"
+      snd_menu_master "0.817801"
+      snd_menu_music "1"
+      snd_menu_right_channel "1"
+      snd_menu_right_surround "1"
+      snd_menu_sfx "1"
+      snd_menu_speaker_setup "0"
+      snd_menu_voice "0.240149"
+      snd_speakerConfiguration "7.1"
+      sv_allowDownload "1"
+      sv_floodProtect "1"
+      sv_hostname "BlackOpsZombie"
+      sv_maxPing "0"
+      sv_maxRate "7000"
+      sv_minPing "0"
+      sv_reconnectlimit "3"
+      sv_vac "0"
+      sv_voice "1"
+      sys_configSum "266827972"
+      sys_configureGHz "0.0651951"
+      sys_gpu "NVIDIA GeForce MX250"
+      sys_sysMB "1024"
+      team_indicator "0"
+      voice_deadChat "0"
+      voice_global "0"
+      voice_localEcho "0"
+      winvoice_mic_mute "1"
+      winvoice_mic_reclevel "65535"
+      winvoice_mic_scaler "1"
+      winvoice_save_voice "0"
 
-0 total dvars
-2326 dvar indexes
+220 total dvars
+2328 dvar indexes
 =============================== END DVAR DUMP =====================================
       dvar set zombieStopSplitScreen 1
       dvar set zombiemode 1
       dvar set sv_cheats 1
-Timestamp: SV_SpawnServer 1726846262
+Timestamp: SV_SpawnServer 1727527116
 g_gametype cmp is not a valid gametype, defaulting to cmp
 Redundant asset: 'localize','MENU_TESTINGBANDWIDTH'
 Redundant asset: 'localize','MENU_DOWNLOADING_GAME_SETTINGS_CAPS'
@@ -563,13 +790,13 @@ Redundant asset: 'stringtable','maps/mapstable.csv'
 Redundant asset: 'rawfile','coopmaps.arena'
 Redundant asset: 'rawfile','mod'
       dvar set com_maxclients 1
-[00011253] 0: CA_DISCONNECTED
+[00006677] 0: CA_DISCONNECTED
       dvar set mapname zombie_theater
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 4142234981, challengeNum 2073287896 to server
+CHALLENGERESPONSE: Sending nonce 2443237241, challengeNum 2897338736 to server
 CHALLENGERESPONSE: Sending bdOnlineUserID 0 to server
-CHALLENGERESPONSE: Sending nonce 4142234981, challengeNum 2073287896 to server
-Huffman Took 3 Milliseconds
+CHALLENGERESPONSE: Sending nonce 2443237241, challengeNum 2897338736 to server
+Huffman Took 2 Milliseconds
 ------ Server Initialization ------
 Server: zombie_theater
       dvar set sv_running 1
@@ -598,7 +825,7 @@ FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'zombies'
 FS_GetModList: failed to open 'mod.json' or 'description.txt' for mod 'zombie_dlc3'
 Customized arena file not found: mod.arena
       dvar set ui_netGametypeName zom
-Save Message First Frame Shown: 11395
+Save Message First Frame Shown: 6777
 BinkOpen failed on C:\Steam\steamapps\common\Call of Duty Black Ops\mods/cod_zombies_modding\video\zombie_theater_load.bik because: Error opening file.
 Adding fastfile 'common_zombie_patch' to queue
 Adding fastfile 'en_common_zombie' to queue
@@ -965,7 +1192,7 @@ Loading fastfile 'en_zombie_theater'
 used 1.61 MB memory in DB alloc
 Loading fastfile 'zombie_theater'
 used 103.04 MB memory in DB alloc
-Waited 5413 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
+Waited 4688 msec for asset 'maps/zombie_theater.d3dbsp' of type 'col_map_mp'.
       dvar set player_damageMultiplier 1
       dvar set player_damageMultiplier 0.363636
 ----------------------
@@ -1109,12 +1336,12 @@ maps/_callbacksetup
 ++++++++++++++++++mptype/player_t5_zm_theater
 +++++++++++++++++++character/c_ger_richtofen_zt
 +++++++++++++++++++character/c_jap_takeo_zt
-+++++++++++++++++++character/c_rus_nikolai_zt
+++++++++++++++WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\zombie_theater_patch_override.ff'
++++++character/c_rus_nikolai_zt
 +++++++++++++++++++character/c_usa_dempsey_zt
 ++++++++++++++++++mptype/player_t5_zm
 +++++++++++++++++++character/c_usa_marine_michael_carter_player_zm
 +++++++++++++++++maps/_weapons
-WARNING: Could not find zone 'C:\Steam\steamapps\common\Call of Duty Black Ops\zone\english\zombie_theater_patch_override.ff'
 ++++++++++++++++++maps/_weaponobjects
 +++++++++++++++++++maps/_ballistic_knife
 ++++++++++++++++++maps/_explosive_bolt
@@ -2488,12 +2715,30 @@ Binding to 192.168.1.165:3074
 DW_DNS_RESOLVING
       dvar set dw_popup popup_dw_dns_lookup
 Initialized Messaging for controller 0.
-.DW_REQUESTED_STEAM_TICKET
+DW_REQUESTED_STEAM_TICKET
+      dvar set cl_paused 0
+PC ONLY: No menu has focus and 5, what should I do?Unknown command "fade"
+Not connected to a server.
+Unknown command "fade"
+SV_DirectConnect()
+CHALLENGE RESPONSE: Read userID 0, clientChallenge 2897338736, nonce 2443237241
+Failed to parse userId!
+Connecting player #0 has a zero GUID
+Going from CS_FREE to CS_CONNECTED for  (num 0 guid 0)
+Received packet 0 of 1 of stats data
+Unknown Soldier 0 : dropped gamestate, resending
+SV_SendClientGameState() for Unknown Soldier 0
+Going from CS_CONNECTED to CS_CLIENTLOADING for Unknown Soldier 0
+--
+DynEnt_WriteGameState wrote 2 bytes
+--
+Sending 31393 bytes in gamestate to client: 0
+      dvar set com_voip_resume_time 16251
 STEAM: Wrote cached auth ticket
 STEAM: Retrieved auth ticket from Steam, sending to DemonWare
 DW_AUTHORIZING
       dvar set dw_popup popup_dw_authorize_account
-DW_AUTHORIZED (217 msecs)
+DW_AUTHORIZED (219 msecs)
 Got license type 0
 DW_LOBBY_CONNECTING
       dvar set dw_popup popup_dw_downloading_account_data
@@ -2515,41 +2760,23 @@ GamerProfile_LogInProfile took 0ms
 Cmd_AddCommand: incrementcounter already defined
 Cmd_AddCommand: dumpLiveCounters already defined
 Error: Global counter string table 'mp/globalcounters.csv' has an invalid value: a0.
+CHALLENGERESPONSE: Sending bdOnlineUserID 76561199067054074 to server
+CHALLENGERESPONSE: Sending nonce 2443237241, challengeNum 2897338736 to server
 Error '101' trying to measure upload bandwidth
-Read 41 bytes of file spstatsCompressed. (146ms)
-Stats blob received from Demonware for controller 0.
-Read 80 bytes of file CompressedMetPlayer3.info. (150ms)
-Read 3493 bytes of file online_tu14_sp_english.wad. (150ms)
+Read 3493 bytes of file online_tu14_sp_english.wad. (174ms)
 WAD: Big-endian WAD on Small-endian machine
 Got Online WAD. 3 entries, generated: Mon Oct 10 20:50:22 2011
       dvar set motd Zombies! Play back to back with friends in co-op to survive endless waves of the undead. Good luck.
 Warning: Invalid category ID found, returning first category.
-      dvar set gpad_present 0
-      dvar set gpad_present 1
-      dvar set cl_paused 0
-PC ONLY: No menu has focus and 5, what should I do?Unknown command "fade"
-Not connected to a server.
-Unknown command "fade"
-SV_DirectConnect()
-CHALLENGE RESPONSE: Read userID 0, clientChallenge 2073287896, nonce 4142234981
-Failed to parse userId!
-Connecting player #0 has a zero GUID
-Going from CS_FREE to CS_CONNECTED for  (num 0 guid 0)
-Received packet 0 of 1 of stats data
-Unknown Soldier 0 : dropped gamestate, resending
-SV_SendClientGameState() for Unknown Soldier 0
-Going from CS_CONNECTED to CS_CLIENTLOADING for Unknown Soldier 0
---
-DynEnt_WriteGameState wrote 2 bytes
---
-Sending 31393 bytes in gamestate to client: 0
-      dvar set com_voip_resume_time 32073
+Read 41 bytes of file spstatsCompressed. (180ms)
+Stats blob received from Demonware for controller 0.
+Read 80 bytes of file CompressedMetPlayer3.info. (185ms)
 Setting state to CA_LOADING in CL_DownloadsComplete
       dvar set cl_paused 1
-[00032291] 0: CA_LOADING
+[00016489] 0: CA_LOADING
 Setting state to CA_LOADING in CL_InitCGame
       dvar set cl_paused 0
-Fade in 33292 1750
+Fade in 17489 1750
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
@@ -3177,12 +3404,12 @@ Error: Could not load material "terrain_scorch_fruit".
 Error: Could not load material "terrain_scorch_paintedmetal".
 Error: Could not load material "terrain_scorch_player".
 Error: Could not load material "terrain_scorch_tallgrass".
-[00035131] 0: CA_PRIMED
-CL_InitCGame:  2.84 seconds
-Com_TouchMemory: 0 msec. Using sum: -407569193
-Going from CS_CLIENTLOADING to CS_ACTIVE for Unknown Soldier 0
-[00035216] 0: CA_ACTIVE
-Fade in 35716 1250
+[00018824] 0: CA_PRIMED
+CL_InitCGame:  2.34 seconds
+Com_TouchMemory: 0 msec. Using sum: 357891621
+Going from CS_CLIENTLOADING to CS_ACTIVE for mothphilo
+[00018894] 0: CA_ACTIVE
+Fade in 19394 1250
 Player 0 no longer burning at time: 0
 Player 0 no longer electrified at time: 0
 Player 0 no longer transporter sick at time: 0
@@ -3209,8 +3436,8 @@ execing thumbstick_default.cfg from fastfile
       dvar set r_exposureValue 0.228899
       dvar set r_exposureValue 0.279154
       dvar set r_exposureValue 0.326897
-Player 0 transporter sick for 2000 (ms) at time: 1737
       dvar set r_exposureValue 0.372252
+Player 0 transporter sick for 2000 (ms) at time: 1718
       dvar set r_exposureValue 0.415339
       dvar set r_exposureValue 0.456272
       dvar set r_exposureValue 0.495159
@@ -3284,20 +3511,8 @@ Player 0 transporter sick for 2000 (ms) at time: 1737
       dvar set r_exposureValue 1.21142
       dvar set r_exposureValue 1.21255
       dvar set r_exposureValue 1.21362
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
       dvar set r_exposureValue 1.21464
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
       dvar set r_exposureValue 1.21561
-      dvar set ammoCounterHide 0
-      dvar set miniscoreboardhide 0
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 27
       dvar set r_exposureValue 1.21653
       dvar set r_exposureValue 1.2174
       dvar set r_exposureValue 1.21823
@@ -3313,11 +3528,22 @@ Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mul
       dvar set r_exposureValue 1.22456
       dvar set r_exposureValue 1.22503
       dvar set r_exposureValue 1.22548
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
       dvar set r_exposureValue 1.2259
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult1"
       dvar set r_exposureValue 1.22631
       dvar set r_exposureValue 1.22669
-Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.22706
+      dvar set ammoCounterHide 0
+      dvar set miniscoreboardhide 0
+      dvar set ui_right_ammo_width 13
+      dvar set ui_ammo_stock_width 27
       dvar set r_exposureValue 1.22741
       dvar set r_exposureValue 1.22774
       dvar set r_exposureValue 1.22805
@@ -3337,6 +3563,7 @@ Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.2311
       dvar set r_exposureValue 1.23124
       dvar set r_exposureValue 1.23138
+Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.23151
       dvar set r_exposureValue 1.23164
       dvar set r_exposureValue 1.23175
@@ -3480,2735 +3707,226 @@ Player 0 no longer transporter sick at time: 0
       dvar set r_exposureValue 1.234
       dvar set r_exposureValue 1.234
       dvar set r_exposureValue 1.234
-AI (entity 663, origin 624.0 -1344.0 320.1) couldn't find path to goal.
-AI (entity 669, origin 1537.0 -167.0 -15.9) couldn't find path to goal.
-AI (entity 666, origin 1010.0 688.0 168.1) couldn't find path to goal.
-AI (entity 667, origin 841.2 -218.5 307.1) couldn't find path to goal.
-AI (entity 666, origin 1010.0 688.0 168.1) couldn't find path to goal.
-AI (entity 671, origin 1537.0 -167.0 -15.9) couldn't find path to goal.
-AI (entity 673, origin 1010.0 688.0 168.1) couldn't find path to goal.
-      dvar set ui_right_ammo_width 26
-      dvar set ui_ammo_stock_width 37
-AI (entity 673, origin 1010.0 688.0 168.1) couldn't find path to goal.
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-AI (entity 665, origin -616.0 -666.0 320.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 320
+AI (entity 664, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+AI (entity 665, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 665, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 661, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+AI (entity 666, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 438
       dvar set aa_enemy_deaths 2
-AI (entity 663, origin 628.0 -1132.0 320.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 480
-      dvar set aa_enemy_deaths 3
-      dvar set aa_enemy_damage_taken 880
-      dvar set aa_enemy_deaths 4
-AI (entity 673, origin 1052.0 387.9 168.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 1040
-      dvar set aa_enemy_deaths 5
-AI (entity 669, origin 1428.5 501.4 -15.9) couldn't find path to goal.
-AI (entity 671, origin 1427.7 415.9 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 1200
-      dvar set aa_enemy_deaths 6
-      dvar set aa_enemy_damage_taken 1360
-      dvar set aa_enemy_deaths 7
-AI (entity 666, origin 1052.7 385.5 168.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 1520
-      dvar set aa_enemy_deaths 8
-      dvar set ui_ammo_stock_width 27
-AI (entity 686, origin 1171.0 859.0 -15.9) couldn't find path to goal.
-      dvar set ui_right_ammo_width 13
-      dvar set ui_right_ammo_width 26
-Dropping redundant reliable command: g "dressing room one door opened now weapon barr cooldown can start"
-AI (entity 690, origin 1924.0 548.3 -13.3) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 1680
-      dvar set aa_enemy_deaths 9
-AI (entity 687, origin 1037.3 1478.1 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 1840
-      dvar set aa_enemy_deaths 10
-AI (entity 685, origin 1218.9 1475.5 49.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 2000
-      dvar set aa_enemy_deaths 11
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-AI (entity 682, origin 1571.0 1324.0 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 2160
-      dvar set aa_enemy_deaths 12
-AI (entity 686, origin 1005.0 868.0 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 2320
-      dvar set aa_enemy_deaths 13
-AI (entity 700, origin -1860.0 1468.0 5.2) couldn't find path to goal.
-AI (entity 701, origin -772.0 1681.0 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 2480
-      dvar set aa_enemy_deaths 14
-AI (entity 661, origin -362.4 1641.9 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 2640
-      dvar set aa_enemy_deaths 15
-AI (entity 693, origin -985.6 1298.0 168.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 2800
-      dvar set aa_enemy_deaths 16
-AI (entity 668, origin -1860.0 1468.0 5.2) couldn't find path to goal.
-Dropping redundant reliable command: g "west balcony room one door opened now weapon barr cooldown can start"
-Dropping redundant reliable command: g "west balcony room one door opened now weapon barr cooldown can start"
-Dropping redundant reliable command: g "west balcony room one door opened now weapon barr cooldown can start"
-Dropping redundant reliable command: g "west balcony room one door opened now weapon barr cooldown can start"
-Dropping redundant reliable command: g "west balcony room one door opened now weapon barr cooldown can start"
-Dropping redundant reliable command: g "west balcony room one door opened now weapon barr cooldown can start"
-AI (entity 671, origin -541.7 1491.4 -15.0) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 2960
-      dvar set aa_enemy_deaths 17
-AI (entity 697, origin -874.0 336.0 168.1) couldn't find path to goal.
-AI (entity 697, origin -874.0 336.0 168.1) couldn't find path to goal.
-AI (entity 697, origin -874.0 336.0 168.1) couldn't find path to goal.
-AI (entity 704, origin -772.0 1681.0 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 3120
-      dvar set aa_enemy_deaths 18
-AI (entity 702, origin -800.0 1681.0 -15.9) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 3280
-      dvar set aa_enemy_deaths 19
-      dvar set r_exposureValue 1.2473
-      dvar set r_exposureValue 1.25993
-      dvar set r_exposureValue 1.27194
-      dvar set r_exposureValue 1.28334
-      dvar set r_exposureValue 1.29417
-      dvar set r_exposureValue 1.30446
-      dvar set r_exposureValue 1.31424
-      dvar set r_exposureValue 1.32353
-      dvar set r_exposureValue 1.33235
-      dvar set r_exposureValue 1.34073
-      dvar set r_exposureValue 1.3487
-      dvar set r_exposureValue 1.35626
-      dvar set r_exposureValue 1.36345
-      dvar set r_exposureValue 1.37028
-      dvar set r_exposureValue 1.37676
-      dvar set r_exposureValue 1.38293
-      dvar set r_exposureValue 1.38878
-      dvar set r_exposureValue 1.39434
-      dvar set r_exposureValue 1.39962
-      dvar set r_exposureValue 1.40464
-      dvar set r_exposureValue 1.40941
-      dvar set r_exposureValue 1.41394
-      dvar set r_exposureValue 1.41824
-      dvar set r_exposureValue 1.42233
-      dvar set r_exposureValue 1.42621
-      dvar set r_exposureValue 1.4299
-      dvar set r_exposureValue 1.43341
-      dvar set r_exposureValue 1.43674
-      dvar set r_exposureValue 1.4399
-      dvar set r_exposureValue 1.44291
-      dvar set r_exposureValue 1.44576
-      dvar set r_exposureValue 1.44847
-      dvar set r_exposureValue 1.45105
-      dvar set r_exposureValue 1.4535
-      dvar set r_exposureValue 1.45582
-      dvar set r_exposureValue 1.45803
-      dvar set r_exposureValue 1.46013
-      dvar set r_exposureValue 1.46212
-      dvar set r_exposureValue 1.46402
-      dvar set r_exposureValue 1.46582
-      dvar set r_exposureValue 1.46752
-      dvar set r_exposureValue 1.46915
-      dvar set r_exposureValue 1.47069
-      dvar set r_exposureValue 1.47216
-      dvar set r_exposureValue 1.47355
-      dvar set r_exposureValue 1.47487
-      dvar set r_exposureValue 1.47613
-      dvar set r_exposureValue 1.47732
-      dvar set r_exposureValue 1.47846
-      dvar set r_exposureValue 1.47953
-      dvar set r_exposureValue 1.48056
-      dvar set r_exposureValue 1.48153
-      dvar set r_exposureValue 1.48245
-      dvar set r_exposureValue 1.48333
-      dvar set r_exposureValue 1.48416
-      dvar set r_exposureValue 1.48495
-      dvar set r_exposureValue 1.48571
-      dvar set r_exposureValue 1.48642
-      dvar set r_exposureValue 1.4871
-      dvar set r_exposureValue 1.48775
-      dvar set r_exposureValue 1.48836
-      dvar set r_exposureValue 1.48894
-      dvar set r_exposureValue 1.48949
-      dvar set r_exposureValue 1.49002
-      dvar set r_exposureValue 1.49052
-      dvar set r_exposureValue 1.49099
-      dvar set r_exposureValue 1.49144
-      dvar set r_exposureValue 1.49187
-      dvar set r_exposureValue 1.49228
-      dvar set r_exposureValue 1.49266
-      dvar set r_exposureValue 1.49303
-      dvar set r_exposureValue 1.49338
-      dvar set r_exposureValue 1.49371
-      dvar set r_exposureValue 1.49402
-      dvar set r_exposureValue 1.49432
-      dvar set r_exposureValue 1.49461
-      dvar set r_exposureValue 1.49488
-      dvar set r_exposureValue 1.49513
-      dvar set r_exposureValue 1.49538
-      dvar set r_exposureValue 1.49561
-      dvar set r_exposureValue 1.49583
-      dvar set r_exposureValue 1.49603
-      dvar set r_exposureValue 1.49623
-      dvar set r_exposureValue 1.49642
-      dvar set r_exposureValue 1.4966
-      dvar set r_exposureValue 1.49677
-      dvar set r_exposureValue 1.49693
-      dvar set r_exposureValue 1.49709
-      dvar set r_exposureValue 1.49723
-      dvar set r_exposureValue 1.49737
-      dvar set r_exposureValue 1.4975
-      dvar set r_exposureValue 1.49763
-      dvar set r_exposureValue 1.49774
-      dvar set r_exposureValue 1.49786
-      dvar set r_exposureValue 1.49796
-      dvar set r_exposureValue 1.49807
-      dvar set r_exposureValue 1.49816
-      dvar set r_exposureValue 1.49826
-      dvar set r_exposureValue 1.49834
-      dvar set r_exposureValue 1.49843
-      dvar set r_exposureValue 1.4985
-      dvar set r_exposureValue 1.49858
-      dvar set r_exposureValue 1.49865
-      dvar set r_exposureValue 1.49872
-      dvar set r_exposureValue 1.49878
-      dvar set r_exposureValue 1.49884
-      dvar set r_exposureValue 1.4989
-      dvar set r_exposureValue 1.49896
-      dvar set r_exposureValue 1.49901
-      dvar set r_exposureValue 1.49906
-      dvar set r_exposureValue 1.4991
-      dvar set r_exposureValue 1.49915
-      dvar set r_exposureValue 1.49919
-      dvar set r_exposureValue 1.49923
-      dvar set r_exposureValue 1.49927
-      dvar set r_exposureValue 1.49931
-      dvar set r_exposureValue 1.49934
-      dvar set r_exposureValue 1.49937
-      dvar set r_exposureValue 1.49941
-      dvar set r_exposureValue 1.49944
-      dvar set r_exposureValue 1.49946
-      dvar set r_exposureValue 1.49949
-      dvar set r_exposureValue 1.49952
-      dvar set r_exposureValue 1.49954
-      dvar set r_exposureValue 1.49956
-      dvar set r_exposureValue 1.49959
-      dvar set r_exposureValue 1.49961
-      dvar set r_exposureValue 1.49963
-      dvar set r_exposureValue 1.49964
-      dvar set r_exposureValue 1.49966
-      dvar set r_exposureValue 1.49968
-      dvar set r_exposureValue 1.49969
-      dvar set r_exposureValue 1.49971
-      dvar set r_exposureValue 1.49972
-      dvar set r_exposureValue 1.49974
-      dvar set r_exposureValue 1.49975
-      dvar set r_exposureValue 1.49976
-      dvar set r_exposureValue 1.49978
-      dvar set r_exposureValue 1.49979
-      dvar set r_exposureValue 1.4998
-      dvar set r_exposureValue 1.49981
-      dvar set r_exposureValue 1.49982
-      dvar set r_exposureValue 1.49983
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49985
-      dvar set r_exposureValue 1.49986
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49989
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set aa_enemy_damage_taken 3680
-      dvar set aa_enemy_deaths 20
       dvar set aa_player_kills 2
-      dvar set aa_enemy_damage_taken 3780
-      dvar set aa_enemy_damage_taken 4180
-      dvar set aa_enemy_deaths 21
+      dvar set aa_enemy_damage_taken 678
+      dvar set aa_enemy_deaths 3
       dvar set aa_player_kills 3
-      dvar set aa_enemy_damage_taken 4580
-      dvar set aa_enemy_deaths 22
+      dvar set aa_enemy_damage_taken 918
+      dvar set aa_enemy_deaths 4
       dvar set aa_player_kills 4
-      dvar set r_exposureValue 1.48227
-      dvar set r_exposureValue 1.46571
-      dvar set r_exposureValue 1.45027
-      dvar set r_exposureValue 1.43585
-      dvar set r_exposureValue 1.42239
-      dvar set r_exposureValue 1.40983
-      dvar set r_exposureValue 1.39811
-      dvar set r_exposureValue 1.38717
-      dvar set r_exposureValue 1.37696
-      dvar set r_exposureValue 1.36743
-      dvar set r_exposureValue 1.35853
-      dvar set r_exposureValue 1.35023
-      dvar set r_exposureValue 1.34248
-      dvar set r_exposureValue 1.33525
-      dvar set r_exposureValue 1.3285
-      dvar set r_exposureValue 1.3222
-      dvar set r_exposureValue 1.31632
-      dvar set r_exposureValue 1.31083
-      dvar set r_exposureValue 1.30571
-      dvar set r_exposureValue 1.30093
-      dvar set r_exposureValue 1.29647
-      dvar set r_exposureValue 1.2923
-      dvar set r_exposureValue 1.28842
-      dvar set r_exposureValue 1.28479
-      dvar set r_exposureValue 1.2814
-      dvar set r_exposureValue 1.27824
-      dvar set r_exposureValue 1.27529
-      dvar set r_exposureValue 1.27254
-      dvar set r_exposureValue 1.26997
-      dvar set r_exposureValue 1.26757
-      dvar set r_exposureValue 1.26533
-      dvar set r_exposureValue 1.26324
-      dvar set r_exposureValue 1.2613
-      dvar set r_exposureValue 1.25948
-      dvar set r_exposureValue 1.25778
-      dvar set r_exposureValue 1.25619
-      dvar set r_exposureValue 1.25471
-      dvar set r_exposureValue 1.25333
-      dvar set r_exposureValue 1.25204
-      dvar set r_exposureValue 1.25084
-      dvar set r_exposureValue 1.24972
-      dvar set r_exposureValue 1.24867
-      dvar set r_exposureValue 1.24769
-      dvar set r_exposureValue 1.24678
-      dvar set r_exposureValue 1.24593
-      dvar set r_exposureValue 1.24513
-      dvar set r_exposureValue 1.24439
-      dvar set r_exposureValue 1.2437
-      dvar set r_exposureValue 1.24305
-      dvar set r_exposureValue 1.24245
-      dvar set r_exposureValue 1.24188
-      dvar set r_exposureValue 1.24136
-      dvar set r_exposureValue 1.24087
-      dvar set r_exposureValue 1.24041
-      dvar set r_exposureValue 1.23998
-      dvar set r_exposureValue 1.23958
-      dvar set r_exposureValue 1.23921
-      dvar set r_exposureValue 1.23886
-      dvar set r_exposureValue 1.23854
-      dvar set r_exposureValue 1.23824
-      dvar set r_exposureValue 1.23795
-      dvar set r_exposureValue 1.23769
-      dvar set r_exposureValue 1.23744
-      dvar set r_exposureValue 1.23721
-      dvar set r_exposureValue 1.237
-      dvar set r_exposureValue 1.2368
-      dvar set r_exposureValue 1.23661
-      dvar set r_exposureValue 1.23644
-      dvar set r_exposureValue 1.23628
-      dvar set r_exposureValue 1.23612
-      dvar set r_exposureValue 1.23598
-      dvar set r_exposureValue 1.23585
-      dvar set r_exposureValue 1.23573
-      dvar set r_exposureValue 1.23561
-      dvar set r_exposureValue 1.2355
-      dvar set r_exposureValue 1.2354
-      dvar set r_exposureValue 1.23531
-      dvar set r_exposureValue 1.23522
-      dvar set r_exposureValue 1.23514
-      dvar set r_exposureValue 1.23507
-      dvar set r_exposureValue 1.23499
-      dvar set r_exposureValue 1.23493
-      dvar set r_exposureValue 1.23487
-      dvar set r_exposureValue 1.23481
-      dvar set r_exposureValue 1.23475
-      dvar set r_exposureValue 1.2347
-      dvar set r_exposureValue 1.23466
-      dvar set r_exposureValue 1.23461
-      dvar set r_exposureValue 1.23457
-      dvar set r_exposureValue 1.23453
-      dvar set r_exposureValue 1.2345
-      dvar set r_exposureValue 1.23447
-      dvar set r_exposureValue 1.23443
-      dvar set r_exposureValue 1.23441
-      dvar set r_exposureValue 1.23438
-      dvar set r_exposureValue 1.23435
-      dvar set r_exposureValue 1.23433
-      dvar set r_exposureValue 1.23431
-      dvar set r_exposureValue 1.23429
-      dvar set r_exposureValue 1.23427
-      dvar set r_exposureValue 1.23425
-      dvar set r_exposureValue 1.23423
-      dvar set r_exposureValue 1.23422
-      dvar set r_exposureValue 1.2342
-      dvar set r_exposureValue 1.23419
-      dvar set r_exposureValue 1.23418
-      dvar set r_exposureValue 1.23416
-      dvar set r_exposureValue 1.23415
-      dvar set r_exposureValue 1.23414
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23412
-      dvar set r_exposureValue 1.23411
-      dvar set r_exposureValue 1.2341
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set r_exposureValue 1.2473
-      dvar set r_exposureValue 1.25994
-      dvar set r_exposureValue 1.27194
-      dvar set r_exposureValue 1.28334
-      dvar set r_exposureValue 1.29417
-      dvar set r_exposureValue 1.30447
-      dvar set r_exposureValue 1.31424
-      dvar set r_exposureValue 1.32353
-      dvar set r_exposureValue 1.33235
-      dvar set r_exposureValue 1.34074
-      dvar set r_exposureValue 1.3487
-      dvar set r_exposureValue 1.35626
-      dvar set r_exposureValue 1.36345
-      dvar set r_exposureValue 1.37028
-      dvar set r_exposureValue 1.37676
-      dvar set r_exposureValue 1.38293
-      dvar set r_exposureValue 1.38878
-      dvar set r_exposureValue 1.39434
-      dvar set r_exposureValue 1.39962
-      dvar set r_exposureValue 1.40464
-      dvar set r_exposureValue 1.40941
-      dvar set r_exposureValue 1.41394
-      dvar set r_exposureValue 1.41824
-      dvar set r_exposureValue 1.42233
-      dvar set r_exposureValue 1.42621
-      dvar set r_exposureValue 1.4299
-      dvar set r_exposureValue 1.43341
-      dvar set r_exposureValue 1.43674
-      dvar set r_exposureValue 1.4399
-      dvar set r_exposureValue 1.44291
-      dvar set r_exposureValue 1.44576
-      dvar set r_exposureValue 1.44847
-      dvar set r_exposureValue 1.45105
-      dvar set r_exposureValue 1.4535
-      dvar set r_exposureValue 1.45582
-      dvar set r_exposureValue 1.45803
-      dvar set r_exposureValue 1.46013
-      dvar set r_exposureValue 1.46212
-      dvar set r_exposureValue 1.46402
-      dvar set r_exposureValue 1.46582
-      dvar set r_exposureValue 1.46753
-      dvar set r_exposureValue 1.46915
-      dvar set r_exposureValue 1.47069
-      dvar set r_exposureValue 1.47216
-      dvar set r_exposureValue 1.47355
-      dvar set r_exposureValue 1.47487
-      dvar set r_exposureValue 1.47613
-      dvar set r_exposureValue 1.47732
-      dvar set r_exposureValue 1.47846
-      dvar set r_exposureValue 1.47953
-      dvar set r_exposureValue 1.48056
-      dvar set r_exposureValue 1.48153
-      dvar set r_exposureValue 1.48245
-      dvar set r_exposureValue 1.48333
-      dvar set r_exposureValue 1.48416
-      dvar set r_exposureValue 1.48495
-      dvar set r_exposureValue 1.48571
-      dvar set r_exposureValue 1.48642
-      dvar set r_exposureValue 1.4871
-      dvar set r_exposureValue 1.48775
-      dvar set r_exposureValue 1.48836
-      dvar set r_exposureValue 1.48894
-      dvar set r_exposureValue 1.48949
-      dvar set r_exposureValue 1.49002
-      dvar set r_exposureValue 1.49052
-      dvar set r_exposureValue 1.49099
-      dvar set r_exposureValue 1.49144
-      dvar set r_exposureValue 1.49187
-      dvar set r_exposureValue 1.49228
-      dvar set r_exposureValue 1.49266
-      dvar set r_exposureValue 1.49303
-      dvar set r_exposureValue 1.49338
-      dvar set r_exposureValue 1.49371
-      dvar set r_exposureValue 1.49402
-      dvar set r_exposureValue 1.49432
-      dvar set r_exposureValue 1.49461
-      dvar set r_exposureValue 1.49488
-      dvar set r_exposureValue 1.49513
-      dvar set r_exposureValue 1.49538
-      dvar set r_exposureValue 1.49561
-      dvar set r_exposureValue 1.49583
-      dvar set r_exposureValue 1.49603
-      dvar set r_exposureValue 1.49623
-      dvar set r_exposureValue 1.49642
-      dvar set r_exposureValue 1.4966
-      dvar set r_exposureValue 1.49677
-      dvar set r_exposureValue 1.49693
-      dvar set r_exposureValue 1.49709
-      dvar set r_exposureValue 1.49723
-      dvar set r_exposureValue 1.49737
-      dvar set r_exposureValue 1.4975
-      dvar set r_exposureValue 1.49763
-      dvar set r_exposureValue 1.49774
-      dvar set r_exposureValue 1.49786
-      dvar set r_exposureValue 1.49796
-      dvar set r_exposureValue 1.49807
-      dvar set r_exposureValue 1.49816
-      dvar set r_exposureValue 1.49826
-      dvar set r_exposureValue 1.49834
-      dvar set r_exposureValue 1.49843
-      dvar set r_exposureValue 1.4985
-      dvar set r_exposureValue 1.49858
-      dvar set r_exposureValue 1.49865
-      dvar set r_exposureValue 1.49872
-      dvar set r_exposureValue 1.49878
-      dvar set r_exposureValue 1.49884
-      dvar set r_exposureValue 1.4989
-      dvar set r_exposureValue 1.49896
-      dvar set r_exposureValue 1.49901
-      dvar set r_exposureValue 1.49906
-      dvar set r_exposureValue 1.4991
-      dvar set r_exposureValue 1.49915
-      dvar set r_exposureValue 1.49919
-      dvar set r_exposureValue 1.49923
-      dvar set r_exposureValue 1.49927
-      dvar set r_exposureValue 1.49931
-      dvar set r_exposureValue 1.49934
-      dvar set r_exposureValue 1.49937
-      dvar set r_exposureValue 1.49941
-      dvar set r_exposureValue 1.49944
-      dvar set r_exposureValue 1.49946
-      dvar set r_exposureValue 1.49949
-      dvar set r_exposureValue 1.49952
-      dvar set r_exposureValue 1.49954
-      dvar set r_exposureValue 1.49956
-      dvar set r_exposureValue 1.49959
-      dvar set r_exposureValue 1.49961
-      dvar set r_exposureValue 1.49963
-      dvar set r_exposureValue 1.49964
-      dvar set r_exposureValue 1.49966
-      dvar set r_exposureValue 1.49968
-      dvar set r_exposureValue 1.49969
-      dvar set r_exposureValue 1.49971
-      dvar set r_exposureValue 1.49972
-      dvar set r_exposureValue 1.49974
-      dvar set r_exposureValue 1.49975
-      dvar set r_exposureValue 1.49976
-      dvar set r_exposureValue 1.49978
-      dvar set r_exposureValue 1.49979
-      dvar set r_exposureValue 1.4998
-      dvar set r_exposureValue 1.49981
-      dvar set r_exposureValue 1.49982
-      dvar set r_exposureValue 1.49983
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49985
-      dvar set r_exposureValue 1.49986
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49989
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.48227
-      dvar set r_exposureValue 1.46571
-      dvar set r_exposureValue 1.45027
-      dvar set r_exposureValue 1.43585
-      dvar set r_exposureValue 1.42239
-      dvar set r_exposureValue 1.40983
-      dvar set r_exposureValue 1.39811
-      dvar set r_exposureValue 1.38717
-      dvar set r_exposureValue 1.37696
-      dvar set r_exposureValue 1.36743
-      dvar set r_exposureValue 1.35853
-      dvar set r_exposureValue 1.35023
-      dvar set r_exposureValue 1.34248
-      dvar set r_exposureValue 1.33525
-      dvar set r_exposureValue 1.3285
-      dvar set r_exposureValue 1.3222
-      dvar set r_exposureValue 1.31632
-      dvar set r_exposureValue 1.31083
-      dvar set r_exposureValue 1.30571
-      dvar set r_exposureValue 1.30093
-      dvar set r_exposureValue 1.29647
-      dvar set r_exposureValue 1.2923
-      dvar set r_exposureValue 1.28842
-      dvar set r_exposureValue 1.28479
-      dvar set r_exposureValue 1.2814
-      dvar set r_exposureValue 1.27824
-      dvar set r_exposureValue 1.27529
-      dvar set r_exposureValue 1.27254
-      dvar set r_exposureValue 1.26997
-      dvar set r_exposureValue 1.26757
-      dvar set r_exposureValue 1.26533
-      dvar set r_exposureValue 1.26324
-      dvar set r_exposureValue 1.2613
-      dvar set r_exposureValue 1.25948
-      dvar set r_exposureValue 1.25778
-      dvar set r_exposureValue 1.25619
-      dvar set r_exposureValue 1.25471
-      dvar set r_exposureValue 1.25333
-      dvar set r_exposureValue 1.25204
-      dvar set r_exposureValue 1.25084
-      dvar set r_exposureValue 1.24972
-      dvar set r_exposureValue 1.24867
-      dvar set r_exposureValue 1.24769
-      dvar set r_exposureValue 1.24678
-      dvar set r_exposureValue 1.24593
-      dvar set r_exposureValue 1.24513
-      dvar set r_exposureValue 1.24439
-      dvar set r_exposureValue 1.2437
-      dvar set r_exposureValue 1.24305
-      dvar set r_exposureValue 1.24245
-      dvar set r_exposureValue 1.24188
-      dvar set r_exposureValue 1.24136
-      dvar set r_exposureValue 1.24087
-      dvar set r_exposureValue 1.24041
-      dvar set r_exposureValue 1.23998
-      dvar set r_exposureValue 1.23958
-      dvar set r_exposureValue 1.23921
-      dvar set r_exposureValue 1.23886
-      dvar set r_exposureValue 1.23854
-      dvar set r_exposureValue 1.23824
-      dvar set r_exposureValue 1.23795
-      dvar set r_exposureValue 1.23769
-      dvar set r_exposureValue 1.23744
-      dvar set r_exposureValue 1.23721
-      dvar set r_exposureValue 1.237
-      dvar set r_exposureValue 1.2368
-      dvar set r_exposureValue 1.23661
-      dvar set r_exposureValue 1.23644
-      dvar set r_exposureValue 1.23628
-      dvar set r_exposureValue 1.23612
-      dvar set r_exposureValue 1.23598
-      dvar set r_exposureValue 1.23585
-      dvar set r_exposureValue 1.23573
-      dvar set r_exposureValue 1.23561
-      dvar set r_exposureValue 1.2355
-      dvar set r_exposureValue 1.2354
-      dvar set r_exposureValue 1.23531
-      dvar set r_exposureValue 1.23522
-      dvar set r_exposureValue 1.23514
-      dvar set r_exposureValue 1.23507
-      dvar set r_exposureValue 1.23499
-      dvar set r_exposureValue 1.23493
-      dvar set r_exposureValue 1.23487
-      dvar set r_exposureValue 1.23481
-      dvar set r_exposureValue 1.23475
-      dvar set r_exposureValue 1.2347
-      dvar set r_exposureValue 1.23466
-      dvar set r_exposureValue 1.23461
-      dvar set r_exposureValue 1.23457
-      dvar set r_exposureValue 1.23453
-      dvar set r_exposureValue 1.2345
-      dvar set r_exposureValue 1.23447
-      dvar set r_exposureValue 1.23443
-      dvar set r_exposureValue 1.23441
-      dvar set r_exposureValue 1.23438
-      dvar set r_exposureValue 1.23435
-      dvar set r_exposureValue 1.23433
-      dvar set r_exposureValue 1.23431
-      dvar set r_exposureValue 1.23429
-      dvar set r_exposureValue 1.23427
-      dvar set r_exposureValue 1.23425
-      dvar set r_exposureValue 1.23423
-      dvar set r_exposureValue 1.23422
-      dvar set r_exposureValue 1.2342
-      dvar set r_exposureValue 1.23419
-      dvar set r_exposureValue 1.23418
-      dvar set r_exposureValue 1.23416
-      dvar set r_exposureValue 1.23415
-      dvar set r_exposureValue 1.23414
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23412
-      dvar set r_exposureValue 1.23411
-      dvar set r_exposureValue 1.2341
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set aa_enemy_damage_taken 4980
-      dvar set aa_enemy_deaths 23
+      dvar set aa_enemy_damage_taken 1143
+      dvar set aa_enemy_deaths 5
       dvar set aa_player_kills 5
-      dvar set aa_enemy_damage_taken 5380
-      dvar set aa_enemy_deaths 24
+      dvar set aa_enemy_damage_taken 1383
+      dvar set aa_enemy_deaths 6
       dvar set aa_player_kills 6
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set r_exposureValue 1.2473
-      dvar set r_exposureValue 1.25994
-      dvar set r_exposureValue 1.27194
-      dvar set r_exposureValue 1.28334
-      dvar set r_exposureValue 1.29417
-      dvar set r_exposureValue 1.30447
-      dvar set r_exposureValue 1.31424
-      dvar set r_exposureValue 1.32353
-      dvar set r_exposureValue 1.33235
-      dvar set r_exposureValue 1.34074
-      dvar set r_exposureValue 1.3487
-      dvar set r_exposureValue 1.35626
-      dvar set r_exposureValue 1.36345
-      dvar set r_exposureValue 1.37028
-      dvar set r_exposureValue 1.37676
-      dvar set r_exposureValue 1.38293
-      dvar set r_exposureValue 1.38878
-      dvar set r_exposureValue 1.39434
-      dvar set r_exposureValue 1.39962
-      dvar set r_exposureValue 1.40464
-      dvar set r_exposureValue 1.40941
-      dvar set r_exposureValue 1.41394
-      dvar set r_exposureValue 1.41824
-      dvar set r_exposureValue 1.42233
-      dvar set r_exposureValue 1.42621
-      dvar set r_exposureValue 1.4299
-      dvar set r_exposureValue 1.43341
-      dvar set r_exposureValue 1.43674
-      dvar set r_exposureValue 1.4399
-      dvar set r_exposureValue 1.44291
-      dvar set r_exposureValue 1.44576
-      dvar set r_exposureValue 1.44847
-      dvar set r_exposureValue 1.45105
-      dvar set r_exposureValue 1.4535
-      dvar set r_exposureValue 1.45582
-      dvar set r_exposureValue 1.45803
-      dvar set r_exposureValue 1.46013
-      dvar set r_exposureValue 1.46212
-      dvar set r_exposureValue 1.46402
-      dvar set r_exposureValue 1.46582
-      dvar set r_exposureValue 1.46753
-      dvar set r_exposureValue 1.46915
-      dvar set r_exposureValue 1.47069
-      dvar set r_exposureValue 1.47216
-      dvar set r_exposureValue 1.47355
-      dvar set r_exposureValue 1.47487
-      dvar set r_exposureValue 1.47613
-      dvar set r_exposureValue 1.47732
-      dvar set r_exposureValue 1.47846
-      dvar set r_exposureValue 1.47953
-      dvar set r_exposureValue 1.48056
-      dvar set r_exposureValue 1.48153
-      dvar set r_exposureValue 1.48245
-      dvar set r_exposureValue 1.48333
-      dvar set r_exposureValue 1.48416
-      dvar set r_exposureValue 1.48495
-      dvar set r_exposureValue 1.48571
-      dvar set r_exposureValue 1.48642
-      dvar set r_exposureValue 1.4871
-      dvar set r_exposureValue 1.48775
-      dvar set r_exposureValue 1.48836
-      dvar set r_exposureValue 1.48894
-      dvar set r_exposureValue 1.48949
-      dvar set r_exposureValue 1.49002
-      dvar set r_exposureValue 1.49052
-      dvar set r_exposureValue 1.49099
-      dvar set r_exposureValue 1.49144
-      dvar set r_exposureValue 1.49187
-      dvar set r_exposureValue 1.49228
-      dvar set r_exposureValue 1.49266
-      dvar set r_exposureValue 1.49303
-      dvar set r_exposureValue 1.49338
-      dvar set r_exposureValue 1.49371
-      dvar set r_exposureValue 1.49402
-      dvar set r_exposureValue 1.49432
-      dvar set r_exposureValue 1.49461
-      dvar set r_exposureValue 1.49488
-      dvar set r_exposureValue 1.49513
-      dvar set r_exposureValue 1.49538
-      dvar set r_exposureValue 1.49561
-      dvar set r_exposureValue 1.49583
-      dvar set r_exposureValue 1.49603
-      dvar set r_exposureValue 1.49623
-      dvar set r_exposureValue 1.49642
-      dvar set r_exposureValue 1.4966
-      dvar set r_exposureValue 1.49677
-      dvar set r_exposureValue 1.49693
-      dvar set r_exposureValue 1.49709
-      dvar set r_exposureValue 1.49723
-      dvar set r_exposureValue 1.49737
-      dvar set r_exposureValue 1.4975
-      dvar set r_exposureValue 1.49763
-      dvar set r_exposureValue 1.49774
-      dvar set r_exposureValue 1.49786
-      dvar set r_exposureValue 1.49796
-      dvar set r_exposureValue 1.49807
-      dvar set r_exposureValue 1.49816
-      dvar set r_exposureValue 1.49826
-      dvar set r_exposureValue 1.49834
-      dvar set r_exposureValue 1.49843
-      dvar set r_exposureValue 1.4985
-      dvar set r_exposureValue 1.49858
-      dvar set r_exposureValue 1.49865
-      dvar set r_exposureValue 1.49872
-      dvar set r_exposureValue 1.49878
-      dvar set r_exposureValue 1.49884
-      dvar set r_exposureValue 1.4989
-      dvar set r_exposureValue 1.49896
-      dvar set r_exposureValue 1.49901
-      dvar set r_exposureValue 1.49906
-      dvar set r_exposureValue 1.4991
-      dvar set r_exposureValue 1.49915
-      dvar set r_exposureValue 1.49919
-      dvar set r_exposureValue 1.49923
-      dvar set r_exposureValue 1.49927
 Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.91"
 Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.91"
 Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.91"
 Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.91"
 Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.91"
 Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.91"
-      dvar set r_exposureValue 1.49931
 Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.91"
-      dvar set r_exposureValue 1.49934
-      dvar set r_exposureValue 1.49937
-      dvar set r_exposureValue 1.49941
-      dvar set r_exposureValue 1.49944
-      dvar set r_exposureValue 1.49946
-      dvar set r_exposureValue 1.49949
-      dvar set r_exposureValue 1.49952
-      dvar set r_exposureValue 1.49954
-      dvar set r_exposureValue 1.49956
-      dvar set r_exposureValue 1.49959
-      dvar set r_exposureValue 1.49961
-      dvar set r_exposureValue 1.49963
-      dvar set r_exposureValue 1.49964
-      dvar set r_exposureValue 1.49966
-      dvar set r_exposureValue 1.49968
-      dvar set r_exposureValue 1.49969
-      dvar set r_exposureValue 1.49971
-      dvar set r_exposureValue 1.49972
-      dvar set r_exposureValue 1.49974
-      dvar set r_exposureValue 1.49975
-      dvar set r_exposureValue 1.49976
-      dvar set r_exposureValue 1.49978
-      dvar set r_exposureValue 1.49979
-      dvar set r_exposureValue 1.4998
-      dvar set r_exposureValue 1.49981
-      dvar set r_exposureValue 1.49982
-      dvar set r_exposureValue 1.49983
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49985
-      dvar set r_exposureValue 1.49986
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49989
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.48226
-      dvar set r_exposureValue 1.46571
-      dvar set r_exposureValue 1.45027
-      dvar set r_exposureValue 1.43585
-      dvar set r_exposureValue 1.42239
-      dvar set r_exposureValue 1.40983
-      dvar set r_exposureValue 1.39811
-      dvar set r_exposureValue 1.38717
-      dvar set r_exposureValue 1.37696
-      dvar set r_exposureValue 1.36743
-      dvar set r_exposureValue 1.35853
-      dvar set r_exposureValue 1.35023
-      dvar set r_exposureValue 1.34248
-      dvar set r_exposureValue 1.33525
-      dvar set r_exposureValue 1.3285
-      dvar set r_exposureValue 1.3222
-      dvar set r_exposureValue 1.31632
-      dvar set r_exposureValue 1.31083
-      dvar set r_exposureValue 1.30571
-      dvar set r_exposureValue 1.30093
-      dvar set r_exposureValue 1.29647
-      dvar set r_exposureValue 1.2923
-      dvar set r_exposureValue 1.28842
-      dvar set r_exposureValue 1.28479
-      dvar set r_exposureValue 1.2814
-      dvar set r_exposureValue 1.27824
-      dvar set r_exposureValue 1.27529
-      dvar set r_exposureValue 1.27254
-      dvar set r_exposureValue 1.26997
-      dvar set r_exposureValue 1.26757
-      dvar set r_exposureValue 1.26533
-      dvar set r_exposureValue 1.26324
-      dvar set r_exposureValue 1.2613
-AI (entity 695, origin -1948.0 741.0 168.1) couldn't find path to goal.
-      dvar set r_exposureValue 1.25948
-      dvar set r_exposureValue 1.25778
-      dvar set r_exposureValue 1.25619
-      dvar set r_exposureValue 1.25471
-      dvar set r_exposureValue 1.25333
-      dvar set r_exposureValue 1.25204
-      dvar set r_exposureValue 1.25084
-      dvar set r_exposureValue 1.24972
-      dvar set r_exposureValue 1.24867
-      dvar set r_exposureValue 1.24769
-      dvar set r_exposureValue 1.24678
-      dvar set r_exposureValue 1.24593
-      dvar set r_exposureValue 1.24513
-      dvar set r_exposureValue 1.24439
-      dvar set r_exposureValue 1.2437
-      dvar set r_exposureValue 1.24305
-      dvar set r_exposureValue 1.24245
-      dvar set r_exposureValue 1.24188
-      dvar set r_exposureValue 1.24136
-      dvar set r_exposureValue 1.24087
-      dvar set r_exposureValue 1.24041
-      dvar set r_exposureValue 1.23998
-      dvar set r_exposureValue 1.23958
-      dvar set r_exposureValue 1.23921
-      dvar set r_exposureValue 1.23886
-      dvar set r_exposureValue 1.23854
-      dvar set r_exposureValue 1.23824
-      dvar set r_exposureValue 1.23795
-      dvar set r_exposureValue 1.23769
-      dvar set r_exposureValue 1.23744
-      dvar set r_exposureValue 1.23721
-      dvar set r_exposureValue 1.237
-      dvar set r_exposureValue 1.2368
-      dvar set r_exposureValue 1.23661
-      dvar set r_exposureValue 1.23644
-      dvar set r_exposureValue 1.23628
-      dvar set r_exposureValue 1.23612
-      dvar set r_exposureValue 1.23598
-      dvar set r_exposureValue 1.23585
-      dvar set r_exposureValue 1.23573
-      dvar set r_exposureValue 1.23561
-      dvar set r_exposureValue 1.2355
-      dvar set r_exposureValue 1.2354
-      dvar set r_exposureValue 1.23531
-      dvar set r_exposureValue 1.23522
-      dvar set r_exposureValue 1.23514
-      dvar set r_exposureValue 1.23507
-      dvar set r_exposureValue 1.23499
-      dvar set r_exposureValue 1.23493
-      dvar set r_exposureValue 1.23487
-      dvar set r_exposureValue 1.23481
-      dvar set r_exposureValue 1.23475
-      dvar set r_exposureValue 1.2347
-      dvar set r_exposureValue 1.23466
-      dvar set r_exposureValue 1.23461
-      dvar set r_exposureValue 1.23457
-      dvar set r_exposureValue 1.23453
-      dvar set r_exposureValue 1.2345
-      dvar set r_exposureValue 1.23447
-      dvar set r_exposureValue 1.23443
-      dvar set r_exposureValue 1.23441
-      dvar set r_exposureValue 1.23438
-      dvar set r_exposureValue 1.23435
-      dvar set r_exposureValue 1.23433
-      dvar set r_exposureValue 1.23431
-      dvar set r_exposureValue 1.23429
-      dvar set r_exposureValue 1.23427
-      dvar set r_exposureValue 1.23425
-      dvar set r_exposureValue 1.23423
-      dvar set r_exposureValue 1.23422
-      dvar set r_exposureValue 1.2342
-      dvar set r_exposureValue 1.23419
-      dvar set r_exposureValue 1.23418
-      dvar set r_exposureValue 1.23416
-      dvar set r_exposureValue 1.23415
-      dvar set r_exposureValue 1.23414
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23412
-      dvar set r_exposureValue 1.23411
-      dvar set r_exposureValue 1.2341
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-AI (entity 682, origin -1860.0 1468.0 5.2) couldn't find path to goal.
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-AI (entity 671, origin -874.0 336.0 168.1) couldn't find path to goal.
-AI (entity 671, origin -874.0 336.0 168.1) couldn't find path to goal.
-AI (entity 671, origin -874.0 336.0 168.1) couldn't find path to goal.
-AI (entity 669, origin -1860.0 1468.0 5.2) couldn't find path to goal.
-      dvar set r_exposureValue 1.2473
-      dvar set r_exposureValue 1.25994
-      dvar set r_exposureValue 1.27194
-      dvar set r_exposureValue 1.28334
-      dvar set r_exposureValue 1.29417
-      dvar set r_exposureValue 1.30447
-      dvar set r_exposureValue 1.31424
-      dvar set r_exposureValue 1.32353
-      dvar set r_exposureValue 1.33235
-      dvar set r_exposureValue 1.34074
-      dvar set r_exposureValue 1.3487
-      dvar set r_exposureValue 1.35626
-      dvar set r_exposureValue 1.36345
-      dvar set r_exposureValue 1.37028
-      dvar set r_exposureValue 1.37676
-      dvar set r_exposureValue 1.38293
-      dvar set r_exposureValue 1.38878
-      dvar set r_exposureValue 1.39434
-      dvar set r_exposureValue 1.39962
-      dvar set r_exposureValue 1.40464
-      dvar set r_exposureValue 1.40941
-      dvar set r_exposureValue 1.41394
-      dvar set r_exposureValue 1.41824
-      dvar set r_exposureValue 1.42233
-      dvar set r_exposureValue 1.42621
-      dvar set r_exposureValue 1.4299
-      dvar set r_exposureValue 1.43341
-      dvar set r_exposureValue 1.43674
-      dvar set r_exposureValue 1.4399
-      dvar set r_exposureValue 1.44291
-      dvar set r_exposureValue 1.44576
-      dvar set r_exposureValue 1.44847
-      dvar set r_exposureValue 1.45105
-      dvar set r_exposureValue 1.4535
-      dvar set r_exposureValue 1.45582
-      dvar set r_exposureValue 1.45803
-      dvar set r_exposureValue 1.46013
-      dvar set r_exposureValue 1.46212
-      dvar set r_exposureValue 1.46402
-      dvar set r_exposureValue 1.46582
-      dvar set r_exposureValue 1.46753
-      dvar set r_exposureValue 1.46915
-      dvar set r_exposureValue 1.47069
-      dvar set r_exposureValue 1.47216
-      dvar set r_exposureValue 1.47355
-      dvar set r_exposureValue 1.47487
-      dvar set r_exposureValue 1.47613
-      dvar set r_exposureValue 1.47732
-      dvar set r_exposureValue 1.47846
-      dvar set r_exposureValue 1.47953
-      dvar set r_exposureValue 1.48056
-      dvar set r_exposureValue 1.48153
-      dvar set r_exposureValue 1.48245
-      dvar set r_exposureValue 1.48333
-      dvar set r_exposureValue 1.48416
-      dvar set r_exposureValue 1.48495
-      dvar set r_exposureValue 1.48571
-      dvar set r_exposureValue 1.48642
-      dvar set r_exposureValue 1.4871
-      dvar set r_exposureValue 1.48775
-      dvar set r_exposureValue 1.48836
-      dvar set r_exposureValue 1.48894
-      dvar set r_exposureValue 1.48949
-      dvar set r_exposureValue 1.49002
-      dvar set r_exposureValue 1.49052
-      dvar set r_exposureValue 1.49099
-      dvar set r_exposureValue 1.49144
-      dvar set r_exposureValue 1.49187
-      dvar set r_exposureValue 1.49228
-      dvar set r_exposureValue 1.49266
-      dvar set r_exposureValue 1.49303
-      dvar set r_exposureValue 1.49338
-      dvar set r_exposureValue 1.49371
-      dvar set r_exposureValue 1.49402
-      dvar set r_exposureValue 1.49432
-      dvar set r_exposureValue 1.49461
-      dvar set r_exposureValue 1.49488
-      dvar set r_exposureValue 1.49513
-      dvar set r_exposureValue 1.49538
-      dvar set r_exposureValue 1.49561
-      dvar set r_exposureValue 1.49583
-      dvar set r_exposureValue 1.49603
-      dvar set r_exposureValue 1.49623
-      dvar set r_exposureValue 1.49642
-      dvar set r_exposureValue 1.4966
-      dvar set r_exposureValue 1.49677
-      dvar set r_exposureValue 1.47925
-      dvar set r_exposureValue 1.4629
-      dvar set r_exposureValue 1.44764
-      dvar set r_exposureValue 1.4334
-      dvar set r_exposureValue 1.42011
-      dvar set r_exposureValue 1.4077
-      dvar set r_exposureValue 1.39612
-      dvar set r_exposureValue 1.38531
-      dvar set r_exposureValue 1.37522
-      dvar set r_exposureValue 1.36581
-      dvar set r_exposureValue 1.35702
-      dvar set r_exposureValue 1.34882
-      dvar set r_exposureValue 1.34116
-      dvar set r_exposureValue 1.33402
-      dvar set r_exposureValue 1.32735
-      dvar set r_exposureValue 1.32113
-      dvar set r_exposureValue 1.31532
-      dvar set r_exposureValue 1.3099
-      dvar set r_exposureValue 1.30484
-      dvar set r_exposureValue 1.30012
-      dvar set r_exposureValue 1.29571
-      dvar set r_exposureValue 1.29159
-      dvar set r_exposureValue 1.28775
-      dvar set r_exposureValue 1.28417
-      dvar set r_exposureValue 1.28083
-      dvar set r_exposureValue 1.2777
-      dvar set r_exposureValue 1.27479
-      dvar set r_exposureValue 1.27207
-      dvar set r_exposureValue 1.26953
-      dvar set r_exposureValue 1.26716
-      dvar set r_exposureValue 1.26495
-      dvar set r_exposureValue 1.26289
-      dvar set r_exposureValue 1.26096
-      dvar set r_exposureValue 1.25917
-      dvar set r_exposureValue 1.25749
-      dvar set r_exposureValue 1.25592
-      dvar set r_exposureValue 1.25446
-      dvar set r_exposureValue 1.2531
-      dvar set r_exposureValue 1.25182
-      dvar set r_exposureValue 1.25064
-      dvar set r_exposureValue 1.24953
-      dvar set r_exposureValue 1.24849
-      dvar set r_exposureValue 1.24752
-      dvar set r_exposureValue 1.24662
-      dvar set r_exposureValue 1.24578
-      dvar set r_exposureValue 1.245
-      dvar set r_exposureValue 1.24426
-      dvar set r_exposureValue 1.24358
-      dvar set r_exposureValue 1.24294
-      dvar set r_exposureValue 1.24234
-      dvar set r_exposureValue 1.24179
-      dvar set r_exposureValue 1.24127
-      dvar set r_exposureValue 1.24078
-      dvar set r_exposureValue 1.24033
-      dvar set r_exposureValue 1.23991
-      dvar set r_exposureValue 1.23952
-      dvar set r_exposureValue 1.23915
-      dvar set r_exposureValue 1.2388
-      dvar set r_exposureValue 1.23848
-      dvar set r_exposureValue 1.23819
-      dvar set r_exposureValue 1.23791
-      dvar set r_exposureValue 1.23765
-      dvar set r_exposureValue 1.2374
-      dvar set r_exposureValue 1.23718
-      dvar set r_exposureValue 1.23696
-      dvar set r_exposureValue 1.23677
-      dvar set r_exposureValue 1.23658
-      dvar set r_exposureValue 1.23641
-      dvar set r_exposureValue 1.23625
-      dvar set r_exposureValue 1.2361
-      dvar set r_exposureValue 1.23596
-      dvar set r_exposureValue 1.23583
-      dvar set r_exposureValue 1.23571
-      dvar set r_exposureValue 1.23559
-      dvar set r_exposureValue 1.23549
-      dvar set r_exposureValue 1.23539
-      dvar set r_exposureValue 1.23529
-      dvar set r_exposureValue 1.23521
-      dvar set r_exposureValue 1.23513
-      dvar set r_exposureValue 1.23505
-      dvar set r_exposureValue 1.23498
-      dvar set r_exposureValue 1.23492
-      dvar set r_exposureValue 1.23486
-      dvar set r_exposureValue 1.2348
-      dvar set r_exposureValue 1.23475
-      dvar set r_exposureValue 1.2347
-      dvar set r_exposureValue 1.23465
-      dvar set r_exposureValue 1.23461
-      dvar set r_exposureValue 1.23457
-      dvar set r_exposureValue 1.23453
-      dvar set r_exposureValue 1.23449
-      dvar set r_exposureValue 1.23446
-      dvar set r_exposureValue 1.23443
-      dvar set r_exposureValue 1.2344
-      dvar set r_exposureValue 1.23437
-      dvar set r_exposureValue 1.23435
-      dvar set r_exposureValue 1.23433
-      dvar set r_exposureValue 1.2343
-      dvar set r_exposureValue 1.23428
-      dvar set r_exposureValue 1.23426
-      dvar set r_exposureValue 1.23425
-      dvar set r_exposureValue 1.23423
-      dvar set r_exposureValue 1.23421
-      dvar set r_exposureValue 1.2342
-      dvar set r_exposureValue 1.23419
-      dvar set r_exposureValue 1.23417
-      dvar set r_exposureValue 1.23416
-      dvar set r_exposureValue 1.23415
-      dvar set r_exposureValue 1.23414
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23412
-      dvar set r_exposureValue 1.23412
-      dvar set r_exposureValue 1.23411
-      dvar set r_exposureValue 1.2341
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set aa_enemy_damage_taken 5728
-      dvar set aa_enemy_deaths 25
+AI (entity 671, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 671, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 1623
+      dvar set aa_enemy_deaths 7
       dvar set aa_player_kills 7
-      dvar set aa_enemy_damage_taken 6128
-      dvar set aa_enemy_deaths 26
+AI (entity 679, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 1863
+      dvar set aa_enemy_deaths 8
       dvar set aa_player_kills 8
-      dvar set aa_enemy_damage_taken 6228
-      dvar set aa_player_damage_dealt 200
-      dvar set aa_enemy_damage_taken 6628
-      dvar set aa_enemy_deaths 27
+      dvar set aa_enemy_damage_taken 2061
+      dvar set aa_enemy_deaths 9
       dvar set aa_player_kills 9
-      dvar set aa_enemy_damage_taken 7028
-      dvar set aa_enemy_deaths 28
+AI (entity 693, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 2301
+      dvar set aa_enemy_deaths 10
       dvar set aa_player_kills 10
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-Dropping redundant reliable command: J "0"
-      dvar set aa_enemy_damage_taken 8028
-      dvar set aa_enemy_deaths 29
+      dvar set aa_enemy_damage_taken 2541
+      dvar set aa_enemy_deaths 11
       dvar set aa_player_kills 11
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set aa_enemy_damage_taken 8128
-      dvar set aa_player_damage_dealt 300
-      dvar set aa_enemy_damage_taken 8228
-      dvar set aa_enemy_deaths 30
+      dvar set aa_enemy_damage_taken 2697
+      dvar set aa_enemy_deaths 12
       dvar set aa_player_kills 12
-      dvar set aa_enemy_damage_taken 8628
-      dvar set aa_enemy_deaths 31
+      dvar set aa_enemy_damage_taken 2937
+      dvar set aa_enemy_deaths 13
       dvar set aa_player_kills 13
-      dvar set r_exposureValue 1.2473
-      dvar set r_exposureValue 1.25994
-      dvar set r_exposureValue 1.27194
-      dvar set r_exposureValue 1.28334
-      dvar set r_exposureValue 1.29417
-      dvar set r_exposureValue 1.30447
-      dvar set r_exposureValue 1.31424
-      dvar set r_exposureValue 1.32353
-      dvar set r_exposureValue 1.33235
-      dvar set r_exposureValue 1.34074
-      dvar set r_exposureValue 1.3487
-      dvar set r_exposureValue 1.35626
-      dvar set r_exposureValue 1.36345
-      dvar set r_exposureValue 1.37028
-      dvar set r_exposureValue 1.37676
-      dvar set r_exposureValue 1.38293
-      dvar set r_exposureValue 1.38878
-      dvar set r_exposureValue 1.39434
-      dvar set r_exposureValue 1.39962
-      dvar set r_exposureValue 1.40464
-      dvar set r_exposureValue 1.40941
-      dvar set r_exposureValue 1.41394
-      dvar set r_exposureValue 1.41824
-      dvar set r_exposureValue 1.42233
-      dvar set r_exposureValue 1.42621
-      dvar set r_exposureValue 1.4299
-      dvar set r_exposureValue 1.43341
-      dvar set r_exposureValue 1.43674
-      dvar set r_exposureValue 1.4399
-      dvar set r_exposureValue 1.44291
-      dvar set r_exposureValue 1.44576
-      dvar set r_exposureValue 1.44847
-      dvar set r_exposureValue 1.45105
-      dvar set r_exposureValue 1.4535
-      dvar set r_exposureValue 1.45582
-      dvar set r_exposureValue 1.45803
-      dvar set r_exposureValue 1.46013
-      dvar set r_exposureValue 1.46212
-      dvar set r_exposureValue 1.46402
-      dvar set r_exposureValue 1.46582
-      dvar set r_exposureValue 1.46753
-      dvar set r_exposureValue 1.46915
-      dvar set r_exposureValue 1.47069
-      dvar set r_exposureValue 1.47216
-      dvar set r_exposureValue 1.47355
-      dvar set r_exposureValue 1.47487
-      dvar set r_exposureValue 1.47613
-      dvar set r_exposureValue 1.47732
-      dvar set r_exposureValue 1.47846
-      dvar set r_exposureValue 1.47953
-      dvar set r_exposureValue 1.48056
-      dvar set r_exposureValue 1.48153
-      dvar set r_exposureValue 1.48245
-      dvar set r_exposureValue 1.48333
-      dvar set r_exposureValue 1.48416
-      dvar set r_exposureValue 1.48495
-      dvar set r_exposureValue 1.48571
-      dvar set r_exposureValue 1.48642
-      dvar set r_exposureValue 1.4871
-      dvar set r_exposureValue 1.48775
-      dvar set r_exposureValue 1.48836
-      dvar set r_exposureValue 1.48894
-      dvar set r_exposureValue 1.48949
-      dvar set r_exposureValue 1.49002
-      dvar set r_exposureValue 1.49052
-      dvar set r_exposureValue 1.49099
-      dvar set r_exposureValue 1.49144
-      dvar set r_exposureValue 1.49187
-      dvar set r_exposureValue 1.49228
-      dvar set r_exposureValue 1.49266
-      dvar set r_exposureValue 1.49303
-      dvar set r_exposureValue 1.49338
-      dvar set r_exposureValue 1.49371
-      dvar set r_exposureValue 1.49402
-      dvar set r_exposureValue 1.49432
-      dvar set r_exposureValue 1.49461
-      dvar set r_exposureValue 1.49488
-      dvar set r_exposureValue 1.49513
-      dvar set r_exposureValue 1.49538
-      dvar set r_exposureValue 1.49561
-      dvar set r_exposureValue 1.49583
-      dvar set r_exposureValue 1.49603
-      dvar set r_exposureValue 1.49623
-      dvar set r_exposureValue 1.49642
-      dvar set r_exposureValue 1.4966
-      dvar set r_exposureValue 1.49677
-      dvar set r_exposureValue 1.49693
-      dvar set r_exposureValue 1.49709
-      dvar set r_exposureValue 1.49723
-      dvar set r_exposureValue 1.49737
-      dvar set r_exposureValue 1.4975
-      dvar set r_exposureValue 1.49763
-      dvar set r_exposureValue 1.49774
-      dvar set r_exposureValue 1.49786
-      dvar set r_exposureValue 1.49796
-      dvar set r_exposureValue 1.49807
-      dvar set r_exposureValue 1.49816
-      dvar set r_exposureValue 1.49826
-      dvar set r_exposureValue 1.49834
-      dvar set r_exposureValue 1.49843
-      dvar set r_exposureValue 1.4985
-      dvar set r_exposureValue 1.49858
-      dvar set r_exposureValue 1.49865
-      dvar set r_exposureValue 1.49872
-      dvar set r_exposureValue 1.49878
-      dvar set r_exposureValue 1.49884
-      dvar set r_exposureValue 1.4989
-      dvar set r_exposureValue 1.49896
-      dvar set r_exposureValue 1.49901
-      dvar set r_exposureValue 1.49906
-      dvar set r_exposureValue 1.4991
-      dvar set r_exposureValue 1.49915
-      dvar set r_exposureValue 1.49919
-      dvar set r_exposureValue 1.49923
-      dvar set r_exposureValue 1.49927
-      dvar set r_exposureValue 1.49931
-      dvar set r_exposureValue 1.49934
-      dvar set r_exposureValue 1.49937
-      dvar set r_exposureValue 1.49941
-      dvar set r_exposureValue 1.49944
-      dvar set r_exposureValue 1.49946
-      dvar set r_exposureValue 1.49949
-      dvar set r_exposureValue 1.49952
-      dvar set r_exposureValue 1.49954
-      dvar set r_exposureValue 1.49956
-      dvar set r_exposureValue 1.49959
-      dvar set r_exposureValue 1.49961
-      dvar set r_exposureValue 1.49963
-      dvar set r_exposureValue 1.49964
-      dvar set r_exposureValue 1.49966
-      dvar set r_exposureValue 1.49968
-      dvar set r_exposureValue 1.49969
-      dvar set r_exposureValue 1.49971
-      dvar set r_exposureValue 1.49972
-      dvar set r_exposureValue 1.49974
-      dvar set r_exposureValue 1.49975
-      dvar set r_exposureValue 1.49976
-      dvar set r_exposureValue 1.49978
-      dvar set r_exposureValue 1.49979
-      dvar set r_exposureValue 1.4998
-      dvar set r_exposureValue 1.49981
-      dvar set r_exposureValue 1.49982
-      dvar set r_exposureValue 1.49983
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49984
-      dvar set r_exposureValue 1.49985
-      dvar set r_exposureValue 1.49986
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49987
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49988
-      dvar set r_exposureValue 1.49989
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.4999
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49991
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49992
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49993
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49994
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49995
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49996
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49997
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49998
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set aa_enemy_damage_taken 8728
-      dvar set aa_player_damage_dealt 400
-      dvar set aa_ads_damage_dealt 200
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.49999
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set aa_enemy_damage_taken 8828
-      dvar set aa_enemy_deaths 32
+      dvar set ui_ammo_stock_width 17
+      dvar set aa_enemy_damage_taken 3177
+      dvar set aa_enemy_deaths 14
       dvar set aa_player_kills 14
-      dvar set r_exposureValue 1.48227
-      dvar set r_exposureValue 1.50815
-      dvar set r_exposureValue 1.53274
-      dvar set r_exposureValue 1.55611
-      dvar set r_exposureValue 1.5783
-      dvar set r_exposureValue 1.59939
-      dvar set r_exposureValue 1.61942
-      dvar set r_exposureValue 1.63845
-      dvar set r_exposureValue 1.65652
-      dvar set r_exposureValue 1.6737
-      dvar set r_exposureValue 1.69001
-      dvar set r_exposureValue 1.70551
-      dvar set r_exposureValue 1.72024
-      dvar set r_exposureValue 1.73422
-      dvar set r_exposureValue 1.74751
-      dvar set r_exposureValue 1.76014
-      dvar set r_exposureValue 1.77213
-      dvar set r_exposureValue 1.78352
-      dvar set r_exposureValue 1.79435
-      dvar set r_exposureValue 1.77472
-      dvar set r_exposureValue 1.75641
-      dvar set r_exposureValue 1.73932
-      dvar set r_exposureValue 1.72336
-      dvar set r_exposureValue 1.70847
-      dvar set r_exposureValue 1.69457
-      dvar set r_exposureValue 1.6816
-      dvar set r_exposureValue 1.66949
-      dvar set r_exposureValue 1.65819
-      dvar set r_exposureValue 1.64765
-      dvar set r_exposureValue 1.63781
-      dvar set r_exposureValue 1.62862
-      dvar set r_exposureValue 1.62004
-      dvar set r_exposureValue 1.61204
-      dvar set r_exposureValue 1.60457
-      dvar set r_exposureValue 1.5976
-      dvar set r_exposureValue 1.59109
-      dvar set r_exposureValue 1.58502
-      dvar set r_exposureValue 1.57935
-      dvar set r_exposureValue 1.57406
-      dvar set r_exposureValue 1.56912
-      dvar set r_exposureValue 1.56452
-      dvar set r_exposureValue 1.56022
-      dvar set r_exposureValue 1.5562
-      dvar set r_exposureValue 1.55245
-      dvar set r_exposureValue 1.54896
-      dvar set r_exposureValue 1.54569
-      dvar set r_exposureValue 1.54265
-      dvar set r_exposureValue 1.5398
-      dvar set r_exposureValue 1.53715
-      dvar set r_exposureValue 1.53467
-      dvar set r_exposureValue 1.53236
-      dvar set r_exposureValue 1.53021
-      dvar set r_exposureValue 1.52819
-      dvar set r_exposureValue 1.52631
-      dvar set r_exposureValue 1.52456
-      dvar set r_exposureValue 1.52292
-      dvar set r_exposureValue 1.52139
-      dvar set r_exposureValue 1.51997
-      dvar set r_exposureValue 1.51864
-      dvar set r_exposureValue 1.51739
-      dvar set r_exposureValue 1.51623
-      dvar set r_exposureValue 1.51515
-      dvar set r_exposureValue 1.51414
-      dvar set r_exposureValue 1.5132
-      dvar set r_exposureValue 1.51232
-      dvar set r_exposureValue 1.5115
-      dvar set r_exposureValue 1.51073
-      dvar set r_exposureValue 1.51002
-      dvar set r_exposureValue 1.50935
-      dvar set r_exposureValue 1.50872
-      dvar set r_exposureValue 1.50814
-      dvar set r_exposureValue 1.5076
-      dvar set r_exposureValue 1.50709
-      dvar set r_exposureValue 1.50662
-      dvar set r_exposureValue 1.50618
-      dvar set r_exposureValue 1.50577
-      dvar set r_exposureValue 1.50538
-      dvar set r_exposureValue 1.50502
-      dvar set r_exposureValue 1.50469
-      dvar set r_exposureValue 1.50438
-      dvar set r_exposureValue 1.50408
-      dvar set r_exposureValue 1.50381
-      dvar set r_exposureValue 1.50356
-      dvar set r_exposureValue 1.50332
-      dvar set r_exposureValue 1.5031
-      dvar set r_exposureValue 1.50289
-      dvar set r_exposureValue 1.5027
-      dvar set r_exposureValue 1.50252
-      dvar set r_exposureValue 1.50235
-      dvar set r_exposureValue 1.5022
-      dvar set r_exposureValue 1.50205
-      dvar set r_exposureValue 1.50191
-      dvar set r_exposureValue 1.50179
-      dvar set r_exposureValue 1.50167
-      dvar set r_exposureValue 1.50155
-      dvar set r_exposureValue 1.50145
-      dvar set r_exposureValue 1.50135
-      dvar set r_exposureValue 1.50126
-      dvar set r_exposureValue 1.50118
-      dvar set r_exposureValue 1.5011
-      dvar set r_exposureValue 1.50103
-      dvar set r_exposureValue 1.50096
-      dvar set r_exposureValue 1.5009
-      dvar set r_exposureValue 1.50084
-      dvar set r_exposureValue 1.50078
-      dvar set r_exposureValue 1.50073
-      dvar set r_exposureValue 1.50068
-      dvar set r_exposureValue 1.50063
-      dvar set r_exposureValue 1.50059
-      dvar set r_exposureValue 1.50055
-      dvar set r_exposureValue 1.50052
-      dvar set r_exposureValue 1.50048
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set r_exposureValue 1.50045
-      dvar set r_exposureValue 1.50042
-      dvar set r_exposureValue 1.50039
-      dvar set r_exposureValue 1.50037
-      dvar set r_exposureValue 1.50034
-      dvar set r_exposureValue 1.50032
-      dvar set r_exposureValue 1.5003
-      dvar set r_exposureValue 1.50028
-      dvar set r_exposureValue 1.50026
-      dvar set r_exposureValue 1.50024
-      dvar set r_exposureValue 1.50023
-      dvar set r_exposureValue 1.50021
-      dvar set r_exposureValue 1.5002
-      dvar set r_exposureValue 1.50018
-      dvar set r_exposureValue 1.50017
-      dvar set r_exposureValue 1.50016
-      dvar set r_exposureValue 1.50015
-      dvar set r_exposureValue 1.50014
-      dvar set r_exposureValue 1.50013
-      dvar set r_exposureValue 1.50012
-      dvar set r_exposureValue 1.50011
-      dvar set r_exposureValue 1.50011
-      dvar set r_exposureValue 1.5001
-      dvar set r_exposureValue 1.50009
-      dvar set r_exposureValue 1.50009
-      dvar set r_exposureValue 1.50008
-      dvar set r_exposureValue 1.50007
-      dvar set r_exposureValue 1.50007
-      dvar set r_exposureValue 1.50007
-      dvar set r_exposureValue 1.50006
-      dvar set r_exposureValue 1.50006
-      dvar set r_exposureValue 1.50005
-      dvar set r_exposureValue 1.50005
-      dvar set r_exposureValue 1.50005
-      dvar set r_exposureValue 1.50004
-      dvar set r_exposureValue 1.50004
-      dvar set r_exposureValue 1.50004
-      dvar set r_exposureValue 1.50004
-      dvar set r_exposureValue 1.50003
-      dvar set r_exposureValue 1.50003
-      dvar set r_exposureValue 1.50003
-      dvar set r_exposureValue 1.50003
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50002
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.50001
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-      dvar set r_exposureValue 1.5
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
-AI (entity 709, origin -1883.0 -1332.0 86.5) couldn't find path to goal.
-      dvar set r_exposureValue 1.48333
-      dvar set r_exposureValue 1.46778
-      dvar set r_exposureValue 1.45326
-      dvar set r_exposureValue 1.43971
-      dvar set r_exposureValue 1.42706
-      dvar set r_exposureValue 1.41526
-      dvar set r_exposureValue 1.40424
-      dvar set r_exposureValue 1.39396
-      dvar set r_exposureValue 1.38436
-      dvar set r_exposureValue 1.3754
-      dvar set r_exposureValue 1.36704
-      dvar set r_exposureValue 1.35924
-      dvar set r_exposureValue 1.35196
-      dvar set r_exposureValue 1.34516
-      dvar set r_exposureValue 1.33882
-      dvar set r_exposureValue 1.3329
-      dvar set r_exposureValue 1.32737
-      dvar set r_exposureValue 1.32221
-      dvar set r_exposureValue 1.3174
-      dvar set r_exposureValue 1.3129
-      dvar set r_exposureValue 1.30871
-      dvar set r_exposureValue 1.3048
-      dvar set r_exposureValue 1.30114
-      dvar set r_exposureValue 1.29773
-      dvar set r_exposureValue 1.29455
-      dvar set r_exposureValue 1.29158
-      dvar set r_exposureValue 1.28881
-      dvar set r_exposureValue 1.28622
-      dvar set r_exposureValue 1.28381
-      dvar set r_exposureValue 1.28155
-      dvar set r_exposureValue 1.27945
-      dvar set r_exposureValue 1.27749
-      dvar set r_exposureValue 1.27565
-      dvar set r_exposureValue 1.27394
-      dvar set r_exposureValue 1.27235
-      dvar set r_exposureValue 1.27086
-      dvar set r_exposureValue 1.26947
-      dvar set r_exposureValue 1.26817
-      dvar set r_exposureValue 1.26696
-      dvar set r_exposureValue 1.26583
-      dvar set r_exposureValue 1.26477
-      dvar set r_exposureValue 1.26379
-      dvar set r_exposureValue 1.26287
-      dvar set r_exposureValue 1.26201
-      dvar set r_exposureValue 1.26121
-      dvar set r_exposureValue 1.26046
-AI (entity 708, origin -1785.0 741.0 0.4) couldn't find path to goal.
-      dvar set r_exposureValue 1.25976
-      dvar set r_exposureValue 1.25911
-      dvar set r_exposureValue 1.25851
-      dvar set r_exposureValue 1.25794
-      dvar set r_exposureValue 1.25741
-      dvar set r_exposureValue 1.25692
-      dvar set r_exposureValue 1.25645
-      dvar set r_exposureValue 1.25602
-      dvar set r_exposureValue 1.25562
-      dvar set r_exposureValue 1.25525
-      dvar set r_exposureValue 1.2549
-      dvar set r_exposureValue 1.25457
-      dvar set r_exposureValue 1.25427
-      dvar set r_exposureValue 1.25398
-      dvar set r_exposureValue 1.25372
-      dvar set r_exposureValue 1.25347
-      dvar set r_exposureValue 1.25324
-      dvar set r_exposureValue 1.25302
-      dvar set r_exposureValue 1.25282
-      dvar set r_exposureValue 1.25263
-      dvar set r_exposureValue 1.25246
-      dvar set r_exposureValue 1.25229
-      dvar set r_exposureValue 1.25214
-      dvar set r_exposureValue 1.252
-      dvar set r_exposureValue 1.25186
-      dvar set r_exposureValue 1.25174
-      dvar set r_exposureValue 1.25162
-      dvar set r_exposureValue 1.25152
-      dvar set r_exposureValue 1.25141
-      dvar set r_exposureValue 1.25132
-      dvar set r_exposureValue 1.25123
-      dvar set r_exposureValue 1.25115
-      dvar set r_exposureValue 1.25107
-      dvar set r_exposureValue 1.251
-      dvar set r_exposureValue 1.25094
-      dvar set r_exposureValue 1.25087
-      dvar set r_exposureValue 1.25081
-      dvar set r_exposureValue 1.25076
-      dvar set r_exposureValue 1.25071
-      dvar set r_exposureValue 1.25066
-      dvar set r_exposureValue 1.25062
-      dvar set r_exposureValue 1.25058
-      dvar set r_exposureValue 1.25054
-      dvar set r_exposureValue 1.2505
-      dvar set r_exposureValue 1.25047
-      dvar set r_exposureValue 1.25044
-      dvar set r_exposureValue 1.25041
-      dvar set r_exposureValue 1.25038
-      dvar set r_exposureValue 1.25036
-      dvar set r_exposureValue 1.25033
-      dvar set r_exposureValue 1.25031
-      dvar set r_exposureValue 1.25029
-      dvar set r_exposureValue 1.25027
-      dvar set r_exposureValue 1.25025
-      dvar set r_exposureValue 1.25024
-      dvar set r_exposureValue 1.25022
-      dvar set r_exposureValue 1.25021
-      dvar set r_exposureValue 1.25019
-      dvar set r_exposureValue 1.25018
-      dvar set r_exposureValue 1.25017
-      dvar set r_exposureValue 1.25016
-      dvar set r_exposureValue 1.25015
-      dvar set r_exposureValue 1.25014
-      dvar set r_exposureValue 1.25013
-      dvar set r_exposureValue 1.25012
-      dvar set r_exposureValue 1.25011
-      dvar set r_exposureValue 1.2501
-      dvar set r_exposureValue 1.2501
-      dvar set r_exposureValue 1.25009
-      dvar set r_exposureValue 1.25008
-      dvar set r_exposureValue 1.25008
-      dvar set r_exposureValue 1.25007
-      dvar set r_exposureValue 1.25007
-      dvar set r_exposureValue 1.25006
-      dvar set r_exposureValue 1.25006
-      dvar set r_exposureValue 1.24899
-AI (entity 702, origin -1883.0 -1332.0 86.5) couldn't find path to goal.
-      dvar set r_exposureValue 1.24799
-      dvar set r_exposureValue 1.24706
-      dvar set r_exposureValue 1.24619
-      dvar set r_exposureValue 1.24537
-      dvar set r_exposureValue 1.24462
-      dvar set r_exposureValue 1.24391
-      dvar set r_exposureValue 1.24325
-      dvar set r_exposureValue 1.24263
-      dvar set r_exposureValue 1.24205
-      dvar set r_exposureValue 1.24152
-      dvar set r_exposureValue 1.24102
-      dvar set r_exposureValue 1.24055
-      dvar set r_exposureValue 1.24011
-      dvar set r_exposureValue 1.2397
-      dvar set r_exposureValue 1.23932
-      dvar set r_exposureValue 1.23897
-      dvar set r_exposureValue 1.23864
-      dvar set r_exposureValue 1.23833
-      dvar set r_exposureValue 1.23804
-      dvar set r_exposureValue 1.23777
-      dvar set r_exposureValue 1.23752
-      dvar set r_exposureValue 1.23728
-      dvar set r_exposureValue 1.23707
-      dvar set r_exposureValue 1.23686
-      dvar set r_exposureValue 1.23667
-      dvar set r_exposureValue 1.23649
-      dvar set r_exposureValue 1.23633
-      dvar set r_exposureValue 1.23617
-      dvar set r_exposureValue 1.23603
-      dvar set r_exposureValue 1.23589
-      dvar set r_exposureValue 1.23576
-      dvar set r_exposureValue 1.23565
-      dvar set r_exposureValue 1.23554
-      dvar set r_exposureValue 1.23543
-      dvar set r_exposureValue 1.23534
-      dvar set r_exposureValue 1.23525
-      dvar set r_exposureValue 1.23517
-      dvar set r_exposureValue 1.23509
-      dvar set r_exposureValue 1.23502
-      dvar set r_exposureValue 1.23495
-      dvar set r_exposureValue 1.23488
-AI (entity 693, origin -848.0 0.0 80.1) couldn't find path to goal.
-      dvar set r_exposureValue 1.23483
-      dvar set r_exposureValue 1.23477
-      dvar set r_exposureValue 1.23472
-      dvar set r_exposureValue 1.23467
-      dvar set r_exposureValue 1.23463
-      dvar set r_exposureValue 1.23458
-      dvar set r_exposureValue 1.23455
-      dvar set r_exposureValue 1.23451
-      dvar set r_exposureValue 1.23447
-      dvar set r_exposureValue 1.23444
-      dvar set r_exposureValue 1.23441
-      dvar set r_exposureValue 1.23439
-      dvar set r_exposureValue 1.23436
-      dvar set r_exposureValue 1.23434
-      dvar set r_exposureValue 1.23431
-      dvar set r_exposureValue 1.23429
-      dvar set r_exposureValue 1.23427
-      dvar set r_exposureValue 1.23425
-      dvar set r_exposureValue 1.23424
-      dvar set r_exposureValue 1.23422
-      dvar set r_exposureValue 1.23421
-      dvar set r_exposureValue 1.23419
-      dvar set r_exposureValue 1.23418
-      dvar set r_exposureValue 1.23417
-      dvar set r_exposureValue 1.23416
-      dvar set r_exposureValue 1.23415
-      dvar set r_exposureValue 1.23414
-      dvar set r_exposureValue 1.23413
-      dvar set r_exposureValue 1.23412
-      dvar set r_exposureValue 1.23411
-      dvar set r_exposureValue 1.2341
-      dvar set r_exposureValue 1.2341
-      dvar set r_exposureValue 1.23409
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23408
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23407
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23406
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23405
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23404
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23403
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-AI (entity 711, origin -666.0 -1280.0 80.1) couldn't find path to goal.
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23402
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.23401
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-AI (entity 711, origin -666.0 -1280.0 80.1) couldn't find path to goal.
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-      dvar set r_exposureValue 1.234
-AI (entity 671, origin -848.0 0.0 80.1) couldn't find path to goal.
-AI (entity 668, origin -666.0 -1280.0 80.1) couldn't find path to goal.
-AI (entity 668, origin -666.0 -1280.0 80.1) couldn't find path to goal.
-AI (entity 703, origin -666.0 -1280.0 80.1) couldn't find path to goal.
-AI (entity 703, origin -666.0 -1280.0 80.1) couldn't find path to goal.
-AI (entity 713, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-AI (entity 715, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 715, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-AI (entity 709, origin -1658.0 -596.0 0.0) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 9088
-      dvar set aa_enemy_deaths 33
-AI (entity 702, origin -1686.0 -596.0 1.7) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 9348
-      dvar set aa_enemy_deaths 34
-AI (entity 671, origin -933.0 -286.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 9608
-      dvar set aa_enemy_deaths 35
-AI (entity 693, origin -989.0 -286.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 9868
-      dvar set aa_enemy_deaths 36
-AI (entity 711, origin -701.0 -1003.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 10128
-      dvar set aa_enemy_deaths 37
-AI (entity 703, origin -673.0 -1003.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 10388
-      dvar set aa_enemy_deaths 38
-AI (entity 668, origin -645.0 -1003.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 10648
-      dvar set aa_enemy_deaths 39
-AI (entity 729, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 729, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 708, origin -1787.0 547.0 0.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 10908
-      dvar set aa_enemy_deaths 40
-      dvar set aa_enemy_damage_taken 10994
-      dvar set aa_player_damage_dealt 486
-      dvar set aa_ads_damage_dealt 286
-      dvar set aa_enemy_damage_taken 11394
-      dvar set aa_enemy_deaths 41
+      dvar set aa_enemy_damage_taken 3417
+      dvar set aa_enemy_deaths 15
       dvar set aa_player_kills 15
-      dvar set aa_enemy_damage_taken 11794
-      dvar set aa_enemy_deaths 42
-      dvar set aa_player_kills 16
-      dvar set aa_enemy_damage_taken 11892
-      dvar set aa_player_damage_dealt 584
-      dvar set aa_ads_damage_dealt 384
-      dvar set aa_enemy_damage_taken 11983
-      dvar set aa_player_damage_dealt 675
-      dvar set aa_ads_damage_dealt 475
-      dvar set aa_enemy_damage_taken 12083
-      dvar set aa_enemy_deaths 43
-      dvar set aa_player_kills 17
-AI (entity 702, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 12483
-      dvar set aa_enemy_deaths 44
-      dvar set aa_player_kills 18
-      dvar set aa_enemy_damage_taken 12883
-      dvar set aa_enemy_deaths 45
-      dvar set aa_player_kills 19
-      dvar set aa_enemy_damage_taken 13275
-      dvar set aa_enemy_deaths 46
-      dvar set aa_player_kills 20
-      dvar set aa_enemy_damage_taken 13675
-      dvar set aa_enemy_deaths 47
-      dvar set aa_player_kills 21
-      dvar set aa_enemy_damage_taken 14075
-      dvar set aa_enemy_deaths 48
-      dvar set aa_player_kills 22
-      dvar set aa_enemy_damage_taken 14475
-      dvar set aa_enemy_deaths 49
-      dvar set aa_player_kills 23
-      dvar set aa_enemy_damage_taken 14875
-      dvar set aa_enemy_deaths 50
-      dvar set aa_player_kills 24
-      dvar set aa_enemy_damage_taken 14975
-      dvar set aa_player_damage_dealt 775
-      dvar set aa_ads_damage_dealt 575
-      dvar set aa_enemy_damage_taken 15066
-      dvar set aa_player_damage_dealt 866
-      dvar set aa_ads_damage_dealt 666
-      dvar set aa_enemy_damage_taken 15166
-      dvar set aa_player_damage_dealt 966
-      dvar set aa_ads_damage_dealt 766
-      dvar set aa_enemy_damage_taken 15266
-      dvar set aa_player_damage_dealt 1066
-      dvar set aa_ads_damage_dealt 866
-      dvar set aa_enemy_damage_taken 15353
-      dvar set aa_enemy_deaths 51
-      dvar set aa_player_kills 25
-      dvar set aa_enemy_damage_taken 15453
-      dvar set aa_enemy_deaths 52
-      dvar set aa_player_kills 26
-R_MarkFragments: Too many triangles to mark, max 255 radius 21.80 at 32.56 -1229.40 78.13
-      dvar set aa_enemy_damage_taken 15553
-      dvar set aa_player_damage_dealt 1166
-      dvar set aa_ads_damage_dealt 966
-      dvar set aa_enemy_damage_taken 15953
-      dvar set aa_enemy_deaths 53
-      dvar set aa_player_kills 27
+      dvar set ui_ammo_stock_width 27
       dvar set ui_ammo_stock_width 17
       dvar set ui_ammo_stock_width 27
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
-AI (entity 715, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 715, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
+      dvar set ui_ammo_stock_width 17
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.64"
 AI (entity 697, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 16953
-      dvar set aa_enemy_deaths 54
+      dvar set aa_enemy_damage_taken 3588
+      dvar set aa_enemy_deaths 16
+      dvar set aa_player_kills 16
+AI (entity 684, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 3789
+      dvar set aa_enemy_deaths 17
+      dvar set aa_player_kills 17
+AI (entity 692, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 4005
+      dvar set aa_enemy_damage_taken 4245
+      dvar set aa_enemy_deaths 18
+      dvar set aa_player_kills 18
+      dvar set aa_enemy_damage_taken 4479
+      dvar set aa_enemy_deaths 19
+      dvar set aa_player_kills 19
+      dvar set aa_enemy_damage_taken 4719
+      dvar set aa_enemy_deaths 20
+      dvar set aa_player_kills 20
+      dvar set aa_enemy_damage_taken 4959
+      dvar set aa_enemy_deaths 21
+      dvar set aa_player_kills 21
+      dvar set aa_enemy_damage_taken 5199
+      dvar set aa_enemy_deaths 22
+      dvar set aa_player_kills 22
+      dvar set aa_enemy_damage_taken 5439
+      dvar set aa_enemy_deaths 23
+      dvar set aa_player_kills 23
+      dvar set ui_ammo_stock_width 27
+      dvar set aa_enemy_damage_taken 5679
+      dvar set aa_enemy_deaths 24
+      dvar set aa_player_kills 24
+      dvar set aa_enemy_damage_taken 5701
+      dvar set aa_player_damage_dealt 238
+      dvar set aa_ads_damage_dealt 238
+      dvar set aa_enemy_damage_taken 5723
+      dvar set aa_player_damage_dealt 260
+      dvar set aa_ads_damage_dealt 260
+      dvar set aa_enemy_damage_taken 5736
+      dvar set aa_player_damage_dealt 273
+      dvar set aa_ads_damage_dealt 273
+      dvar set aa_enemy_damage_taken 5761
+      dvar set aa_player_damage_dealt 298
+      dvar set aa_ads_damage_dealt 298
+      dvar set aa_enemy_damage_taken 5774
+      dvar set aa_player_damage_dealt 311
+      dvar set aa_ads_damage_dealt 311
+      dvar set aa_enemy_damage_taken 5799
+      dvar set aa_player_damage_dealt 336
+      dvar set aa_ads_damage_dealt 336
+      dvar set aa_enemy_damage_taken 5949
+      dvar set aa_player_damage_dealt 486
+      dvar set aa_enemy_damage_taken 6101
+      dvar set aa_enemy_deaths 25
+      dvar set aa_player_kills 25
+      dvar set ui_ammo_stock_width 17
+      dvar set ui_ammo_stock_width 27
+      dvar set aa_enemy_damage_taken 6341
+      dvar set aa_enemy_deaths 26
+      dvar set aa_player_kills 26
+R_MarkFragments: Too many triangles to mark, max 255 radius 26.54 at -38.10 -1299.98 80.13
+R_MarkFragments: Too many triangles to mark, max 255 radius 29.82 at -43.38 -1302.29 80.13
+R_MarkFragments: Too many triangles to mark, max 255 radius 27.62 at -29.28 -1297.25 80.13
+      dvar set aa_enemy_damage_taken 6581
+      dvar set aa_enemy_deaths 27
+      dvar set aa_player_kills 27
+      dvar set aa_enemy_damage_taken 6821
+      dvar set aa_enemy_deaths 28
       dvar set aa_player_kills 28
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-AI (entity 713, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 713, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 17321
-      dvar set aa_enemy_deaths 55
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
+Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult0.19"
+      dvar set aa_enemy_damage_taken 7061
+      dvar set aa_enemy_deaths 29
       dvar set aa_player_kills 29
-      dvar set aa_enemy_damage_taken 17421
-      dvar set aa_player_damage_dealt 1266
-      dvar set aa_ads_damage_dealt 1066
-      dvar set aa_enemy_damage_taken 17821
-      dvar set aa_enemy_deaths 56
+      dvar set aa_enemy_damage_taken 7301
+      dvar set aa_enemy_deaths 30
       dvar set aa_player_kills 30
-AI (entity 708, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set ui_ammo_stock_width 17
-AI (entity 661, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 661, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 18221
-      dvar set aa_enemy_deaths 57
+      dvar set aa_enemy_damage_taken 7541
+      dvar set aa_enemy_deaths 31
       dvar set aa_player_kills 31
-      dvar set aa_enemy_damage_taken 18621
-      dvar set aa_enemy_deaths 58
+AI (entity 706, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+AI (entity 710, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 7763
+      dvar set aa_enemy_deaths 32
       dvar set aa_player_kills 32
-AI (entity 713, origin 181.8 -1540.2 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 18938
-      dvar set aa_enemy_deaths 59
-AI (entity 729, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 19038
-      dvar set aa_player_damage_dealt 1366
-      dvar set aa_enemy_damage_taken 19438
-      dvar set aa_enemy_deaths 60
+AI (entity 688, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 688, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 8003
+      dvar set aa_enemy_deaths 33
       dvar set aa_player_kills 33
-      dvar set aa_enemy_damage_taken 19838
-      dvar set aa_enemy_deaths 61
+AI (entity 674, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+AI (entity 674, origin -387.0 -1949.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 8243
+      dvar set aa_enemy_deaths 34
       dvar set aa_player_kills 34
-      dvar set aa_enemy_damage_taken 19938
-      dvar set aa_player_damage_dealt 1466
-      dvar set aa_ads_damage_dealt 1166
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 20038
-      dvar set aa_player_damage_dealt 1566
-      dvar set aa_ads_damage_dealt 1266
-      dvar set aa_enemy_damage_taken 21038
-      dvar set aa_enemy_deaths 62
+R_MarkFragments: Too many triangles to mark, max 255 radius 28.78 at 44.00 -1223.95 80.13
+AI (entity 721, origin -479.0 -1222.0 80.1) couldn't find path to goal.
+      dvar set aa_enemy_damage_taken 8402
+      dvar set aa_player_damage_dealt 645
+      dvar set aa_enemy_damage_taken 8588
+      dvar set aa_enemy_deaths 35
       dvar set aa_player_kills 35
-      dvar set aa_enemy_damage_taken 22038
-      dvar set aa_enemy_deaths 63
+      dvar set aa_enemy_damage_taken 8828
+      dvar set aa_enemy_deaths 36
       dvar set aa_player_kills 36
-      dvar set aa_enemy_damage_taken 23038
-      dvar set aa_enemy_deaths 64
+      dvar set aa_enemy_damage_taken 9068
+      dvar set aa_enemy_deaths 37
       dvar set aa_player_kills 37
-      dvar set aa_enemy_damage_taken 23347
-      dvar set aa_enemy_deaths 65
+R_MarkFragments: Too many triangles to mark, max 255 radius 28.01 at 24.79 -1226.78 80.13
+R_MarkFragments: Too many triangles to mark, max 255 radius 29.03 at -36.41 -1284.93 78.13
+R_MarkFragments: Too many triangles to mark, max 255 radius 27.87 at 5.74 -1261.50 64.13
+      dvar set aa_enemy_damage_taken 9116
+      dvar set aa_player_damage_dealt 693
+      dvar set aa_enemy_damage_taken 9251
+      dvar set aa_enemy_deaths 38
       dvar set aa_player_kills 38
-      dvar set aa_enemy_damage_taken 24009
-      dvar set aa_enemy_deaths 66
+      dvar set aa_enemy_damage_taken 9491
+      dvar set aa_enemy_deaths 39
       dvar set aa_player_kills 39
-      dvar set aa_enemy_damage_taken 24605
-      dvar set aa_enemy_deaths 67
+      dvar set aa_enemy_damage_taken 9731
+      dvar set aa_enemy_deaths 40
       dvar set aa_player_kills 40
-      dvar set aa_enemy_damage_taken 25605
-      dvar set aa_enemy_deaths 68
+      dvar set aa_enemy_damage_taken 9971
+      dvar set aa_enemy_deaths 41
       dvar set aa_player_kills 41
-      dvar set aa_enemy_damage_taken 26301
-      dvar set aa_enemy_deaths 69
+R_MarkFragments: Too many triangles to mark, max 255 radius 28.08 at -35.44 -1275.46 78.13
+      dvar set ui_ammo_stock_width 17
+      dvar set aa_enemy_damage_taken 10079
+      dvar set aa_player_damage_dealt 801
+      dvar set aa_ads_damage_dealt 444
+      dvar set aa_enemy_damage_taken 10319
+      dvar set aa_enemy_deaths 42
       dvar set aa_player_kills 42
-      dvar set aa_enemy_damage_taken 26908
-      dvar set aa_enemy_deaths 70
+      dvar set aa_enemy_damage_taken 10478
+      dvar set aa_player_damage_dealt 960
+      dvar set aa_ads_damage_dealt 603
+      dvar set aa_enemy_damage_taken 10718
+      dvar set aa_enemy_deaths 43
       dvar set aa_player_kills 43
-      dvar set aa_enemy_damage_taken 27908
-      dvar set aa_enemy_deaths 71
+      dvar set aa_enemy_damage_taken 10814
+      dvar set aa_enemy_deaths 44
       dvar set aa_player_kills 44
-      dvar set ui_ammo_stock_width 17
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_ammo_stock_width 17
-Error: CG_SetWeaponHidePartBits: No such bone tag (tag_flamer_heat_guard) for weapon (famas_zm)
-      dvar set ui_right_ammo_width 13
-      dvar set ui_ammo_stock_width 27
-      dvar set aa_enemy_damage_taken 28148
-      dvar set aa_enemy_deaths 72
+      dvar set aa_enemy_damage_taken 10964
+      dvar set aa_enemy_deaths 45
       dvar set aa_player_kills 45
-      dvar set ui_right_ammo_width 26
-      dvar set ui_right_ammo_width 13
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-0.44"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-0.44"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-0.44"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-0.44"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-0.44"
-AI (entity 734, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 28388
-      dvar set aa_player_damage_dealt 1806
-      dvar set aa_enemy_damage_taken 28628
-      dvar set aa_enemy_deaths 73
-      dvar set aa_player_kills 46
-      dvar set aa_enemy_damage_taken 28868
-      dvar set aa_enemy_deaths 74
-      dvar set aa_player_kills 47
-AI (entity 728, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 29108
-      dvar set aa_enemy_deaths 75
-      dvar set aa_player_kills 48
-AI (entity 732, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-AI (entity 723, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 723, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 29348
-      dvar set aa_enemy_deaths 76
-      dvar set aa_player_kills 49
-      dvar set aa_enemy_damage_taken 29588
-      dvar set aa_enemy_deaths 77
-      dvar set aa_player_kills 50
-      dvar set aa_enemy_damage_taken 29828
-      dvar set aa_enemy_deaths 78
-      dvar set aa_player_kills 51
-AI (entity 669, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-AI (entity 739, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 30068
-      dvar set aa_enemy_deaths 79
-      dvar set aa_player_kills 52
-AI (entity 730, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 30308
-      dvar set aa_enemy_deaths 80
-      dvar set aa_player_kills 53
-      dvar set aa_enemy_damage_taken 30458
-      dvar set aa_enemy_deaths 81
-      dvar set aa_player_kills 54
-      dvar set aa_enemy_damage_taken 30698
-      dvar set aa_enemy_deaths 82
-      dvar set aa_player_kills 55
-      dvar set aa_enemy_damage_taken 30788
-      dvar set aa_player_damage_dealt 1896
-      dvar set aa_enemy_damage_taken 30974
-      dvar set aa_player_damage_dealt 2082
-      dvar set aa_enemy_damage_taken 31214
-      dvar set aa_enemy_deaths 83
-      dvar set aa_player_kills 56
-      dvar set aa_enemy_damage_taken 31454
-      dvar set aa_enemy_deaths 84
-      dvar set aa_player_kills 57
-      dvar set aa_enemy_damage_taken 31694
-      dvar set aa_player_damage_dealt 2322
-      dvar set aa_enemy_damage_taken 31934
-      dvar set aa_enemy_deaths 85
-      dvar set aa_player_kills 58
-      dvar set ui_ammo_stock_width 17
-      dvar set aa_enemy_damage_taken 31988
-      dvar set aa_player_damage_dealt 2376
-      dvar set aa_enemy_damage_taken 32144
-      dvar set aa_enemy_deaths 86
-      dvar set aa_player_kills 59
-      dvar set aa_enemy_damage_taken 32384
-      dvar set aa_enemy_deaths 87
-      dvar set aa_player_kills 60
-      dvar set aa_enemy_damage_taken 32570
-      dvar set aa_enemy_deaths 88
-      dvar set aa_player_kills 61
-      dvar set aa_enemy_damage_taken 32735
-      dvar set aa_player_damage_dealt 2541
-      dvar set aa_enemy_damage_taken 32975
-      dvar set aa_enemy_deaths 89
-      dvar set aa_player_kills 62
-      dvar set aa_enemy_damage_taken 33134
-      dvar set aa_enemy_deaths 90
-      dvar set aa_player_kills 63
-      dvar set aa_enemy_damage_taken 33374
-      dvar set aa_enemy_deaths 91
-      dvar set aa_player_kills 64
-      dvar set aa_enemy_damage_taken 33614
-      dvar set aa_player_damage_dealt 2781
-R_MarkFragments: Too many triangles to mark, max 255 radius 28.08 at 26.10 -1198.21 80.13
-      dvar set aa_enemy_damage_taken 33854
-      dvar set aa_enemy_deaths 92
-      dvar set aa_player_kills 65
-      dvar set aa_enemy_damage_taken 33992
-      dvar set aa_enemy_deaths 93
-      dvar set aa_player_kills 66
-      dvar set aa_enemy_damage_taken 34232
-      dvar set aa_enemy_deaths 94
-      dvar set aa_player_kills 67
-R_MarkFragments: Too many triangles to mark, max 255 radius 28.78 at 57.41 -1297.35 80.13
-      dvar set aa_enemy_damage_taken 34472
-      dvar set aa_enemy_deaths 95
-      dvar set aa_player_kills 68
-      dvar set aa_enemy_damage_taken 34703
-      dvar set aa_player_damage_dealt 3012
-      dvar set aa_ads_damage_dealt 1497
-      dvar set aa_enemy_damage_taken 34943
-      dvar set aa_enemy_deaths 96
-      dvar set aa_player_kills 69
-      dvar set ui_ammo_stock_width 27
-      dvar set ui_right_ammo_width 26
-      dvar set ai_meleeRange 120
-      dvar set ai_meleeWidth 0
-      dvar set ai_meleeHeight 0
-      dvar set ui_right_ammo_width 13
-      dvar set ui_right_ammo_width 26
-      dvar set ui_right_ammo_width 13
-      dvar set aa_enemy_damage_taken 35183
-      dvar set aa_enemy_deaths 97
-      dvar set aa_player_kills 70
-      dvar set aa_enemy_damage_taken 35423
-      dvar set aa_enemy_deaths 98
-      dvar set aa_player_kills 71
-R_MarkFragments: Too many triangles to mark, max 255 radius 53.89 at 34.42 -1210.46 80.13
-R_MarkFragments: Too many triangles to mark, max 255 radius 26.37 at 23.15 -1224.67 80.13
-      dvar set aa_enemy_damage_taken 35663
-      dvar set aa_enemy_deaths 99
-      dvar set aa_player_kills 72
-      dvar set ui_right_ammo_width 26
-      dvar set aa_enemy_damage_taken 35814
-      dvar set aa_player_damage_dealt 3163
-      dvar set aa_enemy_damage_taken 35968
-      dvar set aa_player_damage_dealt 3317
-      dvar set aa_enemy_damage_taken 36122
-      dvar set aa_player_damage_dealt 3471
-R_MarkFragments: Too many triangles to mark, max 255 radius 48.73 at -39.25 -1173.69 80.13
-      dvar set ui_right_ammo_width 13
-      dvar set ai_meleeRange 100
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-1.25"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-1.25"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-1.25"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-1.25"
-Dropping redundant reliable command: f "room_spawning_speed_mult_difficulty_mult-1.25"
-      dvar set aa_enemy_damage_taken 36353
-      dvar set aa_enemy_deaths 100
-      dvar set aa_player_kills 73
-AI (entity 726, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 36593
-      dvar set aa_enemy_deaths 101
-      dvar set aa_player_kills 74
-      dvar set aa_enemy_damage_taken 36833
-      dvar set aa_enemy_deaths 102
-      dvar set aa_player_kills 75
-AI (entity 719, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 719, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 735, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 37010
-      dvar set aa_enemy_deaths 103
-      dvar set aa_player_kills 76
-      dvar set aa_enemy_damage_taken 37250
-      dvar set aa_enemy_deaths 104
-      dvar set aa_player_kills 77
-      dvar set aa_enemy_damage_taken 37490
-      dvar set aa_player_damage_dealt 3711
-AI (entity 727, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 37730
-      dvar set aa_enemy_deaths 105
-      dvar set aa_player_kills 78
-      dvar set aa_enemy_damage_taken 37928
-      dvar set aa_player_damage_dealt 3909
-AI (entity 729, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 729, origin -387.0 -1949.0 80.1) couldn't find path to goal.
-AI (entity 747, origin -479.0 -1222.0 80.1) couldn't find path to goal.
-      dvar set aa_enemy_damage_taken 38168
-      dvar set aa_player_damage_dealt 4149
-      dvar set aa_enemy_damage_taken 38381
-      dvar set aa_player_damage_dealt 4362
-      dvar set aa_enemy_damage_taken 38621
-      dvar set aa_enemy_deaths 106
-      dvar set aa_player_kills 79
-AI (entity 731, origin -479.0 -1222.0 80.1) couldn't fin
+      dvar set aa_enemy_damage_taken 11204
+      dvar set aa_enemy_deaths 46
+    

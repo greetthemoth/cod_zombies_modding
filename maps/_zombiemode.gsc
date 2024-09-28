@@ -3451,7 +3451,7 @@ round_spawning()
 							if(level.zones[ keys[i] ].dog_locations.size > 0 )
 							{
 								if(level.ZHC_ROOMFLOW){
-									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, cur_enemy_limit, maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(akeys[k]) );		//Added for mod
+									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, cur_enemy_limit, maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(keys[k]) );		//Added for mod
 									if(spawn_dog == 0)
 										continue;
 								}

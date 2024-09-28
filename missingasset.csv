@@ -1,4 +1,5 @@
 rawfile,autoexec_dev.cfg
+rawfile,configure.cfg
 image,$pixelcostcolorcode
 material,$floatz_donotremove
 material,$processed_floatz_donotremove

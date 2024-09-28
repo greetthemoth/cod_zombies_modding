@@ -447,6 +447,9 @@ ZHC_spawn_dog_override(enemy_count, cur_enemy_limit, roomId){				//note: dogs ar
 			else
 				left_to_spawn = int(max(0,(level.ZHC_dogs_to_spawn_this_round * level.ZHC_room_info[roomId]["room_dog_spawn_mult"]) - level.ZHC_dogs_spawned_this_mixed_round));
 
+			if(left_to_spawn == 0)
+				return 0;
+
 			//dogs_spawned_percent = level.ZHC_dogs_spawned_this_mixed_round/level.ZHC_dogs_to_spawn_this_round;	//0-1 as dogs are spawned
 			//cur_round_percent = (level.zombie_total_start - (level.zombie_total + enemy_count) )/level.zombie_total_start;	//0-1 as round continues
 			//interprolated_round_progression = interpolate(cur_round_percent, 0.1, 0.9); //can be negative or greater than one. 1 - 0 when round_percent is between 1.0 and 0.9.
@@ -467,7 +470,7 @@ ZHC_spawn_dog_override(enemy_count, cur_enemy_limit, roomId){				//note: dogs ar
 
 
 
-				to_spawn = int( min( left_to_spawn, max( 1, randomInt(level.dog_round_count-1) ) ) );
+				to_spawn = int( min( left_to_spawn, max( 1, randomInt(int(max(1,level.dog_round_count-1)) ) ) ) );
 				s = "spawning " + to_spawn + " dog    pp:"+percent_pass;
 				if (to_spawn != 1)
 					s+= "s...";
@@ -855,9 +858,13 @@ update_round_difficulty(){
 				(int(level.dog_round_count-1 > 0) * max(0,8 - (level.next_dog_round - level.round_number)) * 0.25 )	//more dogs if near dog round. round before dog round adds 3.5 dogs. only adds if dog round has happened.
 		   ) 
 		+ dog_left_to_spawn_from_previous_round;																	//dogs not spawnwed from previous rounds are added to this round.
-
 		mixed_rounds_enabled = int(dogs_to_spawn_this_round > 0) && level.dog_round_count-1 > 0;	//can only spawns dogs after dog round. 
 
+
+
+		dogs_to_spawn_this_round = 5; //testo 
+		mixed_rounds_enabled = true;
+		
 		data["dogs_to_spawn_this_round"] = dogs_to_spawn_this_round;
 		data["mixed_rounds_enabled"] = mixed_rounds_enabled;
 		DEBUG_DOG = true;
@@ -1032,6 +1039,7 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 		//dog_spawn_mult
 	{
 		data["room_dog_spawn_mult"] = (1 - speed_flow_percent);
+		data["room_dog_spawn_mult"] = 1;//testo
 	}
 
 	return data;
