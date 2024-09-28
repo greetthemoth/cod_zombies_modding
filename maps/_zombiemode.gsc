@@ -3380,7 +3380,7 @@ round_spawning()
 		{
 			spawn_dog = 0;
 			if(!level.ZHC_ROOMFLOW)
-				spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount);				//Added for mod
+				spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, cur_enemy_limit);				//Added for mod
 
 			if(!IsDefined( spawn_dog )){												//Added for mod
 				spawn_dog = false;
@@ -3431,7 +3431,7 @@ round_spawning()
 								 level.zones[ akeys[k] ].dog_locations.size > 0 )
 							{
 								if(level.ZHC_ROOMFLOW){
-									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(akeys[k]) );		//Added for mod
+									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, cur_enemy_limit, maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(akeys[k]) );		//Added for mod
 									if(spawn_dog == 0)
 										continue;
 								}
@@ -3441,16 +3441,17 @@ round_spawning()
 								level.ZHC_dogs_spawned_this_mixed_round += spawn_dog;							//Added for mod
 								spawn_dog = 0;															//Added for mod
 								dog_spawned = true;
+								level.ZHC_trying_to_spawn_dog = false;
 								wait_network_frame();
 								break;
 							}
 						}
 
-						if(dog_spawned){												//added for mod	  //if no free adjacent zones found, fuck it spanw anywas
+						if(!dog_spawned){												//added for mod	  //if no free adjacent zones found, fuck it spanw anywas
 							if(level.zones[ keys[i] ].dog_locations.size > 0 )
 							{
 								if(level.ZHC_ROOMFLOW){
-									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(akeys[k]) );		//Added for mod
+									spawn_dog = maps\ZHC_zombiemode_roundflow::ZHC_spawn_dog_override(enemyCount, cur_enemy_limit, maps\ZHC_zombiemode_roundflow::Get_Zone_Room_ID(akeys[k]) );		//Added for mod
 									if(spawn_dog == 0)
 										continue;
 								}
@@ -3460,25 +3461,31 @@ round_spawning()
 								level.ZHC_dogs_spawned_this_mixed_round += spawn_dog;							//Added for mod
 								spawn_dog = 0;															//Added for mod
 								dog_spawned = true;
+								level.ZHC_trying_to_spawn_dog = false;
 								wait_network_frame();
 							}
 						}
+
 					}
 
 					if(dog_spawned)
 						break;
 				}
 			}
+		}else{
+			level.ZHC_trying_to_spawn_dog = false;
 		}
 
-		ai = spawn_zombie( spawn_point ); 
-		if( IsDefined( ai ) )
-		{
-			level.zombie_total--;
-			ai.spawner = spawn_point;
-			ai thread round_spawn_failsafe();
-			count++; 
-			enemyCount++;																			//Added for mod
+		if(!level.ZHC_trying_to_spawn_dog){
+			ai = spawn_zombie( spawn_point ); 
+			if( IsDefined( ai ) )
+			{
+				level.zombie_total--;
+				ai.spawner = spawn_point;
+				ai thread round_spawn_failsafe();
+				count++; 
+				enemyCount++;																			//Added for mod
+			}
 		}
 
 		//wait( level.zombie_vars["zombie_spawn_delay"]);

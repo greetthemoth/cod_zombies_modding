@@ -15,6 +15,7 @@ init_roundflow(){
 
 	level.ZHC_dogs_spawned_this_mixed_round = undefined;
 	level.ZHC_dogs_to_spawn_this_round = undefined;
+	level.ZHC_trying_to_spawn_dog = false;
 
 	level.zombies_to_ignore_refund = 0;
 
@@ -369,6 +370,7 @@ additional_round_logic(){
 			level.ZHC_dogs_to_spawn_this_round = data["dogs_to_spawn_this_round"];
 			level.mixed_rounds_enabled = data["mixed_rounds_enabled"];
 
+			level.ZHC_trying_to_spawn_dog = false; //using within rounds;
 
 
 			if(level.round_number > 1){	//skip init round.
@@ -436,14 +438,14 @@ ZHC_get_dog_wait_mult(enemy_count, num_player_valid){
 	}
 	return 1;
 }
-ZHC_spawn_dog_override(enemy_count, roomId){				//note: dogs are only able to spawn in other zones that are not occupied. 
+ZHC_spawn_dog_override(enemy_count, cur_enemy_limit, roomId){				//note: dogs are only able to spawn in other zones that are not occupied. 
 	if(ZHC_ROUND_FLOW_check() ){
 		if(level.ZHC_dogs_to_spawn_this_round > level.ZHC_dogs_spawned_this_mixed_round){
 
-			if(level.ZHC_ROOMFLOW)
+			if(!level.ZHC_ROOMFLOW)
 				left_to_spawn = level.ZHC_dogs_to_spawn_this_round - level.ZHC_dogs_spawned_this_mixed_round;
 			else
-				left_to_spawn = int(max(0,(level.ZHC_dogs_to_spawn_this_round * level.ZHC_room_info[roomId]["dog_spawn_mult"]) - level.ZHC_dogs_spawned_this_mixed_round));
+				left_to_spawn = int(max(0,(level.ZHC_dogs_to_spawn_this_round * level.ZHC_room_info[roomId]["room_dog_spawn_mult"]) - level.ZHC_dogs_spawned_this_mixed_round));
 
 			//dogs_spawned_percent = level.ZHC_dogs_spawned_this_mixed_round/level.ZHC_dogs_to_spawn_this_round;	//0-1 as dogs are spawned
 			//cur_round_percent = (level.zombie_total_start - (level.zombie_total + enemy_count) )/level.zombie_total_start;	//0-1 as round continues
@@ -454,13 +456,24 @@ ZHC_spawn_dog_override(enemy_count, roomId){				//note: dogs are only able to sp
 			cur_round_percent = (level.zombie_total_start - (level.zombie_total + enemy_count + 24) )/level.zombie_total_start;	//1-0 as round continues	//adding 24 makes it so the last dog spawns when there are 24 zombies left..
 			percent_pass = cur_round_percent > spawn_dog_percent;
 
-			if( percent_pass  || randomInt( int((level.zombie_total_start/left_to_spawn) * 1.5) ) == 1 ){
+			if( percent_pass  || (level.ZHC_trying_to_spawn_dog || randomInt( int((level.zombie_total_start/left_to_spawn) * 1.5) ) == 1 )) {
+
+				dog_spawn_enemy_limit = max(0,cur_enemy_limit * (0.5 + ((level.round_number > 24) * 0.5 * min(1, level.round_number/50) ) ) );
+				if(enemy_count >  dog_spawn_enemy_limit){ //waits till enemy amount is less than 0.5*normal enemy limit, round 24 - 50, this limit is gradually removed,
+					zhcpb(enemy_count - dog_spawn_enemy_limit + " zombies left till dog spawn", 1005);
+					level.ZHC_trying_to_spawn_dog = true;
+					return 0;
+				}
+
+
+
 				to_spawn = int( min( left_to_spawn, max( 1, randomInt(level.dog_round_count-1) ) ) );
-				s = "spawning " + to_spawn + " dog";
+				s = "spawning " + to_spawn + " dog    pp:"+percent_pass;
 				if (to_spawn != 1)
 					s+= "s...";
 				else
 					s+= "....";
+				zhcpb(s, 1005);
 				return to_spawn;
 			}else{
 				return 0;
@@ -758,7 +771,7 @@ update_round_flow_difficulty(){
 	data["mixed_rounds_enabled"] = mixed_rounds_enabled;
 
 	if(DEBUG_FLOW)
-		zhcpb("dog_round_count: "+level.dog_round_count + "  ZHC_dogs_to_spawn_this_round: "+ dogs_to_spawn_this_round + "  mixed_rounds_enabled: " +mixed_rounds_enabled , 1000);
+		zhcpb("dog_round_count: "+level.dog_round_count + "  ZHC_dogs_to_spawn_this_round: "+ dogs_to_spawn_this_round + "  mixed_rounds_enabled: " +mixed_rounds_enabled , 1005);
 	
 	/*IPrintLnBold( 
 		"dogs_to_be_spawned = " + (fr/(FLOW_ROUND_LENGTH*FLOW_ROUND_LENGTH)) + " + " + (inverse_flow_difficulty_percent * inverse_flow_difficulty_percent) + " * " + (level.zombie_total/36 + (level.dog_round_count-1)*1.5)
@@ -849,7 +862,7 @@ update_round_difficulty(){
 		data["mixed_rounds_enabled"] = mixed_rounds_enabled;
 		DEBUG_DOG = true;
 		if(DEBUG_FLOW || DEBUG_DOG)
-			zhcpb("dog_round_count: "+level.dog_round_count + "  ZHC_dogs_to_spawn_this_round: "+ dogs_to_spawn_this_round + "  mixed_rounds_enabled: " +mixed_rounds_enabled , 1000);
+			zhcpb("dog_round_count: "+level.dog_round_count + "  ZHC_dogs_to_spawn_this_round: "+ dogs_to_spawn_this_round + "  mixed_rounds_enabled: " +mixed_rounds_enabled , 1005);
 	}
 	return data;
 }
