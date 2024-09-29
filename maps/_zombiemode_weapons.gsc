@@ -4864,7 +4864,9 @@ treasure_chest_give_weapon( weapon_string, chest, swap, refill_weapon_ammo)
 	is_equipment = is_equipment(weapon_string) || is_placeable_mine(weapon_string) || (WeaponType( weapon_string ) == "grenade"); //
 	if(can_take_weapon && !box_empty) {
 		//zhcp("taking chest weapon"+weapon_string);
-		self play_sound_on_ent( "purchase" );
+		
+		if(!level.ZHC_BOX_AUTO_OPEN) //box is free so why would we add purchase sound
+			self play_sound_on_ent( "purchase" );
 		
 		if( IsDefined( level.zombiemode_offhand_weapon_give_override ) )
 		{

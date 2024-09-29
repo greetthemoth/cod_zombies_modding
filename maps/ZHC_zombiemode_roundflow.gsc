@@ -75,12 +75,17 @@ rooms_init(){
 			level.ZHC_room_info[roomId]["enemy_count"] = 0;
 			//level.ZHC_room_info[roomId]["wall_buys"] = 
 			//level.ZHC_room_info[roomId]["spawners"] = [];
-
+			level.ZHC_room_info[roomId]["spawner_score_mult"] = 1;
+			isDefined(level.map_set_additional_room_info){
+				[[level.map_init_set_additional_room_info]](roomId);
+			}
 			if(level.ZHC_ROOMFLOW){
 				level.ZHC_room_info[roomId]["zones"] = [];
 				level.ZHC_room_info[roomId]["zones"][0] = keys[i];
 				level thread room_think(roomId);
 			}
+
+
 		}else if(level.ZHC_ROOMFLOW){
 			level.ZHC_room_info[roomId]["zones"][level.ZHC_room_info[roomId]["zones"].size] = keys[i];
 		}
@@ -505,7 +510,7 @@ ZHC_get_cur_enemy_limit(enemyCount){ // MOD FUNC
 			active_zones_num = 0;
 			for(r = 0; r <  roomIds.size; r++){
 				roomId = roomIds[r];
-				spawner_score_mult = 1; // = define_or(level.ZHC_room_info[roomId].spawner_score_mult,1);
+				spawner_score_mult = level.ZHC_room_info[roomId]["spawner_score_mult"];
 				room_zones = level.ZHC_room_info[roomId]["zones"];
 				for(i = 0; i < room_zones.size; i++){
 					if(level.zones[room_zones[i]].is_active && IsDefined(level.zones[room_zones[i]].spawners)){

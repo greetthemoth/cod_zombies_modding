@@ -22,6 +22,7 @@ init(){
 	level.set_sister_door = ::set_sister_door ;
 
 	level.zhc_additional_round_logic = ::first_room_harder;
+	level.map_init_set_additional_room_info = ::init_set_additonal_room_info;
 	thread map_wait_to_update_rooms ();
 
 }
@@ -236,6 +237,24 @@ map_get_room_name(room_id){
 		zhcpb( "ROOM ID "+ room_id + "NOT DESIGNATED TO ROOM"  ,444);
 		return 100;
 	}
+}
+
+init_set_additonal_room_info(room_id){
+	switch( room_id ){
+		case 1: //vip room
+			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.75;
+		case 3: //dressing room
+			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.5;
+		case 5: //west balcony room
+			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.5;	
+		case 6: //alley way room
+			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.65;	
+		case 7: //crematorium
+			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.65;
+		default:
+			level.ZHC_room_info[roomId]["spawner_score_mult"] = 1;
+	}
+	
 }
 
 Get_Zone_Room_ID_Special(zone_name, door_id, power_on){

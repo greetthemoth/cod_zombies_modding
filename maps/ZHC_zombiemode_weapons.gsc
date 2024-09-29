@@ -594,9 +594,19 @@ max_ammo_override(weapon_name){ //if false, no override. and carries out as norm
 	}
 		
 	if(level.ZHC_MAX_AMMO_SYSTEM ){
+
+		//refill all weapon stock ammos
+		ids = GetArrayKeys( self.ZHC_weapon_prev_ammos);
+		for(i = 0; i < keys.size; i++){
+			self.ZHC_weapon_prev_ammos[ids[i]] = self.ZHC_weapon_ammos_max[ids[i]];
+			//self.ZHC_weapon_prev_ammos_clip[ids[i]] = self.ZHC_weapon_ammos_max_clip[ids[i]];    //if we want to refill clip as well
+		}
+
+		//set current weapon ammo to max
 		if (!self.ZHC_weapon_is_equipment_or_grenade[id]){
 			max_ammo = self.ZHC_weapon_ammos_max[id];
 			self SetWeaponAmmoStock(og_weapon_name, max_ammo);
+
 		}else{
 			if(!level.ZHC_MAX_AMMO_SYSTEM_EQUIPMENT)
 				return false;
