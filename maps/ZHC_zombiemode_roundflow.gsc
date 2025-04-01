@@ -76,7 +76,7 @@ rooms_init(){
 			//level.ZHC_room_info[roomId]["wall_buys"] = 
 			//level.ZHC_room_info[roomId]["spawners"] = [];
 			level.ZHC_room_info[roomId]["spawner_score_mult"] = 1;
-			isDefined(level.map_set_additional_room_info){
+			if(isDefined(level.map_set_additional_room_info)){
 				[[level.map_init_set_additional_room_info]](roomId);
 			}
 			if(level.ZHC_ROOMFLOW){
@@ -541,6 +541,11 @@ ZHC_get_cur_enemy_limit(enemyCount){ // MOD FUNC
 
 			if(limit > level.zombie_ai_limit)
 				limit = level.zombie_ai_limit;
+
+			if(!isDefined(level.testo_last_limit) || level.testo_last_limit != limit)
+				zhcpb("l:" + limit, 1002);
+			level.testo_last_limit = limit;
+
 			return limit;
 		}else{
 			spawns = level.enemy_spawns.size ;
@@ -867,8 +872,8 @@ update_round_difficulty(){
 
 
 
-		dogs_to_spawn_this_round = 5; //testo 
-		mixed_rounds_enabled = true;
+		//dogs_to_spawn_this_round = 5; //testo 
+		//mixed_rounds_enabled = true;
 		
 		data["dogs_to_spawn_this_round"] = dogs_to_spawn_this_round;
 		data["mixed_rounds_enabled"] = mixed_rounds_enabled;
@@ -908,11 +913,11 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 
 
 
-	damp5 = abs(min(((fr-1) - 5) , 0)) /5; //fluctuates from 1 - 0 from (r1 to r6)
-	damp10 = abs(min(((fr-1) - 10) , 0)) /10; //fluctuates from 1 - 0 from (r1 to r11)
-	damp15 =  abs(min(((fr-1) - 15) , 0)) /15; 	//fluctuates from 1 - 0 from (r1 to r16)
-	damp20 =  abs(min(((fr-1) - 20) , 0)) /20; 	//fluctuates from 1 - 0 from (r1 to r21)
-	damp25 =  abs(min(((fr-1) - 25) , 0)) /25; 	//fluctuates from 1 - 0 from (r1 to r26)
+	damp5 = abs(max(((fr-1) - 5) , 0)) /5; //fluctuates from 1 - 0 from (r1 to r6)
+	damp10 = abs(max(((fr-1) - 10) , 0)) /10; //fluctuates from 1 - 0 from (r1 to r11)
+	damp15 =  abs(max(((fr-1) - 15) , 0)) /15; 	//fluctuates from 1 - 0 from (r1 to r16)
+	damp20 =  abs(max(((fr-1) - 20) , 0)) /20; 	//fluctuates from 1 - 0 from (r1 to r21)
+	damp25 =  abs(max(((fr-1) - 25) , 0)) /25; 	//fluctuates from 1 - 0 from (r1 to r26)
 
 	//deminishes the slow ness on early rounds 		
 	speed_flow_percent_diminished = speed_flow_percent + (
@@ -963,8 +968,12 @@ update_room_difficulty( difficulty, roomId, DEBUG_FLOW){
 		room_spawning_speed_mult_speed_flow_mult =  (1 - room_spawning_speed_mult_speed_flow_percent_influence) + (speed_flow_percent_diminished*room_spawning_speed_mult_speed_flow_percent_influence) + (room_spawning_speed_mult_speed_flow_percent_influence/2) ;
 		
 		difficulty_to_reach_regularly_fast_speed = 5.5;
-		room_spawning_speed_mult_difficulty_mult = 1 + (((1 - damp5) * (1 - damp10) * (max(difficulty_to_reach_regularly_fast_speed - difficulty, 0)/difficulty_to_reach_regularly_fast_speed) ) * (1 - difficulty_to_reach_regularly_fast_speed)) ;
-		zhcp("room_spawning_speed_mult_difficulty_mult"+room_spawning_speed_mult_difficulty_mult,1001);
+		dampnableDifInc = (max(difficulty_to_reach_regularly_fast_speed - difficulty, 0)/difficulty_to_reach_regularly_fast_speed);
+		room_spawning_speed_mult_difficulty_mult = 1 + (((1 - damp5) * (1 - damp10) * dampnableDifInc ) * (difficulty_to_reach_regularly_fast_speed - 1)) ;
+		zhcp("damp5 "+damp5,1001);
+		zhcp("damp10 "+damp10,1001);
+		zhcp("dampnableDifInc "+dampnableDifInc,1001);
+		zhcp("room_spawning_speed_mult_difficulty_mult "+room_spawning_speed_mult_difficulty_mult,1001);
 		room_spawning_speed_mult = diminished_IFD * room_spawning_speed_mult_speed_flow_mult;
 		data["room_spawning_speed_mult"] = room_spawning_speed_mult;
 		if(DEBUG_FLOW)

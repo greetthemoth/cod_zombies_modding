@@ -16,6 +16,7 @@ can_send_msg_level(msg_id){
 		case 4: //down forgiveness
 		//case 1000: //difficulty testing
 		case 1001: //difficulty testing
+		case 1002: //zombie limit testing
 		case 1005: //dog spawning
 		case 555: //perk teleportation testing
 		//case 5555: //QR perk teleportation testing

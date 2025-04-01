@@ -597,7 +597,7 @@ max_ammo_override(weapon_name){ //if false, no override. and carries out as norm
 
 		//refill all weapon stock ammos
 		ids = GetArrayKeys( self.ZHC_weapon_prev_ammos);
-		for(i = 0; i < keys.size; i++){
+		for(i = 0; i < ids.size; i++){
 			self.ZHC_weapon_prev_ammos[ids[i]] = self.ZHC_weapon_ammos_max[ids[i]];
 			//self.ZHC_weapon_prev_ammos_clip[ids[i]] = self.ZHC_weapon_ammos_max_clip[ids[i]];    //if we want to refill clip as well
 		}

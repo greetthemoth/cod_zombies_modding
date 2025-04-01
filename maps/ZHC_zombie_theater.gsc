@@ -242,17 +242,17 @@ map_get_room_name(room_id){
 init_set_additonal_room_info(room_id){
 	switch( room_id ){
 		case 1: //vip room
-			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.75;
+			level.ZHC_room_info[room_id]["spawner_score_mult"] = 0.75;
 		case 3: //dressing room
-			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.5;
+			level.ZHC_room_info[room_id]["spawner_score_mult"] = 0.5;
 		case 5: //west balcony room
-			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.5;	
+			level.ZHC_room_info[room_id]["spawner_score_mult"] = 0.5;	
 		case 6: //alley way room
-			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.65;	
+			level.ZHC_room_info[room_id]["spawner_score_mult"] = 0.65;	
 		case 7: //crematorium
-			level.ZHC_room_info[roomId]["spawner_score_mult"] = 0.65;
+			level.ZHC_room_info[room_id]["spawner_score_mult"] = 0.65;
 		default:
-			level.ZHC_room_info[roomId]["spawner_score_mult"] = 1;
+			level.ZHC_room_info[room_id]["spawner_score_mult"] = 1;
 	}
 	
 }
