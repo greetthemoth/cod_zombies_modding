@@ -3445,6 +3445,7 @@ ZHC_wait_to_quickrevive_door_barr(player, barr_perk_origin, barr_perk_angles){
 		self notify("machine_return");
 	}
 }
+
 return_machine_to_original_pos_after_door_open(mac){
 	self notify( "end_wait_return_to_original" );
 	self endon(  "end_wait_return_to_original" );

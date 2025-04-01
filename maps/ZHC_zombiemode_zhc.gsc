@@ -569,7 +569,7 @@ return_perk_mac(){
 }
 
 //called from maps\_zombiemode.gsc line 5122.
-kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	//damage is nagative based on damage.
+kill( inflictor, attacker, damage, mod, weapon, vdir, sHitLoc, psOffsetTime ){	//damage is negative based on damage.
 	//IPrintLn( damage + " damage to inflictor with " + self.health + " hp."); 
 	if(IsPlayer( attacker ) && IsDefined( attacker ) && IsAlive( attacker )){
 		oneShot1Kill = attacker give1ShotKillBonusPoints(self, mod, damage, sHitLoc);
