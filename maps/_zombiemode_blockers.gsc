@@ -1424,6 +1424,10 @@ waittill_roomID_is_unoccupied(roomID){
 	}	
 }
 
+
+
+//nearest lowest difficulty room. 
+
 get_player_with_current_zone(zone){
 	players = get_players();
 	for( i = 0; i < players.size; i++){
