@@ -3382,6 +3382,14 @@ unsave_additional_weapon_on_bleedout()
 	}
 }
 
+Quickrevive_room_system(){
+	//wait for player to go down.
+	//if room difficulty is above difficulty threshold.
+		//Teleport player to lowest-closest room.
+	//teleport to quickrevive to door, from same side as player, from door in direction closest to original room.
+	
+
+}
 
 ZHC_wait_to_quickrevive_door_barr(player, barr_perk_origin, barr_perk_angles){
 	self endon ("open_door");

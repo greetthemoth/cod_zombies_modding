@@ -1347,8 +1347,16 @@ check_roomIDs_to_occupy(){
 	//}
 }
 
+//roomID can be array of roomIDs
 waittill_roomID_is_occupied(roomID){
-	zones_with_id = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID);
+	zones_with_id = [];
+	if(IsArray( roomID )){
+		for(zz = 0; zz < roomID.size; zz++){
+			zones_with_id = array_combine( zones_with_id,maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID[zz]) );//maps\_utility.gsc:
+		}
+	}
+	else
+		zones_with_id = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID);
 	//"finding zone " + self.roomIDs_to_occupy[i]
 	while(1){											//now we check the zone we've added
 		//given how roomIDs_to_occupy is organized if this si undefined then that means the list was changed.
@@ -1362,7 +1370,15 @@ waittill_roomID_is_occupied(roomID){
 	}	
 }
 
+//roomID can be array of roomIDs
 waittill_roomID_is_occupied_return_player(roomID){
+	zones_with_id = [];
+	if(IsArray( roomID )){
+		for(zz = 0; zz < roomID.size; zz++){
+			zones_with_id = array_combine( zones_with_id,maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID[zz]) );//maps\_utility.gsc:
+		}
+	}
+	else
 	zones_with_id = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID);
 	//"finding zone " + self.roomIDs_to_occupy[i]
 	while(1){											//now we check the zone we've added
@@ -1378,6 +1394,32 @@ waittill_roomID_is_occupied_return_player(roomID){
 				}
 			}
 		}
+		wait 1;
+	}	
+}
+
+//roomID can be array of roomIDs
+waittill_roomID_is_unoccupied(roomID){
+	zones_with_id = [];
+	if(IsArray( roomID )){
+		for(zz = 0; zz < roomID.size; zz++){
+			zones_with_id = array_combine( zones_with_id,maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID[zz]) );//maps\_utility.gsc:
+		}
+	}
+	else
+		zones_with_id = maps\ZHC_zombiemode_roundflow::Get_Room_Zones(roomID);
+	//"finding zone " + self.roomIDs_to_occupy[i]
+	while(1){											//now we check the zone we've added
+		//given how roomIDs_to_occupy is organized if this si undefined then that means the list was changed.
+		//hense we are checking if the list was changed.
+		found_occupied = false;
+		for(zz = 0; zz < zones_with_id.size; zz++){
+			if(level.zones[zones_with_id[zz]].is_occupied == false){
+				found_occupied = true;
+			}
+		}
+		if(!found_occupied)
+			return;
 		wait 1;
 	}	
 }
@@ -1649,6 +1691,12 @@ close_off_room(room_id){
 	}
 }
 
+get_connected_rooms(){
+
+}
+
+
+ 
 
 get_sister_door(){									//applies to doors that have 2 sets of doors. 
 	if(!isDefined (self.sister_door)){

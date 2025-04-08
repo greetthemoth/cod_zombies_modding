@@ -128,14 +128,21 @@ setupCurtains()
 		}else{
 			level waittill( "electricity_off" );
 
-
-			wait(2);
+			//wait for theater, foyer, vip room, dressingroom, stage to unoccupied so transition is invisible
+			roomIds = [];
+			roomIds = array_add(100);
+			roomIds = array_add(0);
+			roomIds = array_add(1);
+			roomIds = array_add(3);
+			roomIds = array_add(4);
+			maps\zombiemode_blockers::waittill_roomID_is_unoccupied([100,0,1,3,4]);
+			//wait(2);
 
 			//level thread moveCurtains("left_curtain",false);			//doesnt work 
 			//level thread moveCurtains("right_curtain",false);
 			//wait(1.5);
 
-			curtains = reset_curtains(curtains);
+			curtains = reset_curtains(curtains); 
 
 			level.zones["theater_zone"].adjacent_zones["stage_zone"].is_connected = false;
 			level.zones["stage_zone"].adjacent_zones["theater_zone"].is_connected = false;

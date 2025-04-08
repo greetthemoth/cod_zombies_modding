@@ -21,10 +21,23 @@ init(){
 	level.can_close_door = ::can_close_door ;
 	level.set_sister_door = ::set_sister_door ;
 
+	level.get_room_distance::get_room_distance;
+
 	level.zhc_additional_round_logic = ::first_room_harder;
-	level.map_init_set_additional_room_info = ::init_set_additonal_room_info;
+	level.map_init_set_additional_room_info = ::init_set_additonal_room_info;	
+
 	thread map_wait_to_update_rooms ();
 
+}
+
+
+get_room_distance(roomIdA, roomIdB){
+	dist = abs(roomIdA - roomIdB);
+	if(roomIdA == 0)
+		roomIdA = 9;
+	if(roomIdB == 0)
+		roomIdB = 9;
+	dis = min(dist, abs(roomIdA - roomIdB));
 }
 
 first_room_harder(){
