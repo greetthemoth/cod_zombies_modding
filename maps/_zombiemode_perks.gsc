@@ -3384,10 +3384,11 @@ unsave_additional_weapon_on_bleedout()
 
 Quickrevive_room_system(){
 	//wait for player to go down.
-	//if room difficulty is above difficulty threshold.
+	//if players occupied room difficulty is above difficulty threshold.
 		//Teleport player to lowest-closest room.
 	//teleport to quickrevive to door, from same side as player, from door in direction closest to original room.
 	
+	//hhh
 
 }
 
