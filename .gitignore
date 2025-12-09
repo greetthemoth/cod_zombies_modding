@@ -1,4 +1,4 @@
 
 cod_zombies_modding.iwd
 console.log
-*.iwd
+cod_zombies_modding.iwd.tmp*
