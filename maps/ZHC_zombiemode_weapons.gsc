@@ -282,20 +282,23 @@ init_weapon_vars()
 
 	self.ZHC_weapons = [];
 	self.ZHC_weapon_names = [];
-	self.ZHC_weapon_levels= [];
-	self.ZHC_weapon_other_weapon = [];
+	self.= [];
+	self.ZHC_weapon_oZHC_weapon_levelsther_weapon = [];
 
 	self.ZHC_weapon_is_equipment_or_grenade = [];
+
+	self.ZHC_weapon_prev_ammos = [];
+	self.ZHC_weapon_prev_ammos_clip = [];
+
+	//UPGRADES
+
+	self.ZHC_weapon_unique_upgrades[];
+
 
 	if(level.ZHC_MAX_AMMO_SYSTEM){
 		self.ZHC_weapon_ammos_max = [];
 		self.ZHC_weapon_ammos_max_clip = [];
 	}
-	self.ZHC_weapon_prev_ammos = [];
-	self.ZHC_weapon_prev_ammos_clip = [];
-
-	//DAMAGE
-	
 	self.ZHC_weapon_damage_mult = [];
 	//self.ZHC_weapon_damage_mult_headshot = [];
 	//self.ZHC_weapon_damage_add = [];
@@ -303,6 +306,8 @@ init_weapon_vars()
 
 	//level manager
 }
+
+
 
 
 weapon_name_check(weapon_name){
@@ -349,6 +354,8 @@ add_weapon_info(weapon_name){
 	self.ZHC_weapons[weapon_name] = id;
 	self.ZHC_weapon_names[id] = weapon_name;
 	self.ZHC_weapon_levels[id] = 1;
+
+	self.ZHC_weapon_unique_upgrades[id] = [];
 
 	self.ZHC_weapon_is_equipment_or_grenade[id] = (is_placeable_mine( weapon_name ) || is_equipment( weapon_name ) || (WeaponType( weapon_name ) == "grenade"));
 
@@ -540,7 +547,6 @@ give_weapon(weapon_name, set_to_prev_ammo){
 		self SetWeaponAmmoClip(og_weapon_name, ammo);
 	}
 
-	
 	self check_weapon_ammo(og_weapon_name,weapon_name);	//weapon ammo is only for primary weapons.
 	self notify ("zhc_weapon_given", weapon_name);
 }
@@ -677,6 +683,18 @@ get_upgrade_weapon_cost(original_cost, cur_lvl){
 	}
 	return int(upgrade_cost);
 }
+
+weapon_give_unique_upgrade(weapon_name, upgrade_name, dont_upgrade_other){
+	weapon_name = weapon_name_check(weapon_name);
+	id = check_has_id(weapon_name);
+
+	if(!IsDefined( id ))
+		return;
+
+	self.ZHC_weapon_unique_upgrades[id] = array_add(self.ZHC_weapon_unique_upgrades[id], upgrade_name);
+	
+}
+
 
 upgrade_weapon(weapon_name, dont_upgrade_other){
 	//if(is_placeable_mine( weapon_name ) || is_equipment( weapon_name ) || (WeaponType( weapon_name ) == "grenade"))
