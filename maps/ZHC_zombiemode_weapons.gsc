@@ -30,13 +30,16 @@ set_up_weapon_system(){
 	}
 }
 
-GetDamageOverride(mod, hit_location, player, amount, weapon){ //damage to add 
+GetDamageOverride(mod, hit_location, player, amount, weapon, weapon_name){ //damage to add 
 
 	//IPrintLn( mod +"  "+weapon );
 	if(!isDefined(weapon))
 		return 0;
-	headshot = hit_location == "head";
-	weapon_name = weapon_name_check(weapon);
+	if(!IsDefined( weapon_name ))
+		weapon_name = weapon_name_check(weapon);
+	headshot = hit_location == "head";  
+
+	
 	mult = GetWeaponBalancingDamageMult(weapon_name,mod, headshot);
 	//because melee currently doenst have upgrades. melee attacks derive damage upgrades from ballistic knives. 
 	if((mod == "MOD_MELEE"  || mod == "MOD_BAYONET") && weapon_name != "knife_ballistic_upgraded_zm")	//exclude melee attacks preformed with upgraded ballistic knife that may potentially have more damage.
@@ -54,6 +57,7 @@ GetDamageOverride(mod, hit_location, player, amount, weapon){ //damage to add
 		//else
 			mult *= player get_weapon_upgrade_damage_mult(weapon_name);
 	}
+
 	return (mult-1)*amount;
 }
 get_weapon_upgrade_damage_mult(weapon_name){
