@@ -33,11 +33,11 @@ GetAttachmentLvl(weapon, weapon_name, attachment){
 SetAttachmentLvl(weapon, weapon_name, attachment, attachment_lvl){
 	if(!isDefined(weapon))
 		return 0;
-	if(!IsDefined( weapon_name ))9572
+	if(!IsDefined( weapon_name ))
 		weapon_name = weapon_name_check(weapon);
 
 	weap = ZHC_zombiemode_weapons[weapon_name];
-	if(!isDefined(ZHC.attachments))
+	if(!isDefined(weap.attachments))
 		weap.attachments = [];
 	 weap.attachments[attachment] = attachment_lvl;
 }
@@ -52,11 +52,11 @@ DiscardAttachments(weapon, weapon_name){
 	if(!IsDefined( weapon_name ))
 		weapon_name = weapon_name_check(weapon);
 	weap = ZHC_zombiemode_weapons[weapon_name];
-	weap.remove = [];
+	weap.attachments = [];
 
 }
 
-AddAttachment(weapon, weapon_name, attachment){
+RemoveAttachment(weapon, weapon_name, attachment){
 
 	if(!isDefined(weapon))
 		return 0;
@@ -64,8 +64,9 @@ AddAttachment(weapon, weapon_name, attachment){
 		weapon_name = weapon_name_check(weapon);
 
 	weap = ZHC_zombiemode_weapons[weapon_name];
-	if(!isDefined(ZHC.attachments))
-		weap.attachments = [];
+	if(!isDefined(weap.attachments))
+		//weap.attachments = [];
+		return;
 	weap.attachments[attachment] = undefined;
 	//update gui
 }
