@@ -25,5 +25,3 @@ material,playlist_sp_recr
 material,playlist_sp_reg
 material,playlist_sp_hard
 material,playlist_sp_vet
-material,loadscreen_frontend
-rawfile,maps/_zombiemode_utility.gsc

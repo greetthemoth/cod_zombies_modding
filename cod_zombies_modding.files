@@ -13,6 +13,7 @@ maps\_zombiemode_zone_manager.gsc
 maps\ZHC_utility.gsc
 maps\ZHC_zombie_theater.gsc
 maps\ZHC_zombiemode_roundflow.gsc
+maps\ZHC_zombiemode_weapon_attachments.gsc
 maps\ZHC_zombiemode_weapons.gsc
 maps\ZHC_zombiemode_zhc.gsc
 maps\zombie_theater.gsc

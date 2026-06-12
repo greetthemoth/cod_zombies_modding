@@ -168,7 +168,8 @@ Merge_RoomsId(roomId_1, roomId_2, new_room_id){
 	if(start_room_think)
 			level thread room_think(new_room_id);
 }
-Get_Lowest_Difficulty_RoomId(){
+
+Get_Lowest_Difficulty_RoomIds(){
 	lowestArr = [];
 	lowestDif = undefined;
 	lowest = undefined;
@@ -179,12 +180,13 @@ Get_Lowest_Difficulty_RoomId(){
 			lowest = roomIds[i];
 			lowestDif = dif;
 			lowestArr = [];
-			lowestArr = array_add(lowest);
+			lowestArr = array_add(lowestArr, lowest); 
 		}
 		else if(lowestDif == dif){
-			lowestArr(roomIds[i]);
+			lowestArr = array_add(lowestArr, roomIds[i]);
 		}
 	}
+	return lowestArr;
 }
 
 
