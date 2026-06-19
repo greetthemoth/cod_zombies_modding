@@ -427,6 +427,9 @@ wait_for_power(first_time) //added var for mod
 	wait_network_frame();
 	flag_wait( "power_on" );
 	
+	if(first_time)
+		master_switch.switch_off_angles = master_switch.angles;
+
 	master_switch rotateroll(-90,.3);
 	master_switch playsound("zmb_switch_flip");
 
@@ -493,7 +496,11 @@ wait_for_power_back_off()
 	wait_network_frame();
 	flag_wait( "power_back_off" );
 
-	master_switch rotateroll(90,.3);
+	if(IsDefined( master_switch.switch_off_angles ))
+		master_switch RotateTo( master_switch.switch_off_angles, 0.3);
+	else
+		master_switch rotateroll(90,.3);
+		
 	master_switch playsound("zmb_switch_flip");
 
 	clientnotify( "ZPO" );		// Zombie power on.

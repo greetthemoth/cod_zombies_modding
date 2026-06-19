@@ -632,9 +632,9 @@ door_barr_weapon(){
 	self endon ("open_door");
 	self endon ("end_door_cooldown");
 
-	zhcp("waiting to ensure door");
+	zhcp("barr weapon: waiting to ensure door", 100);
 	self waittill ("ensured_door_close");
-	zhcp("door ensured");
+	zhcp("barr weapon: door ensured", 100);
 	//if(self._door_open || isDefined(self.transitioning_t_open_f_close))			//wait for door to be accully closed first.
 	//	self waittill( "door_closed" );
 
@@ -1576,18 +1576,29 @@ ZHC_assign_weapons_to_boxes(){
 					continue; // this will added to the chest later
 				}
 				class = define_or(WeaponClass( keys[i]) ,"");
-				if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_SMALL_WEAPONS && !get_is_wall_buy(keys[i]) && (class == "pistol" || class == "smg" || class == "crossbow")) {
+				if(level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_SMALL_WEAPONS && !get_is_wall_buy(keys[i]) && (
+						class == "pistol" || 
+						class == "smg"
+						//|| keys[i] == "crossbow_explosive_zm"
+						)) {
 					continue;
 				}else if(!level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_EQUIPMENT || keys[i] != "zombie_cymbal_monkey" || keys[i] != "knife_ballistic_zm"){
 					keys = array_remove_index( keys, i);
 					i--;
 				}
 			}
+
+			//add remaining chests with monkeys
+			while(keys.size < chests_num){
+				keys[keys.size] = "zombie_cymbal_monkey";
+			}
+
 			add_teddies = false;
 		}else{
 			return; //dont add anything to chests
 		}
 	}
+
 
 	//keys = array_randomize( keys );
 	keys = zhc_shuffle_weapon_array(keys, 2, 30);	
@@ -2108,7 +2119,7 @@ ZHC_treasure_chest_options_init(){
 	level.ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX__ADD_SMALL_WEAPONS = true;
 
 	level.ZHC_BOX_EQUIPMENT_REALISTIC = true;
-	level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = true;
+	level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE = false;
 		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE = true;
 		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_WAIT_TO_EXPIRE_CLOSE_RUN_BOTH_COOLDOWNS = false;
 		level.ZHC_BOX_WAIT_TO_BECOME_REOPENABLE_DOG_KILL_ENDS_WAIT = true;
@@ -2399,8 +2410,11 @@ treasure_chest_think(){
 		level notify("close_player_owned_weapon_cycle", self.chest_user);
 		if(self.chest_origin ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_is_currently_cycling_between_owned_weapons())
 		{
-			if (( !IsDefined( level.ZHC_player_owned_weapon_index ) ||  !IsDefined(level.ZHC_player_owned_weapon_index[get_player_index(self.chest_user)]) )	//if there is no weapon in box, just stay close
-				&& ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_get_players_stored_weapons(self.chest_user).size == 0){
+			if (
+				//( !IsDefined( level.ZHC_player_owned_weapon_index ) ||
+				//  !IsDefined(level.ZHC_player_owned_weapon_index[get_player_index(self.chest_user)]) 
+				//)&& 	//if there is no weapon in box, just stay close
+				ZHC_CYCLE_BETWEEN_OWNED_WEAPONS_IN_BOX_get_players_stored_weapons(self.chest_user).size == 0){
 				wait(1);
 				self thread treasure_chest_think();
 				return;
@@ -3098,7 +3112,7 @@ chest_weapon_expire_wait(strength){
 				self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, kills, undefined, undefined, false);
 			//self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(1, undefined, undefined, 1, undefined); //waits for 16 kills and for next round
 		}else
-			return;
+			return; //stays forever
 	}else{
 		if(self.ZHC_GUN_SWAP && level.ZHC_GUN_SWAP_TIMER_RESET){
 			self thread weapon_swap_reset_expire_timer();
@@ -4112,8 +4126,10 @@ ZHC_ORDERED_BOX_get_next_weapon(init_open, chest_user){
 				found_weapon = weapon;
 				break;
 			}
-			if(!IsDefined( found_weapon ))
+
+			if(!IsDefined( found_weapon )){
 				return "zhc expire box";
+			}
 
 			zhcp("stored weapon index:"+level.ZHC_player_owned_weapon_index[player_index]+"="+keys.size);
 
@@ -4369,7 +4385,8 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 		guarenteed_teddy = true;
 	}else if(rand == "zhc expire box"){
 		self.weapon_string = undefined;
-		expire_box = true;
+		wait_network_frame();
+		chest notify ("weapon_expired");
 		return;
 	}
 
@@ -4400,10 +4417,7 @@ treasure_chest_weapon_spawn( chest, player, respin, init_open){
 	wait_network_frame();
 
 
-	if(expire_box){
-		chest notify ("weapon_expired");
-		return;
-	}
+	
 
 	// Increase the chance of joker appearing from 0-100 based on amount of the time chest has been opened.
 	//zhc could use firesale var simplicity but ill refrain just for some specific case senarios.
@@ -5382,9 +5396,14 @@ zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, can
 	self thread weapon_pick_up_update_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string, endon_string1, endon_string2);
 	for(;;)
 	{
-		//zhcp( "ddddd" ,100);
-		wait_time = self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string);	
-		wait(wait_time);
+		
+		t_to_wait = self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string);	
+		t_to_wait = max(0.3,t_to_wait);
+		zhcp( "t_to_wait:" + t_to_wait,100);
+		if(t_to_wait < 0)
+			wait(1);
+		else
+			wait(t_to_wait); // for some reason this is negative despite the function explicitly controlling  for it, weird.
 		wait_network_frame(); //prevent infinite loop bug
 		//wait(0.1);
 	}

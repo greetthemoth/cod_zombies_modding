@@ -280,25 +280,29 @@ door_buy()
 	else
 		return false;
 
-	self.last_user = who;
-	self get_sister_door().last_user = who;
+	level.ZHC_doors_opened_this_round = define_or(0, level.ZHC_doors_opened_this_round) + 1;
+	self get_dominant_door().last_user = who;
+	self get_dominant_door() roomId_setup(who);
 
 	return true;
 }
 
 open_door_temporarily(time){
+	self endon ("close_door");
 	if(self._door_open)
 		return;
 	//if(self._in_cooldown)
-	if(self.door_stage == "cooldown")
-		self.dont_reset_cooldown_once = true;		//nessesary for when door cooldown is over or when is in door cooldown.
+	if(self.door_stage == "cooldown"){
+		self get_dominant_door().dont_reset_cooldown_once = true;		//nessesary for when door cooldown is over or when is in door cooldown.
 												//if false cooldown will reset when the door reopens.
+		self thread keep_track_if_cooldown_ends();
+	}
 	if(self.door_stage == "buying")
-		self.skip_cooldown_once = true;
+		self get_dominant_door().skip_cooldown_once = true;
 
 	//self notify("zhc_end_of_cooldown"); if you want to open the door and intentianlly reset the cooldown
 
-	self.door_wont_expire_once = true;			//makes it not run door expire code once opened; not entirely nessesary variable
+	self get_dominant_door().door_wont_expire_once = true;			//makes it not run door expire code once opened; not entirely nessesary variable
 												//only nessasary if you want the legt of the time to be completly indepentd of the expirations.
 												//if you wish for expiry to overrite it then make it false.
 	self notify ("open_door");
@@ -307,6 +311,12 @@ open_door_temporarily(time){
 
 	self notify ("close_door");
 	//because of dont reset cooldown should go back to same state as before.
+}
+
+keep_track_if_cooldown_ends(){
+	self endon ("close_door");
+	self get_dominant_door() waittill( "zhc_end_of_cooldown" );
+	self get_dominant_door().skip_cooldown_once = true;
 }
 
 haunt_player(haunt_level){
@@ -952,6 +962,11 @@ door_think()
 	if(level.DOOR_RECLOSE)
 		self.ZHC_is_recloseable = self is_recloseable_door();
 
+	//level waittill( "ZHC_map_init_done" ); //needed to assign door submision
+	wait_network_frame(); // assign door_submission first;
+
+	self assign_submission_door();
+
 	while(1){
 		self door_is_closed_stage();
 
@@ -959,19 +974,22 @@ door_think()
 			self door_is_open_stage();
 		else{
 			if(level.DOOR_RECLOSE){
-				zhcpb( "door "+ self get_door_id()+" opened; is not reclosable" ,444);
+				zhcpb( "door "+ self get_door_id()+" opened permanently; is not reclosable" ,444);
 				self all_sub_doors_are_recloseable(true);
 			}
 			else
-				zhcpb( "door "+ self get_door_id()+" opened" ,444);
-			if(!isDefined(self.is_submissive)) //important condition to make sure submissive sister doenst override and become the dominant sister.
-										//condition could potentially go inside function. might be more ligical.
-				self notify_sister_door("open_door", true);
-			self.door_stage = "open";
-			self thread door_opened();
+				zhcpb( "door "+ self get_door_id()+" opened permanently" ,444);
+				self open_door_permanantly();
 			return;	
 		}
 	}
+}
+open_door_permanantly(){
+	//if(!isDefined(self.is_submissive)) //important condition to make sure submissive sister doenst override and become the dominant sister.
+								//condition could potentially go inside function. might be more ligical.
+	self notify_sister_door("open_door");//, true);
+	self.door_stage = "open";
+	self get_dominant_door() thread door_opened();
 }
 
 door_is_closed_stage(){
@@ -996,7 +1014,7 @@ door_is_waiting_to_buy_phase(){
 
 	self.door_stage = "buying";
 
-	self.is_submissive = undefined;
+	//self.is_submissive = undefined; //if we want to change this, make sure to change the reliance of it on the next stage in the notify_sister function.
 	self.last_user = undefined;
 
 	if ( IsDefined( self.script_noteworthy ) )
@@ -1080,7 +1098,7 @@ door_is_waiting_to_buy_phase(){
 	}
 
 	if( self.script_noteworthy != "electric_door" && self.script_noteworthy != "electric_buyable_door"){
-		if(level.ZHC_DOOR_COST_INCREASE_AFTER_BUY && self.zombie_cost < min(2500 * maps\ZHC_zombiemode_zhc::zombie_door_cost_mult(), 7500) && !is_true(self.dont_reset_cooldown_once)){
+		if(isDefined(self get_dominant_door().last_user) &&  level.ZHC_DOOR_COST_INCREASE_AFTER_BUY && self.zombie_cost < min(2500 * maps\ZHC_zombiemode_zhc::zombie_door_cost_mult(), 7500) && !is_true(self.dont_reset_cooldown_once)){
 			self.zombie_cost += 250;
 			//self normalize_door_cost();
 		}
@@ -1089,10 +1107,12 @@ door_is_waiting_to_buy_phase(){
 
 door_is_open_stage(){
 
-	if(!isDefined(self.is_submissive)) //important condition to make sure submissive sister doenst override and become the dominant sister.
+	//if(!isDefined(self.is_submissive)) //important condition to make sure submissive sister doenst override and become the dominant sister.
 										//condition could potentially go inside function. might be more ligical.
-		self notify_sister_door("open_door", true);
+		//elf notify_sister_door("open_door");//, true);
 	
+	self notify_sister_door("open_door");//, true);
+
 	self.door_stage = "open";
 
 	//self SetHintString( "" );
@@ -1178,37 +1198,86 @@ door_buy_expired(){
 		return;
 	}
 
-	self roomId_setup();
-	if(false){	//room flow increase difficulty //testo
+	if(!isDefined(self.roomId_bought_from) || !IsDefined( self.roomId_bought_to ))
+		self roomId_setup(self.last_user);
+
+	if(true){	//room flow increase difficulty //testo
 		if(level.ZHC_ROOMFLOW){
 			//if(!IsDefined( level.ZHC_ROOMFLOW_difficulty_to_close_door ))
 			//	level.ZHC_ROOMFLOW_difficulty_to_close_door = 4;
-			difficulty_on_buy = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
-			dif_on_buy_goal_mult = 0.75;
-			dif_goal = (difficulty_on_buy * dif_on_buy_goal_mult) + (3+((level.round_number)/5));
-			zhcp("diffgoal: " +difficulty_on_buy + "/"+ dif_goal ,444);
+			
 
-			last_difficulty = difficulty_on_buy; //used for debug
-			last_dogs_left_to_spawn = define_or(level.ZHC_dogs_to_spawn_this_round,0); //used for debug
+			/* //DIFF GOAL VER
+			difficulty_on_buy = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
+			dif_goal = (difficulty_on_buy * 0.75)  + (3+((level.round_number)/5));
+			zhcp("diffgoal: " +difficulty_on_buy + "/"+ dif_goal ,444);
+			*/
+
+			//DIFF MATCH VER
+			difficulty_on_buy = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
+			difficulty_on_buy_other = Get_Room_Info(self.roomId_bought_to,"flow_difficulty");
+			zhcp("diff match: " +difficulty_on_buy + "/"+ difficulty_on_buy_other ,444);
+			other_must_match = difficulty_on_buy > difficulty_on_buy_other;
+
+			//vvv used for debug
+			last_difficulty = difficulty_on_buy;
+			last_difficulty_other = difficulty_on_buy_other; 	//DIFF MATCH VER
+			last_dogs_left_to_spawn = define_or(level.ZHC_dogs_to_spawn_this_round,0); 
+			//^^^ used for debug
 			while(1){
+
+				//DIFF GOAL VER
+				//difficulty = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
+
+				//DIFF MATCH VER
 				difficulty = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
-				if(!flag("dog_round") && (difficulty < dif_goal || define_or(level.ZHC_dogs_to_spawn_this_round,0) > 0) ){ //4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
+				difficulty_other = Get_Room_Info(self.roomId_bought_to,"flow_difficulty");
+
+				if(!flag("dog_round") && (
+						//DIFF GOAL VER
+						//difficulty < dif_goal || 
+						//DIFF MATCH VER
+						((!other_must_match && difficulty < difficulty_on_buy_other) || (other_must_match && difficulty_other < difficulty_on_buy)) ||
+
+						define_or(level.ZHC_dogs_to_spawn_this_round,0) > 0) ){ //4 + level.ZHC_ROOMFLOW_difficulty_to_close_door){
+
+					//DIFF GOAL VER
+					//level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round"); //the real wait used when not debugging
+					//DIFF MATCH VER
+					//level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "zhc_update_flow_difficulty_roomId_"+self.roomId_bought_to, "start_of_round"); //the real wait used when not debugging
 					
-					//level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "start_of_round");
-					wait_network_frame( );
-					wait_network_frame( );
-					if(last_difficulty != difficulty || last_dogs_left_to_spawn != define_or(level.ZHC_dogs_to_spawn_this_round,0)){ //debug
-						zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" dogsleft: "+define_or(level.ZHC_dogs_to_spawn_this_round,0),444);
+					//vvv used for debug
+					wait_network_frame( ); wait_network_frame( ); //Fake waits used for debuging
+					
+					if(	last_difficulty != difficulty || 
+						last_difficulty_other != difficulty_other || //DIFF MATCH VER
+						last_dogs_left_to_spawn != define_or(level.ZHC_dogs_to_spawn_this_round,0)){ //debug
+						//DIFF GOAL VER
+						//zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" dogsleft: "+define_or(level.ZHC_dogs_to_spawn_this_round,0),444);
+						//DIFF MATCH VER
+						zhcp("diff match: " +difficulty_on_buy + "/"+ difficulty_on_buy_other +" dogsleft: "+define_or(level.ZHC_dogs_to_spawn_this_round,0),444);
+
 						last_dogs_left_to_spawn = define_or(level.ZHC_dogs_to_spawn_this_round,0);
 						last_difficulty = difficulty; 
+						last_difficulty_other = difficulty_other; //DIFF MATCH VER
 					}
+					//^^^ used for debug
+					
+
 					continue;
 				}else{ 		//simply waiting to not be occupied
 					wait(0.15);
+					//vvv used for debug
 					if(flag("dog_round"))
 						zhcp("dog round ... leave room to close" ,444);
-					else
-						zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" ... leave room to close" ,444);
+					else{
+						//DIFF GOAL VER
+						//zhcp("diffgoal: " +difficulty + "/"+ dif_goal +" ... leave room to close" ,444);
+						//DIFF MATCH VER
+						zhcp("diff match: " +difficulty_on_buy + "/"+ difficulty_on_buy_other,444);
+					}
+					//^^^ used for debug
+
 				}
 				//door closes when the room bought from is not occupied && (is dog round || rooms difficulty is high enough)
 				if(!Get_Room_Info(self.roomId_bought_from,"occupied") 
@@ -1217,7 +1286,14 @@ door_buy_expired(){
 						[[level.map_get_zone_room_id]](self.last_user.current_zone) != self.roomId_bought_from
 						)
 				   )
-				&& (flag("dog_round") || (difficulty >= dif_goal && level.ZHC_dogs_to_spawn_this_round == 0) ) 
+				&& (flag("dog_round") || (
+					//DIFF GOAL VER
+					//difficulty >= dif_goal &&
+					//DIFF MATCH VER
+					((!other_must_match && difficulty >= difficulty_on_buy_other) || (other_must_match && difficulty_other >= difficulty_on_buy)) &&
+
+					define_or(level.ZHC_dogs_to_spawn_this_round,0) == 0) 
+					) 
 				&& !a_player_is_in_dead_zone(self get_door_id())
 				)//level.ZHC_ROOMFLOW_difficulty_to_close_door))
 					break;
@@ -1231,6 +1307,18 @@ door_buy_expired(){
 		}
 	}else{
 		wait(2);
+		while(1){
+			if(!Get_Room_Info(self.roomId_bought_from,"occupied") 
+			&& (!IsDefined( self.last_user ) ||  
+					(isDefined(self.last_user.current_zone) && 
+					[[level.map_get_zone_room_id]](self.last_user.current_zone) != self.roomId_bought_from
+					)
+			   ))
+			break;
+			level waittill( "zone_info_updated" );
+		}
+
+		
 	}
 	self thread ensure_close_door_with_room_not_occupied();
 	if(false){			//occupy rooms to expire
@@ -1254,11 +1342,17 @@ ensure_close_door_with_room_not_occupied(){
 	self endon ("open_door");
 	self waittill("door_closed");
 
-	zhcpb( (!Get_Room_Info(self.roomId_bought_from,"occupied"))+ ""+
-	 ""+ (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ) 
- 	+ ""+ (!a_player_is_in_dead_zone(self get_door_id())) );
+	if(level.ZHC_TESTING_LEVEL >= 0.5)
+		zhcpb( "DOOR ENSURE:"
+			+" buyroom-unocc:"+(!Get_Room_Info(self.roomId_bought_from,"occupied"))
+		 	+" buyer-moved:"+ (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ) 
+	 		+" deadzone:"+ (!a_player_is_in_dead_zone(self get_door_id())) , 445);
 
-	if(!Get_Room_Info(self.roomId_bought_from,"occupied") && (!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ) && !a_player_is_in_dead_zone(self get_door_id()))
+	if(
+		!Get_Room_Info(self.roomId_bought_from,"occupied") &&
+	 	(!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ) && 
+	 	!a_player_is_in_dead_zone(self get_door_id())
+	)
 		self notify ("ensured_door_close");
 	else{
 		//door close not ensured
@@ -1460,13 +1554,13 @@ roomId_setup(player){
 	}
 	
 	zone_door_connects_to = [[level.Get_Other_Zone]](zone_name, self);
-
-
-	
+	if(!isDefined(zone_door_connects_to)){
+		//zhcpb("ZONE NOT LINKED TO DOOR", 444);
+		return;
+	}
 
 	roomid =  Get_Zone_Room_ID(zone_name);
 	roomid2 = Get_Zone_Room_ID(zone_door_connects_to);
-
 	self.roomId_bought_from = roomid;
 	self.roomId_bought_to = roomId2;
 }
@@ -1697,33 +1791,52 @@ close_off_room(room_id){
 	}
 }
 
-get_connected_rooms(){
 
-}
 
 
  
 
-get_sister_door(){									//applies to doors that have 2 sets of doors. 
+get_sister_door(undefine_if_none){									//applies to doors that have 2 sets of doors. 
 	if(!isDefined (self.sister_door)){
 		self [[level.set_sister_door]]();
 	}
-	if(self.sister_door == self)
-		return self;
+	if(is_true(undefine_if_none) && self.sister_door == self )
+		return undefined;
 	return self.sister_door;
 }
 
-notify_sister_door(msg, make_submissive){
+notify_sister_door(msg){//, make_submissive){
 	sis = self get_sister_door();
 	if(sis != self){
-		if(is_true(make_submissive)){
+		/*if(is_true(make_submissive)){
 			sis.is_submissive = true;
 			self.is_submissive = false;
 		}
-		//IPrintLnBold( msg );
+		//IPrintLnBold( msg );*/
 		sis notify( msg );
 	}
 }
+
+get_dominant_door(){
+	sis = self get_sister_door();
+	if(sis != self && self.is_submissive) 
+		return sis;
+	return self;
+}
+
+assign_submission_door(){
+	sis = self get_sister_door();
+	if(sis != self){
+		if(self get_door_id() < sis get_door_id()){
+			sis.is_submissive = true;
+			self.is_submissive = false;
+		}else{
+			sis.is_submissive = false;
+			self.is_submissive = true;
+		}
+	}
+}
+
 Get_Players_Current_Zone_Bruteforce(player){
 	maps\_zombiemode_zone_manager::update_player_zones(player);
 	return player.current_zone;
@@ -1746,7 +1859,7 @@ zone_is_occupied_rn(zone_name){			//use this right after waiting for "zone_info_
 			{
 				if (players[p] IsTouching(level.zones[zone_name].volumes[i]) )
 				{
-					IPrintLn(zone_name+ "volume "+i);	//testo
+					IPrintLn(zone_name+ " volume "+i);	//testo
 					return true;
 				}
 			}
@@ -1754,6 +1867,9 @@ zone_is_occupied_rn(zone_name){			//use this right after waiting for "zone_info_
 	}
 	return false;*/
 }
+
+
+
 a_player_is_close_to_door_id(id, dist, check_sister){
 	zombie_doors = GetEntArray( "zombie_door", "targetname" ); 
 	playertooclosetodoor = false;
@@ -1859,9 +1975,9 @@ door_cooldown(){
 
 	self thread maps\_zombiemode_weapons::door_barr_weapon();
 
-	self waittill_any_ents( level, "zhc_dog_round_over",self,"door_barr_started");//common_scripts\utility.gsc:
+	//self waittill_any_ents( level, "zhc_dog_round_over",self,"door_barr_started");//not sure the purpose...
 
-	ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN = true;
+	ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN = false; //doesnt woork seemlesly with self.dont_reset_cooldown, needs a self.var to help keep track
 	if(ZHC_WAIT_FOR_OTHER_DOOR_IN_ROOM_ACCESSED_TO_BE_OPENED_BEFORE_STARTING_DOOR_COOLDOWN){
 		roomId = self.roomId_bought_to;
 		doorIds = Get_Doors_Accesible_in_room(roomId); //doors in room accessed
@@ -1871,43 +1987,79 @@ door_cooldown(){
 	}
 	
 
-	if(is_true(self.dont_reset_cooldown_once)){
-		return;
+	
+
+	if(false){//GOAL BASED
+		if(is_true(self.dont_reset_cooldown_once)){
+			return;
+		}
+
+		additional_kills_wanted = (int(self.zombie_cost/50));
+		additional_kills_wanted = additional_kills_wanted - (additional_kills_wanted % 5);
+		ZHC_KILL_GOAL_STACKING = true;
+		if(ZHC_KILL_GOAL_STACKING){
+			if(!IsDefined( level.zhc_last_door_cooldown_kill_goal_set))//var used to stack kill goal with previous kill goals
+				level.zhc_last_door_cooldown_kill_goal_set = 0;
+			additional_kills_wanted += max(0,level.zhc_last_door_cooldown_kill_goal_set - level.total_zombies_killed);
+			level.zhc_last_door_cooldown_kill_goal_set = additional_kills_wanted + level.total_zombies_killed;
+		}
+
+
+		additional_rounds_to_wait = 1;
+		//for(i = 2; i < 8 && i <= level.round_number; i++){ //i: 2 -> 7
+		//	if(level.round_number % i == 0){
+		//		if(i > additional_rounds_to_wait)		
+		//			additional_rounds_to_wait = i;	//largest factor of the round num less than 8 is adtw
+		//	}
+		//}
+
+		ZHC_ROUND_GOAL_STACKING = false;
+		if(ZHC_ROUND_GOAL_STACKING){
+			if(!isDefined(level.zhc_last_door_cooldown_round_goal_set))
+				level.zhc_last_door_cooldown_round_goal_set = 0;
+			additional_rounds_to_wait += max(0, level.zhc_last_door_cooldown_round_goal_set - level.round_number) + additional_rounds_to_wait;
+			level.zhc_last_door_cooldown_round_goal_set = additional_rounds_to_wait + level.round_number;
+		}
+		//IPrintLnBold( "DOOR COOLDOWN adk: "+ additional_kills_wanted +" adr: "+ additional_rounds_to_wait);
+		self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(3, undefined, additional_kills_wanted, additional_rounds_to_wait, 1);
+
+		if(is_true(self.dont_reset_cooldown_once) && self._door_open){	//for endg-case when cooldown ends while door is temp open. it wait for door to be closed (back to the cooldwon state) before ending the cooldown.
+			self waittill( "door_closed" );
+			wait_network_frame();
+		}
 	}
 
-	additional_kills_wanted = (int(self.zombie_cost/50));
-	additional_kills_wanted = additional_kills_wanted - (additional_kills_wanted % 5);
-	ZHC_KILL_GOAL_STACKING = true;
-	if(ZHC_KILL_GOAL_STACKING){
-		if(!IsDefined( level.zhc_last_door_cooldown_kill_goal_set))//var used to stack kill goal with previous kill goals
-			level.zhc_last_door_cooldown_kill_goal_set = 0;
-		additional_kills_wanted += max(0,level.zhc_last_door_cooldown_kill_goal_set - level.total_zombies_killed);
-		level.zhc_last_door_cooldown_kill_goal_set = additional_kills_wanted + level.total_zombies_killed;
+	if(true){//difficulty on each room must differ by an amount proportional to room openness on either side of door
+		difficulty = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
+		difficulty_other = Get_Room_Info(self.roomId_bought_to,"flow_difficulty");
+		largest_amount_of_adjacent_room_connections = 
+		max(
+		maps\ZHC_zombiemode_roundflow::Get_All_Connected_Open_Rooms(self.roomId_bought_from, true).size,
+		maps\ZHC_zombiemode_roundflow::Get_All_Connected_Open_Rooms(self.roomId_bought_to, true).size);
+
+
+		while(abs(difficulty - difficulty_other ) >=  largest_amount_of_adjacent_room_connections) {
+			level waittill_either("zhc_update_flow_difficulty_roomId_"+self.roomId_bought_from, "zhc_update_flow_difficulty_roomId_"+self.roomId_bought_to);
+			wait_network_frame( );
+			wait_network_frame( );
+			difficulty = Get_Room_Info(self.roomId_bought_from,"flow_difficulty");
+			difficulty_other = Get_Room_Info(self.roomId_bought_to,"flow_difficulty");
+			largest_amount_of_adjacent_room_connections = 
+			max(
+			maps\ZHC_zombiemode_roundflow::Get_All_Connected_Open_Rooms(self.roomId_bought_from).size,
+			maps\ZHC_zombiemode_roundflow::Get_All_Connected_Open_Rooms(self.roomId_bought_to).size);
+			
+			s = "";
+			if(abs(difficulty - difficulty_other ) >  largest_amount_of_adjacent_room_connections){
+				zhcp("exp door "+self get_door_id()+": "+difficulty + " -- " + difficulty_other + " >= "+largest_amount_of_adjacent_room_connections + " DOOR EXPIRED", 444);
+				break;
+			}
+			else
+				zhcp("exp door "+self get_door_id()+":"+difficulty + " -- " + difficulty_other + " < "+largest_amount_of_adjacent_room_connections + "...", 444);
+		}
 	}
 
-
-	additional_rounds_to_wait = 1;
-	//for(i = 2; i < 8 && i <= level.round_number; i++){ //i: 2 -> 7
-	//	if(level.round_number % i == 0){
-	//		if(i > additional_rounds_to_wait)		
-	//			additional_rounds_to_wait = i;	//largest factor of the round num less than 8 is adtw
-	//	}
-	//}
-
-	ZHC_ROUND_GOAL_STACKING = false;
-	if(ZHC_ROUND_GOAL_STACKING){
-		if(!isDefined(level.zhc_last_door_cooldown_round_goal_set))
-			level.zhc_last_door_cooldown_round_goal_set = 0;
-		additional_rounds_to_wait += max(0, level.zhc_last_door_cooldown_round_goal_set - level.round_number) + additional_rounds_to_wait;
-		level.zhc_last_door_cooldown_round_goal_set = additional_rounds_to_wait + level.round_number;
-	}
-	//IPrintLnBold( "DOOR COOLDOWN adk: "+ additional_kills_wanted +" adr: "+ additional_rounds_to_wait);
-	self maps\ZHC_zombiemode_zhc::ZHC_basic_goal_cooldown_func2(3, undefined, additional_kills_wanted, additional_rounds_to_wait, 1);
-
-	if(is_true(self.dont_reset_cooldown_once) && self._door_open){	//for endg-case when cooldown ends while door is temp open. it wait for door to be closed (back to the cooldwon state) before ending the cooldown.
-		self waittill( "door_closed" );
-		wait_network_frame();
-	}
+	
 	//self thread wait_door_cooldown_end();
 	self notify("end_door_cooldown");
 }
@@ -2027,18 +2179,23 @@ door_opened()
 	// get all trigs for the door, we might want a trigger on both sides
 	// of some junk sometimes
 	all_trigs = getentarray( self.target, "target" ); 
+	
 	for( i = 0; i < all_trigs.size; i++ )
 	{
 		all_trigs[i] trigger_off(); 					//disables triggers hides hintstrings
 	}
 	wait(waittime);
-
 	self.transitioning_t_open_f_close = undefined;
 	self get_sister_door().transitioning_t_open_f_close = undefined;	//if there is no sister door, sister door is self
 	self._door_open = true;
 	self get_sister_door()._door_open = true;	//if there is no sister door, sister door is self.
-	self notify("door_opened");
+	self notify("door_opened"); 
 	self notify_sister_door("door_opened");
+	
+	level notify ("a_door_opened", self get_door_id());
+	maps\ZHC_zombiemode_roundflow::Update_Connected_Open_Rooms(self, self get_door_id());
+	
+	zhcpb(maps\ZHC_zombiemode_roundflow::Get_All_Connected_Open_Rooms(self.roomId_bought_from, true), 444);
 }
 
 
@@ -2076,7 +2233,7 @@ door_closed()
 
 	level waittill("zone_info_updated");
 	while(
-		//!self [[level.can_close_door]]()
+		//!self [[level.can_close_door]]() || not needed because of a_player_is_in_dead_zone()
 		a_player_is_in_dead_zone(self get_door_id()) || a_player_is_close_to_door_id(self get_door_id(), 100, true) 
 		){
 		//IPrintLnBold( "cant_close_door >;(" );
@@ -2119,7 +2276,7 @@ door_closed()
 	// get all trigs for the door, we might want a trigger on both sides
 	// of some junk sometimes
 	
-	level notify ("a_door_closed");
+	
 	wait(waittime);
 
 	all_trigs = getentarray( self.target, "target" ); 
@@ -2133,6 +2290,8 @@ door_closed()
 	self get_sister_door()._door_open = false;								//if there is no sister door, sister door is self
 	self notify("door_closed");
 	self notify_sister_door("door_closed");
+	level notify ("a_door_closed", self get_door_id());
+	maps\ZHC_zombiemode_roundflow::Update_Connected_Open_Rooms(self, self get_door_id());
 }
 
 //

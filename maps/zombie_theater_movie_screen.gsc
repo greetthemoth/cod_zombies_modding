@@ -130,12 +130,12 @@ setupCurtains()
 
 			//wait for theater, foyer, vip room, dressingroom, stage to unoccupied so transition is invisible
 			roomIds = [];
-			roomIds = array_add(100);
-			roomIds = array_add(0);
-			roomIds = array_add(1);
-			roomIds = array_add(3);
-			roomIds = array_add(4);
-			maps\zombiemode_blockers::waittill_roomID_is_unoccupied([100,0,1,3,4]);
+			roomIds = array_add(roomIds, 100);
+			roomIds = array_add(roomIds, 0);
+			roomIds = array_add(roomIds, 1);
+			roomIds = array_add(roomIds, 3);
+			roomIds = array_add(roomIds, 4);
+			maps\_zombiemode_blockers::waittill_roomID_is_unoccupied(roomIds);
 			//wait(2);
 
 			//level thread moveCurtains("left_curtain",false);			//doesnt work 

@@ -13,23 +13,24 @@ get_testing_level(){
 }
 can_send_msg_level(msg_id){
 	switch(msg_id){
-		case 4: //down forgiveness
+		///case 4: //down forgiveness
 		//case 1000: //difficulty testing
-		case 1001: //difficulty testing
-		case 1002: //zombie limit testing
-		case 1005: //dog spawning
-		case 555: //perk teleportation testing
+		///case 1001: //difficulty testing
+		///case 1002: //zombie limit testing
+		///case 1005: //dog spawning
+		///case 555: //perk teleportation testing
 		//case 5555: //QR perk teleportation testing
-		case 50: //mystery box
-		case 100: //wall weapon stuff
-		case 200: //powerup stuff
+		///case 50: //mystery box
+		///case 100: //wall weapon stuff
+		///case 200: //powerup stuff
 		case 300: //teleporter lightning stuff
 		//case 999://round zombie total viewer
 		//case 666://zombie damage 
 		//case 222://perk loss
 		//case 777: //ZHC_weapon system
 		case 444: //blockers
-		case "m14_zm":
+		//case 445: //door deadpoints
+		///case "m14_zm":
 			return true;
 
 		default:
@@ -111,6 +112,12 @@ testing_ground(){
 		}
 	}
 	if(level.ZHC_TESTING_LEVEL >= 0.5){
+		if(false){
+			while(true){
+				debug_current_player_volume();
+				wait(0.5);
+			}
+		}
 		if(false){
 			while(true){
 				spawned = false;
@@ -261,6 +268,25 @@ get_dog_spawn_positions_in_room(roomId){
 	}
 	return pos;
 }
+get_random_dog_spawn_pos_in_rooms(roomIds){
+	pos = get_dog_spawn_positions_in_rooms(roomIds);
+	return pos[randomint(pos.size-1)];
+}
+get_dog_spawn_positions_in_rooms(roomIds){
+	pos = [];
+	for(z = 0; z < roomIds.size; z++){
+		zones =  maps\ZHC_zombiemode_roundflow::Get_Room_Info(roomIds[z], "zones");
+		for(i = 0; i < zones.size; i++){
+			zone = level.zones[zones[i]];
+			for(x=0; x<zone.dog_locations.size; x++)
+			{
+				pos[pos.size] = zone.dog_locations[x].origin;
+			}
+		}
+	}
+	return pos;
+}
+
 get_random_dog_spawn_pos(){
 	pos = get_dog_spawn_positions();
 	return pos[randomint(pos.size-1)];

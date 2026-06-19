@@ -286,8 +286,8 @@ init_weapon_vars()
 
 	self.ZHC_weapons = [];
 	self.ZHC_weapon_names = [];
-	self.= [];
-	self.ZHC_weapon_oZHC_weapon_levelsther_weapon = [];
+	self.ZHC_weapon_levels = [];
+	self.ZHC_weapon_other_weapon = [];
 
 	self.ZHC_weapon_is_equipment_or_grenade = [];
 
@@ -296,7 +296,7 @@ init_weapon_vars()
 
 	//UPGRADES
 
-	self.ZHC_weapon_unique_upgrades[];
+	self.ZHC_weapon_unique_upgrades = [];
 
 
 	if(level.ZHC_MAX_AMMO_SYSTEM){

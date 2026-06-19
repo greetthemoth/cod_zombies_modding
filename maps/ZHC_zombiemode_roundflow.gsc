@@ -73,6 +73,8 @@ rooms_init(){
 			level.ZHC_room_info[roomId]["occupied"] = false;
 			level.ZHC_room_info[roomId]["chests"] = [];
 			level.ZHC_room_info[roomId]["enemy_count"] = 0;
+			level.ZHC_room_info[roomId]["connected_rooms"] = Get_Connected_Rooms(roomId);
+			level.ZHC_room_info[roomId]["connected_open_rooms"] = [];
 			//level.ZHC_room_info[roomId]["wall_buys"] = 
 			//level.ZHC_room_info[roomId]["spawners"] = [];
 			level.ZHC_room_info[roomId]["spawner_score_mult"] = 1;
@@ -93,8 +95,9 @@ rooms_init(){
 	
 	if(level.ZHC_ROOMFLOW)
 		level thread manage_room_activity();
-
 }
+
+
 Get_Zone_Room_ID(zone_name){
 	if(!IsDefined( level.ZHC_zoneToRoomID )){
 		level.ZHC_zoneToRoomID = [];
@@ -103,9 +106,6 @@ Get_Zone_Room_ID(zone_name){
 		level.ZHC_zoneToRoomID[zone_name] = [[level.map_get_zone_room_id]](zone_name);
 	}
 	return level.ZHC_zoneToRoomID[zone_name];
-}
-Get_Doors_Accesible_in_room(room_id){
-	return [[level.map_get_room_info]](room_id)["doors"];
 }
 Get_Room_Name(room_id){
 	return [[level.map_get_room_info]](room_id)["name"];
@@ -169,6 +169,245 @@ Merge_RoomsId(roomId_1, roomId_2, new_room_id){
 			level thread room_think(new_room_id);
 }
 
+Get_Doors_Accesible_in_room(room_id){
+	return [[level.map_get_room_info]](room_id)["doors"];
+}
+/*Set_Connected_Rooms_for_door(door_id){
+	connected_rooms = [];
+	connected_open_rooms = [];
+	doors = Get_Doors_Accesible_in_room(room_id);
+	for( i = 0; i < doors.size; i++ ){
+		zones = Get_Room_Zones(room_id);
+		for(z = 0; z < zones.size; z++){
+			zone_name = zones[z];
+			other_zone = [[level.Get_Other_Zone]](zone_name, doors[i]);
+			if(IsDefined( other_zone ) && !is_in_array( zones,other_zone)){
+				connected_room = level.map_get_zone_room_id(other_zone);
+				connected_rooms = add_to_array(connected_rooms,connected_room,false); // false here makes allow dupes false
+				
+				if(doors[i]._door_open)
+					connected_open_rooms = add_to_array(connected_rooms,connected_room,false); // false here makes allow dupes false
+			}
+		}
+	}
+	level.ZHC_room_info[room_id]["connected_rooms"] = connected_rooms;
+	level.ZHC_room_info[room_id]["connected_open_rooms"] = connected_open_rooms;
+	return connected_rooms;
+}*/
+/*Set_Connected_Rooms(room_id){
+	connected_rooms = [];
+	connected_open_rooms = [];
+	doors = Get_Doors_Accesible_in_room(room_id);
+	for( i = 0; i < doors.size; i++ ){
+		zones = Get_Room_Zones(room_id);
+		for(z = 0; z < zones.size; z++){
+			zone_name = zones[z];
+			other_zone = [[level.Get_Other_Zone]](zone_name, doors[i]);
+			if(IsDefined( other_zone ) && !is_in_array( zones,other_zone)){
+				connected_room = level.map_get_zone_room_id(other_zone);
+				connected_rooms = add_to_array(connected_rooms,connected_room,false); // false here makes allow dupes false
+				
+				if(doors[i]._door_open)
+					connected_open_rooms = add_to_array(connected_rooms,connected_room,false); // false here makes allow dupes false
+			}
+		}
+	}
+	level.ZHC_room_info[room_id]["connected_rooms"] = connected_rooms;
+	level.ZHC_room_info[room_id]["connected_open_rooms"] = connected_open_rooms;
+	return connected_rooms;
+}*/
+/*Update_Connected_Open_Rooms(room_id){//TODO
+	zombie_doors = GetEntArray( "zombie_door", "targetname" );
+	crs = level.ZHC_room_info[room_id]["connected_rooms"];
+	connected_open_rooms = [];
+	for(i = 0; i < crs.size; i ++){
+		 door_ids = get_shared_values_in_arrays(level.ZHC_room_info[crs[i]]["doors"], level.ZHC_room_info[room_id]["doors"]);
+		 for(d = 0; d < door_ids.size; d++){
+		 	door_id = door_ids[d];
+		 	if(zombie_doors[door_id].is_open){
+		 		connected_open_rooms[connected_open_rooms.size] = crs[i];
+		 		other_CORs = level.ZHC_room_info[crs[i]]["connected_open_rooms"];
+		 		if(!is_in_array( other_CORs, door_id))//maps\_utility.gsc:
+		 		{
+		 			other_CORs[other_COR.size] = door_id;
+		 			level.ZHC_room_info[crs[i]]["connected_open_rooms"] = room_id;
+		 		}
+		 	}else if(is_in_array( other_CORs, door_id)){
+		 		level.ZHC_room_info[crs[i]]["connected_open_rooms"] = array_remove(other_CORs, room_id, false);
+		 	}
+		}
+	}
+	level.ZHC_room_info[room_id]["connected_open_rooms"] = connected_open_rooms;c
+}*/
+Update_Connected_Open_Rooms(door_ent, door_id, room_id, other_room_id){//TODO
+	zombie_doors = undefined;
+	door_defined = false;
+	rooms_defined = false;
+	//sister_door_id = undefined;
+
+	if(isDefined(door_ent)){ //has door ent
+		door_id = door_ent.door_id; // get door id and door ent
+		door_defined = true;
+		//sister_door_id = undefine_if_same_as(door_id,door_ent maps\_zombiemode_blockers::get_sister_door().door_id);
+	}else{
+		if(isDefined(door_id)){
+			zombie_doors = define_or(zombie_doors, GetEntArray( "zombie_door", "targetname" ));
+			door_ent = zombie_doors[door_id]; // got_door_ent
+			door_defined = true;
+			//sister_door_id = undefine_if_same_as(door_id,door_ent maps\_zombiemode_blockers::get_sister_door().door_id);
+		}
+	}
+
+	if(!door_defined){
+		if (IsDefined( room_id ) && IsDefined( other_room_id )){ //has both rooms defined
+			door_id = get_first_shared_value_in_arrays(level.ZHC_room_info[other_room_id]["doors"], level.ZHC_room_info[room_id]["doors"]); //has all info
+			if(!isDefined(door_id))
+			{
+				zhcpb("No shared door found between rooms");
+				return;
+			}
+			zombie_doors = define_or(zombie_doors, GetEntArray( "zombie_door", "targetname" ));
+			door_ent = zombie_doors[door_id];
+			rooms_defined = true;
+			door_defined = true; // defined door based on room
+			//sister_door_id = undefine_if_same_as(door_id,door_ent maps\_zombiemode_blockers::get_sister_door().door_id);
+			
+		}else if (IsDefined( room_id ) || IsDefined( other_room_id )){ //only one room is defined
+			room_id = define_or(other_room_id, room_id);
+			other_room_id = undefined;
+			//will check and update all doors of the room
+		}else {
+			//nothing is defined
+			return;
+		}
+	}
+
+	if(door_defined){
+		if(isDefined( room_id )){
+			other_room_id = [[level.Get_Other_Room]](room_id, undefined, door_id);
+		}else{
+			rooms = [[level.Get_Other_Room]](undefined, undefined, door_id);
+			room_id = rooms[0];
+			other_room_id = rooms[1];
+		}
+		rooms_defined = true;
+	} else if(!rooms_defined){  //check and update all doors of the room
+		zombie_doors = define_or(zombie_doors, GetEntArray( "zombie_door", "targetname" ));
+		crs = level.ZHC_room_info[room_id]["connected_rooms"];
+		connected_open_rooms = [];
+		for(i = 0; i < crs.size; i ++){
+			 has_open_connection = false;
+			 door_ids = get_shared_values_in_arrays(level.ZHC_room_info[crs[i]]["doors"], level.ZHC_room_info[room_id]["doors"]);
+			 for(d = 0; d < door_ids.size; d++){
+			 	door_id = door_ids[d];
+				if(zombie_doors[door_id].is_open)
+				{
+					has_open_connection = true;
+					break;
+				}
+			 }
+		 	other_CORs = level.ZHC_room_info[crs[i]]["connected_open_rooms"];
+		 	if(has_open_connection){
+		 		connected_open_rooms = array_add(connected_open_rooms, crs[i], false);
+		 		if(!is_in_array( other_CORs, room_id))//maps\_utility.gsc:
+		 		{
+		 			other_CORs[other_CORs.size] = room_id;
+		 			level.ZHC_room_info[crs[i]]["connected_open_rooms"] = other_CORs;
+		 		}
+		 	}else if(is_in_array( other_CORs, room_id)){
+		 		level.ZHC_room_info[crs[i]]["connected_open_rooms"] = array_remove(other_CORs, room_id, false);
+		 	}
+			
+		}
+		level.ZHC_room_info[room_id]["connected_open_rooms"] = connected_open_rooms;
+		return;
+	}
+	
+	if(!rooms_defined || !door_defined){
+		zhcpb("ROOMS AND DOOR NOT DEFINED, THIS SHOULD NEVER RUN"); // should never run just exist to catch errors
+		return;
+	}
+
+	//vvv only runs if both rooms and doors are defined.
+	//update both rooms to whether the door is open
+
+	//has_sister_door = isDefined(sister_door_id);
+	
+	if(door_ent.is_open){ // door is open
+		CORs = level.ZHC_room_info[room_id]["connected_open_rooms"];
+		if(!is_in_array( CORs, other_room_id )){  //if doesnt have room in list
+			CORs[CORs.size] = other_room_id;   	//add room
+			level.ZHC_room_info[room_id]["connected_open_rooms"] = CORs;
+		}
+
+		CORs = level.ZHC_room_info[other_room_id]["connected_open_rooms"];
+		if(!is_in_array( CORs, room_id )){	//if other room doesnt have room in list
+			CORs[CORs.size] = room_id;		//add room
+			level.ZHC_room_info[other_room_id]["connected_open_rooms"] = CORs;
+		}
+	}else{ // door is closed
+		CORs = level.ZHC_room_info[room_id]["connected_open_rooms"];
+		if(is_in_array( CORs, other_room_id )){ //if has room in list
+			level.ZHC_room_info[room_id]["connected_open_rooms"] = array_remove(CORs, other_room_id, false); //remove room
+		}
+
+		CORs = level.ZHC_room_info[other_room_id]["connected_open_rooms"];
+		if(is_in_array( CORs, room_id )) { //if other room has room in list
+			level.ZHC_room_info[other_room_id]["connected_open_rooms"] = array_remove(CORs, room_id, false); //remove room
+		}
+	}
+}
+
+Get_All_Connected_Open_Rooms(start_room, include_start_room)
+{
+	visited = [];
+	to_check = [];
+
+	to_check[0] = start_room;
+	visited[0] = start_room;
+
+	while(to_check.size > 0)
+	{
+		room_id = to_check[0];
+		to_check = array_remove(to_check, room_id, false);
+
+		neighbors = define_or(
+			level.ZHC_room_info[room_id]["connected_open_rooms"],
+			[]
+		);
+
+		for(i = 0; i < neighbors.size; i++)
+		{
+			neighbor = neighbors[i];
+
+			if(!is_in_array(visited, neighbor))
+			{
+				visited[visited.size] = neighbor;
+				to_check[to_check.size] = neighbor;
+			}
+		}
+	}
+	if(is_true(include_start_room))
+		return visited; 
+	else 
+		return array_remove(visited, start_room, false);
+}
+
+Get_Connected_Rooms(room_id){
+	connected_rooms = [];
+	doors = Get_Doors_Accesible_in_room(room_id);
+	for( i = 0; i < doors.size; i++ ){
+		roomIds = [[level.Get_Other_Room]](undefined, undefined, doors[i]);
+		for(r = 0; r < roomIds.size; r++){
+			roomid = roomIds[r];
+			if(roomid == room_id || is_in_array( connected_rooms, roomid ))//maps\_utility.gsc:)
+				continue;
+			connected_rooms[connected_rooms.size] = roomid;
+		}
+	}
+	return connected_rooms;
+}
+
 Get_Lowest_Difficulty_RoomIds(){
 	lowestArr = [];
 	lowestDif = undefined;
@@ -189,6 +428,55 @@ Get_Lowest_Difficulty_RoomIds(){
 	return lowestArr;
 }
 
+Get_Highest_Difficulty_RoomIds(){
+	highestArr = [];
+	highestDif = undefined;
+	highest = undefined;
+	roomIds = GetArrayKeys( level.ZHC_room_info );
+	for(i = 0; i <  roomIds.size; i++){
+		dif = level.ZHC_room_info[roomIds[i]]["flow_difficulty"];
+		if(!isDefined(highest) || dif > highestDif){
+			highest = roomIds[i];
+			highestDif = dif;
+			highestArr = [];
+			highestArr = array_add(highestArr, highest); 
+		}
+		else if(highestDif == dif){
+			highestArr = array_add(highestArr, roomIds[i]);
+		}
+	}
+	return highestArr;
+}
+
+Get_RoomIds_Sorted_By_Difficulty()
+{
+    sortedRoomIds = [];
+
+    roomIds = GetArrayKeys(level.ZHC_room_info);
+
+    for(i = 0; i < roomIds.size; i++)
+    {
+        roomId = roomIds[i];
+        dif = level.ZHC_room_info[roomId]["flow_difficulty"];
+
+        insertIndex = sortedRoomIds.size;
+
+        for(j = 0; j < sortedRoomIds.size; j++)
+        {
+            otherDif = level.ZHC_room_info[sortedRoomIds[j]]["flow_difficulty"];
+
+            if(dif < otherDif)
+            {
+                insertIndex = j;
+                break;
+            }
+        }
+
+        sortedRoomIds = array_insert(sortedRoomIds, roomId, insertIndex);
+    }
+
+    return sortedRoomIds;
+}
 
 
 
@@ -237,6 +525,11 @@ room_think(roomId){
 		if(IsDefined( difficulty_adj )){
 			prev_dif = level.ZHC_room_info[roomId]["flow_difficulty"];
 			new_dif = max(0,prev_dif+difficulty_adj);
+
+			//CLAMP THE FLOW DIF BY THE ROUND NUMBER
+			//keeps dif ordered by recency, goobe because plightning teleportation teleports players to 
+			new_dif = max(new_dif, level.round_number/100);
+
 			level.ZHC_room_info[roomId]["flow_difficulty"] = new_dif;
 			difficulty_change = prev_dif != new_dif;
 			//if(difficulty_change) IPrintLn(level.ZHC_room_info[roomId]["name"] + " flow_difficulty:"+ level.ZHC_room_info[roomId]["flow_difficulty"] +"  active:" + level.ZHC_room_info[roomId]["active"] );
@@ -565,7 +858,7 @@ ZHC_get_cur_enemy_limit(enemyCount){ // MOD FUNC
 				limit = level.zombie_ai_limit;
 
 			if(!isDefined(level.testo_last_limit) || level.testo_last_limit != limit)
-				zhcpb("l:" + limit, 1002);
+				zhcpb("zombie limit:" + limit, 1002);
 			level.testo_last_limit = limit;
 
 			return limit;

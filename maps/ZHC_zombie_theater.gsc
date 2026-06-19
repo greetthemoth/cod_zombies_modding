@@ -11,6 +11,7 @@ init(){
 
 	level.map_get_room_info = ::map_get_room_info;
 	level.Get_Other_Zone = ::Get_Other_Zone ;
+	level.Get_Other_Room = ::Get_Other_Room ;
 	level.room_id_can_be_stopped = ::room_id_can_be_stopped ;
 	//level.map_wait_to_update_rooms = ::map_wait_to_update_rooms ;
 	level.map_get_zone_room_id = ::map_get_zone_room_id ;
@@ -19,15 +20,16 @@ init(){
 	//level.Get_Zone_Room_ID_Special = ::Get_Zone_Room_ID_Special ;
 	level.player_is_in_dead_zone = ::player_is_in_dead_zone ;
 	level.can_close_door = ::can_close_door ;
-	level.set_sister_door = ::set_sister_door ;
+	level.set_sister_door = ::set_sister_door ; 
 
-	level.get_room_distance::get_room_distance;
+	level.get_room_distance = ::get_room_distance ;
 
 	level.zhc_additional_round_logic = ::first_room_harder;
 	level.map_init_set_additional_room_info = ::init_set_additonal_room_info;	
 
 	thread map_wait_to_update_rooms ();
 
+	//level notify ("ZHC_map_init_done");
 }
 
 
@@ -72,11 +74,15 @@ map_get_room_info(roomId){
 		return level.ZHC_room_info[roomId];
 }
 
-Get_Other_Zone(opened_from, door){
+Get_Other_Zone(opened_from, door, door_id){
 
 	a = undefined;
 	b = undefined;
-	i = door  maps\_zombiemode_blockers::get_door_id();
+	if(!isDefined(door_id)){
+		i = door  maps\_zombiemode_blockers::get_door_id();
+	}else{
+		i = door_id;
+	}
 
 	if(i == 2){
 		a = "foyer2_zone";
@@ -106,13 +112,76 @@ Get_Other_Zone(opened_from, door){
 		a = "theater_zone";
 		b = "foyer2_zone";
 	}
-
+	if(!IsDefined( opened_from )){
+		ab =  [];
+		ab[ab.size] = a;
+		ab[ab.size] = b;
+		return ab;
+	}
 	if(opened_from == a)
 		return b;
 	else if(opened_from == b)
 		return a;
 	else{
 		zhcpb( "OPENED FROM WEIRD ZONE. neither was" + opened_from ,444);
+		return a;
+	}
+}
+
+Get_Other_Room(opened_from, door, door_id){
+
+	a = undefined;
+	b = undefined;
+	if(!isDefined(door_id)){
+		i = door  maps\_zombiemode_blockers::get_door_id();
+	}else{
+		i = door_id;
+	}
+
+
+	if(i == 2){
+		a = 0;
+		b = 1;
+	} else if(i == 4 || i == 3){
+		a = 1;
+		b = 2;
+	} else if(i == 7){
+		a = 2;
+		b = 3;
+	} else if(i == 5){
+		a = 3;
+		b = 4;
+	} else if(i == 1 || i == 0){
+		a = 4;
+		b = 5;
+	} else if(i == 8){
+		a = 5;
+		b = 6;
+	} else if(i == 10){
+		a = 6;
+		b = 7;
+	} else if(i == 11){
+		a = 7;
+		b = 0;
+	}else if(i == 6 || i == 9){
+		if(flag("curtains_done"))
+				a = 4;
+			else
+				a = 100;
+		b = 0;
+	}
+	if(!IsDefined( opened_from )){
+		ab =  [];
+		ab[ab.size] = a;
+		ab[ab.size] = b;
+		return ab;
+	}
+	if(opened_from == a)
+		return b;
+	else if(opened_from == b)
+		return a;
+	else{
+		zhcpb( "OPENED FROM WEIRD ROOM. neither was room:" + opened_from ,444);
 		return a;
 	}
 }
@@ -164,7 +233,6 @@ map_get_zone_room_id(zone_name){
 			return 100;
 	}
 }
-
 map_get_doors_accesible_in_room(room_id){
 	doors = [];
 	switch(room_id) 
@@ -359,8 +427,13 @@ player_is_in_dead_zone(player, door_id){	//run after "zone_info_updated"
 	if(o)
 		return player IsTouching( level.zones["dining_zone"].volumes[2] );
 	o = (!IsDefined( door_id ) || door_id == 1 || door_id == 0 ) && player.current_zone == "stage_zone";
-	if(o)
-		return player IsTouching( level.zones["stage_zone"].volumes[0] );
+	zhcp("o:"+ o +"   door_id:"+door_id + "  player zone:" + player.current_zone,445);
+
+	if(o){
+		v = player IsTouching( level.zones["stage_zone"].volumes[1]);
+		zhcp("touch vol:"+ v, 445);
+		return v;
+	}
 	o = (!IsDefined( door_id ) || door_id == 6 || door_id == 9 ) && player.current_zone == "theater_zone";
 	if(o)
 		//return player IsTouching( level.zones["theater_zone"].volumes[1] ); doesnt really work the way i want it to.
@@ -381,8 +454,11 @@ can_close_door(){	//run after "zone_info_updated"
 			return !maps\_zombiemode_blockers::a_player_is_close_to_door_id(3, 230) && !maps\_zombiemode_blockers::a_player_is_close_to_door_id(4, 230);
 	} else if(door_id == 1 || door_id == 0){
 		o = maps\_zombiemode_blockers::zone_is_occupied_rn("stage_zone");
+		v = player_is_touching(level.zones["stage_zone"].volumes[1]);
+		zhcp("stage occupied: " + o + " volume occupied: "+ v, 445);
+		
 		//if(o && a_player_is_close_to_door_id(1,360))
-		if(o && player_is_touching(level.zones["stage_zone"].volumes[0]))
+		if(o && v)
 			return false;
 		else 
 			return !maps\_zombiemode_blockers::a_player_is_close_to_door_id(1, 280) && !maps\_zombiemode_blockers::a_player_is_close_to_door_id(0, 280);
@@ -462,23 +538,25 @@ get_lightning_teleport_destinations(attempt){
 	////////dest_room_origins = array_add( dest_room_origins, ZHC_zombiemode_zhc::get_random_active_dog_spawn_pos() );
 	switch(attempt){
 		case 0:
-		return maps\ZHC_zombiemode_zhc::get_inactive_dog_spawn_positions();
+		return maps\ZHC_zombiemode_zhc::get_dog_spawn_positions_in_rooms(maps\ZHC_zombiemode_roundflow::Get_Lowest_Difficulty_RoomIds());
 		case 1:
+		return maps\ZHC_zombiemode_zhc::get_inactive_dog_spawn_positions();
+		case 2:
 		return maps\ZHC_zombiemode_zhc::get_active_dog_spawn_positions();
 	}
 }
 
-get_lighnting_spots(){
+get_lighnting_spots(room_id){
 	//return maps\ZHC_zombiemode_zhc::get_random_active_dog_spawn_pos();
-	return maps\ZHC_zombiemode_zhc::get_dog_spawn_positions_in_room(4);
+	return maps\ZHC_zombiemode_zhc::get_dog_spawn_positions_in_room(room_id);
 }
 
-can_spawn_lightning_check(){
-	return maps\ZHC_zombiemode_roundflow::Get_Room_Info(4, "occupied");
+can_spawn_lightning_check(room_id){
+	return maps\ZHC_zombiemode_roundflow::Get_Room_Info(room_id, "occupied");
 }
 
-get_lightning_delay(){
-	dif = maps\ZHC_zombiemode_roundflow::Get_Room_Info(4, "flow_difficulty") + 1;
+get_lightning_delay(room_id){
+	dif =  max(1, maps\ZHC_zombiemode_roundflow::Get_Room_Info(room_id, "flow_difficulty") - 2);
 	if(dif <= 0){
 		return undefined;
 	}
@@ -486,18 +564,44 @@ get_lightning_delay(){
 }
 
 ZHC_manage_lightning(){
-	level.ZHC_theater_spawning_lightning = false;
+	//level.ZHC_theater_spawning_lightning = false;
 	//level waittill("zone_info_updated");
 	wait_network_frame();	//wait till room info is set
 	while(1){
 		if(level.power_on){
-			thread start_spawning_lightning(get_lightning_delay());
-			zhcpb("electricity waiting to turn off power, or update", 300);
-			level waittill_any( "electricity_off", "zhc_update_flow_difficulty_roomId_4","zhc_stop_spawning_lightning"  );
-			if(level.ZHC_theater_spawning_lightning){
-				level.ZHC_theater_spawning_lightning = false;
+			
+
+			room_id = -1; //4 if we want the theater
+			roomIds = maps\ZHC_zombiemode_roundflow::Get_RoomIds_Sorted_By_Difficulty();
+			top_difficulty_room_id = roomIds[roomIds.size - 1];
+
+			//remove rooms connected to top dif room from the list
+			connected_open_rooms_to_top_dif = maps\ZHC_zombiemode_roundflow::Get_All_Connected_Open_Rooms(top_difficulty_room_id, false);
+			roomIds = array_exclude( roomIds,connected_open_rooms_to_top_dif );
+
+			// finds difficulty diffrence from existing rooms.
+			difficulty_diffrence = level.ZHC_room_info[top_difficulty_room_id]["flow_difficulty"]  - level.ZHC_room_info[roomIds[roomIds.size - 2]]["flow_difficulty"];
+			
+			if(difficulty_diffrence > 1){
+				room_id = roomIds[roomIds.size - 1];
+
+				//level.ZHC_theater_spawning_lightning = true;
+				thread start_spawning_lightning(get_lightning_delay(room_id), room_id);
+				zhcpb("lightning on room:" + room_id+" difficulty_diffrence:"+ difficulty_diffrence +"  waiting to turn off power, or update flow_difficulty", 300);
+				level waittill_any( 
+									"electricity_off", 
+									"zhc_update_flow_difficulty_roomId_"+room_id,
+									"zhc_stop_spawning_lightning"  );
+				//if(level.ZHC_theater_spawning_lightning){
+				//level.ZHC_theater_spawning_lightning = false;
 				level notify( "zhc_stop_spawning_lightning" );
+				//}
+			} else {
+				zhcpb("no room to send lightning. difficulty_diffrence:"+ difficulty_diffrence +"  waiting to update dif", 300);
+				level waittill_any( "end_of_round");
 			}
+			
+			
 			wait_network_frame();
 		}else{
 			zhcpb("electricity waiting to turn on power", 300);
@@ -506,30 +610,34 @@ ZHC_manage_lightning(){
 		}
 	}
 }
+
+
+
+
 	
-start_spawning_lightning(delay){
+start_spawning_lightning(delay, room_id){
 	if(!IsDefined( delay )){
 		zhcpb("delay invalid. not spawning now", 300);
 		return;
 	}else{
 		zhcpb("delay "+delay, 300);
 	}
-	level.ZHC_theater_spawning_lightning = true;
 	level endon( "zhc_stop_spawning_lightning" );
 	
 
 	pad = getent( "trigger_teleport_pad_0", "targetname" );
 	pad thread stop_electric_sound();
 
-	dps = get_lighnting_spots();
+	dps = get_lighnting_spots(room_id);
 	while(true){
-		if(!can_spawn_lightning_check()){
+		if(!can_spawn_lightning_check(room_id)){
 			//zhcpb("failed check", 300);
 			wait(0.5);
 			continue;
 		}
 		dp = dps[RandomInt( dps.size - 1 )];
 		if(isDefined(dp)){
+			wait(delay);
 			// add 3rd person fx
 			maps\zombie_theater_teleporter::teleport_pad_start_exploder( 0 );
 			//zhcpb("dp defined spawning lightning...", 300);
@@ -541,7 +649,6 @@ start_spawning_lightning(delay){
 			pad thread zhc_teleport_players(true);
 
 			thread spawn_lightning_teleport(dp);
-			wait(delay);
 		}
 		else{
 			zhcpb("dp not defined", 300);

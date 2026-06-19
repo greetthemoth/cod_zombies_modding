@@ -3384,9 +3384,10 @@ unsave_additional_weapon_on_bleedout()
 
 player_quickrevive_teleport_think(){
 	//wait for player to go down.
-	//if players occupied room difficulty is above difficulty threshold.
-		//Teleport player to lowest-closest room.
-	//teleport to quickrevive to door, from same side as player, from door in direction closest to original room.
+	//if players occupied room difficulty is above difficulty threshold. (if room has lightning)
+		//Teleport player to lowest-difficulty room.
+
+	//teleport quickrevive to barred door in room, or to window. from door in direction closest to original room.
 
 	//door thread door_teleport_quickrevive(barr_perk_origin, barr_perk_angles)
 
