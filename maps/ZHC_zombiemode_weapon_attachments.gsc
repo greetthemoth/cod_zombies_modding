@@ -14,8 +14,12 @@ init(){
 }
 
 init_ZHC_OnDamageAttachmentFuncs(){
-	level.ZHC_OnDamageAttachmentFuncs["damagemult"] = ::AttachmentOnDamage_damagemult;
-	level.ZHC_OnKillAttachmentFuncs["damagemult"] = ::AttachmentOnKill_damagemult;
+	level.ZHC_AttachmentFuncs[];
+	level.ZHC_AttachmentFuncs["on_damage"] = [];
+	level.ZHC_AttachmentFuncs["on_kill"] = [];
+
+	level.ZHC_AttachmentFuncs["on_damage"]["damagemult"] = ::AttachmentOnDamage_damagemult;
+	level.ZHC_AttachmentFuncs["on_kill"]["damagemult"] = ::AttachmentOnKill_damagemult;
 	//create for all other attachemnts...
 }
 
@@ -53,34 +57,109 @@ attachment_description (weapon, attachment, attachment_lvl, exotic_effect){
 	//assign a 
 	str = "";
 	switch(attachment)
+
+
 		case: "damagemult"
 			str = 	"increase bullet damage by "+get_damagemult(attachment_lvl) +"%";
 			if(exotic_effect)
 				str += ", increase points from dealing bullet damage by 10";
+
 		case: "headshotmult"
 			str = "increase headshot damage by 12%";
 			if(exotic_effect)
 				str += ", increase points from headshot kills by 50"; //... add attachment lvl for all attachments base effect, add it to the text using a custom function
+
+		//LOAD
 		case: "load_on_kill"
-			str = "killing zombies reloads a bullet";
+			str = "killing zombies reloads 1 bullet";
 			if(exotic_effect)
 				str+= ", and gains 1 ammo";
+
 		case: "load_on_damage"
-			str = "damaging a zombie has a chance to reload a bullet";
+			str = "damaging a zombie has a chance to reload a bullet"; //chance_to_not_load = (cur_mag+1 / (mag_size * 1.5) ) * [3,2,1];
 			if(exotic_effect)
-				str+= ", last bullet in clip has 100% chance to reload"
+				str+= ", last bullet in clip has 100% chance to reload";
+
+
+		//MELEE
 		case: "melee_damage"
 			str = "melee damage increased by 100%";
 			if(exotic_effect)
-				str += ", intakills dogs and crawlers";
-		case: "md_on_kill"
-			str = "melee kills increase knife damage by 10, resets on door buy";
+				str += ", deals 500% damage to crawlers and dogs";
+
+		case: "next_md_on_kill"
+			str = "kills increase next melee damage by 25%";
+				if(exotic_effect)
+					str+=", excess damage spreads to surronding enemies";
+
+		case: "md_fatality"
+			str = "melee damage kill enemies below 50% health";
+				if(exotic_effect)
+					str+=", ";
+
+		//PISTOL
+		case: "md_on_pistol_kill"
+			str = "pistol damage increase melee damage";
+
+		
+
+
+		//Wall buy appears after gun runs out of ammo.
+
+
+		//Weapon reloads faster (even without speed cola)
+			//Weapon reloads when unequipped
+
+		//Weapon shoots twice as fast (even without doubletap)
+			//
+
+		//inifinte clip for 10 seconds after buying ammo.
+			//
+
+
+
+		//Melee gains 100 more damage sniper kill this game
+
+		//Gernades dell 200 more damage per shotgun kill this game
+
+		//50% defense when getting shotgun kills
+			//
+
+		//10% to gain grenade on shotgun headshot
+			//
+
+		//More Melee damage
+			//More points per melee kill
+
+		//Regen health with melee kill
+
+		//More gernade damage
+			//More points per gernade kill
+
+		//Gain 1 gernade when buying ammo
+
+		//Gernade kills add ammo to this gun
+
+
+		//Headshot kills increase damage of next bullet by 100%, reset on missed headshot
+			//Exotic:Headshot kills bounce to nearby target
+
+
+		
+
+
+
+		/*
+		case: "md_on_mk_dr"
+			str = "melee kills increase knife damage by 20%, resets on door buy";
 			if(exotic_effect)
-				str = "melee kills izncrease knife damage by 10;";
-		case: "damage_on_mk"
+				str = "melee kills increase knife damage by 10;";
+
+		case: "damage_on_mk_dr"
 			str = "melee kills increase damage by 1%, resets on door buy";
 			if(exotic_effect)
 				str = "melee kills increase damage by 1%";
+		*/
 	return str;
 
 }	
