@@ -71,6 +71,7 @@ rooms_init(){
 			level.ZHC_room_info[roomId]["name"] = [[level.map_get_room_name]](roomId);
 			level.ZHC_room_info[roomId]["doors"] = [[level.map_get_doors_accesible_in_room]](roomId);
 			level.ZHC_room_info[roomId]["occupied"] = false;
+			level.ZHC_room_info[roomId]["last_round_active"] = 0;
 			level.ZHC_room_info[roomId]["chests"] = [];
 			level.ZHC_room_info[roomId]["enemy_count"] = 0;
 			level.ZHC_room_info[roomId]["connected_rooms"] = Get_Connected_Rooms(roomId);
@@ -146,7 +147,8 @@ Merge_RoomsId(roomId_1, roomId_2, new_room_id){
 		//maps\ZHC_zombiemode_roundflow::debug_room_zones(4);
 		//maps\ZHC_zombiemode_roundflow::debug_room_zones(100);
 		level.ZHC_room_info[new_room_id]["occupied"] = level.ZHC_room_info[room_ids_to_erase[r]]["occupied"];
-		
+		level.ZHC_room_info[new_room_id]["last_round_active"] = max(level.ZHC_room_info[roomId_1]["last_round_active"], level.ZHC_room_info[roomId_2]["last_round_active"]);
+
 		level.ZHC_room_info[new_room_id]["doors"] = array_merge( level.ZHC_room_info[new_room_id]["doors"],level.ZHC_room_info[room_ids_to_erase[r]]["doors"] );
 		//level.ZHC_room_info[new_room_id]["doors"] = [[level.map_get_doors_accesible_in_room]](new_room_id); //if already accounds for update changes
 		level.ZHC_room_info[new_room_id]["enemy_count"] = level.ZHC_room_info[new_room_id]["enemy_count"] + level.ZHC_room_info[new_room_id]["enemy_count"];
@@ -528,7 +530,7 @@ room_think(roomId){
 
 			//CLAMP THE FLOW DIF BY THE ROUND NUMBER
 			//keeps dif ordered by recency, goobe because plightning teleportation teleports players to 
-			new_dif = max(new_dif, level.round_number/100);
+			new_dif = max(new_dif, define_or(level.ZHC_room_info[roomId]["last_round_active"]/100,0));
 
 			level.ZHC_room_info[roomId]["flow_difficulty"] = new_dif;
 			difficulty_change = prev_dif != new_dif;
@@ -540,19 +542,28 @@ room_wait_to_increase_difficulty(roomId, difficulty){
 	if([[level.room_id_can_be_stopped]](roomId))
 		level endon ("room_stop_"+roomId);
 	level endon ("zhc_update_flow_difficulty_roomId_"+roomId);
+
 	if(level.zombie_total == 0){
 		level waittill( "start_of_round" );
 		wait_network_frame( );
 		//waits for level.zombie_total to be set to the new round
 	}
-	kill_goal = level.total_zombies_killed + (18 * (1 + difficulty) ) ;
+	kill_goal = level.total_zombies_killed + (5 + min(level.round_number,15) * 2 * (0.5 + (difficulty*0.5) ) ) ;
 	//if(roomId == 0)iprintln("level.total_zombies_killed: "+level.total_zombies_killed+"->" +  kill_goal+"  active:" + level.ZHC_room_info[roomId]["active"]);
-	while(!level.ZHC_room_info[roomId]["active"] || level.total_zombies_killed < kill_goal){
+	while(!level.ZHC_room_info[roomId]["active"]
+		|| level.total_zombies_killed < kill_goal 
+		|| level.zombie_total < 5 + level.round_number //dont increase dif if less than 10 left to start
+		){
 		level waittill( "zom_kill" );
 		//wait_network_frame( );
 		//if(level.ZHC_room_info[roomId]["active"])\
-		//if(roomId == 0)
-		//IPrintLn( level.total_zombies_killed +"/"+ kill_goal +"  active:" + level.ZHC_room_info[roomId]["active"]);
+
+		if(level.ZHC_room_info[roomId]["active"])
+			zhcp( 
+				"killgoal:"+level.total_zombies_killed +"/"+ kill_goal + 
+				//ret_if_true(level.ZHC_room_info[roomId]["active"] + "  active:" + level.ZHC_room_info[roomId]["active"]) +
+				ret_if_true(level.zombie_total < 5 + level.round_number , "  skipped kill goal") 
+				, 444);
 	}
 	//if(roomId == 0)iprintln("kill_goal_reached"+"  active:" + level.ZHC_room_info[roomId]["active"]);
 
@@ -566,14 +577,14 @@ room_wait_to_increase_difficulty(roomId, difficulty){
 		if(level.ZHC_room_info[roomIds[i]]["active"]){
 		//	roomsToIncreaseDifficultyIds[roomsToIncreaseDifficultyIds.size] = roomIds[i];
 		}
-		else
+		else if(roomIds[i]["flow_difficulty"] > define_or(roomIds[i]["last_round_active"]/100,0))
 			roomsToDecreaseDifficultyIds[roomsToDecreaseDifficultyIds.size] = roomIds[i];
 	}
 	//for(i = 0; i <  roomsToIncreaseDifficultyIds.size; i++){
 	//	level notify("zhc_update_flow_difficulty_roomId_"+roomsToIncreaseDifficultyIds[i], 1);
 	//}
 	for(i = 0; i <  roomsToDecreaseDifficultyIds.size; i++){
-		level notify("zhc_update_flow_difficulty_roomId_"+roomsToDecreaseDifficultyIds[i], -1/roomsToDecreaseDifficultyIds.size);
+		level notify("zhc_update_flow_difficulty_roomId_"+roomsToDecreaseDifficultyIds[i], -1/roomsToDecreaseDifficultyIds.size * 0.5);
 	}
 
 	level notify("zhc_update_flow_difficulty_roomId_"+roomId, 0.5);
@@ -624,14 +635,11 @@ activate_room(roomId){
 	if(!level.ZHC_ROOMFLOW)
 		return;
 
-	if( level.ZHC_room_info[roomId]["last_round_active"] < level.round_number){
-		level.ZHC_room_info[roomId]["last_round_active"] = level.round_number;
-	}
+	level.ZHC_room_info[roomId]["last_round_active"] = level.round_number;
 
 	active = level.ZHC_room_info[roomId]["active"];
 	if(active)
 		return;
-	level.ZHC_room_info[roomId]["active"] = true;
 	level.ZHC_round_zombie_limit_mult *= level.ZHC_room_info[roomId]["room_zombie_limit_mult"];
 	level.ZHC_round_spawning_speed_mult *= level.ZHC_room_info[roomId]["room_spawning_speed_mult"];
 }
@@ -700,10 +708,11 @@ additional_round_logic(){
 
 				for(i = 0; i <  roomIds.size; i++)
 				{
-					level.ZHC_room_info[roomIds[i]]["enemy_count"] = 0;	//reset just in case.
+					room = level.ZHC_room_info[roomIds[i]];
+					room["enemy_count"] = 0;	//reset just in case.
 					if(level.ZHC_room_info[roomIds[i]]["active"])
 						roomsToIncreaseDifficultyIds[roomsToIncreaseDifficultyIds.size] = roomIds[i];
-					else
+					else if (room["flow_difficulty"] > define_or(room["last_round_active"]/100,0)) // only decrease if room is higher than cap
 						roomsToDecreaseDifficultyIds[roomsToDecreaseDifficultyIds.size] = roomIds[i];
 				}
 				for(i = 0; i <  roomsToIncreaseDifficultyIds.size; i++){

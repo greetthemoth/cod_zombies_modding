@@ -85,7 +85,7 @@ attachment_description (weapon, attachment, attachment_lvl, exotic_effect){
 		case: "melee_damage"
 			str = "melee damage increased by 100%";
 			if(exotic_effect)
-				str += ", deals 500% damage to crawlers and dogs";
+				str += ", repeated melee atacks deals more damage on target";
 
 		case: "next_md_on_kill"
 			str = "kills increase next melee damage by 25%";
@@ -95,37 +95,49 @@ attachment_description (weapon, attachment, attachment_lvl, exotic_effect){
 		case: "md_fatality"
 			str = "melee damage kill enemies below 50% health";
 				if(exotic_effect)
-					str+=", ";
+					str += ", deals 500% damage to crawlers and dogs";
 
 		//PISTOL
 		case: "md_on_pistol_kill"
-			str = "pistol damage increase melee damage";
+			str = "pistol damage increase melee damage on target";
+				if(exotic_effect)
+					str+=", ";
+
+		case: "md"
 
 		
 
+		//deals more damage at low health%
+		//Deals more damage while croching
+			//double bonus damage while prone
 
-		//Wall buy appears after gun runs out of ammo.
+		//Gains ammo when you buy door
+		//Gernade kills add ammo to this gun
 
+		//Weapon reloads while unequipped at 20%-40%-60% speed
+
+		//This gun has a  chance to produce a random powerup on kill
 
 		//Weapon reloads faster (even without speed cola)
-			//Weapon reloads when unequipped
 
 		//Weapon shoots twice as fast (even without doubletap)
+			
+
+		//inifite clip for 10 seconds after buying ammo.
 			//
 
-		//inifinte clip for 10 seconds after buying ammo.
+		//gernades barricade when holding weapon
+
+		//gernades turn into turret when holding weapon
+
+		//Melee gains 100 more damage per [weapon type] kill this game
+
+		//Gernades deal 200 more damage per [weapon type] kill this game
+
+		//+50% defense when getting [weapon type] kills
 			//
 
-
-
-		//Melee gains 100 more damage sniper kill this game
-
-		//Gernades dell 200 more damage per shotgun kill this game
-
-		//50% defense when getting shotgun kills
-			//
-
-		//10% to gain grenade on shotgun headshot
+		//1%chancde to gain grenade on [weopon type] kill
 			//
 
 		//More Melee damage
@@ -138,16 +150,11 @@ attachment_description (weapon, attachment, attachment_lvl, exotic_effect){
 
 		//Gain 1 gernade when buying ammo
 
-		//Gernade kills add ammo to this gun
+		
 
 
 		//Headshot kills increase damage of next bullet by 100%, reset on missed headshot
 			//Exotic:Headshot kills bounce to nearby target
-
-
-		
-
-
 
 		/*
 		case: "md_on_mk_dr"

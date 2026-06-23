@@ -12,6 +12,16 @@ pow(n, power){
 	}
 	return n;
 }
+
+ret_if_true(cond, ret_if_true, ret_if_false){
+	if(cond){
+		return ret_if_true;
+	}else if(IsDefined( ret_if_false )){
+		return ret_if_false;
+	}
+	return "";
+}
+
 define_or(s,or){
 	if(IsDefined( s ))
 		return s;
