@@ -552,7 +552,7 @@ room_wait_to_increase_difficulty(roomId, difficulty){
 	//if(roomId == 0)iprintln("level.total_zombies_killed: "+level.total_zombies_killed+"->" +  kill_goal+"  active:" + level.ZHC_room_info[roomId]["active"]);
 	while(!level.ZHC_room_info[roomId]["active"]
 		|| level.total_zombies_killed < kill_goal 
-		|| level.zombie_total < 5 + level.round_number //dont increase dif if less than 10 left to start
+		|| level.zombie_total < 5 + min(level.round_number,15) //dont increase dif if less than 10 left to start
 		){
 		level waittill( "zom_kill" );
 		//wait_network_frame( );
@@ -562,8 +562,9 @@ room_wait_to_increase_difficulty(roomId, difficulty){
 			zhcp( 
 				"killgoal:"+level.total_zombies_killed +"/"+ kill_goal + 
 				//ret_if_true(level.ZHC_room_info[roomId]["active"] + "  active:" + level.ZHC_room_info[roomId]["active"]) +
-				ret_if_true(level.zombie_total < 5 + level.round_number , "  skipped kill goal") 
-				, 444);
+				ret_if_true(level.zombie_total < 5 + min(level.round_number,15) , "  skipped kill goal") +
+				""
+				, 1000);
 	}
 	//if(roomId == 0)iprintln("kill_goal_reached"+"  active:" + level.ZHC_room_info[roomId]["active"]);
 

@@ -21,14 +21,14 @@ can_send_msg_level(msg_id){
 		///case 555: //perk teleportation testing
 		//case 5555: //QR perk teleportation testing
 		///case 50: //mystery box
-		///case 100: //wall weapon stuff
+		case 100: //wall weapon stuff
 		///case 200: //powerup stuff
-		case 300: //teleporter lightning stuff
+	//case 300: //teleporter lightning stuff
 		//case 999://round zombie total viewer
 		//case 666://zombie damage 
 		//case 222://perk loss
 		//case 777: //ZHC_weapon system
-		case 444: //blockers
+	//case 444: //blockers
 		//case 445: //door deadpoints
 		///case "m14_zm":
 			return true;

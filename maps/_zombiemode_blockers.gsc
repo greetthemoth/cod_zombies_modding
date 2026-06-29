@@ -1191,7 +1191,6 @@ door_buy_expired(){
 		level waittill("between_round_over");
 	}*/
 
-
 	if(is_true(self.door_wont_expire_once)){
 		//wait(2);
 		self.door_wont_expire_once = undefined;
@@ -1200,6 +1199,8 @@ door_buy_expired(){
 
 	if(!isDefined(self.roomId_bought_from) || !IsDefined( self.roomId_bought_to ))
 		self roomId_setup(self.last_user);
+
+	self thread ensure_close_door_with_room_not_occupied();
 
 	if(true){	//room flow increase difficulty //testo
 		if(level.ZHC_ROOMFLOW){
@@ -1320,7 +1321,7 @@ door_buy_expired(){
 
 		
 	}
-	self thread ensure_close_door_with_room_not_occupied();
+	
 	if(false){			//occupy rooms to expire
 		self check_roomIDs_to_occupy_setup();
 		if(IsDefined( level.number_of_rooms ) && IsDefined( self.roomIDs_to_occupy )){
@@ -1336,11 +1337,20 @@ door_buy_expired(){
 	if(CANT_CLOSE_DOOR_IN_DOG_ROUNDS && flag("dog_round")){
 		level waittill( "end_of_round" );	//we dont want doors to close durring dog rounds because dogs can get stuck through walls.//fixed.
 	}
+
 	self notify( "close_door" );
 }
 ensure_close_door_with_room_not_occupied(){
 	self endon ("open_door");
-	self waittill("door_closed");
+
+	while(self._door_open){
+		zhcp("waiting for door to close...", 100);
+		wait_network_frame();
+		wait_network_frame();
+		wait_network_frame();
+		wait_network_frame();
+	}
+	//self waittill("door_closed");
 
 	if(level.ZHC_TESTING_LEVEL >= 0.5)
 		zhcpb( "DOOR ENSURE:"
@@ -1352,12 +1362,15 @@ ensure_close_door_with_room_not_occupied(){
 		!Get_Room_Info(self.roomId_bought_from,"occupied") &&
 	 	(!IsDefined( self.last_user ) || Get_Zone_Room_ID(self.last_user.current_zone) != self.roomId_bought_from ) && 
 	 	!a_player_is_in_dead_zone(self get_door_id())
-	)
+	){
 		self notify ("ensured_door_close");
+		zhcp("door ensure notified", 100);
+	}
 	else{
 		//door close not ensured
 		wait_network_frame( );
 		self notify ("open_door");
+		zhcp("door ensure notified failed", 100);
 	}
 }
 
@@ -2292,6 +2305,8 @@ door_closed()
 	self notify_sister_door("door_closed");
 	level notify ("a_door_closed", self get_door_id());
 	maps\ZHC_zombiemode_roundflow::Update_Connected_Open_Rooms(self, self get_door_id());
+
+	zhcp("door_closed",100);
 }
 
 //

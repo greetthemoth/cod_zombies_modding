@@ -693,9 +693,9 @@ door_barr_weapon(){
 		else
 			weapon = self.ZHC_assinged_door_barr_weapons[0];
 		if(IsDefined( weapon ))
-			zhcpb("assigned weapon: " +weapon , 100);
+			zhcpb("assigned weapon: " + weapon +"   door_side:"+ret_if_true(self.roomId_bought_to > self.roomId_bought_from, 1, 0), 100);
 		else
-			zhcpb("assigned weapon is undefined", 100);
+			zhcpb("assigned weapon is undefined"+"   door_side:"+ret_if_true(self.roomId_bought_to > self.roomId_bought_from, 1, 0), 100);
 	}
 	else{
 		weapon = door_barr_get_players_weapon_to_hang(player, false, false);
@@ -5399,7 +5399,7 @@ zhc_managa_upgrade_hintstrings( can_init_buy, can_buy_ammo, cost, ammo_cost, can
 		
 		t_to_wait = self update_wall_upgrade_weapon_hintstrings(can_init_buy, can_buy_ammo, cost, ammo_cost, can_upgrade, make_free_if_owned, weapon_string);	
 		t_to_wait = max(0.3,t_to_wait);
-		zhcp( "t_to_wait:" + t_to_wait,100);
+		//zhcp( "t_to_wait:" + t_to_wait,100);
 		if(t_to_wait < 0)
 			wait(1);
 		else
